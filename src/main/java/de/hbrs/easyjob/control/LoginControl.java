@@ -9,8 +9,10 @@ import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Component
+@RequestMapping("/api/login")
 public class LoginControl {
 
     @Autowired
@@ -34,14 +36,14 @@ public class LoginControl {
         }
         if (person == null){
             System.out.println("Person kann nicht gefunden werden.");
-            //bleibt auf der Login-Seite
-            //Popup "Die E-Mail ist nicht in der Datenbank. Sie können sich hier(Button) registrieren."
+            //TODO: bleibt auf der Login-Seite
+            //TODO: Popup "Die E-Mail ist nicht in der Datenbank. Sie können sich hier(Button) registrieren."
             return false;
         }
         if (password == null){
             System.out.println("Passwort fehlt.");
-            //bleibt auf der Login-Seite
-            //Popup "Bitte Passwort eingeben."
+            //TODO: bleibt auf der Login-Seite
+            //TODO: Popup "Bitte Passwort eingeben."
             return false;
         }
         String eingabePW = password;
@@ -54,14 +56,14 @@ public class LoginControl {
             if (person instanceof Student){
                 this.studentDTO = (StudentDTOimpl) personDTO;
                 System.out.println("Es ist ein Student.");
-                //weiter zur Studenten-Startseite
+                //TODO: weiter zur Studenten-Startseite
                 return true;
             }
 
             if (person instanceof Unternehmensperson){
                 this.unternpersonDTO = (UnternehmenspersonDTOimpl) personDTO;
                 System.out.println("Es ist eine Unternehmensperson.");
-                //weiter zur Unternehmer-Startseite
+                //TODO: weiter zur Unternehmer-Startseite
                 return true;
             }
             //es ist eine Person, aber kein Student oder Unternehmensperson

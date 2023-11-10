@@ -19,16 +19,16 @@ public class PersonDTOimpl implements PersonDTO {
 
     @Override
     public int get_idPerson() {
-        return 0;
+        return this.id_Person;
     }
 
     @Override
     public String getVorname() {
-        return null;
+        return this.vorname;
     }
 
     @Override
     public String getNachname() {
-        return null;
+        return this.nachname;
     }
 }
