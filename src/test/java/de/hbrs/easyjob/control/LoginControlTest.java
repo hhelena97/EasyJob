@@ -56,25 +56,25 @@ class LoginControlTest {
 
     @Test
     @DisplayName("Authentifizierung mit leerem Passwort")
-    void authenticateWithEmptyPassword() {
+    void authenticateWithEmptyPassword()  {
         assertFalse(loginControl.authenticate("max.mustermann@example.com", ""));
     }
 
     @Test
     @DisplayName("Authentifizierung mit leerer E-Mail und leerem Passwort")
-    void authenticateWithEmptyEmailAndPassword() {
+    void authenticateWithEmptyEmailAndPassword()  {
         assertFalse(loginControl.authenticate("", ""));
     }
 
     @Test
     @DisplayName("Authentifizierung mit null als E-Mail")
-    void authenticateWithNullEmail() {
+    void authenticateWithNullEmail()  {
         assertFalse(loginControl.authenticate(null, "123456"));
     }
 
     @Test
     @DisplayName("Authentifizierung mit null als Passwort")
-    void authenticateWithNullPassword() {
+    void authenticateWithNullPassword()  {
         assertFalse(loginControl.authenticate("max.mustermann@example.com", null));
     }
 
