@@ -58,4 +58,8 @@ public class Person {
         result = result + Arrays.hashCode(foto);
         return result;
     }
+
+    public String toString(){
+        return vorname + " " + nachname + ", id: " + id_Person;
+    }
 }
