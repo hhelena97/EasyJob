@@ -24,6 +24,8 @@ public class LoginControl {
         this.repository = personRepository;
     }
 
+    // wenn authenticate ein false zurückgibt, soll im View ein Popup "Bitte eingegebene Daten überprüfen" (oder so ähnlich)
+    // true führt direkt zur nächsten Seite
     public boolean authenticate(String email, String password) {
         Person person;
         try {
@@ -35,14 +37,10 @@ public class LoginControl {
         }
         if (person == null){
             System.out.println("Person kann nicht gefunden werden.");
-            //TODO: bleibt auf der Login-Seite
-            //TODO: Popup "Die E-Mail ist nicht in der Datenbank. Sie können sich hier(Button) registrieren."
             return false;
         }
         if (password == null){
             System.out.println("Passwort fehlt.");
-            //TODO: bleibt auf der Login-Seite
-            //TODO: Popup "Bitte Passwort eingeben."
             return false;
         }
         String eingabePW = password;
@@ -50,7 +48,7 @@ public class LoginControl {
 
         if (eingabePW.equals(dbPW)){
             System.out.println("Passwort stimmt.");
-            //this.personDTO = repository.findPersonByEmail(email);
+            this.personDTO = repository.findPersonByEmail(email);
 
             if (person instanceof Student){
                 this.studentDTO = (StudentDTOimpl) personDTO;

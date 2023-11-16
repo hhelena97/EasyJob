@@ -18,7 +18,7 @@ public class PersonDTOimpl implements PersonDTO {
     private byte[] foto;
 
     @Override
-    public int get_idPerson() {
+    public int getid_Person() {
         return this.id_Person;
     }
 
