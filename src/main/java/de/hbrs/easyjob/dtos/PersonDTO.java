@@ -1,8 +1,7 @@
 package de.hbrs.easyjob.dtos;
 
-import de.hbrs.easyjob.entities.Person;
 public interface PersonDTO {
-    public int get_idPerson();
+    public int getid_Person();
     public String getVorname();
     public String getNachname();
 

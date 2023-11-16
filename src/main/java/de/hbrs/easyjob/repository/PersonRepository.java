@@ -1,5 +1,6 @@
 package de.hbrs.easyjob.repository;
 import de.hbrs.easyjob.dtos.PersonDTO;
+import de.hbrs.easyjob.dtos.impl.PersonDTOimpl;
 import de.hbrs.easyjob.entities.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
@@ -11,9 +12,5 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
 
     Person findByEmail(String mail);
 
-
-
-    Person findPersonById(int id);
-
-    PersonDTO findPersonByEmail (String mail);
+    PersonDTOimpl findPersonByEmail (String mail);
 }
