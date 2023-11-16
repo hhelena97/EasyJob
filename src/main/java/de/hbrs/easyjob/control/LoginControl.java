@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.control;
 
 import de.hbrs.easyjob.dtos.PersonDTO;
+import de.hbrs.easyjob.dtos.impl.PersonDTOimpl;
 import de.hbrs.easyjob.dtos.impl.StudentDTOimpl;
 import de.hbrs.easyjob.dtos.impl.UnternehmenspersonDTOimpl;
 import de.hbrs.easyjob.entities.Person;
@@ -9,14 +10,17 @@ import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Component
-//@RequestMapping("/api/login")
+//@Component
+@RestController
+@RequestMapping("/api/login")
 public class LoginControl {
 
     @Autowired
     private PersonRepository repository;
-    private PersonDTO personDTO = null;
+    private PersonDTOimpl personDTO = null;
     private StudentDTOimpl studentDTO = null;
     private UnternehmenspersonDTOimpl unternpersonDTO = null;
 
@@ -71,24 +75,9 @@ public class LoginControl {
         return false;
     }
 
-    public PersonDTO getCurrentPerson(){
+    public PersonDTOimpl getCurrentPerson(){
         return this.personDTO;
 
     }
-
-
-/*
-    private PersonDTO getPersonWithJPA( String email , String password ) throws DatabasePersonException {
-        PersonDTO personTmp;
-        try {
-            personTmp = repository.findPersonByEmailAndPassword(email, password);
-        } catch ( org.springframework.dao.DataAccessResourceFailureException e ) {
-            throw new DatabasePersonException("Die E-Mail mit diesem Passwort konnten keiner Person in der Datenbank zugeordnet werden.");
-        }
-        return personTmp;
-    }
-*/
-
-
 
 }
