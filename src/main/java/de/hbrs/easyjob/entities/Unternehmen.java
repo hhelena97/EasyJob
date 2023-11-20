@@ -32,6 +32,9 @@ public class Unternehmen {
     @Column(name = "Logo")
     private byte[] logo;
 
+    @Column(name = "Aktiv")
+    private boolean aktiv;
+
     @Column(name = "bezahlt")
     private boolean bezahlt;
 
@@ -62,11 +65,12 @@ public class Unternehmen {
                 Objects.equals(beschreibung, unternehmen.beschreibung) &&
                 Arrays.equals(logo, unternehmen.logo) &&
                 Objects.equals(standorte, unternehmen.standorte) &&
-                Objects.equals(bezahlt, unternehmen.bezahlt);
+                Objects.equals(bezahlt, unternehmen.bezahlt) &&
+                Objects.equals(aktiv, unternehmen.aktiv);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id_Unternehmen, name, kontaktdaten, beschreibung, Arrays.hashCode(logo), standorte, bezahlt);
+        return Objects.hash(id_Unternehmen, name, kontaktdaten, beschreibung, Arrays.hashCode(logo), standorte, bezahlt, aktiv);
     }
 }

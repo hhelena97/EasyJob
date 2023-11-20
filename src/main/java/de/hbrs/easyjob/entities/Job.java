@@ -2,6 +2,7 @@ package de.hbrs.easyjob.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -22,14 +23,8 @@ public class Job {
     @Column(name = "Titel")
     private String titel;
 
-    @Column(name = "Dauer")
-    private String dauer;
-
-    @Column(name = "Bezahlung")
-    private String bezahlung;
-
-    @Column(name = "Aufgaben")
-    private String aufgaben;
+    @Column(name = "Erstellt_am")
+    private Date erstellt_am;
 
     @Column(name = "Freitext")
     private String freitext;
@@ -65,7 +60,7 @@ public class Job {
         Job job = (Job) o;
         return Objects.equals(id_Job, job.id_Job) &&
                 Objects.equals(titel, job.titel) &&
-                Objects.equals(aufgaben, job.aufgaben) &&
+                Objects.equals(erstellt_am, job.erstellt_am) &&
                 Objects.equals(person, job.person) &&
                 Objects.equals(unternehmen, job.unternehmen) &&
                 Objects.equals(ort, job.ort) &&
@@ -74,6 +69,6 @@ public class Job {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id_Job, titel, aufgaben, person,unternehmen,ort,freitext );
+        return Objects.hash(id_Job, titel, erstellt_am, person,unternehmen,ort,freitext );
     }
 }

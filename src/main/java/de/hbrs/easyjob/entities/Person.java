@@ -33,6 +33,9 @@ public class Person {
     @Column(name = "Telefon")
     private String telefon;
 
+    @Column(name = "Aktiv")
+    private Boolean aktiv;
+
     @Lob
     @Column(name = "Foto")
     private byte[] foto;
@@ -49,13 +52,18 @@ public class Person {
                 Objects.equals(email, person.email) &&
                 Objects.equals(passwort, person.passwort) &&
                 Objects.equals(telefon, person.telefon) &&
-                Arrays.equals(foto, person.foto);
+                Arrays.equals(foto, person.foto) &&
+                Objects.equals(aktiv, person.aktiv);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id_Person, vorname, nachname, email, passwort, telefon);
+        int result = Objects.hash(id_Person, vorname, nachname, email, passwort, telefon, aktiv);
         result = result + Arrays.hashCode(foto);
         return result;
+    }
+
+    public String toString(){
+        return vorname + " " + nachname + ", id: " + id_Person;
     }
 }
