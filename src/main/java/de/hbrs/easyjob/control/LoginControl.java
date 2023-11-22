@@ -1,10 +1,10 @@
 package de.hbrs.easyjob.control;
 
+import de.hbrs.easyjob.dtos.impl.PersonDTOimpl;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repository.PersonRepository;
-import de.hbrs.easyjob.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,9 +17,7 @@ public class LoginControl {
     private Person person = null;
     private Student student = null;
     private Unternehmensperson unternehmensperson = null;
-    //private PersonDTOimpl personDTO = null;
-    //private StudentDTOimpl studentDTO = null;
-    //private UnternehmenspersonDTOimpl unternpersonDTO = null;
+    private PersonDTOimpl personDTO = null;
 
     private final PersonRepository repository;
 
@@ -70,7 +68,7 @@ public class LoginControl {
             //prüft ob das Passwort zum gespeicherten Passwort passt
             System.out.println("Passwort stimmt.");
             System.out.println(this.person.toString());
-            //this.person = repository.findByEmail(email);
+            this.personDTO = repository.findPersonByEmail(email);
             //erstellt ein DTO aus den Daten der Datenbank, die zu der E-Mail-Adresse gehören
 
             if (person instanceof Student){
@@ -99,9 +97,10 @@ public class LoginControl {
 
     /**
     Methode aus der Carlook-Vorlage
+     */
     public PersonDTOimpl getCurrentPerson(){
         return this.personDTO;
     }
-     */
+
 
 }
