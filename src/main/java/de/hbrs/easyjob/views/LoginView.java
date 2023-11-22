@@ -86,11 +86,8 @@ public class LoginView extends VerticalLayout {
         add(v,fenster);
 
 //Wenn jemand auf einen Button drückt, wird der entsprechende Listener aktiv und startet das Event
-        logButton.addClickListener(event -> {
-
-            String emailValue = validEmailField.getValue();
-            String passwortValue = passwordField.getValue();
-            loginControl.authenticate( emailValue,passwortValue );
+        logButton.addClickListener(e -> {
+            loginControl.authenticate( validEmailField.getValue(), passwordField.getValue() );
         });
 
         verButton.addClickListener(event -> {
@@ -108,6 +105,7 @@ public class LoginView extends VerticalLayout {
             //ui.navigate("registrieren");
             System.out.println("User will zur Registrierung");
         });
+
 
     }
 
