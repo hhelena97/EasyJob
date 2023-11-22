@@ -12,5 +12,6 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
 
     Person findByEmail(String mail);
 
-    PersonDTOimpl findPersonByEmail (String mail);
+    //PersonDTOimpl findPersonByEmail (String mail);
+    //Person findPersonByEmail (String mail);
 }

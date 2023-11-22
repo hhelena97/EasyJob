@@ -1,15 +1,11 @@
 package de.hbrs.easyjob.control;
 
-import de.hbrs.easyjob.dtos.PersonDTO;
-import de.hbrs.easyjob.dtos.impl.PersonDTOimpl;
-import de.hbrs.easyjob.dtos.impl.StudentDTOimpl;
-import de.hbrs.easyjob.dtos.impl.UnternehmenspersonDTOimpl;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repository.PersonRepository;
+import de.hbrs.easyjob.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,15 +14,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/login")
 public class LoginControl {
 
-    @Autowired
-    private PersonRepository repository;
-    private PersonDTOimpl personDTO = null;
-    private StudentDTOimpl studentDTO = null;
-    private UnternehmenspersonDTOimpl unternpersonDTO = null;
+    private Person person = null;
+    private Student student = null;
+    private Unternehmensperson unternehmensperson = null;
+    //private PersonDTOimpl personDTO = null;
+    //private StudentDTOimpl studentDTO = null;
+    //private UnternehmenspersonDTOimpl unternpersonDTO = null;
 
-    public LoginControl(PersonRepository personRepository) {
+    private final PersonRepository repository;
+
+    @Autowired
+    public LoginControl(PersonRepository personRepository){
         this.repository = personRepository;
     }
+
 
     /**
      * Authentifiziert einen Benutzer über E-Mail und Passwort.
@@ -42,19 +43,20 @@ public class LoginControl {
      * Konsole. Die lösche ich später, wieder raus.
      */
     public boolean authenticate(String email, String password) {
-        Person person;
+
         try {
-            person = repository.findByEmail(email);
+            this.person = repository.findByEmail(email);
             //Verknüpft die Person mit der Person der Datenbank, die zu dieser E-Mail-Adresse gespeichert ist
             System.out.println("Datenbankverbindung erfolgreich.");
         } catch ( org.springframework.dao.DataAccessResourceFailureException e ) {
             System.out.println("Problem mit der Datenbankverbindung.");
             return false;
         }
-        if (person == null){
+        if (this.person == null){
             System.out.println("Person kann nicht gefunden werden.");
             return false;
         }
+
         if (password == null){
             System.out.println("Passwort fehlt.");
             return false;
@@ -62,17 +64,18 @@ public class LoginControl {
         String eingabePW = password;
         //Wenn das Passwort in der Registrierung gehasht wird,
         //TODO: das eingegebene Passwort ebenfalls hashen
-        String dbPW = person.getPasswort();
+        String dbPW = this.person.getPasswort();
 
         if (eingabePW.equals(dbPW)){
             //prüft ob das Passwort zum gespeicherten Passwort passt
             System.out.println("Passwort stimmt.");
-            this.personDTO = repository.findPersonByEmail(email);
+            System.out.println(this.person.toString());
+            //this.person = repository.findByEmail(email);
             //erstellt ein DTO aus den Daten der Datenbank, die zu der E-Mail-Adresse gehören
 
             if (person instanceof Student){
                 //wenn es ein Student ist, belege das stuendtDTO
-                this.studentDTO = (StudentDTOimpl) personDTO;
+                this.student = (Student) person;
                 System.out.println("Es ist ein Student.");
                 //TODO: weiter zur Studenten-Startseite
                 return true;
@@ -80,7 +83,7 @@ public class LoginControl {
 
             if (person instanceof Unternehmensperson){
                 //wenn es eine Unternehmensperson ist, belege das UnternehmenspersonDTO
-                this.unternpersonDTO = (UnternehmenspersonDTOimpl) personDTO;
+                this.unternehmensperson = (Unternehmensperson) person;
                 System.out.println("Es ist eine Unternehmensperson.");
                 //TODO: weiter zur Unternehmer-Startseite
                 return true;
@@ -96,10 +99,9 @@ public class LoginControl {
 
     /**
     Methode aus der Carlook-Vorlage
-     */
     public PersonDTOimpl getCurrentPerson(){
         return this.personDTO;
-
     }
+     */
 
 }
