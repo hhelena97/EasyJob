@@ -12,6 +12,7 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.hbrs.easyjob.control.LoginControl;
+import de.hbrs.easyjob.entities.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER;
@@ -25,11 +26,8 @@ public class LoginView extends VerticalLayout {
     @Autowired
     private LoginControl loginControl;
 
-
     public LoginView(){
         UI.getCurrent().getPage().addStyleSheet("LoginView.css");
-
-
 
         Div div = new Div();
         div.addClassName("divLogin");
@@ -41,8 +39,6 @@ public class LoginView extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.CENTER);
         setPadding(false);
 
-
-
         VerticalLayout v = new VerticalLayout(div);
         v.addClassName("v");
         v.setSizeFull();
@@ -52,11 +48,7 @@ public class LoginView extends VerticalLayout {
         v.setAlignItems(START);
         setJustifyContentMode(JustifyContentMode.START);
 
-
-
         H2 log =  new H2("Log in");
-
-
 
         EmailField validEmailField = new EmailField();
         validEmailField.addClassName("btn");
@@ -66,14 +58,10 @@ public class LoginView extends VerticalLayout {
         validEmailField.setErrorMessage("Enter a valid email address");
         validEmailField.setClearButtonVisible(true);
 
-
         PasswordField passwordField = new PasswordField();
         passwordField.addClassName("btn");
         passwordField.setLabel("Password");
         passwordField.setValue("");
-
-
-
 
         Button logButton = new Button("Einloggen");
         logButton.addClassName("btn");
@@ -96,15 +84,31 @@ public class LoginView extends VerticalLayout {
         fenster.setJustifyContentMode(JustifyContentMode.CENTER);
         fenster.setSpacing(false);
 
-
-
         add(v,fenster);
 
-
-
+//Wenn jemand auf einen Button drückt, wird der entsprechende Listener aktiv und startet das Event
         logButton.addClickListener(e -> {
-            loginControl.authenticate( "email","pass" );
+            loginControl.authenticate( validEmailField.getValue(), passwordField.getValue() );
         });
+
+        verButton.addClickListener(event -> {
+            // Ruft die UI-Instanz ab
+            UI ui = UI.getCurrent();
+            // Leitet zur gewünschten Seite
+            //ui.navigate("passwortVergessen");
+            System.out.println("Passwort vergessen gedrückt");
+        });
+
+        regButton.addClickListener(event -> {
+            // Ruft die UI-Instanz ab
+            UI ui = UI.getCurrent();
+            // Leitet zur gewünschten Seite
+            //ui.navigate("registrieren");
+            System.out.println("User will zur Registrierung");
+
+        });
+
+
     }
 
 }

@@ -31,4 +31,16 @@ public class PersonDTOimpl implements PersonDTO {
     public String getNachname() {
         return this.nachname;
     }
+
+    public String getPasswort() {
+        return this.passwort;
+    }
+    public String getStudienfach() {
+        return this.passwort;
+    }
+    public String getUnternehmen() {
+        return this.passwort;
+    }
+
+
 }

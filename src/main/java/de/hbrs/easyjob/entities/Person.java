@@ -66,4 +66,8 @@ public class Person {
     public String toString(){
         return vorname + " " + nachname + ", id: " + id_Person;
     }
+
+    public String getPasswort(){
+        return this.passwort;
+    }
 }
