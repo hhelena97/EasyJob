@@ -12,6 +12,7 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.hbrs.easyjob.control.LoginControl;
+import de.hbrs.easyjob.entities.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER;
@@ -104,6 +105,7 @@ public class LoginView extends VerticalLayout {
             // Leitet zur gewünschten Seite
             //ui.navigate("registrieren");
             System.out.println("User will zur Registrierung");
+
         });
 
 

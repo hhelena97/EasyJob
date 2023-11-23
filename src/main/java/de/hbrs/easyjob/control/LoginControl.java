@@ -1,6 +1,6 @@
 package de.hbrs.easyjob.control;
 
-import de.hbrs.easyjob.dtos.impl.PersonDTOimpl;
+import com.vaadin.flow.component.UI;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
@@ -64,7 +64,7 @@ public class LoginControl {
         String dbPW = this.person.getPasswort();
 
         if (eingabePW.equals(dbPW)){
-            //prüft ob das Passwort zum gespeicherten Passwort passt
+            //prüft, ob das Passwort zum gespeicherten Passwort passt
             System.out.println("Passwort stimmt.");
             System.out.println(this.person.toString());
 
@@ -72,7 +72,10 @@ public class LoginControl {
                 //wenn es ein Student ist, belege das stuendtDTO
                 this.student = (Student) person;
                 System.out.println("Es ist ein Student.");
+                //Speichere den Student in der Session:
+                grabAndSetUserIntoSession(this.student);
                 //TODO: weiter zur Studenten-Startseite
+                //UI.getCurrent().navigate("StudentStartseite");
                 return true;
             }
 
@@ -80,11 +83,16 @@ public class LoginControl {
                 //wenn es eine Unternehmensperson ist, belege das UnternehmenspersonDTO
                 this.unternehmensperson = (Unternehmensperson) person;
                 System.out.println("Es ist eine Unternehmensperson.");
+                //Speichere die Unternehmensperson in der Session:
+                grabAndSetUserIntoSession(this.unternehmensperson);
                 //TODO: weiter zur Unternehmer-Startseite
+                //UI.getCurrent().navigate("Unternehmenstartseite");
                 return true;
             }
             //es ist eine Person, aber kein Student oder Unternehmensperson
             //hier kommt später die Weiterleitung zur Admin-Seite (Sprint 2)
+            //Speichere die Person in der Session:
+            grabAndSetUserIntoSession(this.person);
             return true;
         }
         //Sonstiges Problem
@@ -92,4 +100,9 @@ public class LoginControl {
         return false;
     }
 
+    //Methode um die Person in der Session zu speichern
+    //abgeschrieben aus Aldas Carlook, MainView
+    private void grabAndSetUserIntoSession(Person eingeloggtePerson) {
+        UI.getCurrent().getSession().setAttribute("current_User", eingeloggtePerson);
+    }
 }
