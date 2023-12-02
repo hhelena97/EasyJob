@@ -1,0 +1,105 @@
+/* Allgemeine Styles */
+body {
+    width: 100%;
+    background: var(--hintergrund-weiß);
+    font-family: Rubik, sans-serif; /* Rubik als Standardschriftart und fallback sans-serif */
+}
+
+.container {
+    max-width: 600px;
+    align-self: center;
+}
+
+/* Eingabefelder */
+/* Bild hinzufügen */
+.bild-hinzufuegen-button {
+    background-color: var(--icon-hellgrau);
+    color: var(--text-grau);
+    font-weight: 600;
+    height: 450px;
+    width: 100%
+}
+
+/* ComboBox */
+vaadin-combo-box {
+    width: 100%;
+}
+
+vaadin-combo-box.standort > vaadin-icon {
+    max-height: 17px;
+    max-width: 17px;
+}
+
+/* Datepicker */
+vaadin-date-picker {
+    width: 100%;
+}
+
+/* Multi Select Combo Box */
+vaadin-multi-select-combo-box {
+    width: 100%;
+}
+
+vaadin-multi-select-combo-box::part(chip) {
+    /* TODO: Farben anpassen */
+    background-color: magenta;
+    color: white;
+    border-radius: 10px;
+}
+
+/* Textfelder */
+vaadin-text-field {
+    width: 100%;
+}
+
+vaadin-text-area {
+    height: 245px;
+    width: 100%;
+}
+
+/* Action Buttons */
+
+.action-buttons {
+    justify-content: space-around;
+    width: 100%;
+}
+
+.action-buttons > vaadin-button {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 18px; /* 128.571% */
+    height: 38px;
+    padding: 8px 14px;
+    width: 142px;
+    border-radius: 30px;
+}
+
+.abbrechen-button {
+    border: 2.5px solid var(--unternehmen-dark);
+    background: var(--hintergrund-weiß);
+    color: var(--unternehmen-dark);
+}
+
+.fertig-button {
+    background: var(--unternehmen-dark);
+    color: var(--hintergrund-weiß);
+}
+
+/* Zurück Button */
+.zurueck-button {
+    background-color: transparent;
+    color: #000000;
+    padding: 0;
+}
+
+.zurueck-button:hover {
+    cursor: pointer;
+}
+
+vaadin-button.zurueck-button::part(label) {
+    text-decoration: underline;
+}
+
+.zurueck-button:hover::before {
+    opacity: 0;
+}

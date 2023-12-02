@@ -1,0 +1,30 @@
+@import "Variables.css";
+
+.v{
+    --lumo-secondary-text-color: #6F6F6F;
+}
+
+.accounteinstellungen{
+    color: var(--text-grau);
+    font-family: Rubik;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+vaadin-button.deaktivieren {
+    color: var(--signalfarben-rot);
+    background-color: transparent;
+    text-align: center;
+    font-family: Rubik;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+vaadin-button.deaktivieren::part(label) {
+    text-decoration-line: underline;
+    text-underline: var(--signalfarben-rot);
+}

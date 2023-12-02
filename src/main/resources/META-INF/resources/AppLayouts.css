@@ -1,0 +1,274 @@
+/* Styles die von vielen Views geteilt werden und von Hauptkomponenten genutzt werden */
+
+@import "Variables.css";
+
+/* Zurück Button klein Rund */
+vaadin-button.back-button-round {
+    width: 28px;
+    height: 28px;
+    color: var(--hintergrund-weiß);
+    border-radius: 90px;
+}
+
+.back-button-round.student {
+    background-color: var(--studierende-dark);
+}
+
+.back-button-round.unternehmen {
+    background-color: var(--unternehmen-dark);
+}
+
+/* Zurück Button "zurück" als Text mit Pfeil */
+vaadin-button.back-button-text {
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+vaadin-button.back-button-text::part(label){
+    text-decoration-line: underline;
+    text-underline: var(--text-almostblack);
+}
+
+/* Style für Vaadin Text Field */
+vaadin-text-field {
+    width: 100%;
+}
+
+vaadin-text-field::part(input-field){
+    background-color: var(--icon-hellgrau);
+    border-radius: var(--corner-radius);
+}
+
+vaadin-text-field::part(label){
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 300;
+}
+
+vaadin-text-field[required]::part(required-indicator)::before {
+    content: "*";
+}
+
+vaadin-text-field[required]::part(required-indicator)::after {
+    display: none;
+}
+
+vaadin-text-field > input {
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+/* Style für Vaadin Combo Box */
+vaadin-combo-box {
+    width: 100%;
+}
+
+vaadin-combo-box::part(input-field){
+    background-color: var(--icon-hellgrau);
+    border-radius: var(--corner-radius);
+}
+
+vaadin-combo-box::part(label){
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 300;
+}
+
+vaadin-combo-box[required]::part(required-indicator)::before {
+    content: "*";
+}
+
+vaadin-combo-box[required]::part(required-indicator)::after {
+    display: none;
+}
+
+vaadin-combo-box::part(toggle-button){
+    color: var(--text-grau);
+}
+
+vaadin-combo-box > input {
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+vaadin-combo-box-item::part(content) {
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+vaadin-combo-box-item:hover {
+    background-color: transparent;
+}
+
+/* Style für Vaadin Select Box */
+vaadin-select {
+    width: 100%;
+}
+
+vaadin-select::part(input-field){
+    background-color: var(--icon-hellgrau);
+    border-radius: var(--corner-radius);
+}
+
+vaadin-select::part(label){
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 300;
+}
+
+vaadin-select[required]::part(required-indicator)::before {
+    content: "*";
+}
+
+vaadin-select[required]::part(required-indicator)::after {
+    display: none;
+}
+
+vaadin-select::part(toggle-button){
+    color: var(--text-grau);
+}
+
+vaadin-select-item::part(content) {
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+vaadin-select-item:hover {
+    background-color: transparent;
+}
+
+/* Style für Vaadin Multi Select (mit Tags) */
+vaadin-multi-select-combo-box {
+    width: 100%;
+}
+
+vaadin-multi-select-combo-box::part(toggle-button){
+    color: var(--text-grau);
+}
+
+vaadin-multi-select-combo-box::part(input-field){
+    background-color: var(--icon-hellgrau);
+    border-radius: var(--corner-radius);
+}
+
+vaadin-multi-select-combo-box::part(label){
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 300;
+}
+
+vaadin-multi-select-combo-box::part(chip) {
+    font-family: Rubik;
+    color: var(--hintergrund-weiß);
+    border-radius: var(--corner-radius);
+    margin: 4px;
+    padding: 3px 6px;
+    gap: 3px
+}
+
+vaadin-multi-select-combo-box::part(chip)::part(remove-button)::before{
+    color:  var(--hintergrund-weiß);
+}
+
+vaadin-multi-select-combo-box::part(toggle-button){
+    color: var(--text-grau);
+}
+
+vaadin-multi-select-combo-box > input {
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+vaadin-multi-select-combo-box[required]::part(required-indicator)::before {
+    content: "*";
+}
+
+vaadin-multi-select-combo-box[required]::part(required-indicator)::after {
+    display: none;
+}
+
+/* Style für Vaadin Check Box */
+
+
+vaadin-checkbox > label {
+    font-family: Rubik;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+vaadin-checkbox::part(checkbox) {
+    background-color: var(--icon-hellgrau);
+}
+
+/* Style für Radio-Buttons */
+vaadin-radio-group {
+    align-self: flex-start;
+}
+
+vaadin-radio-group > vaadin-radio-button {
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+vaadin-radio-group > vaadin-radio-button::part(radio) {
+    background-color: var(--icon-hellgrau);
+}
+
+vaadin-text-area {
+    height: 245px;
+    width: 100%;
+}
+
+vaadin-text-area::part(input-field){
+    background-color: var(--icon-hellgrau);
+    border-radius: var(--corner-radius);
+}
+
+vaadin-text-area::part(label){
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 300;
+}
+
+vaadin-text-area > textarea {
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+}

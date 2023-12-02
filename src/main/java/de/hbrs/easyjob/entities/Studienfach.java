@@ -1,6 +1,6 @@
 package de.hbrs.easyjob.entities;
-import lombok.*;
 
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -23,6 +23,11 @@ public class Studienfach {
 
     @Column(name = "Abschluss")
     private String abschluss;
+
+    public Studienfach(String fach, String abschluss) {
+        this.abschluss=abschluss;
+        this.fach=fach;
+    }
 
     @Override
     public boolean equals(Object o) {

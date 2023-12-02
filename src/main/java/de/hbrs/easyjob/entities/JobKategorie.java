@@ -10,16 +10,18 @@ import java.util.Objects;
 @NoArgsConstructor
 @Setter
 @Builder
-@Table(name = "JobKategorie", schema = "EasyJob")
+@Table(name = "Job_Kategorie", schema = "EasyJob")
 public class JobKategorie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_JobKategorie")
+    @Column(name = "ID_JOB_KATEGORIE")
     private Integer id_JobKategorie;
 
-    @Column(name = "Kategorie")
+    @Column(name = "KATEGORIE_NAME")
     private String kategorie;
-
+    public JobKategorie(String kategorie) {
+        this.kategorie = kategorie;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

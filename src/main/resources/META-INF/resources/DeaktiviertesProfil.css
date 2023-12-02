@@ -1,0 +1,49 @@
+html{
+    box-sizing: border-box;
+    margin: 0;
+
+}
+
+body {
+    background-color: #FFF;
+    width: 100%;
+    margin: 0;
+}
+
+
+.background {
+    background: linear-gradient(180deg, #2D34A0 0%, #8BCEFF 100%);
+    width: 155px;
+    height: 155px;
+    border-radius: 155px;
+}
+
+
+.nameInaktiv {
+    //styleName: Header/Header 1;
+    width: 224px;
+    height: 18px;
+    top: 274px;
+    left: 76px;
+    font-family: Rubik;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: -0.16500000655651093px;
+    text-align: center;
+}
+
+.inaktiv {
+    //styleName: Body/Body 2;
+    font-family: Rubik;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: center;
+    width: 184px;
+    height: 20px;
+    top: 343px;
+    left: 96px;
+    color: #6F6F6F;
+}

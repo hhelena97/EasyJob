@@ -1,8 +1,11 @@
 package de.hbrs.easyjob.entities;
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
 import java.util.Objects;
 
 
@@ -15,7 +18,8 @@ import java.util.Objects;
 @PrimaryKeyJoinColumn(name = "id_FK_Person")
 public class Unternehmensperson extends Person {
 
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "FK_Unternehmen")
     private Unternehmen unternehmen;
 

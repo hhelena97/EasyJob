@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+
+:root {
+    /* Farben */
+    --hintergrund-weiß: #FFF;
+    --hintergrund-peachy: rgba(254, 137, 151, 0.25); /* RGBA */
+    --hintergrund-sky: rgba(139, 206, 255, 0.25); /*RGBA*/
+
+    --studierende-dark: #A3336F;
+    --unternehmen-dark: #2D34A0;
+
+    --text-almostblack: #323232;
+    --text-grau: #6F6F6F;
+
+    --icon-hellgrau:#EAEAEA;
+    --icon-grau: #BFBEBE;
+
+    --signalfarben-rot: #FF3A3A;
+
+    /* Andere Variablen */
+    --corner-radius: 10px;
+}

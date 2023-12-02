@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+
+.jobs-view {
+    width: 100%;
+    height: auto;
+    position: relative;
+    background: linear-gradient(180deg, #FE9389 0%, #A3336F 100%);
+    overflow: hidden;
+    min-height: 100%;
+
+}
+
+.search-field {
+    width: 100%;
+    position: relative;
+    background: white;
+    border-radius: 15px;
+    border: 1px solid #EAEAEA;
+}
+
+.options-button {
+    margin: 0;
+    position: absolute;
+    right: 10px;
+    top: 6.5px;
+    background: transparent;
+}
+
+.search-layout {
+    width: 100%;
+    background: white;
+    border-radius: 15px;
+    position: relative;
+}
+
+vaadin-text-field::part(input-field) {
+    background: transparent;
+}
+
+/* Stil für den Jobkarten-Container */
+.job-card {
+    width: 100%;
+    height: auto;
+    background: white;
+    border-radius: 15px;
+    border: 1px solid #BFBEBE;
+    margin: -16px 0px 15px 0px;
+}
+
+/* Stil für den Jobtitel */
+.job-title H1 {
+    color: #A3336F;
+    font-size: 18px;
+    font-family: Rubik;
+    font-weight: bold;
+    word-wrap: break-word;
+    margin: 19px 0 0 14px;
+}
+
+/* Stil für das Unternehmen und den Standort */
+.company-location {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 15px;
+}
+
+/* Stil für die Jobbeschreibung */
+.job-description {
+    color: #6F6F6F;
+    font-size: 12px;
+    font-family: Rubik;
+    font-weight: 400;
+    line-height: 18px;
+    word-wrap: break-word;
+    margin: 3px 0 0 16px;
+}
+
+/* Stil für die Veröffentlichungszeit */
+.posted-time {
+    color: #323232;
+    font-size: 11px;
+    font-family: Rubik;
+    font-weight: 300;
+    line-height: 16.5px;
+    word-wrap: break-word;
+    margin: 6px 0px 8px 17px;
+}
+
+
+/* Stile für Icons und Tags */
+.icon-briefcase, .icon-map-marker {
+    background: rgba(0, 0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.iconsInJobIcons{
+    width: 15px;
+    height: 15px;
+    color: #A3336F;
+    flex-shrink: 0;
+}
+.titleIcons  {
+    color:  #323232;
+    font-family: Rubik;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    margin-right: 8px;
+    margin-left: -2px;
+    margin-top: 10px;
+    margin-bottom: 9px ;
+}

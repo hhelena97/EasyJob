@@ -1,0 +1,233 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
+
+
+html{
+    box-sizing: border-box;
+    margin: 0;
+
+}
+body {
+    background-color: #FFF;
+    width: 100%;
+    margin: 0;
+
+}
+.bildUnternehmen{
+    margin: 0;
+    width: 100%;
+    height: 30%;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, #FE9389 0%, #FE9389 0.01%, #9D2D6D 100%);
+
+}
+
+/*  Unternehmen Info
+
+ */
+
+.unternehmenInfo{
+
+}
+
+.unternehmenIcon{
+    width: 74px;
+    height: 74px;
+    flex-shrink: 0;
+    margin: 14px;
+    border-radius: 5px;
+
+
+}
+.unternehmenIcon img{
+    width: 74px;
+    height: 74px;
+}
+.unternehmenInfoRecht{
+    height: 75px;
+    width: auto;
+    margin: 14px;
+
+}
+.grosseTitleUnternehmen{
+    color: #000;
+    /* Header/Header 1 */
+    font-family: Rubik, serif;
+    font-size: 150%;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 64.286% */
+    letter-spacing: -0.17px;
+    margin-top: 0;
+    margin-bottom: 0;
+
+}
+.verIcon{
+    width: 16px;
+    height: 16px;
+    margin-left: 10px;
+    margin-right: 5px;
+    color: rgba(28, 46, 69, 0.6);
+}
+.verifiziert{
+    color: rgba(26, 41, 61, 0.83);
+    text-align: center;
+    font-family: Rubik;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 17px; /* 170% */
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.iconsInUnternehmen{
+    margin:0;
+    width: 15px;
+    height: 15px;
+    color: rgba(28, 46, 69, 0.6);
+}
+.neuStellen{
+    color: #2D34A0;
+    font-family: Rubik;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 128.571% */
+    letter-spacing: -0.165px;
+    text-decoration-line: underline;
+    margin-top: 0;
+}
+
+.bellIcon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: rgba(45, 52, 160, 1);
+    margin-right: auto;
+    margin-left: auto;
+}
+/*  Unternehmen Info Ende
+
+ */
+
+
+
+/*  Job Section
+
+ */
+.job{
+    width: 88%;
+    height: auto;
+    flex-shrink: 0;
+    border-radius: 15px;
+    border: 1px solid #BFBEBE;
+    background: #FFF;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    padding: 12px;
+}
+.jobBeschreibung {
+    color: rgba(45, 52, 160, 1);
+    font-family: Rubik;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.iconsInJobIcons{
+    width: 15px;
+    height: 15px;
+    color: rgba(45, 52, 160, 1);
+}
+.titleIcons {
+    color:  #323232;
+    font-family: Rubik;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    margin-right: 8px;
+    margin-left: 2px;
+    margin-top: 10px;
+    margin-bottom: 12px ;
+}
+
+.jobBText {
+    color: #6F6F6F;
+    font-family: Rubik;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 18px */
+    margin-top: 0;
+}
+.jobDatum{
+    color: #323232;
+    font-family: Rubik;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 150%; /* 16.5px */
+    margin-bottom: 0;
+
+}
+/*  Job Section Ende
+
+ */
+/*  Bewertung Section Ende
+
+ */
+.bewertung{
+    border: 1px solid #BFBEBE;
+    margin-top: 0;
+    margin-left: 14px;
+    margin-bottom: 12px;
+    width: 290px;
+    height: 140px;
+    flex-shrink: 0;
+    background-color: #FFF;
+    border-radius: 10px;
+    padding: 12px;
+}
+.bewertungBeschreibung{
+    color:  rgba(45, 52, 160, 1);
+    font-family: Rubik;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin: 0;
+}
+.bewertungText{
+    color: rgba(111, 111, 111, 1);
+    font-family: Rubik;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 18px */
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+
+
+
+.title{
+    color: #6F6F6F;
+    font-family: Rubik;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 150% */
+    margin-top: 4px;
+    margin-left: 16px;
+    margin-bottom: 0;
+
+
+}
+
+.scroller{
+
+}

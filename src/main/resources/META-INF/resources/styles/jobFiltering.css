@@ -1,0 +1,50 @@
+@import "../AppLayouts.css";
+.SFiltern {
+    width: 100%;
+    background: var(--hintergrund-weiß);
+    font-family: Rubik;
+}
+
+.button-primary{
+    display: flex;
+    width: 284px;
+    height: 46.154px;
+    padding: 8px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    background: #A3336F;
+    color: #FFFFFF;
+    margin: auto;
+}
+
+.image-widget{
+    width: 178px;
+}
+
+
+vaadin-button.button-secondary {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 128.571% */
+    letter-spacing: -0.165px;
+    border-radius: 30px;
+    color: #A3336F;
+    background: #FFFFFF;
+    margin: auto;
+}
+.button-secondary::part(label) {
+    text-decoration: underline;
+    text-underline: var(--text-almostblack);
+}
+
+.button-secondary:hover::before{
+    background-color: transparent;
+}
+.date-picker{
+    width: -webkit-fill-available;
+}
+

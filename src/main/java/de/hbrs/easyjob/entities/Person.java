@@ -2,7 +2,6 @@ package de.hbrs.easyjob.entities;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.Objects;
 @Entity
 @AllArgsConstructor
@@ -36,9 +35,8 @@ public class Person {
     @Column(name = "Aktiv")
     private Boolean aktiv;
 
-    @Lob
     @Column(name = "Foto")
-    private byte[] foto;
+    private String foto;
 
 
     @Override
@@ -52,22 +50,17 @@ public class Person {
                 Objects.equals(email, person.email) &&
                 Objects.equals(passwort, person.passwort) &&
                 Objects.equals(telefon, person.telefon) &&
-                Arrays.equals(foto, person.foto) &&
+                Objects.equals(foto, person.foto) &&
                 Objects.equals(aktiv, person.aktiv);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id_Person, vorname, nachname, email, passwort, telefon, aktiv);
-        result = result + Arrays.hashCode(foto);
+        int result = Objects.hash(id_Person, vorname, nachname, email, passwort, telefon, foto ,aktiv);
         return result;
     }
 
     public String toString(){
         return vorname + " " + nachname + ", id: " + id_Person;
-    }
-
-    public String getPasswort(){
-        return this.passwort;
     }
 }
