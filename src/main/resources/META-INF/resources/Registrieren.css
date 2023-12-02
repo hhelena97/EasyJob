@@ -1,0 +1,179 @@
+@import "AppLayouts.css";
+
+body {
+    width: 100%;
+    background: var(--hintergrund-weiß);
+    font-family: Rubik;
+}
+
+/* Constraints für Container für alle Inhalte */
+.container{
+    max-width: 600px;
+    align-self: center;
+}
+
+/* Style Überschrift */
+.header {
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+    align-self: flex-start;
+}
+
+/* Styles für Buttons Zurück, Weiter, Abbrechen und Registrieren */
+.back {
+    display: flex;
+    width: 138px;
+    height: 46px;
+    padding: 8px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    border-radius: 30px;
+}
+
+.next {
+    display: flex;
+    width: 138px;
+    height: 46px;
+    padding: 8px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    color: var(--hintergrund-weiß);
+}
+
+vaadin-button.cancel {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 128.571% */
+    letter-spacing: -0.165px;
+    background: var(--hintergrund-weiß);
+    border-radius: 30px;
+}
+
+vaadin-button.cancel:hover::before{
+    background-color: transparent;
+}
+
+vaadin-button.cancel::part(label){
+    text-decoration: underline;
+}
+
+.register {
+    display: flex;
+    width: 284px;
+    height: 46.154px;
+    padding: 8px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    background: var(--icon-grau);
+    color: var(--hintergrund-weiß);
+}
+
+vaadin-button.cancel-register {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 128.571% */
+    letter-spacing: -0.165px;
+    border-radius: 30px;
+    color: var(--text-almostblack);
+    background: var(--hintergrund-weiß);
+}
+
+.cancel-register::part(label) {
+    text-decoration: underline;
+    text-underline: var(--text-almostblack);
+}
+
+.cancel-register:hover::before{
+    background-color: transparent;
+}
+
+.register-checked {
+    display: flex;
+    width: 284px;
+    height: 46.154px;
+    padding: 8px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    background: var(--text-almostblack);
+    color: var(--hintergrund-weiß);
+}
+
+.agb {
+    color: var(--text-grau);
+    font-family: Rubik;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px; /* 128.571% */
+    letter-spacing: -0.165px;
+}
+
+vaadin-checkbox.alle-registrieren::part(checkbox)::after {
+    background-color: var(--studierende-dark);
+    --_checkbox-size: var(--vaadin-checkbox-size, calc(var(--lumo-size-s) / 2));
+}
+
+vaadin-radio-group.alle-registrieren > vaadin-radio-button[checked]::part(radio) {
+    background-color: var(--studierende-dark);
+}
+
+/* Profilbild */
+.profile-picture-frame {
+    position: relative;
+    width: 263px;
+    height: 263px;
+    border-radius: 50%;
+}
+
+.profile-picture-background {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.picture-round {
+    width: 241px;
+    height: 241px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--hintergrund-weiß);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+}
+
+.picture-round img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.picture-square {
+    width: 241px;
+    height: 241px;
+    border-radius: var(--corner-radius);
+    border: 3px solid var(--unternehmen-dark);
+    overflow: hidden;
+}
+
+.picture-square img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

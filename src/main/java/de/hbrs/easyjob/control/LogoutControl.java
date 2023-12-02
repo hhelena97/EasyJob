@@ -1,9 +1,9 @@
 package de.hbrs.easyjob.control;
 
 import com.vaadin.flow.component.UI;
-import de.hbrs.easyjob.dtos.impl.PersonDTOimpl;
-import de.hbrs.easyjob.dtos.impl.StudentDTOimpl;
-import de.hbrs.easyjob.dtos.impl.UnternehmenspersonDTOimpl;
+//import de.hbrs.easyjob.dtos.impl.PersonDTOimpl;
+//import de.hbrs.easyjob.dtos.impl.StudentDTOimpl;
+//import de.hbrs.easyjob.dtos.impl.UnternehmenspersonDTOimpl;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ public class LogoutControl
 
     //private Person person;
     private PersonRepository personRepository;
-    private PersonDTOimpl personDTO = null;
+    //private PersonDTOimpl personDTO = null;
 
     public LogoutControl(PersonRepository personRepository)
     {

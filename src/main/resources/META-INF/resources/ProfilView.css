@@ -1,0 +1,92 @@
+/* Allgemeine Styles */
+body {
+    width: 100%;
+    background: var(--hintergrund-weiß);
+    font-family: Rubik, sans-serif; /* Rubik als Standardschriftart und fallback sans-serif */
+}
+
+.container {
+    max-width: 600px;
+    align-self: center;
+    padding: 0;
+}
+
+/* Jobs */
+.jobs {
+    gap: 0;
+    padding: 0;
+}
+
+/* Abschnittsüberschrift */
+.section-title {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: var(--text-grau);
+}
+
+/* Stellenanzeigen Scroller */
+.stellenanzeigen-scroller {
+    width: 100%;
+}
+
+/* Stellenanzeige */
+.stellenanzeige {
+    border: 1px solid var(--icon-grau);
+    border-radius: 15px;
+    gap: 0;
+    height: 165px;
+    padding: 19px 16px;
+    width: 100%;
+}
+
+/* Job-Titel */
+.stellenanzeige-titel {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 21px;
+    margin-top: 0;
+    margin-bottom: 6px;
+    color: var(--unternehmen-dark);
+}
+
+/* Tags */
+.stellenanzeige-tags {
+    display: flex;
+    gap: 6px;
+}
+
+/* Tag */
+.stellenanzeige-tag {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.stellenanzeige-tag > vaadin-icon {
+    color: var(--unternehmen-dark);
+    max-height: 15px;
+    max-width: 15px;
+}
+
+.stellenanzeige-tag > span {
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 14px;
+    white-space: nowrap;
+}
+
+/* Beschreibung */
+.stellenanzeige-beschreibung {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: var(--text-grau);
+}
+
+/* Online seit */
+.stellenanzeige-online-seit {
+    font-size: 11px;
+    font-weight: 300;
+    line-height: 17px;
+    color: var(--text-almostblack);
+}

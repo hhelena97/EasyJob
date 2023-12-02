@@ -1,0 +1,77 @@
+/* Zusätzliche Styles und Farben speziell für die Studierenden-Ansicht.
+   Dieses Sytlesheet erweitert Registrieren.css.
+ */
+@import "Registrieren.css";
+.header {
+    color: var(--studierende-dark);
+}
+
+.back {
+    border: 2.5px solid var(--studierende-dark);
+    background: var(--hintergrund-weiß);
+    color: var(--studierende-dark);
+}
+.next {
+    background: var(--studierende-dark);
+}
+
+.cancel {
+    color: var(--studierende-dark);
+    text-underline: var(--studierende-dark);
+}
+
+vaadin-text-field::part(required-indicator)::before {
+    color: var(--studierende-dark);
+}
+
+vaadin-combo-box::part(required-indicator)::before {
+    color: var(--studierende-dark);
+}
+
+vaadin-combo-box-item::part(checkmark)::before {
+    color: var(--studierende-dark);
+}
+
+vaadin-combo-box-item[selected]{
+    background-color: var(--hintergrund-peachy);
+}
+
+vaadin-combo-box-item:hover{
+    background-color: var(--hintergrund-peachy);
+}
+
+vaadin-select::part(required-indicator)::before {
+    color: var(--studierende-dark);
+}
+
+vaadin-select[focus-ring]{
+    display: none;
+}
+
+vaadin-select-item::part(checkmark)::before {
+    color: var(--studierende-dark);
+}
+
+vaadin-multi-select-combo-box::part(required-indicator)::before {
+    color: var(--studierende-dark);
+}
+
+vaadin-multi-select-combo-box::part(chip) {
+    background-color: var(--studierende-dark);
+}
+
+vaadin-multi-select-combo-box-item::part(checkmark)::before{
+    color: var(--studierende-dark);
+}
+
+vaadin-multi-select-combo-box-item[selected]{
+    background-color: var(--hintergrund-peachy);
+}
+
+vaadin-multi-select-combo-box-item:hover{
+    background-color: var(--hintergrund-peachy);
+}
+
+vaadin-checkbox::part(checkbox)::after {
+    background-color: var(--studierende-dark);
+}

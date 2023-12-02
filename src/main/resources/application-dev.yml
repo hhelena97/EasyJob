@@ -11,9 +11,20 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     generate-ddl: false
+   # properties:
+    #  hibernate:
+     #   jdbc:
+      #    lob:
+       #     non_contextual_creation: true
+        #generate_statistics: true
+
   data:
     rest:
       base-path: /api
+  devtools:
+    restart:
+      poll-interval: 2s
+      quiet-period: 1s
 logging:
   level:
     org.hibernate.SQL: DEBUG
@@ -22,3 +33,4 @@ server:
   port: 8080
 vaadin:
   launch-browser: true
+  whitelisted-packages: com/flowingcode

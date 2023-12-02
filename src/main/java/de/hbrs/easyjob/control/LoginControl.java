@@ -1,9 +1,6 @@
 package de.hbrs.easyjob.control;
 
-import com.vaadin.flow.component.UI;
 import de.hbrs.easyjob.entities.Person;
-import de.hbrs.easyjob.entities.Student;
-import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginControl {
 
     private Person person = null;
-    private Student student = null;
-    private Unternehmensperson unternehmensperson = null;
 
     private final PersonRepository repository;
 
@@ -34,10 +29,7 @@ public class LoginControl {
      * @param email    Die E-Mail des Benutzers und damit auch sein/ihr Anmeldename.
      * @param password Das Passwort des Benutzers.
      * @return false, wenn die Authentifizierung fehlschlägt (das soll dann im View ein Popup auslösen)
-     * falls die Person authentifiziert werden kann, wird der Nutzer zur nächsten Seite weitergeleitet
-     * (es wird ein True zurückgegeben, dass aber (hoffentlich) irrelevant ist).
-     * Damit man auch ohne Weiterleitung sieht, was die Methode gerade macht, gibt es noch die vielen Ausgaben in der
-     * Konsole. Die lösche ich später, wieder raus.
+     * Damit man sieht, was die Methode gerade macht, gibt es noch die vielen Ausgaben in der Konsole. Die lösche ich später, wieder raus.
      */
     public boolean authenticate(String email, String password) {
 
@@ -67,42 +59,14 @@ public class LoginControl {
             //prüft, ob das Passwort zum gespeicherten Passwort passt
             System.out.println("Passwort stimmt.");
             System.out.println(this.person.toString());
-
-            if (person instanceof Student){
-                //wenn es ein Student ist, belege das stuendtDTO
-                this.student = (Student) person;
-                System.out.println("Es ist ein Student.");
-                //Speichere den Student in der Session:
-                grabAndSetUserIntoSession(this.student);
-                //TODO: weiter zur Studenten-Startseite
-                //UI.getCurrent().navigate("StudentStartseite");
-                return true;
-            }
-
-            if (person instanceof Unternehmensperson){
-                //wenn es eine Unternehmensperson ist, belege das UnternehmenspersonDTO
-                this.unternehmensperson = (Unternehmensperson) person;
-                System.out.println("Es ist eine Unternehmensperson.");
-                //Speichere die Unternehmensperson in der Session:
-                grabAndSetUserIntoSession(this.unternehmensperson);
-                //TODO: weiter zur Unternehmer-Startseite
-                //UI.getCurrent().navigate("Unternehmenstartseite");
-                return true;
-            }
-            //es ist eine Person, aber kein Student oder Unternehmensperson
-            //hier kommt später die Weiterleitung zur Admin-Seite (Sprint 2)
-            //Speichere die Person in der Session:
-            grabAndSetUserIntoSession(this.person);
             return true;
         }
         //Sonstiges Problem
-        //deshalb kein weiteres Routing, sondern wir bleiben auf der Startseite
         return false;
     }
 
-    //Methode um die Person in der Session zu speichern
-    //abgeschrieben aus Aldas Carlook, MainView
-    private void grabAndSetUserIntoSession(Person eingeloggtePerson) {
-        UI.getCurrent().getSession().setAttribute("current_User", eingeloggtePerson);
+    //Zur Zurückgabe der gefundenen Person an die View
+    public Person getPerson(){
+        return this.person;
     }
 }

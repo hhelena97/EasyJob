@@ -1,5 +1,6 @@
 package de.hbrs.easyjob.entities;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,10 +24,16 @@ public class Job {
     @Column(name = "Titel")
     private String titel;
 
+    @Column(name="Eintritt")
+    private Date eintritt;
+
+    @Column(name= "Home_Office")
+    private boolean homeOffice;
+
     @Column(name = "Erstellt_am")
     private Date erstellt_am;
 
-    @Column(name = "Freitext")
+    @Column(name = "Freitext", length = 4000)
     private String freitext;
 
     @ManyToOne
@@ -45,13 +52,17 @@ public class Job {
     @JoinColumn(name = "FK_Ort")
     private Ort ort;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "Job_sucht_Studienfach",
             joinColumns = @JoinColumn(name = "id_Job"),
             inverseJoinColumns = @JoinColumn(name = "id_Studienfach")
     )
     private Set<Studienfach> studienfacher;
+
+    @Transient
+    @Formula("to_tsvector('german', coalesce(titel,'') || ' ' || coalesce((SELECT name FROM Unternehmen WHERE id_Unternehmen = FK_Unternehmen),'') || ' ' || coalesce(freitext,''))")
+    private String tsv;
 
     @Override
     public boolean equals(Object o) {

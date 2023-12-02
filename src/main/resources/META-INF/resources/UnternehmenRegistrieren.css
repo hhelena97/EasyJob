@@ -1,0 +1,87 @@
+/* Zusätzliche Styles und Farben speziell für die Unternehmens-Ansicht.
+   Dieses Sytlesheet erweitert Registrieren.css.
+ */
+
+@import "Registrieren.css";
+
+.header {
+    color: var(--unternehmen-dark);
+}
+
+.back {
+    border: 2.5px solid var(--unternehmen-dark);
+    background: var(--hintergrund-weiß);
+    color: var(--unternehmen-dark);
+}
+
+.next {
+    background: var(--unternehmen-dark);
+}
+
+.cancel {
+    color: var(--unternehmen-dark);
+}
+
+vaadin-text-field::part(required-indicator)::before {
+    color: var(--unternehmen-dark);
+}
+
+vaadin-combo-box.unternehmen-auswählen {
+    width: 95%;
+}
+
+vaadin-combo-box::part(required-indicator)::before {
+    color: var(--unternehmen-dark);
+}
+
+vaadin-combo-box-item::part(checkmark)::before {
+    color: var(--unternehmen-dark);
+}
+
+vaadin-combo-box-item[selected]{
+    background-color: var(--hintergrund-sky);
+}
+
+vaadin-combo-box-item:hover{
+    background-color: var(--hintergrund-sky);
+}
+
+vaadin-select::part(required-indicator)::before {
+    color: var(--unternehmen-dark);
+}
+
+vaadin-select[focus-ring]{
+    display: none;
+}
+
+vaadin-select-item::part(checkmark)::before {
+    color: var(--unternehmen-dark);
+}
+
+vaadin-multi-select-combo-box::part(chip) {
+    background-color: var(--unternehmen-dark);
+}
+
+vaadin-multi-select-combo-box-item::part(checkmark)::before{
+    color: var(--unternehmen-dark);
+}
+
+vaadin-multi-select-combo-box-item[selected]{
+    background-color: var(--hintergrund-sky);
+}
+
+vaadin-multi-select-combo-box-item:hover{
+    background-color: var(--hintergrund-sky);
+}
+
+vaadin-multi-select-combo-box::part(required-indicator)::before {
+    color: var(--unternehmen-dark);
+}
+
+vaadin-checkbox::part(checkbox)::after {
+    color: var(--unternehmen-dark);
+}
+
+vaadin-radio-group > vaadin-radio-button[checked]::part(radio){
+    background-color: var(--unternehmen-dark);
+}

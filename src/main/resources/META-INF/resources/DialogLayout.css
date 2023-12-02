@@ -1,0 +1,59 @@
+@import "Variables.css";
+
+vaadin-dialog-overlay::part(header) {
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+vaadin-dialog-overlay::part(content) {
+    color: var(--text-almostblack);
+    font-family: Rubik;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 150%;
+}
+
+vaadin-dialog-overlay::part(footer) {
+    background-color: var(--icon-hellgrau);
+}
+
+.confirm {
+    border-radius: var(--corner-radius);
+    background-color: transparent;
+    color : var(--signalfarben-rot);
+    text-align: center;
+    font-family: Rubik;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.close-student {
+    border-radius: var(--corner-radius);
+    background: var(--studierende-dark);
+    color: var(--hintergrund-weiß);
+    text-align: center;
+    font-family: Rubik;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.close-unternehmen {
+    border-radius: var(--corner-radius);
+    background: var(--unternehmen-dark);
+    color: var(--hintergrund-weiß);
+    text-align: center;
+    font-family: Rubik;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}

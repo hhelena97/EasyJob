@@ -14,22 +14,26 @@ import java.util.Objects;
 public class Ort {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_Ort")
+    @Column(name = "ID_ORT")
     private Integer id_Ort;
 
     @Column(name = "PLZ")
     private String PLZ;
 
-    @Column(name = "Ort")
+    @Column(name = "ORT")
     private String ort;
+
+    public Ort(String plz, String ort) {
+        this.ort=ort;
+        this.PLZ=plz;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ort that = (Ort) o;
-        return Objects.equals(PLZ, that.PLZ) &&
-                Objects.equals(ort, that.ort);
+        return Objects.equals(id_Ort, that.id_Ort) && Objects.equals(PLZ, that.PLZ) && Objects.equals(ort, that.ort);
     }
 
     @Override
