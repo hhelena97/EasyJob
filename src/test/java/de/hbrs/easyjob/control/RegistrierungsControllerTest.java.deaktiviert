@@ -1,0 +1,117 @@
+package de.hbrs.easyjob.control;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class RegistrierungsControllerTest {
+
+
+    private static final RegistrierungsController regC = new RegistrierungsController();
+
+    @Test
+    @DisplayName("Teste verschiedene (falsche und richtige) Email-Adressen, um die isValidEmail-Methode zu prüfen")
+    void testDifferentEmail() {
+
+        // Teste richtige Email-Adressen:
+        assertTrue(regC.isValidEmail("max-muster@mann.de"));
+        assertTrue(regC.isValidEmail("max.muster@mann.com"));
+        assertTrue(regC.isValidEmail("max.mustermann@smail.inf.h-brs.de"));
+
+        // Teste falsche Email-Adressen:
+        assertFalse(regC.isValidEmail("1"));
+        assertFalse(regC.isValidEmail("a"));
+        assertFalse(regC.isValidEmail("muster-mann.de"));
+        assertFalse(regC.isValidEmail("muster@mann"));
+        assertFalse(regC.isValidEmail("VollLangeEmail-NochVielLaenger@EMailInLang.SoEinLangesLaenderKÜrzel"));
+    }
+
+    @Test
+    @DisplayName("Teste verschiedene (falsche und richtige) Passwörter, um die isValidPasswort-Methode zu prüfen")
+    void testDifferentPasswort() {
+
+        // Teste richtige Passwörter:
+        assertTrue(regC.isValidPassword("Passwort-123"));
+        assertTrue(regC.isValidPassword("Mein-Tolles-Passw0rt!"));
+        assertTrue(regC.isValidPassword("pass-W0rt"));
+
+        // Teste falsche Passwörter:
+        assertFalse(regC.isValidPassword("a"));
+        assertFalse(regC.isValidPassword("passwort"));
+        assertFalse(regC.isValidPassword("passwort123"));
+        assertFalse(regC.isValidPassword("passwort-123"));
+        assertFalse(regC.isValidPassword("12345678"));
+        assertFalse(regC.isValidPassword("Passwort"));
+        assertFalse(regC.isValidPassword("Passwort123"));
+    }
+
+    @Test
+    @DisplayName("Teste verschiedene (falsche und richtige) Vornamen, um die isValidVorname-Methode zu prüfen")
+    void testDifferentVorname() {
+
+        // Teste richtige Vornamen:
+        assertTrue(RegistrierungsController.isValidVorname("Hans"));
+        assertTrue(RegistrierungsController.isValidVorname("Karl-Heinz"));
+        assertTrue(RegistrierungsController.isValidVorname("Anna Marie"));
+        //assertTrue(RegistrierungsController.isValidVorname("Klaus M."));      // wäre das wirklich valide? gibts solche Vornamen?
+
+        // Teste falsche Vornamen:
+        assertFalse(RegistrierungsController.isValidVorname("123"));
+        assertFalse(RegistrierungsController.isValidVorname("Fritz!!1"));
+        assertFalse(RegistrierungsController.isValidVorname("a"));
+        assertFalse(RegistrierungsController.isValidVorname("HalloDasIstEinSuperLangerVornameUndWeilDerSoLangIstIstDerFalsch"));
+    }
+/*
+    @Test
+    @DisplayName("Teste verschiedene (falsche und richtige) Vornamen, um die isValidVorname-Methode zu prüfen")
+    void testDifferentVorname() {
+
+        // Teste richtige Vornamen:
+        assertTrue(regC.isValidVorname("Hans"));
+        assertTrue(regC.isValidVorname("Karl-Heinz"));
+        assertTrue(regC.isValidVorname("Anna Marie"));
+        //assertTrue(regC.isValidVorname("Klaus M."));      // wäre das wirklich valide? gibts solche Vornamen?
+
+        // Teste falsche Vornamen:
+        assertFalse(regC.isValidVorname("123"));
+        assertFalse(regC.isValidVorname("Fritz!!1"));
+        assertFalse(regC.isValidVorname("a"));
+        assertFalse(regC.isValidVorname("HalloDasIstEinSuperLangerVornameUndWeilDerSoLangIstIstDerFalsch"));
+    }
+ */
+
+    @Test
+    @DisplayName("Teste verschiedene (falsche und richtige) Nachnamen, um die isValidNachname-Methode zu prüfen")
+    void testDifferentNachname() {
+
+        // Teste richtige Nachnamen:
+        assertTrue(regC.isValidNachname("Müller"));
+        assertTrue(regC.isValidNachname("Schmitz"));
+        assertTrue(regC.isValidNachname("Meier-Schmitz"));
+
+        // Teste falsche Nachnamen:
+        assertFalse(regC.isValidNachname("123"));
+        assertFalse(regC.isValidNachname("Schmitz!!1"));
+        assertFalse(regC.isValidNachname("a"));
+        assertFalse(regC.isValidNachname("HalloDasIstEinSuperLangerNachnameUndWeilDerSoLangIstIstDerFalsch"));
+    }
+
+    @Test
+    @DisplayName("Teste verschiedene (falsche und richtige) Telefonnummern, um die isValidTelefonnummer-Methode zu prüfen")
+    void testDifferentTelefonnummer() {
+
+        // Teste richtige Telefonnummern:
+        assertTrue(regC.isValidTelefonnummer("0221 123456"));
+        assertTrue(regC.isValidTelefonnummer("+49 0170 123456"));
+        assertTrue(regC.isValidTelefonnummer("01681234567"));
+
+        // Teste falsche Telefonnummern:
+        assertFalse(regC.isValidTelefonnummer("1"));
+        assertFalse(regC.isValidTelefonnummer("1234! 23456"));
+        assertFalse(regC.isValidTelefonnummer("a"));
+        assertFalse(regC.isValidTelefonnummer("abcde abcdefgh"));
+        assertFalse(regC.isValidTelefonnummer("165234975831687579413425794164547613946385429654185458167433749184576"));
+    }
+}
