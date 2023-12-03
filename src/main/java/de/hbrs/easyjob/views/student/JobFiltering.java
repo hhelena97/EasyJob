@@ -126,6 +126,7 @@ public class JobFiltering extends VerticalLayout {
                 .map(Job::getId_Job)
                 .collect(Collectors.toList());
 
+
         VaadinSession.getCurrent().setAttribute("selectedOrte", selectedOrte);
         VaadinSession.getCurrent().setAttribute("selectedKategorien", selectedKategorien);
         VaadinSession.getCurrent().setAttribute("selectedBranches", selectedBranches);

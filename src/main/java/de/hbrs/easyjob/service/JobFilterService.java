@@ -1,9 +1,15 @@
 package de.hbrs.easyjob.service;
+import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.entities.JobKategorie;
+import de.hbrs.easyjob.entities.Ort;
+import de.hbrs.easyjob.entities.Studienfach;
 
 import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.jpa.domain.Specification;
+import de.hbrs.easyjob.service.Spezifikation.JobSpezifikation;
 
 import java.util.List;
 import java.util.Set;

@@ -98,6 +98,7 @@ public class Jobs extends VerticalLayout {
         }else {
             List<Job> jobs = jobService.getAllJobs();
             jobs.forEach(this::addJobComponentToLayout);
+            VaadinSession.getCurrent().setAttribute("searchedJobs", jobs);
         }
     }
 
@@ -105,6 +106,11 @@ public class Jobs extends VerticalLayout {
         jobListLayout.removeAll();
         List<Job> jobs;
         if (searchText == null || searchText.isEmpty()) {
+            VaadinSession.getCurrent().setAttribute("selectedOrte", null);
+            VaadinSession.getCurrent().setAttribute("selectedKategorien", null);
+            VaadinSession.getCurrent().setAttribute("selectedStudifach", null);
+            VaadinSession.getCurrent().setAttribute("homeOffice", null);
+            VaadinSession.getCurrent().setAttribute("selectedBranches", null);
             jobs = jobService.getAllJobs();
         } else {
             jobs = jobSucheService.isVollTextSuche(searchText) ?
