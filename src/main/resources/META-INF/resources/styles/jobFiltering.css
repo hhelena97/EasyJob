@@ -48,3 +48,18 @@ vaadin-button.button-secondary {
     width: -webkit-fill-available;
 }
 
+vaadin-multi-select-combo-box::part(chip){
+    font-family: Rubik;
+    color: var(--hintergrund-weiß);
+    background-color: #A3336F;
+    border-radius: var(--corner-radius);
+    margin: 4px;
+    padding: 3px 6px;
+    gap: 3px;
+}
+
+vaadin-checkbox.checkbox::part(checkbox)::after {
+    background-color: var(--studierende-dark);
+    --_checkbox-size: var(--vaadin-checkbox-size, calc(var(--lumo-size-s) / 2));
+}
+

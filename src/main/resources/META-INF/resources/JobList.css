@@ -34,7 +34,7 @@
 }
 
 vaadin-text-field::part(input-field) {
-    background: transparent;
+    background-color: #FFFFFF;
 }
 
 /* Stil für den Jobkarten-Container */

@@ -16,7 +16,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.service.JobFilterService;
@@ -27,10 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Route(value = "student/jobs-finden", layout = StudentenLayout.class)
@@ -99,7 +95,7 @@ public class Jobs extends VerticalLayout {
                 // Entfernen der IDs aus der Sitzung, um zukünftige Konflikte zu vermeiden
                 VaadinSession.getCurrent().setAttribute("filteredJobIds", null);
             }
-        } else {
+        }else {
             List<Job> jobs = jobService.getAllJobs();
             jobs.forEach(this::addJobComponentToLayout);
         }
@@ -116,6 +112,7 @@ public class Jobs extends VerticalLayout {
                     jobSucheService.teilZeichenSuche(searchText);
         }
         jobs.forEach(this::addJobComponentToLayout);
+        VaadinSession.getCurrent().setAttribute("searchedJobs", jobs);
     }
 
     private void addJobComponentToLayout(Job job) {
