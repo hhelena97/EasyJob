@@ -7,12 +7,12 @@ import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import de.hbrs.easyjob.control.OrtControl;
+import de.hbrs.easyjob.controllers.OrtController;
 import de.hbrs.easyjob.entities.*;
-import de.hbrs.easyjob.repository.BerufsFelderRepository;
-import de.hbrs.easyjob.repository.BrancheRepository;
-import de.hbrs.easyjob.repository.JobKategorieRepository;
-import de.hbrs.easyjob.views.allgemein.RegistrierenView;
+import de.hbrs.easyjob.repositories.BerufsFelderRepository;
+import de.hbrs.easyjob.repositories.BrancheRepository;
+import de.hbrs.easyjob.repositories.JobKategorieRepository;
+import de.hbrs.easyjob.views.templates.RegistrierenView;
 
 import java.util.Set;
 
@@ -22,7 +22,7 @@ import java.util.Set;
 public class StudentRegistrieren2View extends RegistrierenView {
 
     private JobKategorieRepository jobKategorieRepository;
-    private OrtControl ortControl;
+    private OrtController ortController;
     private BrancheRepository brancheRepository;
     private BerufsFelderRepository berufsFelderRepository;
     private MultiSelectComboBox<Ort> standort = new MultiSelectComboBox<>("Standorte");
@@ -33,14 +33,14 @@ public class StudentRegistrieren2View extends RegistrierenView {
 
 
     public StudentRegistrieren2View(JobKategorieRepository jobKategorieRepository, BrancheRepository brancheRepository
-            , BerufsFelderRepository berufsFelderRepository, OrtControl ortControl){
+            , BerufsFelderRepository berufsFelderRepository, OrtController ortController){
         super();
         super.person = ComponentUtil.getData(UI.getCurrent(), Person.class);
         super.setLastView("Student/Registrieren-1");
         super.setNextView("Student/Registrieren-3");
         super.setHeader("Ich suche...");
         this.jobKategorieRepository = jobKategorieRepository;
-        this.ortControl = ortControl;
+        this.ortController = ortController;
         this.brancheRepository = brancheRepository;
         this.berufsFelderRepository = berufsFelderRepository;
         insertContent();
@@ -60,8 +60,8 @@ public class StudentRegistrieren2View extends RegistrierenView {
         berufsfeld.setItems(berufsFelderRepository.findAll());
         berufsfeld.setItemLabelGenerator(BerufsFelder::getName);
 
-        standort.setItems(ortControl.getOrtItemFilter(), ortControl.getAlleOrte());
-        standort.setItemLabelGenerator(ortControl.getOrtItemLabelGenerator());
+        standort.setItems(ortController.getOrtItemFilter(), ortController.getAlleOrte());
+        standort.setItemLabelGenerator(ortController.getOrtItemLabelGenerator());
         standort.setRequired(true);
 
         homeOffice.setLabel("Ich bin offen für Home-Office");

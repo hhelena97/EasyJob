@@ -3,9 +3,9 @@ package de.hbrs.easyjob;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Studienfach;
-import de.hbrs.easyjob.repository.PersonRepository;
-import de.hbrs.easyjob.repository.StudentRepository;
-import de.hbrs.easyjob.repository.StudienfachRepository;
+import de.hbrs.easyjob.repositories.PersonRepository;
+import de.hbrs.easyjob.repositories.StudentRepository;
+import de.hbrs.easyjob.repositories.StudienfachRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

@@ -1,7 +1,7 @@
 package de.hbrs.easyjob.services;
 
 import de.hbrs.easyjob.entities.Student;
-import de.hbrs.easyjob.repository.*;
+import de.hbrs.easyjob.repositories.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

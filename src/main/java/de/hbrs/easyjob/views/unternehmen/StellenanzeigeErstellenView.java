@@ -14,11 +14,11 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import de.hbrs.easyjob.control.OrtControl;
-import de.hbrs.easyjob.control.StellenanzeigeControl;
+import de.hbrs.easyjob.controllers.OrtController;
+import de.hbrs.easyjob.controllers.StellenanzeigeController;
 import de.hbrs.easyjob.entities.*;
-import de.hbrs.easyjob.repository.JobKategorieRepository;
-import de.hbrs.easyjob.views.allgemein.components.PrefixUtil;
+import de.hbrs.easyjob.repositories.JobKategorieRepository;
+import de.hbrs.easyjob.views.components.PrefixUtil;
 
 import java.time.ZoneId;
 import java.util.Date;
@@ -37,10 +37,10 @@ public class StellenanzeigeErstellenView extends VerticalLayout {
     private final TextArea stellenbeschreibung;
     private final Checkbox homeOffice;
 
-    private final StellenanzeigeControl stellenanzeigeControl;
+    private final StellenanzeigeController stellenanzeigeController;
 
-    public StellenanzeigeErstellenView(JobKategorieRepository jobKategorieRepository, OrtControl ortControl, StellenanzeigeControl stellenanzeigeControl) {
-        this.stellenanzeigeControl = stellenanzeigeControl;
+    public StellenanzeigeErstellenView(JobKategorieRepository jobKategorieRepository, OrtController ortController, StellenanzeigeController stellenanzeigeController) {
+        this.stellenanzeigeController = stellenanzeigeController;
 
         // Container
         VerticalLayout frame = new VerticalLayout();
@@ -76,8 +76,8 @@ public class StellenanzeigeErstellenView extends VerticalLayout {
         // Standort
         standort = new ComboBox<>("Standort");
         standort.setClassName("standort");
-        standort.setItems(ortControl.getOrtItemFilter(), ortControl.getAlleOrte());
-        standort.setItemLabelGenerator(ortControl.getOrtItemLabelGenerator());
+        standort.setItems(ortController.getOrtItemFilter(), ortController.getAlleOrte());
+        standort.setItemLabelGenerator(ortController.getOrtItemLabelGenerator());
         standort.setPlaceholder("Standort auswählen");
 
         PrefixUtil.setPrefixComponent(standort, FontAwesome.Solid.MAP_MARKER_ALT.create());
@@ -138,7 +138,7 @@ public class StellenanzeigeErstellenView extends VerticalLayout {
         Date eintrittsdatumDate = Date.from(eintrittsdatum.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
         // TODO: Unternehmen und Unternehmensperson aus Session holen
         // TODO: Studienfach input in Mock-Up anlegen
-        stellenanzeigeControl.stellenanzeigeErstellen(
+        stellenanzeigeController.stellenanzeigeErstellen(
                 titel.getValue(),
                 stellenbeschreibung.getValue(),
                 eintrittsdatumDate,

@@ -13,7 +13,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import de.hbrs.easyjob.control.LoginControl;
+import de.hbrs.easyjob.controllers.LoginController;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
@@ -28,7 +28,7 @@ import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CE
 
 public class LoginView extends VerticalLayout {
     @Autowired
-    private LoginControl loginControl;
+    private LoginController loginController;
 
 
     public LoginView(){
@@ -116,10 +116,10 @@ public class LoginView extends VerticalLayout {
 //Wenn jemand auf einen Button drückt, wird der entsprechende Listener aktiv und startet das Event
 
         logButton.addClickListener(e -> {
-            boolean authen = loginControl.authenticate( validEmailField.getValue(), passwordField.getValue() );
+            boolean authen = loginController.authenticate( validEmailField.getValue(), passwordField.getValue() );
             if(authen){
                 //wenn die authentifizierung erfolgreich war, hole die Person aus dem Controller
-                Person person = loginControl.getPerson();
+                Person person = loginController.getPerson();
                 // und speichere sie in der Session
                 grabAndSetPersonIntoSession(person);
 
@@ -128,7 +128,7 @@ public class LoginView extends VerticalLayout {
                 if (person instanceof Student){
                     System.out.println("Es ist ein Student.");
                     //weiter zur Studenten-Startseite
-                    ui.navigate("studierendProfil");
+                    ui.navigate("StudentProfilView");
                 }
 
                 if (person instanceof Unternehmensperson){
@@ -141,7 +141,7 @@ public class LoginView extends VerticalLayout {
 
                 //alte Methode von Rafi:
                 //logButton.getUI().ifPresent(ui ->
-                //        ui.navigate("studierendProfil"));
+                //        ui.navigate("StudentProfilView"));
             }
             //für false kommt hier später noch ein Fehlerhinweis an den Benutzer
         });

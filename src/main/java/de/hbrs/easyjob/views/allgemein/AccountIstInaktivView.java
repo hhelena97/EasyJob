@@ -9,14 +9,14 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
-import de.hbrs.easyjob.control.LogoutControl;
-import de.hbrs.easyjob.repository.PersonRepository;
+import de.hbrs.easyjob.controllers.LogoutController;
+import de.hbrs.easyjob.repositories.PersonRepository;
 
 @Route("account-inaktiv")
 @PageTitle("Inaktives Profil")
 public class AccountIstInaktivView extends VerticalLayout {
 
-    private LogoutControl logoutControl;
+    private LogoutController logoutController;
     private PersonRepository personRepository;
 
     public AccountIstInaktivView() {
@@ -36,7 +36,7 @@ public class AccountIstInaktivView extends VerticalLayout {
         ausloggen.addClassName("ausloggen");
 
         ausloggen.addClickListener(e -> ausloggen.getUI().ifPresent(ui -> {
-                    new LogoutControl(personRepository).logout();
+                    new LogoutController(personRepository).logout();
                     System.out.println("Ausgeloggt"); ui.navigate("login");
                 }
         ));

@@ -13,12 +13,12 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import de.hbrs.easyjob.control.RegistrierungsControllerStudent;
+import de.hbrs.easyjob.controllers.StudentRegistrierungsController;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
-import de.hbrs.easyjob.repository.*;
-import de.hbrs.easyjob.views.allgemein.DialogLayout;
-import de.hbrs.easyjob.views.allgemein.RegistrierenView;
+import de.hbrs.easyjob.repositories.*;
+import de.hbrs.easyjob.views.components.DialogLayout;
+import de.hbrs.easyjob.views.templates.RegistrierenView;
 
 @Route("Student/Registrieren-3")
 @PageTitle("Student Registrieren 3")
@@ -105,10 +105,10 @@ public class StudentRegistrieren3View extends RegistrierenView {
     }
 
     private void finishRegistration() {
-        RegistrierungsControllerStudent registrierungsControllerStudent = new RegistrierungsControllerStudent(studentRepository,
+        StudentRegistrierungsController studentRegistrierungsController = new StudentRegistrierungsController(studentRepository,
                 studienfachRepository, jobKategorieRepository, brancheRepository, berufsFeldRepository, ortRepository);
         super.person.setFoto(profilBild.getSrc());
-        registrierungsControllerStudent.createStudent(((Student)super.person), true);
+        studentRegistrierungsController.createStudent(((Student)super.person), true);
         Button weiterZumLogin = new Button("Weiter zum Login");
         weiterZumLogin.addClassName("close-student");
         finishDialog.simpleDialog("Account erfolgreich angelegt!", weiterZumLogin, "login");

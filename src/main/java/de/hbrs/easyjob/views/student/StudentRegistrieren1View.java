@@ -8,12 +8,12 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import de.hbrs.easyjob.control.ControllerRegS1;
-import de.hbrs.easyjob.control.RegistrierungsController;
+import de.hbrs.easyjob.controllers.RegS1Controller;
+import de.hbrs.easyjob.controllers.RegistrierungsController;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Studienfach;
-import de.hbrs.easyjob.views.allgemein.RegistrierenView;
+import de.hbrs.easyjob.views.templates.RegistrierenView;
 
 @Route("Student/Registrieren-1")
 @PageTitle("Student Registrieren 1")
@@ -25,10 +25,10 @@ public class StudentRegistrieren1View extends RegistrierenView {
     private TextField telefon = new TextField("Telefon");
     private Select<String> abschluss = new Select<>("Bachelor", "Master");
     private ComboBox<Studienfach> studiengang = new ComboBox<>("Studiengang");
-    private final ControllerRegS1 controllerRegS1;
+    private final RegS1Controller regS1Controller;
     private final RegistrierungsController registrierungsController;
 
-    public StudentRegistrieren1View(ControllerRegS1 controllerRegS1, RegistrierungsController registrierungsController){
+    public StudentRegistrieren1View(RegS1Controller regS1Controller, RegistrierungsController registrierungsController){
         super();
         super.person = ComponentUtil.getData(UI.getCurrent(), Person.class);
         super.setLastView("/Registrieren");
@@ -37,7 +37,7 @@ public class StudentRegistrieren1View extends RegistrierenView {
         super.addButtons();
         super.setAbbrechenDialog("Student");
         super.next.addClickListener(e -> checkRequirementsAndSave(vorname, nachname, telefon, studiengang));
-        this.controllerRegS1 = controllerRegS1;
+        this.regS1Controller = regS1Controller;
         this.registrierungsController = registrierungsController;
     }
 
@@ -53,10 +53,10 @@ public class StudentRegistrieren1View extends RegistrierenView {
         abschluss.setRequiredIndicatorVisible(true);
         abschluss.addValueChangeListener(e ->
             {if (abschluss.getValue().equals("Bachelor")){
-                studiengang.setItems(controllerRegS1.getStudienfachNachAbschluss("Bachelor"));
+                studiengang.setItems(regS1Controller.getStudienfachNachAbschluss("Bachelor"));
                 studiengang.setItemLabelGenerator(Studienfach::getFach);
             } else if (abschluss.getValue().equals("Master")) {
-                studiengang.setItems(controllerRegS1.getStudienfachNachAbschluss("Master"));
+                studiengang.setItems(regS1Controller.getStudienfachNachAbschluss("Master"));
                 studiengang.setItemLabelGenerator(Studienfach::getFach);
             }
             });

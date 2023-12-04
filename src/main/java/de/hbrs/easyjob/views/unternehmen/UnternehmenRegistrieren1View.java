@@ -7,9 +7,9 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import de.hbrs.easyjob.control.RegistrierungsController;
+import de.hbrs.easyjob.controllers.RegistrierungsController;
 import de.hbrs.easyjob.entities.Person;
-import de.hbrs.easyjob.views.allgemein.RegistrierenView;
+import de.hbrs.easyjob.views.templates.RegistrierenView;
 
 @Route("Unternehmen/Registrieren-1")
 @PageTitle("Unternehmen Registrieren 1")

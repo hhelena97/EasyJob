@@ -1,7 +1,7 @@
 package de.hbrs.easyjob.services;
 
 import de.hbrs.easyjob.entities.Person;
-import de.hbrs.easyjob.repository.PersonRepository;
+import de.hbrs.easyjob.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
