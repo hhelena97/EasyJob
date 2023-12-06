@@ -11,17 +11,17 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import de.hbrs.easyjob.control.RegistrierungsControllerUnternehmen;
-import de.hbrs.easyjob.control.RegistrierungsControllerUnternehmensPerson;
+import de.hbrs.easyjob.controllers.UnternehmenRegistrierungsController;
+import de.hbrs.easyjob.controllers.UnternehmenspersonRegistrierungsController;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.repository.BrancheRepository;
-import de.hbrs.easyjob.repository.OrtRepository;
-import de.hbrs.easyjob.repository.UnternehmenRepository;
-import de.hbrs.easyjob.repository.UnternehmenspersonRepository;
-import de.hbrs.easyjob.views.allgemein.DialogLayout;
-import de.hbrs.easyjob.views.allgemein.RegistrierenView;
+import de.hbrs.easyjob.repositories.BrancheRepository;
+import de.hbrs.easyjob.repositories.OrtRepository;
+import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import de.hbrs.easyjob.repositories.UnternehmenspersonRepository;
+import de.hbrs.easyjob.views.components.DialogLayout;
+import de.hbrs.easyjob.views.templates.RegistrierenView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route("Unternehmen/Registrieren-2")
@@ -79,19 +79,19 @@ public class UnternehmenRegistrieren2View extends RegistrierenView {
     }
 
     private void finishRegistration(){
-        RegistrierungsControllerUnternehmensPerson registrierungsControllerUnternehmensPerson =
-        new RegistrierungsControllerUnternehmensPerson(unternehmenspersonRepository, unternehmenRepository);
-        RegistrierungsControllerUnternehmen registrierungsControllerUnternehmen =
-                new RegistrierungsControllerUnternehmen(unternehmenRepository, brancheRepository, ortRepository);
+        UnternehmenspersonRegistrierungsController unternehmenspersonRegistrierungsController =
+        new UnternehmenspersonRegistrierungsController(unternehmenspersonRepository, unternehmenRepository);
+        UnternehmenRegistrierungsController unternehmenRegistrierungsController =
+                new UnternehmenRegistrierungsController(unternehmenRepository, brancheRepository, ortRepository);
         super.person.setFoto(profilBild.getSrc());
         if(istNeuesUnternehmen) {
-            registrierungsControllerUnternehmen.createUnternehmen(unternehmen);
+            unternehmenRegistrierungsController.createUnternehmen(unternehmen);
             ((Unternehmensperson) super.person).setUnternehmen(unternehmen);
         }else {
             ((Unternehmensperson) super.person).setUnternehmen(unternehmen);
         }
-        registrierungsControllerUnternehmensPerson.createUnternehmensPerson(((Unternehmensperson) super.person), true);
-        registrierungsControllerUnternehmen.setUnternehmensperson(unternehmen, ((Unternehmensperson) super.person));
+        unternehmenspersonRegistrierungsController.createUnternehmensPerson(((Unternehmensperson) super.person), true);
+        unternehmenRegistrierungsController.setUnternehmensperson(unternehmen, ((Unternehmensperson) super.person));
         Button weiterZumLogin = new Button("Weiter zum Login");
         weiterZumLogin.addClassName("close-unternehmen");
         finishDialog.simpleDialog("Account erfolgreich angelegt!", weiterZumLogin, "login");

@@ -9,12 +9,12 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import de.hbrs.easyjob.control.OrtControl;
+import de.hbrs.easyjob.controllers.OrtController;
 import de.hbrs.easyjob.entities.Branche;
 import de.hbrs.easyjob.entities.Ort;
 import de.hbrs.easyjob.entities.Unternehmen;
-import de.hbrs.easyjob.repository.BrancheRepository;
-import de.hbrs.easyjob.views.allgemein.RegistrierenView;
+import de.hbrs.easyjob.repositories.BrancheRepository;
+import de.hbrs.easyjob.views.templates.RegistrierenView;
 
 import java.util.Set;
 
@@ -29,11 +29,11 @@ public class UnternehmenAnlegen1View extends RegistrierenView {
     private MultiSelectComboBox<Ort> standorte = new MultiSelectComboBox<>("Standorte");
     private TextArea beschreibung = new TextArea("Beschreibung");
     private Unternehmen unternehmen = new Unternehmen();
-    private OrtControl ortControl;
+    private OrtController ortController;
 
-    public UnternehmenAnlegen1View(BrancheRepository brancheRepository, OrtControl ortControl) {
+    public UnternehmenAnlegen1View(BrancheRepository brancheRepository, OrtController ortController) {
         super();
-        this.ortControl = ortControl;
+        this.ortController = ortController;
         this. brancheRepository = brancheRepository;
         super.setLastView("Unternehmen/Registrieren");
         super.setHeader("Über das Unternehmen...");
@@ -51,8 +51,8 @@ public class UnternehmenAnlegen1View extends RegistrierenView {
         branche.setItems(brancheRepository.findAll());
         branche.setItemLabelGenerator(Branche::getName);
 
-        standorte.setItems(ortControl.getOrtItemFilter(), ortControl.getAlleOrte());
-        standorte.setItemLabelGenerator(ortControl.getOrtItemLabelGenerator());
+        standorte.setItems(ortController.getOrtItemFilter(), ortController.getAlleOrte());
+        standorte.setItemLabelGenerator(ortController.getOrtItemLabelGenerator());
         standorte.setRequired(true);
 
         beschreibung.setMaxLength(400);

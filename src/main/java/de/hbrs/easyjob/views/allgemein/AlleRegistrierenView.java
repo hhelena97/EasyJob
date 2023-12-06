@@ -14,16 +14,17 @@ import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import de.hbrs.easyjob.control.RegistrierungsController;
+import de.hbrs.easyjob.controllers.RegistrierungsController;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.views.templates.RegistrierenView;
 
 @Route("/Registrieren")
 @PageTitle("Registrieren")
 @StyleSheet("Variables.css")
 @StyleSheet("Registrieren.css")
-public class AlleRegistrierenView extends RegistrierenView{
+public class AlleRegistrierenView extends RegistrierenView {
 
     private Button register = new Button("Jetzt Registrieren", new Icon(VaadinIcon.ARROW_RIGHT));
     private Button cancel = new Button("Abbrechen");

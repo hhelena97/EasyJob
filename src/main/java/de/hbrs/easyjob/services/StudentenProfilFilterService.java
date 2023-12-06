@@ -1,8 +1,8 @@
 package de.hbrs.easyjob.services;
 
 import de.hbrs.easyjob.entities.*;
-import de.hbrs.easyjob.repository.StudentRepository;
-import de.hbrs.easyjob.services.Spezifikation.StudentSpezifikation;
+import de.hbrs.easyjob.repositories.StudentRepository;
+import de.hbrs.easyjob.services.specifications.StudentSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -30,9 +30,9 @@ public class StudentenProfilFilterService {
      */
 
     public List<Student> filterStudents(Ort ort, Set<JobKategorie> jobkategorien, Set<Studienfach> studienfaecher) {
-        Specification<Student> spec = Specification.where(StudentSpezifikation.inOrt(ort))
-                .and(StudentSpezifikation.inJobKategorie(jobkategorien))
-                .and(StudentSpezifikation.inStudienfacher(studienfaecher));
+        Specification<Student> spec = Specification.where(StudentSpecification.inOrt(ort))
+                .and(StudentSpecification.inJobKategorie(jobkategorien))
+                .and(StudentSpecification.inStudienfacher(studienfaecher));
         return studentRepository.findAll(spec);
     }
 }

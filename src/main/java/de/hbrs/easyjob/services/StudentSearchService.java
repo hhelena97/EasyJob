@@ -1,7 +1,7 @@
 package de.hbrs.easyjob.services;
 
 import de.hbrs.easyjob.entities.Student;
-import de.hbrs.easyjob.repository.StudentRepository;
+import de.hbrs.easyjob.repositories.StudentRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

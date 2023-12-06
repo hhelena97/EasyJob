@@ -2,7 +2,6 @@ package de.hbrs.easyjob.views.unternehmen;
 
 import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.IconFactory;
@@ -15,12 +14,13 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import de.hbrs.easyjob.control.JobProfilController;
-import de.hbrs.easyjob.control.UnternehmensProfilController;
-import de.hbrs.easyjob.control.UnternehmensperonProfilController;
+import de.hbrs.easyjob.controllers.JobProfilController;
+import de.hbrs.easyjob.controllers.UnternehmensProfilController;
+import de.hbrs.easyjob.controllers.UnternehmensperonProfilController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmen;
-import de.hbrs.easyjob.repository.JobRepository;
+import de.hbrs.easyjob.repositories.JobRepository;
+import de.hbrs.easyjob.views.components.UnternehmenLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
@@ -129,7 +129,7 @@ public class UnternehmenProfil_Un extends VerticalLayout {
 
         H1 neuStellen = new H1("Stellenangebote hinzufügen");
         //hier muss link angepasst werden
-        RouterLink linkneuStellen = new RouterLink(Jobdetails.class);
+        RouterLink linkneuStellen = new RouterLink(JobDetailsView.class);
         linkneuStellen.add(neuStellen);
         linkneuStellen.getStyle().set("text-decoration","none");
         neuStellen.addClassName("neuStellen");
@@ -163,7 +163,7 @@ public class UnternehmenProfil_Un extends VerticalLayout {
 
         // Job Section
 
-        H1 jobsTitle = new H1("Jobs");
+        H1 jobsTitle = new H1("JobsUebersichtView");
         jobsTitle.addClassName("title");
 
 
@@ -192,7 +192,7 @@ public class UnternehmenProfil_Un extends VerticalLayout {
         job2.addClassName("job");
         job2.setWidth(getMaxWidth());
         job2.add("hdsgfhasgjhfa hdfjfhjas hjdhjsfdhs fdsjha");
-        RouterLink linkJobDetails2 = new RouterLink(Jobdetails.class);
+        RouterLink linkJobDetails2 = new RouterLink(JobDetailsView.class);
         linkJobDetails2.add(job2);
 
 
@@ -344,7 +344,7 @@ public class UnternehmenProfil_Un extends VerticalLayout {
 
 
 
-        // Veröffentlichungsdatum des Jobs
+        // Veröffentlichungsdatum des JobsUebersichtView
         LocalDate jobDate = jobSet.getErstellt_am().toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
@@ -363,7 +363,7 @@ public class UnternehmenProfil_Un extends VerticalLayout {
 
 
 
-        RouterLink linkJobDetails = new RouterLink(Jobdetails.class);
+        RouterLink linkJobDetails = new RouterLink(JobDetailsView.class);
         linkJobDetails.add(job);
         jobs.add(linkJobDetails);
     }

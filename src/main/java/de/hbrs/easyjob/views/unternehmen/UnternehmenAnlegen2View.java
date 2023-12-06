@@ -12,7 +12,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.entities.Unternehmen;
-import de.hbrs.easyjob.views.allgemein.RegistrierenView;
+import de.hbrs.easyjob.views.templates.RegistrierenView;
 
 @Route("Unternehmen/Neu-2")
 @PageTitle("Unternehmen anlegen 2")

@@ -13,8 +13,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
-import de.hbrs.easyjob.control.StellenanzeigeControl;
+import de.hbrs.easyjob.controllers.StellenanzeigeController;
 import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.views.components.UnternehmenLayout;
 
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,7 @@ import java.util.List;
 @StyleSheet("Variables.css")
 @StyleSheet("ProfilView.css")
 public class ProfilView extends VerticalLayout implements HasUrlParameter<Integer> {
-    private final StellenanzeigeControl stellenanzeigeControl;
+    private final StellenanzeigeController stellenanzeigeController;
 
     @Override
     public void setParameter(BeforeEvent event, Integer parameter) {
@@ -34,11 +35,11 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
         VerticalLayout frame = new VerticalLayout();
         frame.setClassName("container");
 
-        // Jobs
+        // JobsUebersichtView
         VerticalLayout jobsFrame = new VerticalLayout();
         jobsFrame.addClassName("jobs");
 
-        Span jobsSection = new Span("Jobs");
+        Span jobsSection = new Span("JobsUebersichtView");
         jobsSection.addClassName("section-title");
         jobsFrame.add(jobsSection);
 
@@ -46,7 +47,7 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
         HorizontalLayout stellenanzeigen = new HorizontalLayout();
         stellenanzeigenScroller.addClassName("stellenanzeigen-scroller");
 
-        List<Job> jobs = stellenanzeigeControl.stellenanzeigenEinesUnternehmens(parameter);
+        List<Job> jobs = stellenanzeigeController.stellenanzeigenEinesUnternehmens(parameter);
         for (Job job : jobs) {
             stellenanzeigen.add(createStellenanzeigenVorschau(job));
         }
@@ -57,8 +58,8 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
         frame.add(jobsFrame);
         add(frame);
     }
-    public ProfilView(StellenanzeigeControl stellenanzeigeControl) {
-        this.stellenanzeigeControl = stellenanzeigeControl;
+    public ProfilView(StellenanzeigeController stellenanzeigeController) {
+        this.stellenanzeigeController = stellenanzeigeController;
     }
 
     private Component createStellenanzeigenVorschau(Job job) {

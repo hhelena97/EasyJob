@@ -11,8 +11,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Unternehmen;
-import de.hbrs.easyjob.repository.UnternehmenRepository;
-import de.hbrs.easyjob.views.allgemein.RegistrierenView;
+import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import de.hbrs.easyjob.views.templates.RegistrierenView;
 
 @Route("Unternehmen/Registrieren")
 @PageTitle("Unternehmen Registrieren")
