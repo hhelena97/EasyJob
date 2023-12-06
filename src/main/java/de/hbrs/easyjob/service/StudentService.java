@@ -1,9 +1,6 @@
 package de.hbrs.easyjob.service;
 
-import de.hbrs.easyjob.entities.JobKategorie;
-import de.hbrs.easyjob.entities.Ort;
-import de.hbrs.easyjob.entities.Student;
-import de.hbrs.easyjob.entities.Studienfach;
+import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.repository.JobKategorieRepository;
 import de.hbrs.easyjob.repository.OrtRepository;
 import de.hbrs.easyjob.repository.StudentRepository;
@@ -13,8 +10,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -25,6 +28,8 @@ public class StudentService {
     private final StudienfachRepository studienfachRepository;
     private final JobKategorieRepository jobKategorieRepository;
     private final OrtRepository ortRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     public StudentService(StudentRepository studentRepository,
@@ -73,6 +78,40 @@ public class StudentService {
         }
         student.setOrte(orte);
         return studentRepository.save(student);
+    }
+
+    public List<Student> getAllStudent(){
+        return studentRepository.findAllStudents();
+    }
+
+    public List<Student> getStudentenByIds(List<Integer> ids){
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Student> cq = cb.createQuery(Student.class);
+        Root<Student> student = cq.from(Student.class);
+        cq.select(student).where(student.get("id_Person").in(ids));
+        return entityManager.createQuery(cq).getResultList();
+    }
+
+    public List<Ort> getAllOrte(Integer id) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Ort> cq = cb.createQuery(Ort.class);
+        Root<Student> studentRoot = cq.from(Student.class);
+        // Join zwischen Student und Ort
+        Join<Student, Ort> studentOrtJoin = studentRoot.join("orte", JoinType.INNER);
+        Predicate studentIdPredicate = cb.equal(studentRoot.get("id_Person"), id);
+        cq.select(studentOrtJoin).where(studentIdPredicate);
+        return entityManager.createQuery(cq).getResultList();
+    }
+
+    public List<JobKategorie> getAllJobKategorien(Integer id) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<JobKategorie> cq = cb.createQuery(JobKategorie.class);
+        Root<Student> studentRoot = cq.from(Student.class);
+        Join<Student, JobKategorie> studentJobKategorieJoin = studentRoot.join("jobKategorien", JoinType.INNER);
+        Predicate studentIdPredicate = cb.equal(studentRoot.get("id_Person"), id);
+        cq.select(studentJobKategorieJoin).where(studentIdPredicate);
+        TypedQuery<JobKategorie> query = entityManager.createQuery(cq);
+        return query.getResultList();
     }
 
 }

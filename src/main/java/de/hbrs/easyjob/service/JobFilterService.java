@@ -39,6 +39,17 @@ public class JobFilterService {
      *         Jobs gefunden wurden, die den Kriterien entsprechen.
      */
     public List<Job> filterJobs(List<Job> jobs,Set<Ort> orte, Set<JobKategorie> kategorien, Set<Studienfach> studienfacher, boolean homeOffice, Set<Branche> branchen) {
+        if(jobs == null){
+            Specification<Job> spec = Specification.where(JobSpezifikation.inOrte(orte))
+                    .and(JobSpezifikation.inJobKategorien(kategorien))
+                    .and(JobSpezifikation.inStudienfacher(studienfacher))
+                    .and(JobSpezifikation.isHomeOffice(homeOffice))
+                    .and(JobSpezifikation.inBranchen(branchen));
+
+            return jobRepository.findAll(spec);
+
+        }
+
         return jobs.stream()
                 .filter(job -> orte.isEmpty() || orte.contains(job.getOrt()))
                 .filter(job -> kategorien.isEmpty() || kategorien.contains(job.getJobKategorie()))

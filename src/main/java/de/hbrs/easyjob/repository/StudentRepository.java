@@ -40,5 +40,6 @@ public interface StudentRepository extends JpaRepository<Student, Integer> ,JpaS
             nativeQuery = true)
     List<Student> teilZeichenSuche(String teilZeichen);
 
-
+    @Query("SELECT s FROM Student s")
+    List<Student> findAllStudents();
 }

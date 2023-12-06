@@ -35,15 +35,13 @@ public class Jobs extends VerticalLayout {
 
     private final JobService jobService;
     private final JobSucheService jobSucheService;
-    private final JobFilterService jobFilterService;
     private VerticalLayout jobListLayout;
 
 
     @Autowired
-    public Jobs(JobService jobService, JobSucheService jobSucheService, JobFilterService jobFilterService) {
+    public Jobs(JobService jobService, JobSucheService jobSucheService ) {
         this.jobService = jobService;
         this.jobSucheService = jobSucheService;
-        this.jobFilterService = jobFilterService;
         initializeView();
     }
 
