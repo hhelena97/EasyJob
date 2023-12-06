@@ -17,8 +17,9 @@ import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.JobKategorie;
 import de.hbrs.easyjob.entities.Ort;
-import de.hbrs.easyjob.service.StudentService;
+import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.services.StudentSearchService;
+import de.hbrs.easyjob.views.components.UnternehmenLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

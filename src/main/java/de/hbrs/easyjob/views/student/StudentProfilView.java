@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.views.student;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
@@ -19,9 +20,7 @@ import de.hbrs.easyjob.views.components.StudentLayout;
 
 @Route(value = "s" , layout = StudentLayout.class)
 @RouteAlias(value = "StudentProfilView" , layout = StudentLayout.class)
-
-
-
+@StyleSheet("StudentProfilView.css")
 public class StudentProfilView extends VerticalLayout {
 
     //Tabs namen
@@ -38,7 +37,6 @@ public class StudentProfilView extends VerticalLayout {
     StudentProfilController  person;
 
     StudentProfilView(){
-        UI.getCurrent().getPage().addStyleSheet("StudentProfilView.css");
         person = new StudentProfilController();
 
 

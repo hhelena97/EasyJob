@@ -1,10 +1,10 @@
-package de.hbrs.easyjob.service;
+package de.hbrs.easyjob.services;
 
 import de.hbrs.easyjob.entities.*;
-import de.hbrs.easyjob.repository.JobKategorieRepository;
-import de.hbrs.easyjob.repository.OrtRepository;
-import de.hbrs.easyjob.repository.StudentRepository;
-import de.hbrs.easyjob.repository.StudienfachRepository;
+import de.hbrs.easyjob.repositories.JobKategorieRepository;
+import de.hbrs.easyjob.repositories.OrtRepository;
+import de.hbrs.easyjob.repositories.StudentRepository;
+import de.hbrs.easyjob.repositories.StudienfachRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
-    private static final Logger logger = LoggerFactory.getLogger(JobKategorieService.class);
-
 
     private final StudentRepository studentRepository;
     private final StudienfachRepository studienfachRepository;

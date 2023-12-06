@@ -1,15 +1,15 @@
-package de.hbrs.easyjob.service;
+package de.hbrs.easyjob.services;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.JobKategorie;
 import de.hbrs.easyjob.entities.Ort;
 import de.hbrs.easyjob.entities.Studienfach;
 
 import de.hbrs.easyjob.entities.*;
-import de.hbrs.easyjob.repository.JobRepository;
+import de.hbrs.easyjob.repositories.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.domain.Specification;
-import de.hbrs.easyjob.service.Spezifikation.JobSpezifikation;
+import de.hbrs.easyjob.services.specifications.JobSpecification;
 
 import java.util.List;
 import java.util.Set;
@@ -40,11 +40,11 @@ public class JobFilterService {
      */
     public List<Job> filterJobs(List<Job> jobs,Set<Ort> orte, Set<JobKategorie> kategorien, Set<Studienfach> studienfacher, boolean homeOffice, Set<Branche> branchen) {
         if(jobs == null){
-            Specification<Job> spec = Specification.where(JobSpezifikation.inOrte(orte))
-                    .and(JobSpezifikation.inJobKategorien(kategorien))
-                    .and(JobSpezifikation.inStudienfacher(studienfacher))
-                    .and(JobSpezifikation.isHomeOffice(homeOffice))
-                    .and(JobSpezifikation.inBranchen(branchen));
+            Specification<Job> spec = Specification.where(JobSpecification.inOrte(orte))
+                    .and(JobSpecification.inJobKategorien(kategorien))
+                    .and(JobSpecification.inStudienfacher(studienfacher))
+                    .and(JobSpecification.isHomeOffice(homeOffice))
+                    .and(JobSpecification.inBranchen(branchen));
 
             return jobRepository.findAll(spec);
 

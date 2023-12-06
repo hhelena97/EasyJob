@@ -18,20 +18,19 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.service.JobFilterService;
-import de.hbrs.easyjob.service.JobService;
-import de.hbrs.easyjob.service.JobSucheService;
+import de.hbrs.easyjob.services.JobService;
+import de.hbrs.easyjob.services.JobSucheService;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import de.hbrs.easyjob.views.components.StudentLayout;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 
-@Route(value = "student/jobs-finden", layout = StudentenLayout.class)
+@Route(value = "student/jobs-finden", layout = StudentLayout.class)
 @StyleSheet("JobList.css")
-public class Jobs extends VerticalLayout {
+public class JobsUebersichtView extends VerticalLayout {
 
     private final JobService jobService;
     private final JobSucheService jobSucheService;
@@ -39,7 +38,7 @@ public class Jobs extends VerticalLayout {
 
 
     @Autowired
-    public Jobs(JobService jobService, JobSucheService jobSucheService ) {
+    public JobsUebersichtView(JobService jobService, JobSucheService jobSucheService ) {
         this.jobService = jobService;
         this.jobSucheService = jobSucheService;
         initializeView();
@@ -129,7 +128,7 @@ public class Jobs extends VerticalLayout {
 
 
         // Jobtitel mit Begrenzung der Länge und RouterLink für die Details
-        RouterLink linkJobTitle = new RouterLink("", JobdetailsView.class, job.getId_Job());
+        RouterLink linkJobTitle = new RouterLink("", JobDetailsView.class, job.getId_Job());
         linkJobTitle.add(new H1(job.getTitel()));
         linkJobTitle.addClassName("job-title");
 
@@ -143,7 +142,7 @@ public class Jobs extends VerticalLayout {
         Icon ii =  i.create();
         ii.addClassName("iconsInJobIcons");
 
-        RouterLink titleIconsUnternehmen = new RouterLink("", UnternehmenProfil.class, job.getUnternehmen().getId_Unternehmen());
+        RouterLink titleIconsUnternehmen = new RouterLink("", UnternehmenProfilView.class, job.getUnternehmen().getId_Unternehmen());
         titleIconsUnternehmen.addClassName("titleIcons");
         titleIconsUnternehmen.add(job.getUnternehmen().getName());
 
