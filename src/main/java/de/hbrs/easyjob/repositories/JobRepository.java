@@ -19,6 +19,7 @@ public interface JobRepository extends JpaRepository<Job, Integer>, JpaSpecifica
             "WHERE to_tsvector('german',\n" +
             "                  coalesce(j.titel,'') || ' ' ||\n" +
             "                  coalesce((SELECT name FROM easy_job.unternehmen WHERE id_Unternehmen = j.FK_Unternehmen),'') || ' ' ||\n" +
+            "                  coalesce((SELECT ort FROM easy_job.ort WHERE id_Ort = j.FK_Ort),'') || '' || \n"+
             "                  coalesce(j.freitext,'') || ' ' ||\n" +
             "                  coalesce((SELECT string_agg(name, ' ') FROM easy_job.branche INNER JOIN public.unternehmen_haben_branchen ON branche.ID_Branche = unternehmen_haben_branchen.ID_Branche WHERE unternehmen_haben_branchen.id_Unternehmen = j.FK_Unternehmen),'') || ' ' ||\n" +
             "                  coalesce((SELECT string_agg(fach || ' ' || abschluss, ' ') FROM easy_job.studienfach INNER JOIN public.job_sucht_studienfach ON studienfach.id_Studienfach = job_sucht_studienfach.id_Studienfach WHERE job_sucht_studienfach.id_Job = j.id_Job),'')) @@ to_tsquery(?1)",

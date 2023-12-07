@@ -59,13 +59,13 @@ public class JobsUebersichtView extends VerticalLayout {
         searchField.addKeyPressListener(Key.ENTER, e -> searchJobs(searchField.getValue()));
 
         // Options-Icon als Suffix zum Suchfeld hinzufügen
-        Button optionButton = new Button(new Icon(VaadinIcon.OPTIONS));
+       /* Button optionButton = new Button(new Icon(VaadinIcon.OPTIONS));
         optionButton.addClickListener(e -> UI.getCurrent().navigate("student/filter"));
-        optionButton.addClassName("options-button");
+        optionButton.addClassName("options-button");*/
 
 
         // Layout für das Suchfeld
-        HorizontalLayout searchLayout = new HorizontalLayout(searchField, optionButton);
+        HorizontalLayout searchLayout = new HorizontalLayout(searchField /*,optionButton*/ );
         searchLayout.addClassName("search-layout");
 
         // Liste für Jobanzeigen

@@ -27,7 +27,7 @@ public class JobSucheService {
     private String prepareFullTextSearchQuery(String searchText) {
         return Arrays.stream(searchText.split("\\s+"))
                 .map(word -> word + ":*")
-                .collect(Collectors.joining(" | "));
+                .collect(Collectors.joining(" & "));
     }
     @Transactional
     public List<Job> teilZeichenSuche(String teilZeichen) {
