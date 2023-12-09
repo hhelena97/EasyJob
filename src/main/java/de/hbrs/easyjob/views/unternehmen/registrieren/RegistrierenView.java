@@ -8,7 +8,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.hbrs.easyjob.controllers.OrtController;
-import de.hbrs.easyjob.controllers.registrieren.UnternehmenRegistrierungController;
+import de.hbrs.easyjob.controllers.registrieren.UnternehmenRegistrierenController;
 import de.hbrs.easyjob.controllers.registrieren.UnternehmenspersonRegistrierenController;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
@@ -22,7 +22,7 @@ import de.hbrs.easyjob.views.templates.RegistrierenSchritt;
 @StyleSheet("UnternehmenRegistrieren.css")
 public class RegistrierenView extends VerticalLayout {
     // Controller
-    private final UnternehmenRegistrierungController unternehmenRegistrierungController;
+    private final UnternehmenRegistrierenController unternehmenRegistrierenController;
     private final UnternehmenspersonRegistrierenController unternehmenspersonRegistrierenController;
 
     // Entities
@@ -41,14 +41,14 @@ public class RegistrierenView extends VerticalLayout {
 
     public RegistrierenView(
             UnternehmenspersonRegistrierenController unternehmenspersonRegistrierenController,
-            UnternehmenRegistrierungController unternehmenRegistrierungController,
+            UnternehmenRegistrierenController unternehmenRegistrierenController,
             OrtController ortController,
             BrancheRepository brancheRepository,
             UnternehmenRepository unternehmenRepository,
             Unternehmensperson unternehmensperson
     ) {
         this.unternehmenspersonRegistrierenController = unternehmenspersonRegistrierenController;
-        this.unternehmenRegistrierungController = unternehmenRegistrierungController;
+        this.unternehmenRegistrierenController = unternehmenRegistrierenController;
         this.unternehmensperson = unternehmensperson;
 
         // Layout
@@ -152,7 +152,7 @@ public class RegistrierenView extends VerticalLayout {
         } else {
             // TODO: Save and redirect to login
             if (neuesUnternehmen) {
-                if (!unternehmenRegistrierungController.createUnternehmen(unternehmen)) {
+                if (!unternehmenRegistrierenController.createUnternehmen(unternehmen)) {
                     // TODO: Error handling
                     return;
                 }

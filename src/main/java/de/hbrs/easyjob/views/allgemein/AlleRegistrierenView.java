@@ -15,7 +15,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.controllers.OrtController;
-import de.hbrs.easyjob.controllers.registrieren.UnternehmenRegistrierungController;
+import de.hbrs.easyjob.controllers.registrieren.UnternehmenRegistrierenController;
 import de.hbrs.easyjob.controllers.registrieren.UnternehmenspersonRegistrierenController;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
@@ -34,7 +34,7 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
     // Controller
     private final OrtController ortController;
     private final UnternehmenspersonRegistrierenController unternehmenspersonRegistrierenController;
-    private final UnternehmenRegistrierungController unternehmenRegistrierungController;
+    private final UnternehmenRegistrierenController unternehmenRegistrierenController;
 
     // Entities
     private Person person;
@@ -69,7 +69,7 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
             UnternehmenRepository unternehmenRepository,
             OrtController ortController,
             UnternehmenspersonRegistrierenController unternehmenspersonRegistrierenController,
-            UnternehmenRegistrierungController unternehmenRegistrierungController
+            UnternehmenRegistrierenController unternehmenRegistrierenController
     ) {
         this.berufsFeldRepository = berufsFeldRepository;
         this.brancheRepository = brancheRepository;
@@ -80,7 +80,7 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
         this.unternehmenRepository = unternehmenRepository;
         this.ortController = ortController;
         this.unternehmenspersonRegistrierenController = unternehmenspersonRegistrierenController;
-        this.unternehmenRegistrierungController = unternehmenRegistrierungController;
+        this.unternehmenRegistrierenController = unternehmenRegistrierenController;
 
         // Layout
         addClassName("body");
@@ -197,7 +197,7 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
             removeAll();
             add(new de.hbrs.easyjob.views.unternehmen.registrieren.RegistrierenView(
                     this.unternehmenspersonRegistrierenController,
-                    this.unternehmenRegistrierungController,
+                    this.unternehmenRegistrierenController,
                     this.ortController,
                     this.brancheRepository,
                     this.unternehmenRepository,

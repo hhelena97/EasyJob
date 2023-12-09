@@ -8,7 +8,7 @@ import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UnternehmenRegistrierungController implements ValidationController {
+public class UnternehmenRegistrierenController implements ValidationController {
     // Repositories
     private final UnternehmenRepository unternehmenRepository;
     private final BrancheRepository brancheRepository;
@@ -19,7 +19,7 @@ public class UnternehmenRegistrierungController implements ValidationController 
      * @param brancheRepository Repository für Branchen
      * @param ortRepository Repository für Orte
      */
-    public UnternehmenRegistrierungController(UnternehmenRepository unternehmenRepository, BrancheRepository brancheRepository, OrtRepository ortRepository) {
+    public UnternehmenRegistrierenController(UnternehmenRepository unternehmenRepository, BrancheRepository brancheRepository, OrtRepository ortRepository) {
         this.unternehmenRepository = unternehmenRepository;
         this.brancheRepository = brancheRepository;
         this.ortRepository = ortRepository;
