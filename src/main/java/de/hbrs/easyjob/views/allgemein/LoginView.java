@@ -159,7 +159,7 @@ public class LoginView extends VerticalLayout {
             // Ruft die UI-Instanz ab
             UI ui = UI.getCurrent();
             // Leitet zur Registrieren-Seite
-            ui.navigate("/Registrieren");
+            ui.navigate("/registrieren");
         });
 
 

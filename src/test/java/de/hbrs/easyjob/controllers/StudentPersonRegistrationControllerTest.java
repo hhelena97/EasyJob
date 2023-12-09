@@ -12,7 +12,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class StudentRegistrierungsControllerTest {
+public class StudentPersonRegistrationControllerTest {
     private static final StudentRepository studentRep = Mockito.mock(StudentRepository.class);
     private static final PersonRepository personRep = Mockito.mock(PersonRepository.class);
     private static final StudienfachRepository studienfachRep = Mockito.mock(StudienfachRepository.class);
@@ -22,7 +22,7 @@ public class StudentRegistrierungsControllerTest {
     private static final OrtRepository ortRep = Mockito.mock(OrtRepository.class);
 
     @InjectMocks
-    private static final StudentRegistrierungsController regCStudent = new StudentRegistrierungsController(studentRep, studienfachRep, jobKategorieRep, brancheRep, berufsFeldRep, ortRep);
+    private static final StudentPersonRegistrierungController regCStudent = new StudentPersonRegistrierungController(studentRep, studienfachRep, jobKategorieRep, brancheRep, berufsFeldRep, ortRep);
     private static final LoginController loginC = new LoginController(personRep);
 
     static boolean AGB_ACCEPTED = true;

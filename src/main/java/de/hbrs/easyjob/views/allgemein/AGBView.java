@@ -21,7 +21,7 @@ public class AGBView extends VerticalLayout {
 
         ZurueckButtonText back = new ZurueckButtonText();
 
-        back.addClickListener(e -> {back.getUI().ifPresent(ui -> ui.navigate("Registrieren"));});
+        back.addClickListener(e -> {back.getUI().ifPresent(ui -> ui.navigate("registrieren"));});
 
         Label agb = new Label("Allgemeine Geschäftsbedingungen (AGB):");
         agb.addClassName("agb");
