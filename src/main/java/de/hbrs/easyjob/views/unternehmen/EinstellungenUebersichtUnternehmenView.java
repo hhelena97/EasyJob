@@ -20,7 +20,7 @@ import de.hbrs.easyjob.controllers.LogoutController;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-@Route("einstellungenUn")
+@Route("unternehmen/einstellungen")
 @StyleSheet("DialogLayout.css")
 public class EinstellungenUebersichtUnternehmenView extends Div {
 

@@ -8,8 +8,8 @@ import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.views.components.ZurueckButtonText;
 
 
-@Route("Allgemeine-Geschäftsbedingungen")
-@PageTitle("ABGs")
+@Route("abg")
+@PageTitle("Allgemeine Geschäftsbedingungen")
 @StyleSheet("Registrieren.css")
 public class AGBView extends VerticalLayout {
 
@@ -21,7 +21,7 @@ public class AGBView extends VerticalLayout {
 
         ZurueckButtonText back = new ZurueckButtonText();
 
-        back.addClickListener(e -> {back.getUI().ifPresent(ui -> ui.navigate("Registrieren"));});
+        back.addClickListener(e -> {back.getUI().ifPresent(ui -> ui.navigate("registrieren"));});
 
         Label agb = new Label("Allgemeine Geschäftsbedingungen (AGB):");
         agb.addClassName("agb");
@@ -33,6 +33,7 @@ public class AGBView extends VerticalLayout {
     }
 
 
+    // TODO: Formatierung fixen (Siehe com.vaadin.flow.component.OrderedList & com.vaadin.flow.component.Paragraph)
     public String setAGB() {
         return "1. Nutzungsbedingungen:  \n" +
                 "\t1.1 Die Nutzung der Jobsuche-Plattform “EasyJob” \n" +

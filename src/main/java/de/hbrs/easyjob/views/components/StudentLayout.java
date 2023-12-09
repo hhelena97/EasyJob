@@ -4,22 +4,23 @@ package de.hbrs.easyjob.views.components;
 import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
-import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.views.student.*;
 
 
-@Route("m")
-@StyleSheet("StudentenLayout.css")
 public class StudentLayout extends AppLayout {
 
     public StudentLayout() {
+
+
+        UI.getCurrent().getPage().addStyleSheet("StudentLayout.css");
+
+
         Tabs tabs = getTabs();
 
         //addToDrawer(tabs);

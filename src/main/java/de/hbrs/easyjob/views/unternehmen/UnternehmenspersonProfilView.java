@@ -11,7 +11,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.UnternehmensProfilController;
 import de.hbrs.easyjob.controllers.UnternehmensperonProfilController;
@@ -19,7 +18,6 @@ import de.hbrs.easyjob.views.components.UnternehmenLayout;
 
 
 @Route(value = "unternehmen/unternehmenperson", layout = UnternehmenLayout.class)
-@RouteAlias(value = "p" , layout = UnternehmenLayout.class)
 public class UnternehmenspersonProfilView extends VerticalLayout {
 
     UnternehmensperonProfilController person = new UnternehmensperonProfilController();

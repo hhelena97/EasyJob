@@ -10,8 +10,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.hbrs.easyjob.controllers.JobProfilController;
@@ -20,7 +18,6 @@ import de.hbrs.easyjob.controllers.UnternehmensperonProfilController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.repositories.JobRepository;
-import de.hbrs.easyjob.views.components.UnternehmenLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
@@ -30,9 +27,9 @@ import java.util.Set;
 
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.START;
 
-@Route(value = "un" , layout = UnternehmenLayout.class)
-@RouteAlias(value = "un", layout = UnternehmenLayout.class)
-@PageTitle("Unternehmen Profile")
+// TODO: Zusammenführen mit ProfilView.java
+
+@PageTitle("Unternehmen Profil")
 @AnonymousAllowed
 public class UnternehmenProfil_Un extends VerticalLayout {
 
