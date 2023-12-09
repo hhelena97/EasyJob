@@ -128,7 +128,7 @@ public class LoginView extends VerticalLayout {
                 if (person instanceof Student){
                     System.out.println("Es ist ein Student.");
                     //weiter zur Studenten-Startseite
-                    ui.navigate("StudentProfilView");
+                    ui.navigate("student");
                 }
 
                 if (person instanceof Unternehmensperson){
