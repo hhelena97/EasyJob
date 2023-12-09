@@ -20,7 +20,7 @@ import de.hbrs.easyjob.controllers.LogoutController;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-@Route("einstellungenSt")
+@Route("student/einstellungen")
 @StyleSheet("DialogLayout.css")
 public class EinstellungenUebersichtStudentView extends Div {
 

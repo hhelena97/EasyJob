@@ -18,7 +18,7 @@ import de.hbrs.easyjob.views.components.DeaktivierenConfirmDialog;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Route("EinstellungenAccountUnternehmenView")
+@Route("unternehmen/einstellungen/account")
 @PageTitle("Accounteinstellungen")
 @StyleSheet("Registrieren.css")
 @StyleSheet("DialogLayout.css")

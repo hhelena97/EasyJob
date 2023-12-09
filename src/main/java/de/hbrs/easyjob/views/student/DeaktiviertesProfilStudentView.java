@@ -6,7 +6,7 @@ import de.hbrs.easyjob.views.templates.DeaktiviertesProfil;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
 
 
-@Route(value = "Student/Deaktiviert", layout = UnternehmenLayout.class)
+@Route(value = "student/inaktiv", layout = UnternehmenLayout.class)
 @PageTitle("Fehler: inaktives Profil")
 public class DeaktiviertesProfilStudentView extends DeaktiviertesProfil {
 

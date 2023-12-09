@@ -26,7 +26,7 @@ import de.hbrs.easyjob.views.templates.RegistrierenSchritt;
 import static de.hbrs.easyjob.controllers.ValidationController.isValidEmail;
 import static de.hbrs.easyjob.controllers.ValidationController.isValidPassword;
 
-@Route("/registrieren")
+@Route("registrieren")
 @PageTitle("Registrieren")
 @StyleSheet("Variables.css")
 @StyleSheet("Registrieren.css")
@@ -133,7 +133,7 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
         agbs.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         agbs.addClassName("cancel");
         agbs.getStyle().set("color", "var(--studierende-dark)");
-        agbs.addClickListener((e -> agbs.getUI().ifPresent(ui -> ui.navigate("Allgemeine-Geschäftsbedingungen"))));
+        agbs.addClickListener((e -> agbs.getUI().ifPresent(ui -> ui.navigate("agb"))));
 
         HorizontalLayout agbHorizontalLayout = new HorizontalLayout(checkbox, agbs);
         agbHorizontalLayout.setSpacing(false);

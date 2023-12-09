@@ -9,12 +9,10 @@ import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
-import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.views.student.*;
 
 
-@Route("m")
 public class StudentLayout extends AppLayout {
 
     public StudentLayout() {

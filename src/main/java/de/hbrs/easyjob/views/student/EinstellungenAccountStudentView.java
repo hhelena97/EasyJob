@@ -17,7 +17,7 @@ import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.views.components.DeaktivierenConfirmDialog;
 
-@Route("EinstellungenAccountStudentView")
+@Route("student/einstellungen/account")
 @PageTitle("Accounteinstellungen")
 @StyleSheet("Registrieren.css")
 @StyleSheet("DialogLayout.css")

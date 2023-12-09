@@ -12,16 +12,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.StudentProfilController;
 import de.hbrs.easyjob.views.components.StudentLayout;
 
-@Route(value = "s" , layout = StudentLayout.class)
-@RouteAlias(value = "StudentProfilView" , layout = StudentLayout.class)
+@Route(value = "student" , layout = StudentLayout.class)
 
-
-
+// TODO: URL Parameter für Studenten ID hinzufügen (siehe unternehmen/ProfilView.java)
 public class StudentProfilView extends VerticalLayout {
 
     //Tabs namen
