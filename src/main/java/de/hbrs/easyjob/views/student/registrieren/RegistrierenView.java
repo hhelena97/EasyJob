@@ -27,7 +27,7 @@ public class RegistrierenView extends VerticalLayout {
     // Components
     private final VerticalLayout frame = new VerticalLayout();
     private final H1 header = new H1("Ich bin..."); // TODO: Update based on view
-    protected Button fertig = new Button("Fertig", new Icon(VaadinIcon.CHECK));
+    private final Button next;
 
     // Views
     private final RegistrierenSchritt[] views = new RegistrierenSchritt[3];
@@ -84,7 +84,7 @@ public class RegistrierenView extends VerticalLayout {
         );
 
         // Buttons
-        Button next = new Button("Weiter", new Icon(VaadinIcon.ARROW_RIGHT));
+        next = new Button("Weiter", new Icon(VaadinIcon.ARROW_RIGHT));
         next.addClassName("next");
         next.addClickListener(e -> nextView());
 
@@ -108,6 +108,16 @@ public class RegistrierenView extends VerticalLayout {
 
         frame.add(buttonsContainer);
         add(frame);
+    }
+
+    public void updateButton() {
+        if (currentView == views.length - 1) {
+            next.setText("Fertig");
+            next.setIcon(new Icon(VaadinIcon.CHECK));
+        } else {
+            next.setText("Weiter");
+            next.setIcon(new Icon(VaadinIcon.ARROW_RIGHT));
+        }
     }
 
     private void updateHeader() {
@@ -140,6 +150,7 @@ public class RegistrierenView extends VerticalLayout {
             }
         }
         updateHeader();
+        updateButton();
     }
 
     private void previousView() {
@@ -149,5 +160,6 @@ public class RegistrierenView extends VerticalLayout {
             getUI().ifPresent(ui -> ui.navigate("login"));
         }
         updateHeader();
+        updateButton();
     }
 }
