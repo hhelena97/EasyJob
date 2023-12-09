@@ -1,6 +1,6 @@
 package de.hbrs.easyjob.controllers;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.services.UnternehmensPersonService;
+import de.hbrs.easyjob.services.UnternehmenspersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/unternehmenperson")
 public class UnternehmenspersonController {
 
-    private final UnternehmensPersonService unternehmenspersonService;
+    private final UnternehmenspersonService unternehmenspersonService;
 
     @Autowired
-    public UnternehmenspersonController(UnternehmensPersonService unternehmenspersonService) {
+    public UnternehmenspersonController(UnternehmenspersonService unternehmenspersonService) {
         this.unternehmenspersonService = unternehmenspersonService;
     }
 

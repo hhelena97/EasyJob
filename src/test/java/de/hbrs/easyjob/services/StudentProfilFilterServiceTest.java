@@ -9,7 +9,6 @@ import de.hbrs.easyjob.repositories.OrtRepository;
 import de.hbrs.easyjob.repositories.StudentRepository;
 import de.hbrs.easyjob.repositories.StudienfachRepository;
 import org.junit.jupiter.api.*;
-import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,14 +18,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings("unchecked")
 @SpringBootTest
-class StudentenProfilFilterServiceTest {
-
+class StudentProfilFilterServiceTest {
     // Repositories
     private final static OrtRepository ortRepo = mock(OrtRepository.class);
     private final static JobKategorieRepository joKaRepo = mock(JobKategorieRepository.class);
@@ -35,7 +34,7 @@ class StudentenProfilFilterServiceTest {
 
     // Services
     @InjectMocks
-    private StudentenProfilFilterService stuFiS;
+    private StudentProfilFilterService stuFiS;
     private static StudentService stuSe;
 
     // Datenobjekte
@@ -103,7 +102,7 @@ class StudentenProfilFilterServiceTest {
      */
     @BeforeEach
     void setUpEach() {
-        stuFiS = new StudentenProfilFilterService();
+        stuFiS = new StudentProfilFilterService();
         stuFiS.studentRepository = stuRepo;
     }
 

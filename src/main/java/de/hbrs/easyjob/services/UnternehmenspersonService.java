@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UnternehmensPersonService {
+public class UnternehmenspersonService {
 
     private final UnternehmenspersonRepository unternehmenspersonRepository;
     private final UnternehmenService unternehmenService;

@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Set;
 
 @RestController
-public class UnternehmensProfilController {
+public class UnternehmenProfilController {
 
 
 
     private JobRepository jobRepository;
-    public UnternehmensProfilController(){
+    public UnternehmenProfilController(){
 
     }
 
     @Autowired
-    public UnternehmensProfilController(JobRepository jobRepository){
+    public UnternehmenProfilController(JobRepository jobRepository){
         this.jobRepository = jobRepository;
     }
     public String getUnternehmensName(Unternehmen unternehmen){

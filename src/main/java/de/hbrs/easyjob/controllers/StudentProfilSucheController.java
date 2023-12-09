@@ -1,7 +1,7 @@
 package de.hbrs.easyjob.controllers;
 
 import de.hbrs.easyjob.entities.*;
-import de.hbrs.easyjob.services.StudentSearchService;
+import de.hbrs.easyjob.services.StudentSucheService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequestMapping("/api/studentsuche")
-public class SearchStudentProfilesController {
+public class StudentProfilSucheController {
     @Autowired
-    StudentSearchService studentService;
+    StudentSucheService studentService;
 
     /**
      * Durchsucht Studentenprofile basierend auf einem Schlüsselwort. Die Methode zur Suche

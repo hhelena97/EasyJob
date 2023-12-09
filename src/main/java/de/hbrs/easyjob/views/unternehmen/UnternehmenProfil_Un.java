@@ -13,12 +13,11 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.hbrs.easyjob.controllers.JobProfilController;
-import de.hbrs.easyjob.controllers.UnternehmensProfilController;
+import de.hbrs.easyjob.controllers.UnternehmenProfilController;
 import de.hbrs.easyjob.controllers.UnternehmensperonProfilController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.repositories.JobRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -36,24 +35,20 @@ public class UnternehmenProfil_Un extends VerticalLayout {
     UnternehmensperonProfilController person = new UnternehmensperonProfilController();
     Unternehmen unternehmenPerson = person.getUnternehmen();
 
-
     private final JobRepository jobRepository;
-    UnternehmensProfilController unternehmen;
+    UnternehmenProfilController unternehmen;
 
     JobProfilController jobController = new JobProfilController();
-
 
     //Job Methode
     Section sec = new Section();
     Scroller scroller = new Scroller();
     HorizontalLayout jobs = new HorizontalLayout();
 
-
-    @Autowired
     public UnternehmenProfil_Un(JobRepository jobRepository){
         UI.getCurrent().getPage().addStyleSheet("unternehmenProfil_Un.css");
         this.jobRepository = jobRepository;
-        unternehmen = new UnternehmensProfilController(jobRepository);
+        unternehmen = new UnternehmenProfilController(jobRepository);
 
         addClassName("all");
         setSizeFull();

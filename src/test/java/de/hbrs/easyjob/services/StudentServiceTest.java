@@ -19,7 +19,6 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class StudentServiceTest {
-
     // Repositories
     private final static OrtRepository ortRepo = mock(OrtRepository.class);
     private final static JobKategorieRepository joKaRepo = mock(JobKategorieRepository.class);
@@ -85,7 +84,7 @@ class StudentServiceTest {
      */
     @Test
     @DisplayName("Testet, ob JobsUebersichtView gespeichert werden")
-    void saveJobTest() {
+    void saveStudentTest() {
         // *** Arrange ***
         Student expected = p1;
         when(ortRepo.findByPLZAndOrt(anyString(),anyString())).thenReturn(ort1);
@@ -105,4 +104,6 @@ class StudentServiceTest {
         verify(stuFaRepo, times(1)).findByFachAndAbschluss(anyString(),anyString());
         verify(stuRepo, times(1)).save(any(Student.class));
     }
+
+    // TODO: andere Methoden testen
 }

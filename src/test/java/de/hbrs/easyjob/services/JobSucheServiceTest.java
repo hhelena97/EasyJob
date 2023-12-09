@@ -131,4 +131,6 @@ class JobSucheServiceTest {
         assertTrue(actual6);
         assertTrue(actual7);
     }
+
+    // TODO: zusätzliche Methoden testen
 }

@@ -14,11 +14,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class LogoutControllerTest {
-
+    // Repositories
     @Autowired
     private PersonRepository persRepo;
+
+    // Controllers
     private LoginController login;
     private LogoutController logout;
+
+    // Entites
     private static Person p;
 
     @BeforeEach
@@ -26,7 +30,7 @@ public class LogoutControllerTest {
         login = new LoginController(persRepo);
         logout  = new LogoutController(persRepo);
 
-        Optional<Person> p_opt = persRepo.findById(53);
+        Optional<Person> p_opt = persRepo.findById(2);
 
         if (p_opt.isEmpty()) {
             throw new Exception("Kein Objekt in der Datenbank gefunden");

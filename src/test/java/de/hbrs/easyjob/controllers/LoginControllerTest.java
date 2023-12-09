@@ -11,7 +11,10 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LoginControllerTest {
+    // Repositories
     private static final PersonRepository personRepository = Mockito.mock(PersonRepository.class);
+
+    // Controllers
     private final LoginController loginController = new LoginController(personRepository);
 
     @BeforeAll

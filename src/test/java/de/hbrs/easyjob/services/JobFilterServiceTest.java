@@ -1,11 +1,11 @@
-package de.hbrs.easyjob.service;
-
-// Temporär deaktiviert, damit die Jenkins Build-Pipeline wieder funktioniert
-
+package de.hbrs.easyjob.services;
 
 import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.repositories.*;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,14 +15,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SuppressWarnings("unchecked")
 @SpringBootTest
 class JobFilterServiceTest {
-
     // Repositories
     private final static OrtRepository ortRepo = mock(OrtRepository.class);
     private final static JobKategorieRepository joKaRepo = mock(JobKategorieRepository.class);
@@ -34,9 +34,8 @@ class JobFilterServiceTest {
     // Services
     @InjectMocks
     private JobFilterService joFiS;
-    private static JobService joSe;
 
-    // Datenobjekte
+    // Entities
     private static Job job1;
     private static Job job2;
     private final static Studienfach stuFa1 = new Studienfach();
@@ -55,7 +54,6 @@ class JobFilterServiceTest {
      */
     @BeforeAll
     static void setUp() {
-
         // Daten für Jobs eingeben
         ort1.setPLZ("53111");
         ort1.setOrt("Bonn");
@@ -94,11 +92,6 @@ class JobFilterServiceTest {
         job2.setStudienfacher(tmp2);
         job2.setJobKategorie(joKa2);
         job2.setUnternehmen(u2);
-
-        // Jobs speichern
-        joSe = new JobService(jobRepo, stuFaRepo, joKaRepo, persRepo, unterRepo, ortRepo);
-        joSe.saveJob(job1);
-        joSe.saveJob(job2);
     }
 
     /**
@@ -126,7 +119,7 @@ class JobFilterServiceTest {
         when(jobRepo.findAll(any(Specification.class))).thenReturn(expected);
 
         // *********** Act ***********
-        List<Job> actual = joFiS.filterJobs(null,null,null);
+        List<Job> actual = joFiS.filterJobs(null,null,null, null, false, null);
 
         // ********* Assert **********
         assertEquals(expected, actual);
@@ -144,7 +137,7 @@ class JobFilterServiceTest {
         when(jobRepo.findAll(any(Specification.class))).thenReturn(expected);
 
         // *********** Act ***********
-        List<Job> actual = joFiS.filterJobs(ort1,null,null);
+        List<Job> actual = joFiS.filterJobs(null,Set.of(ort1),null, null, false, null);
 
         // ********* Assert **********
         assertEquals(expected, actual);
@@ -161,7 +154,7 @@ class JobFilterServiceTest {
         List<Job> expected = List.of();
         when(jobRepo.findAll(any(Specification.class))).thenReturn(expected);
         // *********** Act ***********
-        List<Job> actual2 = joFiS.filterJobs(ort2,null,null);
+        List<Job> actual2 = joFiS.filterJobs(null,Set.of(ort2),null, null, false, null);
         // ********* Assert **********
         assertEquals(0, actual2.size());
     }
@@ -177,7 +170,7 @@ class JobFilterServiceTest {
         when(jobRepo.findAll(any(Specification.class))).thenReturn(expected);
 
         // *********** Act ***********
-        List<Job> actual = joFiS.filterJobs(null,joKa1,null);
+        List<Job> actual = joFiS.filterJobs(null,null,Set.of(joKa1), null, false, null);
 
         // ********* Assert **********
         assertEquals(expected, actual);
@@ -188,7 +181,7 @@ class JobFilterServiceTest {
         when(jobRepo.findAll(any(Specification.class))).thenReturn(expected2);
 
         // *********** Act ***********
-        List<Job> actual2 = joFiS.filterJobs(null,joKa2,null);
+        List<Job> actual2 = joFiS.filterJobs(null,null,Set.of(joKa2), null, false, null);
 
         // ********* Assert **********
         assertEquals(expected2, actual2);
@@ -206,8 +199,8 @@ class JobFilterServiceTest {
         when(jobRepo.findAll(any(Specification.class))).thenReturn(expected);
 
         // *********** Act ***********
-        List<Job> actual = joFiS.filterJobs(null,null,Set.of(stuFa1));
-        List<Job> actual2 = joFiS.filterJobs(null,null,Set.of(stuFa1, stuFa2));
+        List<Job> actual = joFiS.filterJobs(null,null,null, Set.of(stuFa1), false, null);
+        List<Job> actual2 = joFiS.filterJobs(null,null,null, Set.of(stuFa1, stuFa2), false, null);
 
         // ********* Assert **********
         assertEquals(expected, actual);
@@ -226,7 +219,7 @@ class JobFilterServiceTest {
         when(jobRepo.findAll(any(Specification.class))).thenReturn(expected);
 
         // *********** Act ***********
-        List<Job> actual = joFiS.filterJobs(ort1,null,Set.of(stuFa1));
+        List<Job> actual = joFiS.filterJobs(null, Set.of(ort1),null,Set.of(stuFa1), false, null);
 
         // ********* Assert **********
         assertEquals(expected, actual);
@@ -237,7 +230,7 @@ class JobFilterServiceTest {
         when(jobRepo.findAll(any(Specification.class))).thenReturn(expected2);
 
         // *********** Act ***********
-        List<Job> actual2 = joFiS.filterJobs(ort2,null,Set.of(stuFa1));
+        List<Job> actual2 = joFiS.filterJobs(null, Set.of(ort2),null,Set.of(stuFa1), false, null);
 
         // ********* Assert **********
         assertEquals(expected2, actual2);
@@ -255,7 +248,7 @@ class JobFilterServiceTest {
         when(jobRepo.findAll(any(Specification.class))).thenReturn(expected);
 
         // *********** Act ***********
-        List<Job> actual = joFiS.filterJobs(ort1,joKa1,null);
+        List<Job> actual = joFiS.filterJobs(null, Set.of(ort1), Set.of(joKa1),null, false, null);
 
         // ********* Assert **********
         assertEquals(expected, actual);
@@ -263,10 +256,10 @@ class JobFilterServiceTest {
 
         // ********* Arrange *********
         List<Job> expected2 = List.of(job2);
-        when(jobRepo.findAll(any(Specification.class))).thenReturn(expected);
+        when(jobRepo.findAll(any(Specification.class))).thenReturn(expected2);
 
         // *********** Act ***********
-        List<Job> actual2 = joFiS.filterJobs(ort1,joKa2,null);
+        List<Job> actual2 = joFiS.filterJobs(null, Set.of(ort1), Set.of(joKa2),null, false, null);
 
         // ********* Assert **********
         assertEquals(expected2, actual2);
@@ -284,10 +277,11 @@ class JobFilterServiceTest {
         when(jobRepo.findAll(any(Specification.class))).thenReturn(expected);
 
         // *********** Act ***********
-        List<Job> actual = joFiS.filterJobs(ort1,joKa1,Set.of(stuFa1));
+        List<Job> actual = joFiS.filterJobs(null, Set.of(ort1), Set.of(joKa1), Set.of(stuFa1), false, null);
 
         // ********* Assert **********
         assertEquals(expected, actual);
     }
+
+    // TODO: zusaetzliche Tests für neue Funktion in JobFilterService
 }
-*/

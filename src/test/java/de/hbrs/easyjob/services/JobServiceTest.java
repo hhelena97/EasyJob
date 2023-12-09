@@ -16,7 +16,6 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class JobServiceTest {
-
     // Repositories
     private final static OrtRepository ortRepo = mock(OrtRepository.class);
     private final static JobKategorieRepository joKaRepo = mock(JobKategorieRepository.class);
@@ -28,7 +27,7 @@ class JobServiceTest {
     // Services
     private JobService joSe;
 
-    // Datenobjekte
+    // Entities
     private static Job job1;
     private final static Studienfach stuFa1 = new Studienfach();
     private final static JobKategorie joKa1 = new JobKategorie();
@@ -110,4 +109,6 @@ class JobServiceTest {
         verify(joKaRepo, times(1)).findByKategorie(anyString());
         verify(jobRepo, times(1)).save(any(Job.class));
     }
+
+    // TODO: andere Methoden aus JobService testen
 }

@@ -12,6 +12,8 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// TODO: Tests in StudentRegistrierenControllerTest integrieren
+
 public class StudentPersonRegistrationControllerTest {
     private static final StudentRepository studentRep = Mockito.mock(StudentRepository.class);
     private static final PersonRepository personRep = Mockito.mock(PersonRepository.class);

@@ -14,21 +14,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
 @SpringBootTest
-class StudentSearchServiceTest {
-
+class StudentSucheServiceTest {
     // Repositories
     @Autowired
     private StudentRepository stuRepo;
 
     // Services
-    private StudentSearchService stuSeSe;
+    private StudentSucheService stuSeSe;
 
     /**
      * erstellt den zu testenden Service
      */
     @BeforeEach
     void setUp() {
-        stuSeSe = new StudentSearchService(stuRepo);
+        stuSeSe = new StudentSucheService(stuRepo);
     }
 
     /**
@@ -47,8 +46,8 @@ class StudentSearchServiceTest {
     @Transactional
     void vollTextSuche() throws Exception {
         // ************* Arrange *************
-        Optional<Student>[] p = new Optional[8];
-        Student[] stus = new Student[8];
+        Optional<Student>[] p = new Optional[11];
+        Student[] students = new Student[11];
         p[0] = stuRepo.findById(25);
         p[1] = stuRepo.findById(23);
         p[2] = stuRepo.findById(2);
@@ -57,18 +56,20 @@ class StudentSearchServiceTest {
         p[5] = stuRepo.findById(29);
         p[6] = stuRepo.findById(30);
         p[7] = stuRepo.findById(1);
+        p[8] = stuRepo.findById(36);
+        p[9] = stuRepo.findById(38);
+        p[10] = stuRepo.findById(35);
 
-        int i = 0;
-        for (Optional<Student> stu : p) {
+        for (int i = 0; i < p.length; i++) {
+            Optional<Student> stu = p[i];
             if (stu.isEmpty()) {
                 throw new Exception("Kein Objekt in der Datenbank gefunden!");
             } else {
-                stus[i] = p[i].get();
-                System.out.println(stus[i]);
+                students[i] = stu.get();
+                System.out.println(students[i]);
             }
-            i++;
         }
-        List<Student> expected = List.of(stus);
+        List<Student> expected = List.of(students);
 
         // *************** Act ***************
         List<Student> actual = stuSeSe.vollTextSuche("Bachelor");
@@ -85,8 +86,8 @@ class StudentSearchServiceTest {
     @Transactional
     void teilZeichenSuche() throws Exception {
         // ************* Arrange *************
-        Optional<Student>[] p = new Optional[8];
-        Student[] stus = new Student[8];
+        Optional<Student>[] p = new Optional[11];
+        Student[] students = new Student[11];
         p[0] = stuRepo.findById(1);
         p[1] = stuRepo.findById(2);
         p[2] = stuRepo.findById(23);
@@ -95,17 +96,19 @@ class StudentSearchServiceTest {
         p[5] = stuRepo.findById(27);
         p[6] = stuRepo.findById(28);
         p[7] = stuRepo.findById(30);
+        p[8] = stuRepo.findById(35);
+        p[9] = stuRepo.findById(37);
+        p[10] = stuRepo.findById(38);
 
-        int i = 0;
-        for (Optional<Student> stu : p) {
+        for (int i = 0; i < p.length; i++) {
+            Optional<Student> stu = p[i];
             if (stu.isEmpty()) {
                 throw new Exception("Kein Objekt in der Datenbank gefunden!");
             } else {
-                stus[i] = p[i].get();
+                students[i] = stu.get();
             }
-            i++;
         }
-        List<Student> expected = List.of(stus);
+        List<Student> expected = List.of(students);
 
         // *************** Act ***************
         List<Student> actual = stuSeSe.teilZeichenSuche("Bon");

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Service
-public class StudentSearchService {
+public class StudentSucheService {
 
     @Autowired
     private StudentRepository studentRepository;

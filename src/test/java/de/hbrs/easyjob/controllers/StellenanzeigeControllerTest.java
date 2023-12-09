@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-class StellenanzeigeControlTest {
+class StellenanzeigeControllerTest {
     // Repositories
     private final static JobRepository jobRepository = mock(JobRepository.class);
     private final static StudienfachRepository studienfachRepository = mock(StudienfachRepository.class);
@@ -34,7 +34,7 @@ class StellenanzeigeControlTest {
     private final static JobService jobService = mock(JobService.class);
 
     // Controllers
-    private static final StellenanzeigeControl stellenanzeigeControl = new StellenanzeigeControl(jobService);
+    private static final StellenanzeigeController stellenanzeigeControl = new StellenanzeigeController(jobService);
 
     // Entities
     private static JobKategorie jobKategorie;
@@ -110,7 +110,7 @@ class StellenanzeigeControlTest {
     @DisplayName("Gültige Stellenanzeige erstellen")
     void stelleAnzeigeErstellen() {
         // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, unternehmensperson, ort, jobKategorie, Set.of(studienfach));
+        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, unternehmensperson, ort, jobKategorie, Set.of(studienfach), true);
 
         // Verify
         assertNotNull(result);
@@ -129,7 +129,7 @@ class StellenanzeigeControlTest {
     @DisplayName("Stellenanzeige mit titel == null erstellen")
     void stellenAnzeigeMitUngueltigemTitel() {
         // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(null, freitext, new java.util.Date(), unternehmen, unternehmensperson, ort, jobKategorie, Set.of(studienfach));
+        Job result = stellenanzeigeControl.stellenanzeigeErstellen(null, freitext, new java.util.Date(), unternehmen, unternehmensperson, ort, jobKategorie, Set.of(studienfach), false);
 
         // Verify
         assertNull(result);
@@ -139,7 +139,7 @@ class StellenanzeigeControlTest {
     @DisplayName("Stellenanzeige mit freitext == null erstellen")
     void stellenAnzeigeMitUngueltigemFreitext() {
         // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, null, new java.util.Date(), unternehmen, unternehmensperson, ort, jobKategorie, Set.of(studienfach));
+        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, null, new java.util.Date(), unternehmen, unternehmensperson, ort, jobKategorie, Set.of(studienfach), true);
 
         // Verify
         assertNull(result);
@@ -149,7 +149,7 @@ class StellenanzeigeControlTest {
     @DisplayName("Stellenanzeige mit eintrittsdatum == null erstellen")
     void stellenAnzeigeMitUngueltigemEintrittsdatum() {
         // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, null, unternehmen, unternehmensperson, ort, jobKategorie, Set.of(studienfach));
+        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, null, unternehmen, unternehmensperson, ort, jobKategorie, Set.of(studienfach), false);
 
         // Verify
         assertNull(result);
@@ -159,7 +159,7 @@ class StellenanzeigeControlTest {
     @DisplayName("Stellenanzeige mit unternehmen == null erstellen")
     void stellenAnzeigeMitUngueltigemUnternehmen() {
         // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), null, unternehmensperson, ort, jobKategorie, Set.of(studienfach));
+        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), null, unternehmensperson, ort, jobKategorie, Set.of(studienfach), true);
 
         // Verify
         assertNull(result);
@@ -169,7 +169,7 @@ class StellenanzeigeControlTest {
     @DisplayName("Stellenanzeige mit unternehmensperson == null erstellen")
     void stellenAnzeigeMitUngueltigerUnternehmensperson() {
         // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, null, ort, jobKategorie, Set.of(studienfach));
+        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, null, ort, jobKategorie, Set.of(studienfach), false);
 
         // Verify
         assertNull(result);
@@ -179,7 +179,7 @@ class StellenanzeigeControlTest {
     @DisplayName("Stellenanzeige mit ort == null erstellen")
     void stellenAnzeigeMitUngueltigemOrt() {
         // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, unternehmensperson, null, jobKategorie, Set.of(studienfach));
+        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, unternehmensperson, null, jobKategorie, Set.of(studienfach), true);
 
         // Verify
         assertNull(result);
@@ -189,7 +189,7 @@ class StellenanzeigeControlTest {
     @DisplayName("Stellenanzeige mit jobKategorie == null erstellen")
     void stellenAnzeigeMitUngueltigerJobKategorie() {
         // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, unternehmensperson, ort, null, Set.of(studienfach));
+        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, unternehmensperson, ort, null, Set.of(studienfach), false);
 
         // Verify
         assertNull(result);
@@ -199,7 +199,7 @@ class StellenanzeigeControlTest {
     @DisplayName("Stellenanzeige mit studienfaecher == null erstellen")
     void stellenAnzeigeMitUngueltigenStudienfaechern() {
         // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, unternehmensperson, ort, jobKategorie, null);
+        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, unternehmensperson, ort, jobKategorie, null, true);
 
         // Verify
         assertNull(result);
@@ -209,7 +209,7 @@ class StellenanzeigeControlTest {
     @DisplayName("Stellenanzeige mit allen Parametern == null erstellen")
     void stellenAnzeigeMitAllenUngueltigenParametern() {
         // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(null, null, null, null, null, null, null, null);
+        Job result = stellenanzeigeControl.stellenanzeigeErstellen(null, null, null, null, null, null, null, null, false);
 
         // Verify
         assertNull(result);

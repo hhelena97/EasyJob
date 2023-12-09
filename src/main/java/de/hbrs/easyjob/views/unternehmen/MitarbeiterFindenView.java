@@ -4,7 +4,6 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
@@ -18,7 +17,7 @@ import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.JobKategorie;
 import de.hbrs.easyjob.entities.Ort;
 import de.hbrs.easyjob.services.StudentService;
-import de.hbrs.easyjob.services.StudentSearchService;
+import de.hbrs.easyjob.services.StudentSucheService;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,15 +28,15 @@ import java.util.stream.Collectors;
 @StyleSheet("styles/MitarbeiterFindenView.css")
 public class MitarbeiterFindenView extends VerticalLayout {
 
-    private final StudentSearchService studentSearchService;
+    private final StudentSucheService studentSucheService;
 
     private final StudentService studentService;
 
     private VerticalLayout studentenListLayout;
 
     @Autowired
-    public MitarbeiterFindenView (StudentService studentService, StudentSearchService studentSearchService){
-        this.studentSearchService = studentSearchService;
+    public MitarbeiterFindenView (StudentService studentService, StudentSucheService studentSucheService){
+        this.studentSucheService = studentSucheService;
         this.studentService = studentService;
         initializeView();
     }
@@ -97,9 +96,9 @@ public class MitarbeiterFindenView extends VerticalLayout {
     }
     private void searchStudent(String searchText) {
         studentenListLayout.removeAll();
-        List<Student> students = studentSearchService.istVollTextSuche(searchText) ?
-                studentSearchService.vollTextSuche(searchText) :
-                studentSearchService.teilZeichenSuche(searchText);
+        List<Student> students = studentSucheService.istVollTextSuche(searchText) ?
+                studentSucheService.vollTextSuche(searchText) :
+                studentSucheService.teilZeichenSuche(searchText);
         students.forEach(this::addStudentComponentToLayout);
         VaadinSession.getCurrent().setAttribute("searchedStudents", students);
     }

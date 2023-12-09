@@ -17,19 +17,21 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ProfilDeaktivierenControllerTest
-{
+public class ProfilDeaktivierenControllerTest {
+    // Repositories
     private static final PersonRepository personRepository = Mockito.mock(PersonRepository.class);
     private static final UnternehmenRepository unternehmenRepository = Mockito.mock(UnternehmenRepository.class);
     private static final UnternehmenspersonRepository unternehmenspersonRepository = Mockito.mock(UnternehmenspersonRepository.class);
+
+    // Controllers
     @InjectMocks
     private final ProfilDeaktivierenController profilDeaktivierenController = new ProfilDeaktivierenController(personRepository, unternehmenRepository);
 
+    // Entites
     private static final Person person = new Person();                  // Person Erika Mustermann (nicht in Unternehmen)
     private static final Unternehmen unternehmen = new Unternehmen();               // Unternehmen
     private static final Unternehmensperson manager = new Unternehmensperson();     // Manager
     private static final Unternehmensperson personU = new Unternehmensperson();     // Unternehmensperson Max Mustermann
-
     private static final Unternehmen unternehmen2 = new Unternehmen();               // Unternehmen
     private static final Unternehmensperson manager2 = new Unternehmensperson();     // Manager
     private static final Unternehmensperson personU2 = new Unternehmensperson();     // Unternehmensperson Maxx Mustermannn

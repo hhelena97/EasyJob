@@ -12,7 +12,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import de.hbrs.easyjob.controllers.UnternehmensProfilController;
+import de.hbrs.easyjob.controllers.UnternehmenProfilController;
 import de.hbrs.easyjob.controllers.UnternehmensperonProfilController;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
 
@@ -99,7 +99,7 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
         completeZeile("Email:" , person.getEmail());
         completeZeile("Telefon:", person.getTelefon());
 
-        UnternehmensProfilController  u = new UnternehmensProfilController();
+        UnternehmenProfilController u = new UnternehmenProfilController();
         completeZeile("Büroanschrift:" , u.getUnternehmensOrte(person.getUnternehmen()));
 
 

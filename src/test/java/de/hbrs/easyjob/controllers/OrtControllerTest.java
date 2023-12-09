@@ -20,11 +20,11 @@ class OrtControllerTest {
     // Services
     private final static OrtService ortService = Mockito.mock(OrtService.class);
 
-    // Controller
+    // Controllers
     @InjectMocks
     private OrtController ortController;
 
-    // Datenobjekte
+    // Entites
     private static Ort ort1;
     private static Ort ort2;
     private static Ort ort3;

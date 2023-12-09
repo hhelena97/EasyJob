@@ -115,6 +115,7 @@ public interface ValidationController {
      * @return true, wenn Vorname gültig ist & false, wenn nicht
      */
     static boolean isValidName(String name) {
+        // TODO: an Test Cases aus ValidationControllerTest anpassen -> (mehrere) Zweitnamen zulassen
         String nameRegex = "^[a-zA-Z\\-]{1,32}$";
 
         Pattern pattern = Pattern.compile(nameRegex);
@@ -178,6 +179,7 @@ public interface ValidationController {
      * @return true, wenn Telefonnummer gültig ist & false, wenn nicht
      */
     static boolean isValidTelefonnummer(String telefonnummer) {
+        // TODO: Telefonnummern mit Bindestrichen und Leerzeichen anpassen (siehe ValidationControllerTest)
         // Erkennung von korrekten deutschen Telefonnummern mit oder ohne Ländervorwahl und mit oder ohne Leerzeichen oder Bindestriche
         String telefonnummerRegex = "^(\\+49|0)[\\s\\-]?[1-9][0-9]{6,14}$";
 
