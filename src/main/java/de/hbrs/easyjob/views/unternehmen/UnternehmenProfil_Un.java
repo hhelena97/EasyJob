@@ -10,6 +10,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.hbrs.easyjob.controllers.JobProfilController;
@@ -18,6 +19,7 @@ import de.hbrs.easyjob.controllers.UnternehmensperonProfilController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.repositories.JobRepository;
+import de.hbrs.easyjob.views.components.UnternehmenLayout;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -30,6 +32,7 @@ import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.ST
 
 @PageTitle("Unternehmen Profil")
 @AnonymousAllowed
+@Route(value = "unternehmen/unternehmensprofil" , layout = UnternehmenLayout.class)
 public class UnternehmenProfil_Un extends VerticalLayout {
 
     UnternehmensperonProfilController person = new UnternehmensperonProfilController();

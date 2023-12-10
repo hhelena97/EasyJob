@@ -66,6 +66,7 @@ public class LogoutController
                 // -----------------------------------------------------------------------------------------------------
                 // ausloggen:
                 UI.getCurrent().getSession().setAttribute("current_User", null);
+                UI.getCurrent().getPage().setLocation("/login");  //Weiterleiten
                 UI.getCurrent().getSession().close(); // lädt die Seite auch neu
                 // -----------------------------------------------------------------------------------------------------
 
