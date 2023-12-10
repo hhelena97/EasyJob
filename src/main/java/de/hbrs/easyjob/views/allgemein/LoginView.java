@@ -18,6 +18,15 @@ import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+import java.util.Collections;
 
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER;
 
@@ -123,6 +132,9 @@ public class LoginView extends VerticalLayout {
                 // und speichere sie in der Session
                 grabAndSetPersonIntoSession(person);
 
+                userDetailsService();
+
+
                 UI ui = UI.getCurrent();
 
                 if (person instanceof Student){
@@ -133,7 +145,7 @@ public class LoginView extends VerticalLayout {
 
                 if (person instanceof Unternehmensperson){
                     System.out.println("Es ist eine Unternehmensperson.");
-                    //TODO: weiter zur Unternehmer-Startseite
+                    //weiter zur Unternehmer-Startseite
                     ui.navigate("unternehmen/unternehmenperson");
                 }
                 //es ist eine Person, aber kein Student oder Unternehmensperson
@@ -169,6 +181,18 @@ public class LoginView extends VerticalLayout {
     //Hilfs-Methode um die Person in der Session zu speichern
     private void grabAndSetPersonIntoSession(Person eingeloggtePerson) {
         UI.getCurrent().getSession().setAttribute("current_User", eingeloggtePerson);
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(){
+
+        UserDetails userDetails = User.withDefaultPasswordEncoder()
+                .username(loginController.getPerson().getEmail())
+                .password(loginController.getPerson().getPasswort())
+                .roles("USER")
+                .build();
+        return new InMemoryUserDetailsManager(userDetails);
+
     }
 
 

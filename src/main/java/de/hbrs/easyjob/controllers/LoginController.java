@@ -3,8 +3,14 @@ package de.hbrs.easyjob.controllers;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collections;
 
 //@Component
 @RestController
@@ -35,6 +41,7 @@ public class LoginController {
 
         try {
             this.person = repository.findByEmail(email);
+            UserDetails user = loadUserByUsername(email);
             //Verknüpft die Person mit der Person der Datenbank, die zu dieser E-Mail-Adresse gespeichert ist
             System.out.println("Datenbankverbindung erfolgreich.");
         } catch ( org.springframework.dao.DataAccessResourceFailureException e ) {
@@ -68,5 +75,19 @@ public class LoginController {
     //Zur Zurückgabe der gefundenen Person an die View
     public Person getPerson(){
         return this.person;
+    }
+
+
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Person person = repository.findByEmail(username);
+
+        if (person == null) {
+            throw new UsernameNotFoundException("Benutzer nicht gefunden: " + username);
+        }
+
+        return User.withUsername(person.getEmail())
+                .password(person.getPasswort()) // hier sollte die verschlüsselte Form stehen, wenn die Passwörter verschlüsselt sind
+                .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+                .build();
     }
 }
