@@ -1,6 +1,14 @@
 package de.hbrs.easyjob.views.allgemein;
 
-
+import com.vaadin.flow.component.notification.Notification;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.jaas.SecurityContextLoginModule;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -18,15 +26,6 @@ import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-
-import java.util.Collections;
 
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER;
 
@@ -38,7 +37,8 @@ import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CE
 public class LoginView extends VerticalLayout {
     @Autowired
     private LoginController loginController;
-
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public LoginView(){
         UI.getCurrent().getPage().addStyleSheet("LoginView.css");
@@ -122,18 +122,40 @@ public class LoginView extends VerticalLayout {
 
         add(v,fenster);
 
-//Wenn jemand auf einen Button drückt, wird der entsprechende Listener aktiv und startet das Event
 
         logButton.addClickListener(e -> {
+            try {
+                String username = validEmailField.getValue();
+                String password = passwordField.getValue();
+                Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(username, password)
+                );
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+
+                if (hasRole(authentication, "ROLE_STUDENT")) {
+                    UI.getCurrent().navigate("student");
+                } else if (hasRole(authentication, "ROLE_UNTERNEHMENSPERSON")) {
+                    UI.getCurrent().navigate("unternehmen/unternehmenperson");
+                } else {
+
+                    Notification.show("Unbekannte Benutzerrolle.");
+                }
+            } catch (AuthenticationException ex) {
+                Notification.show("Authentifizierung fehlgeschlagen.");
+            }
+        });
+
+//Wenn jemand auf einen Button drückt, wird der entsprechende Listener aktiv und startet das Event
+
+        /*logButton.addClickListener(e -> {
             boolean authen = loginController.authenticate( validEmailField.getValue(), passwordField.getValue() );
             if(authen){
                 //wenn die authentifizierung erfolgreich war, hole die Person aus dem Controller
                 Person person = loginController.getPerson();
                 // und speichere sie in der Session
                 grabAndSetPersonIntoSession(person);
-
-                userDetailsService();
-
 
                 UI ui = UI.getCurrent();
 
@@ -145,7 +167,7 @@ public class LoginView extends VerticalLayout {
 
                 if (person instanceof Unternehmensperson){
                     System.out.println("Es ist eine Unternehmensperson.");
-                    //weiter zur Unternehmer-Startseite
+                    //TODO: weiter zur Unternehmer-Startseite
                     ui.navigate("unternehmen/unternehmenperson");
                 }
                 //es ist eine Person, aber kein Student oder Unternehmensperson
@@ -156,7 +178,7 @@ public class LoginView extends VerticalLayout {
                 //        ui.navigate("StudentProfilView"));
             }
             //für false kommt hier später noch ein Fehlerhinweis an den Benutzer
-        });
+        });*/
 
 
         verButton.addClickListener(event -> {
@@ -183,17 +205,8 @@ public class LoginView extends VerticalLayout {
         UI.getCurrent().getSession().setAttribute("current_User", eingeloggtePerson);
     }
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-
-        UserDetails userDetails = User.withDefaultPasswordEncoder()
-                .username(loginController.getPerson().getEmail())
-                .password(loginController.getPerson().getPasswort())
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(userDetails);
-
+    private boolean hasRole(Authentication auth, String role) {
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals(role));
     }
-
-
 }

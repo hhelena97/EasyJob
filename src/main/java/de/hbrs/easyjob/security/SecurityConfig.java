@@ -7,48 +7,52 @@ import de.hbrs.easyjob.services.MyUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfig extends VaadinWebSecurity {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Autowired
-    private PersonRepository personRepository;
-    @Autowired
-    private LoginController loginController;
-   @Autowired
-    private MyUserDetailService myUserDetailService;
+    private MyUserDetailService userDetailsService;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("resources/META-INF.resources/**").permitAll() // Ignoriere diese Pfade für Authentifizierung
-                // Weitere Konfigurationen hier, falls erforderlich
+                .antMatchers("/student/**").hasRole("STUDENT")
+                .antMatchers("/unternehmen/**").hasRole("UNTERNEHMENSPERSON")
                 .and()
-                .csrf().disable(); // Deaktiviere CSRF-Schutz
-
-
-        super.configure(http);
-
-        setLoginView(http, de.hbrs.easyjob.views.allgemein.LoginView.class);
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll();
     }
 
+    @Override
     @Bean
-    public UserDetailsService userDetailsService(){
-        User user = (User) myUserDetailService.loadUserByUsername(loginController.getEmail());
-        return new InMemoryUserDetailsManager(user);
-
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(NoOpPasswordEncoder.getInstance());
+    }
+
+
 
 }

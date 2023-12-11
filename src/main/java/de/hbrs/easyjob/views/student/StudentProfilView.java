@@ -14,7 +14,17 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.StudentProfilController;
+import de.hbrs.easyjob.entities.JobKategorie;
+import de.hbrs.easyjob.entities.Ort;
+import de.hbrs.easyjob.entities.Student;
+import de.hbrs.easyjob.repositories.StudentRepository;
+import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.components.StudentLayout;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.stream.Collectors;
 
 @Route(value = "student" , layout = StudentLayout.class)
 
@@ -22,23 +32,39 @@ import de.hbrs.easyjob.views.components.StudentLayout;
 public class StudentProfilView extends VerticalLayout {
 
     //Tabs namen
-    private final Tab allgemein;
-    private final Tab kenntnisse;
-    private final Tab ueberMich;
+    private  Tab allgemein;
+    private  Tab kenntnisse;
+    private  Tab ueberMich;
 
+    private  StudentRepository studentRepository;
 
     //Content wo die Inhalt von einem Tab gezeigt wird
-    private final VerticalLayout content;
-
-
-
+    private  VerticalLayout content;
     StudentProfilController  person;
+    private Student student;
+    private final StudentService studentService;
+    @Autowired
+    public StudentProfilView(StudentRepository studentRepository, StudentService studentService) {
+        this.studentRepository = studentRepository;
+        this.studentService = studentService;
+        if (student == null){
+            student=getCurrentStudent();
+        }
 
-    StudentProfilView(){
+        initializeView();
+    }
+
+    public Student getCurrentStudent() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails) principal).getUsername();
+            return studentRepository.findByEmail(username);
+        }
+        return null;
+    }
+    private void initializeView(){
         UI.getCurrent().getPage().addStyleSheet("StudentProfilView.css");
-        person = new StudentProfilController();
-
-
 
         addClassName("all");
         setSizeFull();
@@ -75,17 +101,13 @@ public class StudentProfilView extends VerticalLayout {
         //Profil Bild
         Div profilBild = new Div();
         profilBild.addClassName("profilBild");
-        profilBild.add(new Image(person.getFoto(), "EasyJob"));
-
-
-
-
+        profilBild.add(new Image(student.getFoto(), "EasyJob"));
 
         //Name
         H1 name = new H1();
         name.addClassName("name");
         //name.add("Max Mustermann");
-        name.add(person.getVorname() +" "+ person.getNachname());
+        name.add(student.getVorname() +" "+ student.getNachname());
 
         //Ort
         /*
@@ -128,7 +150,7 @@ public class StudentProfilView extends VerticalLayout {
 
         content = new VerticalLayout();
         //content.setSpacing(false);
-       // content.setPadding(false);
+        // content.setPadding(false);
         content.setWidth("100%");
         content.setAlignItems(Alignment.STRETCH);
 
@@ -139,7 +161,6 @@ public class StudentProfilView extends VerticalLayout {
 
 
         add(studentInfo);
-
     }
 
     private void setContent(Tab tab) {
@@ -148,13 +169,16 @@ public class StudentProfilView extends VerticalLayout {
 
         Div allgemeinDiv = new Div();
         allgemeinDiv.addClassName("myTab");
-        allgemeinDiv.add(completeZeile("Studienfach:", person.getStudienfachUndAbschluss()),
-        //completeZeile("Hochschulsemester:", "5"),
+        allgemeinDiv.add(completeZeile("Studienfach:", (student.getStudienfach().getFach()+"("+(student.getStudienfach().getAbschluss()
+                        .equals("Bachelor") ? "B.Sc." : "M.Sc.") +")")),
+                //completeZeile("Hochschulsemester:", "5"),
 
-        completeZeile("Stellen, die mich interessieren:", person.getJobKategorie() ),
-        completeZeile("Bevorzugt in der Nähe von:", " "),
-        completeZeile("Bevorzugte Branche(n):", " "),
-        completeZeile("Bevorzugte Berufsfelder:", " ")
+                completeZeile("Stellen, die mich interessieren:", studentService.getAllJobKategorien(student.getId_Person()).stream()
+                        .map(JobKategorie::getKategorie).collect(Collectors.joining(",")) ),
+                completeZeile("Bevorzugt in der Nähe von:", studentService.getAllOrte(student.getId_Person()).stream().map(Ort::getOrt)
+                        .collect(Collectors.joining(", "))),
+                completeZeile("Bevorzugte Branche(n):", " "),
+                completeZeile("Bevorzugte Berufsfelder:", " ")
 
         );
 
@@ -181,7 +205,7 @@ public class StudentProfilView extends VerticalLayout {
                 zeileKenn("Frameworks, Bibliotheken und Umgebungen:" , new String[]{"Eclipse", "JUnit","Pandas","NumPy"} ),
                 zeileKenn("Methoden:" , new String[]{"CI/CD", "TDD","Scrum","UML"} ),
                 zeileKenn("Rollen und Tätigkeiten:" , new String[]{"Backend Entwicklung", " Frontend Entwicklung"} )
-                );
+        );
 
         Div ueberDiv = new Div();
         ueberDiv.addClassName("myTab");
@@ -236,7 +260,7 @@ public class StudentProfilView extends VerticalLayout {
         wertDiv.addClassName("zeileDiv");
 
         for (String s: wert
-             ) {
+        ) {
             Span pending = new Span(s);
             pending.getElement().getThemeList().add("badge primary");
             pending.addClassName("badge");
