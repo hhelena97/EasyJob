@@ -25,7 +25,7 @@ body {
     height: 18px;
     top: 274px;
     left: 76px;
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     font-size: 24px;
     font-weight: 400;
     line-height: 18px;
@@ -35,7 +35,7 @@ body {
 
 .inaktiv {
     //styleName: Body/Body 2;
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     font-size: 14px;
     font-weight: 300;
     line-height: 21px;

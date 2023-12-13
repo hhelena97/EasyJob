@@ -78,7 +78,7 @@ public class Schritt3View extends RegistrierenSchritt {
                 uploadListe.add(dateiName);
                 neuesBild.addClassName("picture-round");
                 bildDiv.replace(platzhalterBild, neuesBild);});
-            bildBearbeiten.addClassName("cancel-disabled");
+                bildBearbeiten.addClassName("cancel-disabled");
             remove.addClickListener(e -> {
                 profilBild = platzhalterBild;
                 upload.clearFileList();

@@ -5,7 +5,7 @@
     height: 18px;
     top: 302px;
     left: 80px;
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     font-size: 18px;
     font-weight: 600;
     line-height: 21px;
@@ -19,7 +19,7 @@
     height: 15px;
     top: 346px;
     left: 109.5px;
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     font-size: 16px;
     font-weight: 400;
     line-height: 19px;
@@ -35,7 +35,7 @@
     height: 15px;
     top: 387px;
     left: 170.5px;
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     font-size: 16px;
     font-weight: 400;
     line-height: 19px;
@@ -46,7 +46,7 @@
 
 vaadin-button.ausloggen {
     color: var(--signalfarben-rot);
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
 }
 
 vaadin-button.ausloggen::part(label){

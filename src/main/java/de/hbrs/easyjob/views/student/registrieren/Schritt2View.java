@@ -70,12 +70,18 @@ public class Schritt2View extends RegistrierenSchritt {
     }
 
     public boolean checkRequirementsAndSave() {
+        student.setHomeOffice(homeOffice.getValue());
+        Set<Ort> selected = standort.getSelectedItems();
+
+        //Eingabefelder prüfen
         if (standort.isEmpty()) {
+            standort.setErrorMessage("Bitte füllen Sie dieses Feld aus");
+            standort.setInvalid(true);
             return false;
+        } else {
+            student.setOrte(selected);
         }
 
-        Set<Ort> selected = standort.getSelectedItems();
-        student.setHomeOffice(homeOffice.getValue());
         if (!berufsbezeichnung.isEmpty()) {
             student.setJobKategorien(berufsbezeichnung.getSelectedItems());
         }
@@ -85,7 +91,7 @@ public class Schritt2View extends RegistrierenSchritt {
         if (!berufsfeld.isEmpty()) {
             student.setBerufsFelder(berufsfeld.getSelectedItems());
         }
-        student.setOrte(selected);
+
         return true;
     }
 }
