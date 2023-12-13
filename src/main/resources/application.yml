@@ -14,6 +14,10 @@ spring:
   data:
     rest:
       base-path: /api
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
 logging:
   level:
     org.hibernate.SQL: DEBUG
