@@ -194,3 +194,20 @@ vaadin-upload::part(file-list) {
     color: var(--text-grau);
     background-color: transparent;
 }
+
+vaadin-upload::part(file-list) {
+    display: none;
+}
+
+.file-info {
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: -0.165px;
+    color: var(--text-almostblack);
+}
+
+.remove-file {
+    color: var(--text-grau);
+    background-color: transparent;
+}
