@@ -2,9 +2,12 @@ package de.hbrs.easyjob;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.server.PWA;
+import de.hbrs.easyjob.security.CustomSecurityContextRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Hauptklasse der Anwendung
@@ -19,7 +22,12 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 public class EasyjobApplication extends SpringBootServletInitializer implements AppShellConfigurator {
 
 	public static void main(String[] args) {
+		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
 		SpringApplication.run(EasyjobApplication.class, args);
+	}
+	@Bean
+	public CustomSecurityContextRepository customSecurityContextRepository() {
+		return new CustomSecurityContextRepository();
 	}
 
 }

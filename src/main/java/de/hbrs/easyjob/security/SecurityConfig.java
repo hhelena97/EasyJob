@@ -1,23 +1,20 @@
 package de.hbrs.easyjob.security;
 
-import de.hbrs.easyjob.controllers.LoginController;
-import de.hbrs.easyjob.entities.Person;
-import de.hbrs.easyjob.repositories.PersonRepository;
+import com.vaadin.flow.spring.security.VaadinWebSecurityConfigurerAdapter;
 import de.hbrs.easyjob.services.MyUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 @EnableWebSecurity
 @Configuration
@@ -26,19 +23,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MyUserDetailService userDetailsService;
+    @Autowired
+    private CustomSecurityContextRepository customSecurityContextRepository;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .securityContext()
+                .securityContextRepository(customSecurityContextRepository)
+                .and()
                 .authorizeRequests()
+                .antMatchers("/login").permitAll()
                 .antMatchers("/student/**").hasRole("STUDENT")
                 .antMatchers("/unternehmen/**").hasRole("UNTERNEHMENSPERSON")
                 .and()
                 .formLogin()
-                .loginPage("/login")
-                .permitAll()
+                .loginPage("/login").permitAll()
                 .and()
-                .logout()
-                .permitAll();
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false);
     }
 
     @Override
@@ -52,7 +57,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
-
-
 
 }

@@ -27,8 +27,10 @@ spring:
       quiet-period: 1s
 logging:
   level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+   # org.hibernate.SQL: DEBUG
+   # org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.security: DEBUG
+    de.hbrs.easyjob: DEBUG
 server:
   port: 8080
 vaadin:

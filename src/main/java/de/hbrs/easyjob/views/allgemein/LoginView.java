@@ -1,6 +1,9 @@
 package de.hbrs.easyjob.views.allgemein;
 
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.flow.server.VaadinServletResponse;
+import de.hbrs.easyjob.security.CustomSecurityContextRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.jaas.SecurityContextLoginModule;
@@ -26,8 +29,14 @@ import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER;
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @Route("login")
 @RouteAlias("")
@@ -39,6 +48,8 @@ public class LoginView extends VerticalLayout {
     private LoginController loginController;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private CustomSecurityContextRepository customSecurityContextRepository;
 
     public LoginView(){
         UI.getCurrent().getPage().addStyleSheet("LoginView.css");
@@ -130,9 +141,11 @@ public class LoginView extends VerticalLayout {
                 Authentication authentication = authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(username, password)
                 );
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
+                SecurityContext sc = SecurityContextHolder.getContext();
+                sc.setAuthentication(authentication);
+                HttpServletRequest request = VaadinServletRequest.getCurrent().getHttpServletRequest();
+                HttpServletResponse response = VaadinServletResponse.getCurrent().getHttpServletResponse();
+                customSecurityContextRepository.saveContext(sc, request, response);
 
                 if (hasRole(authentication, "ROLE_STUDENT")) {
                     UI.getCurrent().navigate("student");
@@ -147,38 +160,6 @@ public class LoginView extends VerticalLayout {
             }
         });
 
-//Wenn jemand auf einen Button drückt, wird der entsprechende Listener aktiv und startet das Event
-
-        /*logButton.addClickListener(e -> {
-            boolean authen = loginController.authenticate( validEmailField.getValue(), passwordField.getValue() );
-            if(authen){
-                //wenn die authentifizierung erfolgreich war, hole die Person aus dem Controller
-                Person person = loginController.getPerson();
-                // und speichere sie in der Session
-                grabAndSetPersonIntoSession(person);
-
-                UI ui = UI.getCurrent();
-
-                if (person instanceof Student){
-                    System.out.println("Es ist ein Student.");
-                    //weiter zur Studenten-Startseite
-                    ui.navigate("student");
-                }
-
-                if (person instanceof Unternehmensperson){
-                    System.out.println("Es ist eine Unternehmensperson.");
-                    //TODO: weiter zur Unternehmer-Startseite
-                    ui.navigate("unternehmen/unternehmenperson");
-                }
-                //es ist eine Person, aber kein Student oder Unternehmensperson
-                //hier kommt später die Weiterleitung zur Admin-Seite (Sprint 2)
-
-                //alte Methode von Rafi:
-                //logButton.getUI().ifPresent(ui ->
-                //        ui.navigate("StudentProfilView"));
-            }
-            //für false kommt hier später noch ein Fehlerhinweis an den Benutzer
-        });*/
 
 
         verButton.addClickListener(event -> {

@@ -13,6 +13,7 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.StudentProfilController;
 import de.hbrs.easyjob.entities.JobKategorie;
 import de.hbrs.easyjob.entities.Ort;
@@ -21,6 +22,7 @@ import de.hbrs.easyjob.repositories.StudentRepository;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.components.StudentLayout;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -55,14 +57,26 @@ public class StudentProfilView extends VerticalLayout {
     }
 
     public Student getCurrentStudent() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecurityContext context = (SecurityContext) VaadinSession.getCurrent()
+                .getAttribute(SecurityContext.class);
 
-        if (principal instanceof UserDetails) {
-            String username = ((UserDetails) principal).getUsername();
-            return studentRepository.findByEmail(username);
+        if (context != null && context.getAuthentication() != null) {
+            Object principal = context.getAuthentication().getPrincipal();
+            if (principal instanceof UserDetails) {
+                String username = ((UserDetails) principal).getUsername();
+                System.out.println("Username: " + username); // Logging
+                Student student = studentRepository.findByEmail(username);
+                if (student == null) {
+                    System.out.println("Kein Student mit dieser E-Mail gefunden."); // Logging
+                }
+                return student;
+            }
         }
+        System.out.println("SecurityContext oder Authentication ist null."); // Logging
         return null;
     }
+
+
     private void initializeView(){
         UI.getCurrent().getPage().addStyleSheet("StudentProfilView.css");
 
