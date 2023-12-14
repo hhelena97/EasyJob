@@ -2,7 +2,7 @@
 .SFiltern {
     width: 100%;
     background: var(--hintergrund-weiß);
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
 }
 
 .button-primary{
@@ -49,7 +49,7 @@ vaadin-button.button-secondary {
 }
 
 vaadin-multi-select-combo-box::part(chip){
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     color: var(--hintergrund-weiß);
     background-color: #A3336F;
     border-radius: var(--corner-radius);

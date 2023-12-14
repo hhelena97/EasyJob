@@ -2,7 +2,7 @@
 
 vaadin-dialog-overlay::part(header) {
     color: var(--text-almostblack);
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     font-size: 16px;
     font-style: normal;
     font-weight: 500;
@@ -11,7 +11,7 @@ vaadin-dialog-overlay::part(header) {
 
 vaadin-dialog-overlay::part(content) {
     color: var(--text-almostblack);
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 300;
@@ -27,7 +27,7 @@ vaadin-dialog-overlay::part(footer) {
     background-color: transparent;
     color : var(--signalfarben-rot);
     text-align: center;
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     font-size: 16px;
     font-style: normal;
     font-weight: 500;
@@ -39,7 +39,7 @@ vaadin-dialog-overlay::part(footer) {
     background: var(--studierende-dark);
     color: var(--hintergrund-weiß);
     text-align: center;
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     font-size: 16px;
     font-style: normal;
     font-weight: 500;
@@ -51,7 +51,7 @@ vaadin-dialog-overlay::part(footer) {
     background: var(--unternehmen-dark);
     color: var(--hintergrund-weiß);
     text-align: center;
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     font-size: 16px;
     font-style: normal;
     font-weight: 500;

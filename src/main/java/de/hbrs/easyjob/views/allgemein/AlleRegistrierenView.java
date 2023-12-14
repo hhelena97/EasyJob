@@ -11,6 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -53,8 +54,8 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
     private final Button cancel = new Button("Abbrechen");
     private final RadioButtonGroup<String> wahl = new RadioButtonGroup<>();
     private final TextField mail = new TextField("E-Mail");
-    private final TextField pw1 = new TextField("Passwort erstellen");
-    private final TextField pw2 = new TextField("Passwort wiederholen");
+    private final PasswordField pw1 = new PasswordField("Passwort erstellen");
+    private final PasswordField pw2 = new PasswordField("Passwort wiederholen");
     private final Checkbox checkbox = new Checkbox();
     private final VerticalLayout frame = new VerticalLayout();
 
@@ -115,19 +116,16 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
         wahl.addClassName("alle-registrieren");
 
         mail.setRequired(true);
+        mail.addValueChangeListener(event -> enableRegisterButton());
         pw1.setRequired(true);
+        pw1.setHelperText("Mind. 8 Zeichen, mind. 1 Großbuchstabe, mind. 1 Sonderzeichen");
+        pw1.addValueChangeListener(event -> enableRegisterButton());
         pw2.setRequired(true);
+        pw2.addValueChangeListener(event -> enableRegisterButton());
 
-
-        checkbox.addClassName("alle-registrieren");
-        checkbox.addValueChangeListener(event -> {
-            boolean isChecked = event.getValue();
-            if (isChecked) {
-                register.addClassName("register-checked");
-            } else {
-                register.removeClassName("register-checked");
-            }
-        });
+        checkbox.getStyle().set("--lumo-contrast-20pct","var(--icon-hellgrau)");
+        checkbox.getStyle().set("--lumo-primary-color","var(--studierende-dark)");
+        checkbox.addValueChangeListener(event -> enableRegisterButton());
 
         Button agbs = new Button("AGB und Datenschutzerklärung akzeptieren");
         agbs.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -137,12 +135,20 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
 
         HorizontalLayout agbHorizontalLayout = new HorizontalLayout(checkbox, agbs);
         agbHorizontalLayout.setSpacing(false);
-        //agbHorizontalLayout.setAlignItems(Alignment.CENTER);
         setAlignSelf(Alignment.CENTER, checkbox);
         setAlignSelf(Alignment.CENTER, agbs);
         setAlignSelf(Alignment.START, agbHorizontalLayout);
 
         frame.add(wahl, mail, pw1, pw2, agbHorizontalLayout);
+    }
+
+    private void enableRegisterButton() {
+        boolean allClear = !mail.isEmpty() && !pw1.isEmpty() && !pw2.isEmpty() && checkbox.getValue();
+        if (allClear) {
+            register.addClassName("register-checked");
+        } else {
+            register.removeClassName("register-checked");
+        }
     }
 
     private void setData(String email, String password) {
@@ -153,25 +159,64 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
 
     @Override
     public boolean checkRequirementsAndSave() {
-        if (!checkbox.getValue()) {
-            return false;
-        }
-
         String user = wahl.getValue();
-
-        if (wahl.isEmpty() || mail.isEmpty() || pw1.isEmpty() || pw2.isEmpty()) {
-            return false;
-        }
-
         String email = mail.getValue();
         String password = pw1.getValue();
         String passwordConfirmation = pw2.getValue();
 
-        if (!isValidEmail(email) || !isValidPassword(password) || !isValidPassword(passwordConfirmation)) {
-            return false;
+        //Eingaben prüfen
+        boolean hasError = false;
+        String pflichtFeld = "Bitte füllen Sie dieses Feld aus";
+        String falscheEingabe = "Eingabe ungültig";
+        String ungleichesPasswort = "Eingaben stimmen nicht überein";
+        if (!checkbox.getValue()) {
+            checkbox.getStyle().set("border", "1px solid red");
+            hasError = true;
+        } else {
+        checkbox.getStyle().remove("border");
         }
 
-        if (!password.equals(passwordConfirmation)) {
+        if (wahl.isEmpty()) {
+            wahl.setErrorMessage("Bitte wählen Sie eine der Optionen");
+            wahl.setInvalid(true);
+            hasError = true;
+        } else {
+            wahl.setInvalid(false);
+        }
+
+        if (mail.isEmpty()){
+            mail.setErrorMessage(pflichtFeld);
+            mail.setInvalid(true);
+            hasError = true;
+        }else if (!isValidEmail(email)) {
+            mail.setErrorMessage(falscheEingabe);
+            mail.setInvalid(true);
+            hasError = true;
+        }
+
+        if (pw1.isEmpty()){
+            pw1.setErrorMessage(pflichtFeld);
+            pw1.setInvalid(true);
+            hasError = true;
+        }else if (!isValidPassword(password)) {
+            pw1.setErrorMessage(falscheEingabe);
+            pw1.setInvalid(true);
+            hasError = true;
+        }
+
+        if (pw2.isEmpty()){
+            pw2.setErrorMessage(pflichtFeld);
+            pw2.setInvalid(true);
+            hasError = true;
+        }else if (!password.equals(passwordConfirmation)) {
+            pw1.setErrorMessage(ungleichesPasswort);
+            pw1.setInvalid(true);
+            pw2.setErrorMessage(ungleichesPasswort);
+            pw2.setInvalid(true);
+            hasError = true;
+        }
+
+        if(hasError){
             return false;
         }
 

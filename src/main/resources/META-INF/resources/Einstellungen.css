@@ -6,7 +6,7 @@
 
 .accounteinstellungen{
     color: var(--text-grau);
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     font-size: 18px;
     font-style: normal;
     font-weight: 600;
@@ -17,7 +17,7 @@ vaadin-button.deaktivieren {
     color: var(--signalfarben-rot);
     background-color: transparent;
     text-align: center;
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     font-size: 16px;
     font-style: normal;
     font-weight: 400;

@@ -3,7 +3,7 @@
 body {
     width: 100%;
     background: var(--hintergrund-weiß);
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
 }
 
 /* Constraints für Container für alle Inhalte */
@@ -115,17 +115,12 @@ vaadin-button.cancel-register {
 
 .agb {
     color: var(--text-grau);
-    font-family: Rubik;
+    font-family: Rubik, sans-serif;
     font-size: 16px;
     font-style: normal;
     font-weight: 500;
     line-height: 18px; /* 128.571% */
     letter-spacing: -0.165px;
-}
-
-vaadin-checkbox.alle-registrieren::part(checkbox)::after {
-    background-color: var(--studierende-dark);
-    --_checkbox-size: var(--vaadin-checkbox-size, calc(var(--lumo-size-s) / 2));
 }
 
 vaadin-radio-group.alle-registrieren > vaadin-radio-button[checked]::part(radio) {
@@ -176,4 +171,38 @@ vaadin-radio-group.alle-registrieren > vaadin-radio-button[checked]::part(radio)
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+vaadin-upload::part(file-list) {
+    display: none;
+}
+
+.file-info {
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: -0.165px;
+    color: var(--text-almostblack);
+}
+
+.remove-file {
+    color: var(--text-grau);
+    background-color: transparent;
+}
+
+vaadin-upload::part(file-list) {
+    display: none;
+}
+
+.file-info {
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: -0.165px;
+    color: var(--text-almostblack);
+}
+
+.remove-file {
+    color: var(--text-grau);
+    background-color: transparent;
 }
