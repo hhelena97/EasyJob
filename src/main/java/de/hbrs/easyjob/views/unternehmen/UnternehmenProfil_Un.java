@@ -17,13 +17,19 @@ import de.hbrs.easyjob.controllers.JobProfilController;
 import de.hbrs.easyjob.controllers.UnternehmenProfilController;
 import de.hbrs.easyjob.controllers.UnternehmensperonProfilController;
 import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Unternehmen;
+import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.JobRepository;
+import de.hbrs.easyjob.services.PersonService;
+import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Set;
 
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.START;
@@ -35,12 +41,13 @@ import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.ST
 @Route(value = "unternehmen/unternehmensprofil" , layout = UnternehmenLayout.class)
 public class UnternehmenProfil_Un extends VerticalLayout {
 
-    UnternehmensperonProfilController person = new UnternehmensperonProfilController();
-    Unternehmen unternehmenPerson = person.getUnternehmen();
+    private Unternehmensperson person ;
+    Unternehmen unternehmen;
 
-    private final JobRepository jobRepository;
-    UnternehmenProfilController unternehmen;
-
+    @Autowired
+    private final PersonService personService;
+    @Autowired
+    private final UnternehmenService unternehmenService;
     JobProfilController jobController = new JobProfilController();
 
     //Job Methode
@@ -48,10 +55,18 @@ public class UnternehmenProfil_Un extends VerticalLayout {
     Scroller scroller = new Scroller();
     HorizontalLayout jobs = new HorizontalLayout();
 
-    public UnternehmenProfil_Un(JobRepository jobRepository){
+    public UnternehmenProfil_Un(PersonService personService, UnternehmenService unternehmenService){
+        this.personService = personService;
+        person = (Unternehmensperson) personService.getCurrentPerson();
+        this.unternehmenService = unternehmenService;
+        unternehmen = person.getUnternehmen();
+        initializeView();
+    }
+
+    private void initializeView(){
         UI.getCurrent().getPage().addStyleSheet("unternehmenProfil_Un.css");
-        this.jobRepository = jobRepository;
-        unternehmen = new UnternehmenProfilController(jobRepository);
+
+
 
         addClassName("all");
         setSizeFull();
@@ -84,8 +99,8 @@ public class UnternehmenProfil_Un extends VerticalLayout {
 
         Div unternehmenIcon = new Div();
         unternehmenIcon.addClassName("unternehmenIcon");
-        if(unternehmen.getUnternehmensLogo(unternehmenPerson)  != null){
-            unternehmenIcon.add(new Image(unternehmen.getUnternehmensLogo(unternehmenPerson), "Logo"));
+        if(unternehmen.getLogo()  != null){
+            unternehmenIcon.add(new Image(unternehmen.getLogo(), "Logo"));
         }
         unternehmenIcon.add();
 
@@ -100,7 +115,7 @@ public class UnternehmenProfil_Un extends VerticalLayout {
 
         H1 grosseTitleUnternehmen = new H1();
         grosseTitleUnternehmen.addClassName("grosseTitleUnternehmen");
-        grosseTitleUnternehmen.add(unternehmen.getUnternehmensName(unternehmenPerson));
+        grosseTitleUnternehmen.add(unternehmen.getName());
 
 
         HorizontalLayout verifiziertplusIcon = new HorizontalLayout();
@@ -149,7 +164,7 @@ public class UnternehmenProfil_Un extends VerticalLayout {
         unternehmenBeschreibung.addClassName("job");
         H1 unternehmenBeschreibungText = new H1();
         unternehmenBeschreibungText.addClassName("jobBText");
-        unternehmenBeschreibungText.add(unternehmen.getUnternehmensBeschreibung(unternehmenPerson));
+        unternehmenBeschreibungText.add(unternehmen.getBeschreibung());
         unternehmenBeschreibung.add(unternehmenBeschreibungText);
 
 
@@ -162,14 +177,8 @@ public class UnternehmenProfil_Un extends VerticalLayout {
         jobsTitle.addClassName("title");
 
 
-        Set<Job> jobsUn =  unternehmen.getJobSet(unternehmenPerson);
-        for (Job jobSet:jobsUn
-             ) {
-
-            jobMeth(jobSet);
-
-        }
-
+        List<Job> jobsUn =  unternehmenService.getAllJobs(unternehmen.getId_Unternehmen());
+        jobsUn.forEach(this::jobMeth);
 
         //Job jobTest = new Job();
         //jobMeth(jobTest);
@@ -310,7 +319,7 @@ public class UnternehmenProfil_Un extends VerticalLayout {
 
         H1 titleIconsUnternehmen = new H1();
         titleIconsUnternehmen.addClassName("titleIcons");
-        titleIconsUnternehmen.add(unternehmen.getUnternehmensName(unternehmenPerson));
+        titleIconsUnternehmen.add(unternehmen.getName());
 
         IconFactory l = FontAwesome.Solid.MAP_MARKED_ALT;
         Icon ll =  l.create();

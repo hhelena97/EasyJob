@@ -27,16 +27,7 @@ public class UnternehmenProfilController {
     public String getUnternehmensBeschreibung(Unternehmen unternehmen){
         return unternehmen.getBeschreibung();
     }
-    public String getUnternehmensOrte(Unternehmen unternehmen){
 
-        String result = "";
-
-        Ort s = unternehmen.getStandorte().stream().findFirst().orElse(null);
-                result = s.getOrt() + " " + s.getPLZ();
-
-        return result;
-
-    }
     public Set<Branche> getUnternehmensBranchen(Unternehmen unternehmen){
         return unternehmen.getBranchen();
     }

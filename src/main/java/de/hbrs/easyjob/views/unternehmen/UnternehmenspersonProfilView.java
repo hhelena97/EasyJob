@@ -14,15 +14,31 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.UnternehmenProfilController;
 import de.hbrs.easyjob.controllers.UnternehmensperonProfilController;
+import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.services.PersonService;
+import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Route(value = "unternehmen/unternehmenperson", layout = UnternehmenLayout.class)
 public class UnternehmenspersonProfilView extends VerticalLayout {
 
-    UnternehmensperonProfilController person = new UnternehmensperonProfilController();
+    private Unternehmensperson person;
+    @Autowired
+    private final PersonService personService;
+    @Autowired
+    private final UnternehmenService unternehmenService;
     VerticalLayout personKontakt = new VerticalLayout();
-    UnternehmenspersonProfilView(){
+
+    public UnternehmenspersonProfilView(PersonService personService, UnternehmenService unternehmenService) {
+        this.personService = personService;
+        person = (Unternehmensperson) personService.getCurrentPerson();
+        this.unternehmenService = unternehmenService;
+        initializeView();
+    }
+
+    private void initializeView(){
         UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilView.css");
 
 
@@ -99,8 +115,7 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
         completeZeile("Email:" , person.getEmail());
         completeZeile("Telefon:", person.getTelefon());
 
-        UnternehmenProfilController u = new UnternehmenProfilController();
-        completeZeile("Büroanschrift:" , u.getUnternehmensOrte(person.getUnternehmen()));
+        completeZeile("Büroanschrift:" , unternehmenService.getUnternehmensOrte(person.getUnternehmen()));
 
 
 
@@ -109,9 +124,7 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
 
         add(personInfo,kon,personKontakt);
 
-
     }
-
     private void completeZeile(String title, String wert){
 
         HorizontalLayout titleH = new HorizontalLayout();
