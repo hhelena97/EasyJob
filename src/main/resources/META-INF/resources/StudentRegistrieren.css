@@ -33,23 +33,11 @@ vaadin-combo-box-item::part(checkmark)::before {
 }
 
 vaadin-combo-box-item[selected]{
-    background-color: var(--hintergrund-peachy);
+    background-color: transparent;
 }
 
 vaadin-combo-box-item:hover{
     background-color: var(--hintergrund-peachy);
-}
-
-vaadin-select::part(required-indicator)::before {
-    color: var(--studierende-dark);
-}
-
-vaadin-select[focus-ring]{
-    display: none;
-}
-
-vaadin-select-item::part(checkmark)::before {
-    color: var(--studierende-dark);
 }
 
 vaadin-multi-select-combo-box::part(required-indicator)::before {
@@ -65,13 +53,9 @@ vaadin-multi-select-combo-box-item::part(checkmark)::before{
 }
 
 vaadin-multi-select-combo-box-item[selected]{
-    background-color: var(--hintergrund-peachy);
+    background-color: transparent;
 }
 
 vaadin-multi-select-combo-box-item:hover{
     background-color: var(--hintergrund-peachy);
-}
-
-vaadin-checkbox::part(checkbox)::after {
-    background-color: var(--studierende-dark);
 }

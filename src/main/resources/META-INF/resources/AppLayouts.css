@@ -177,48 +177,6 @@ vaadin-combo-box-item:hover {
     background-color: transparent;
 }
 
-/* Style für Vaadin Select Box */
-vaadin-select {
-    width: 100%;
-}
-
-vaadin-select::part(input-field){
-    background-color: var(--icon-hellgrau);
-    border-radius: var(--corner-radius);
-}
-
-vaadin-select::part(label){
-    color: var(--text-almostblack);
-    font-family: Rubik, sans-serif;
-    font-size: 13px;
-    font-style: normal;
-    font-weight: 300;
-}
-
-vaadin-select[required]::part(required-indicator)::before {
-    content: "*";
-}
-
-vaadin-select[required]::part(required-indicator)::after {
-    display: none;
-}
-
-vaadin-select::part(toggle-button){
-    color: var(--text-grau);
-}
-
-vaadin-select-item::part(content) {
-    color: var(--text-almostblack);
-    font-family: Rubik, sans-serif;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-}
-
-vaadin-select-item:hover {
-    background-color: transparent;
-}
-
 /* Style für Vaadin Multi Select (mit Tags) */
 vaadin-multi-select-combo-box {
     width: 100%;
@@ -250,10 +208,6 @@ vaadin-multi-select-combo-box::part(chip) {
     gap: 3px
 }
 
-vaadin-multi-select-combo-box::part(chip)::part(remove-button)::before{
-    color:  var(--hintergrund-weiß);
-}
-
 vaadin-multi-select-combo-box::part(toggle-button){
     color: var(--text-grau);
 }
@@ -281,10 +235,6 @@ vaadin-checkbox > label {
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-}
-
-vaadin-checkbox::part(checkbox) {
-    background-color: var(--icon-hellgrau);
 }
 
 /* Style für Radio-Buttons */

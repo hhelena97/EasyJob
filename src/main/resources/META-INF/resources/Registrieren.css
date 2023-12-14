@@ -123,11 +123,6 @@ vaadin-button.cancel-register {
     letter-spacing: -0.165px;
 }
 
-vaadin-checkbox.alle-registrieren::part(checkbox)::after {
-    background-color: var(--studierende-dark);
-    --_checkbox-size: var(--vaadin-checkbox-size, calc(var(--lumo-size-s) / 2));
-}
-
 vaadin-radio-group.alle-registrieren > vaadin-radio-button[checked]::part(radio) {
     background-color: var(--studierende-dark);
 }

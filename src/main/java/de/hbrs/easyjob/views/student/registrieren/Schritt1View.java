@@ -1,7 +1,6 @@
 package de.hbrs.easyjob.views.student.registrieren;
 
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import de.hbrs.easyjob.entities.Student;
@@ -16,7 +15,7 @@ public class Schritt1View extends RegistrierenSchritt {
     private final TextField vorname = new TextField("Vorname");
     private final TextField nachname = new TextField("Nachname");
     private final TextField telefon = new TextField("Telefon");
-    private final Select<String> abschluss = new Select<>();
+    private final ComboBox<String> abschluss = new ComboBox<>("(Angestrebter) Abschluss");
     private final ComboBox<Studienfach> studiengang = new ComboBox<>("Studiengang");
     private final StudienfachRepository studienfachRepository;
     private final Student student;
@@ -43,8 +42,10 @@ public class Schritt1View extends RegistrierenSchritt {
         }
 
         //Combo-Boxen
-        abschluss.setLabel("(Angestrebter) Abschluss");
-        abschluss.setItems("Bachelor", "Master"); //TODO: initialen Wert setzen oder leer lassen verhindern
+        abschluss.setItems("Bachelor", "Master");
+        abschluss.setValue("Bachelor");
+        studiengang.setItems(studienfachRepository.findAllByAbschluss("Bachelor"));
+        studiengang.setItemLabelGenerator(Studienfach::getFach);
         abschluss.setRequiredIndicatorVisible(true);
         abschluss.addValueChangeListener(e ->
         {

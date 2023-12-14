@@ -123,7 +123,8 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
         pw2.setRequired(true);
         pw2.addValueChangeListener(event -> enableRegisterButton());
 
-        checkbox.addClassName("alle-registrieren");
+        checkbox.getStyle().set("--lumo-contrast-20pct","var(--icon-hellgrau)");
+        checkbox.getStyle().set("--lumo-primary-color","var(--studierende-dark)");
         checkbox.addValueChangeListener(event -> enableRegisterButton());
 
         Button agbs = new Button("AGB und Datenschutzerklärung akzeptieren");

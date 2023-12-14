@@ -45,24 +45,30 @@ public class Schritt2View extends RegistrierenSchritt {
 
     public void insertContent() {
 
+        berufsbezeichnung.getStyle().set("--lumo-contrast-60pct","--hintergrund-weiß");
         berufsbezeichnung.setItems(jobKategorieRepository.findAll());
         berufsbezeichnung.setItemLabelGenerator(JobKategorie::getKategorie);
         berufsbezeichnung.setValue(student.getJobKategorien());
 
+        branche.getStyle().set("--lumo-contrast-60pct","--hintergrund-weiß");
         branche.setItems(brancheRepository.findAll());
         branche.setItemLabelGenerator(Branche::getName);
         branche.setValue(student.getBranchen());
 
+        berufsfeld.getStyle().set("--lumo-contrast-60pct","--hintergrund-weiß");
         berufsfeld.setItems(berufsFelderRepository.findAll());
         berufsfeld.setItemLabelGenerator(BerufsFelder::getName);
         berufsfeld.setValue(student.getBerufsFelder());
 
+        standort.getStyle().set("--lumo-contrast-60pct","--hintergrund-weiß");
         standort.setItems(ortController.getOrtItemFilter(), ortController.getAlleOrte());
         standort.setItemLabelGenerator(ortController.getOrtItemLabelGenerator());
         standort.setRequired(true);
         standort.setValue(student.getOrte());
 
         homeOffice.setLabel("Ich bin offen für Home-Office");
+        homeOffice.getStyle().set("--lumo-contrast-20pct","var(--icon-hellgrau)");
+        homeOffice.getStyle().set("--lumo-primary-color","var(--studierende-dark)");
         setAlignSelf(Alignment.START, homeOffice);
         homeOffice.setValue(student.isHomeOffice());
 
