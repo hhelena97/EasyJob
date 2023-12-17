@@ -33,6 +33,7 @@ public class Schritt1View extends RegistrierenSchritt {
     public void insertContent() {
         unternehmenAnlegen.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
         unternehmenAnlegen.setItems("Nein, ich möchte ein neues Unternehmensprofil anlegen.", "Ja, ich gehöre zu:");
+        unternehmenAnlegen.setValue("Nein, ich möchte ein neues Unternehmensprofil anlegen.");
 
         unternehmenComboBox.addClassName("unternehmen-auswählen");
 
@@ -73,6 +74,7 @@ public class Schritt1View extends RegistrierenSchritt {
                 }
                 return false;
             } else {
+                if(unternehmensperson.getUnternehmen() != null) unternehmensperson.removeUnternehmen();
                 return true;
             }
         }

@@ -8,7 +8,7 @@ import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.views.components.ZurueckButtonText;
 
 
-@Route("abg")
+@Route("agb")
 @PageTitle("Allgemeine Geschäftsbedingungen")
 @StyleSheet("Registrieren.css")
 public class AGBView extends VerticalLayout {
@@ -21,7 +21,7 @@ public class AGBView extends VerticalLayout {
 
         ZurueckButtonText back = new ZurueckButtonText();
 
-        back.addClickListener(e -> {back.getUI().ifPresent(ui -> ui.navigate("registrieren"));});
+        back.addClickListener(e -> back.getUI().ifPresent(ui -> ui.navigate("registrieren")));
 
         Label agb = new Label("Allgemeine Geschäftsbedingungen (AGB):");
         agb.addClassName("agb");
