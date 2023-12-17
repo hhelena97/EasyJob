@@ -18,6 +18,8 @@ public class UnternehmenspersonController {
 
     @PostMapping
     public ResponseEntity<Unternehmensperson> createOrUpdateUnternehmensperson(@RequestBody Unternehmensperson unternehmensperson) {
+        //Account aktivieren
+        unternehmensperson.setAktiv(true);
         Unternehmensperson savedUnternehmensperson = unternehmenspersonService.saveUnternehmensperson(unternehmensperson);
         return new ResponseEntity<>(savedUnternehmensperson, HttpStatus.CREATED);
     }

@@ -18,6 +18,8 @@ public class UnternehmenController {
 
     @PostMapping
     public ResponseEntity<Unternehmen> createUnternehmen(@RequestBody Unternehmen unternehmen) {
+        //Profil aktivieren
+        unternehmen.setAktiv(true);
         Unternehmen savedUnternehmen = unternehmenService.saveUnternehmen(unternehmen);
         return new ResponseEntity<>(savedUnternehmen, HttpStatus.CREATED);
     }

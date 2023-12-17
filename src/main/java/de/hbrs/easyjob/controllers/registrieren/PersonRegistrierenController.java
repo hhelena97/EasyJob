@@ -36,8 +36,7 @@ public abstract class PersonRegistrierenController implements ValidationControll
                 ValidationController.isValidPassword(person.getPasswort()) &&
                 hasAcceptedAGB &&
                 ValidationController.isValidName(person.getVorname()) &&
-                ValidationController.isValidName(person.getNachname()) &&
-                ValidationController.isValidTelefonnummer(person.getTelefon());
+                ValidationController.isValidName(person.getNachname());
         if (isValidPerson) {
             // TODO: Prüfen ob Person in Datenbank gespeichert wurde
             personRepository.save(person);
