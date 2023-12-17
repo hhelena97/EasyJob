@@ -37,6 +37,8 @@ public class UnternehmenRegistrierenController implements ValidationController {
                 ValidationController.isValidOrt(unternehmen.getStandorte(), ortRepository) &&
                 ValidationController.isValidUnternehmensbeschreibung(unternehmen.getBeschreibung());
         if (ret) {
+            //Profil aktivieren
+            unternehmen.setAktiv(true);
             unternehmenRepository.save(unternehmen);
         }
         return ret;

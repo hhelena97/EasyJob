@@ -32,6 +32,8 @@ public class UnternehmenspersonRegistrierenController extends PersonRegistrieren
      * @return true, wenn Unternehmensperson angelegt wurde & false, wenn nicht
      */
     public boolean createUnternehmensperson(Unternehmensperson unternehmensperson, boolean hasAcceptedAGB) {
+        //Account aktivieren
+        unternehmensperson.setAktiv(true);
         return isValidUnternehmen(unternehmensperson.getUnternehmen()) && super.createPerson(unternehmensperson, hasAcceptedAGB);
     }
 

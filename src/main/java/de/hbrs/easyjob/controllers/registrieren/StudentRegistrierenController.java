@@ -49,6 +49,8 @@ public class StudentRegistrierenController extends PersonRegistrierenController 
      * @return ob der Student angelegt werden konnte
      */
     public boolean createStudent(Student student, boolean hasAcceptedAGB) {
+        //Account "aktivieren"
+        student.setAktiv(true);
         return ValidationController.isValidJobKategorie(student.getJobKategorien(), jobKategorieRepository) &&
                 ValidationController.isValidBranche(student.getBranchen(), brancheRepository) &&
                 ValidationController.isValidBerufsFeld(student.getBerufsFelder(), berufsFeldRepository) &&
