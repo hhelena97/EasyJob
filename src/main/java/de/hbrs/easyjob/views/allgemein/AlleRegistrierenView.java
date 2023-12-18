@@ -16,8 +16,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.controllers.OrtController;
-import de.hbrs.easyjob.controllers.registrieren.UnternehmenRegistrierenController;
-import de.hbrs.easyjob.controllers.registrieren.UnternehmenspersonRegistrierenController;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
@@ -34,8 +32,6 @@ import static de.hbrs.easyjob.controllers.ValidationController.isValidPassword;
 public class AlleRegistrierenView extends RegistrierenSchritt {
     // Controller
     private final OrtController ortController;
-    private final UnternehmenspersonRegistrierenController unternehmenspersonRegistrierenController;
-    private final UnternehmenRegistrierenController unternehmenRegistrierenController;
 
     // Entities
     private Person person;
@@ -48,6 +44,9 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
     private final PersonRepository personRepository;
     private final StudienfachRepository studienfachRepository;
     private final UnternehmenRepository unternehmenRepository;
+    private final JobRepository jobRepository;
+    private final UnternehmenspersonRepository unternehmenspersonRepository;
+
 
     // Components
     private final Button register = new Button("Jetzt Registrieren", new Icon(VaadinIcon.ARROW_RIGHT));
@@ -69,9 +68,8 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
             StudienfachRepository studienfachRepository,
             UnternehmenRepository unternehmenRepository,
             OrtController ortController,
-            UnternehmenspersonRegistrierenController unternehmenspersonRegistrierenController,
-            UnternehmenRegistrierenController unternehmenRegistrierenController
-    ) {
+            JobRepository jobRepository,
+            UnternehmenspersonRepository unternehmenspersonRepository) {
         this.berufsFeldRepository = berufsFeldRepository;
         this.brancheRepository = brancheRepository;
         this.jobKategorieRepository = jobKategorieRepository;
@@ -80,8 +78,8 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
         this.studienfachRepository = studienfachRepository;
         this.unternehmenRepository = unternehmenRepository;
         this.ortController = ortController;
-        this.unternehmenspersonRegistrierenController = unternehmenspersonRegistrierenController;
-        this.unternehmenRegistrierenController = unternehmenRegistrierenController;
+        this.jobRepository = jobRepository;
+        this.unternehmenspersonRepository = unternehmenspersonRepository;
 
         // Layout
         addClassName("body");
@@ -241,11 +239,12 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
             setData(email, password);
             removeAll();
             add(new de.hbrs.easyjob.views.unternehmen.registrieren.RegistrierenView(
-                    this.unternehmenspersonRegistrierenController,
-                    this.unternehmenRegistrierenController,
                     this.ortController,
                     this.brancheRepository,
+                    this.jobRepository,
                     this.unternehmenRepository,
+                    this.ortRepository,
+                    this.unternehmenspersonRepository,
                     (Unternehmensperson) this.person
             ));
             return true;

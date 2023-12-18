@@ -24,10 +24,14 @@ public class UnternehmenspersonService {
         } else {
             // Unternehmen existiert nicht, neues Unternehmen erstellen
             Unternehmen neuesUnternehmen = unternehmenService.savenewUnternehmen(unternehmensperson.getUnternehmen(), unternehmensperson);
+            //Unternehmensprofil aktivieren
+            neuesUnternehmen.setAktiv(true);
             unternehmensperson.setUnternehmen(neuesUnternehmen);
-            // Aktualisieren des Unternehmens mit der neuen Unternehmensperso
+            // Aktualisieren des Unternehmens mit der neuen Unternehmensperson
 
         }
+        //Account aktivieren
+        unternehmensperson.setAktiv(true);
 
         return unternehmenspersonRepository.save(unternehmensperson);
     }

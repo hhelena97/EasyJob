@@ -8,12 +8,11 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.hbrs.easyjob.controllers.OrtController;
-import de.hbrs.easyjob.controllers.registrieren.UnternehmenRegistrierenController;
-import de.hbrs.easyjob.controllers.registrieren.UnternehmenspersonRegistrierenController;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.repositories.BrancheRepository;
-import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import de.hbrs.easyjob.repositories.*;
+import de.hbrs.easyjob.services.UnternehmenService;
+import de.hbrs.easyjob.services.UnternehmenspersonService;
 import de.hbrs.easyjob.views.components.DialogLayout;
 import de.hbrs.easyjob.views.templates.RegistrierenSchritt;
 
@@ -21,9 +20,16 @@ import de.hbrs.easyjob.views.templates.RegistrierenSchritt;
 @StyleSheet("DialogLayout.css")
 @StyleSheet("UnternehmenRegistrieren.css")
 public class RegistrierenView extends VerticalLayout {
-    // Controller
-    private final UnternehmenRegistrierenController unternehmenRegistrierenController;
-    private final UnternehmenspersonRegistrierenController unternehmenspersonRegistrierenController;
+
+    // Repositories
+    UnternehmenspersonRepository unternehmenspersonRepository;
+    UnternehmenRepository unternehmenRepository;
+    OrtRepository ortRepository;
+    JobRepository jobRepository;
+
+    //Services
+    UnternehmenService unternehmenService;
+    UnternehmenspersonService unternehmenspersonService;
 
     // Entities
     private final Unternehmen unternehmen = new Unternehmen();
@@ -40,16 +46,19 @@ public class RegistrierenView extends VerticalLayout {
     private boolean neuesUnternehmen = false;
 
     public RegistrierenView(
-            UnternehmenspersonRegistrierenController unternehmenspersonRegistrierenController,
-            UnternehmenRegistrierenController unternehmenRegistrierenController,
             OrtController ortController,
             BrancheRepository brancheRepository,
+             JobRepository jobRepository,
             UnternehmenRepository unternehmenRepository,
+            OrtRepository ortRepository,
+            UnternehmenspersonRepository unternehmenspersonRepository,
             Unternehmensperson unternehmensperson
     ) {
-        this.unternehmenspersonRegistrierenController = unternehmenspersonRegistrierenController;
-        this.unternehmenRegistrierenController = unternehmenRegistrierenController;
+        this.ortRepository = ortRepository;
+        this.jobRepository = jobRepository;
+        this.unternehmenspersonRepository = unternehmenspersonRepository;
         this.unternehmensperson = unternehmensperson;
+        this.unternehmenRepository = unternehmenRepository;
 
         // Layout
         addClassName("body");
@@ -108,6 +117,7 @@ public class RegistrierenView extends VerticalLayout {
         add(frame);
     }
 
+
     public void updateButton() {
         if (currentView == views.length - 1) {
             next.setText("Fertig");
@@ -150,18 +160,13 @@ public class RegistrierenView extends VerticalLayout {
         } else if (currentView < views.length - 1) {
             frame.replace(views[currentView], views[++currentView]);
         } else {
-            // TODO: Save and redirect to login
-            if (neuesUnternehmen) {
-                if (!unternehmenRegistrierenController.createUnternehmen(unternehmen)) {
-                    // TODO: Error handling
-                    return;
-                }
+            //Unternehmensperson erstellen
+            unternehmenService = new UnternehmenService(unternehmenRepository, ortRepository, jobRepository);
+            unternehmenspersonService = new UnternehmenspersonService(unternehmenspersonRepository, unternehmenService);
+            if(neuesUnternehmen) {
+                unternehmensperson.setUnternehmen(unternehmen);
             }
-            unternehmensperson.setUnternehmen(unternehmen);
-            if (!unternehmenspersonRegistrierenController.createUnternehmensperson(unternehmensperson, true)) {
-                // TODO: Error handling
-                return;
-            }
+            unternehmenspersonService.saveUnternehmensperson(unternehmensperson);
 
             DialogLayout finishDialog = new DialogLayout(true);
             Button weiterZumLogin = new Button("Weiter zum Login");

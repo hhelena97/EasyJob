@@ -64,12 +64,11 @@ public class Schritt1View extends RegistrierenSchritt {
     @Override
     public boolean checkRequirementsAndSave() {
         String choice = unternehmenAnlegen.getValue();
-        Unternehmen selected = unternehmenComboBox.getValue();
         if (!unternehmenAnlegen.isEmpty()) {
             if (choice.equals("Ja, ich gehöre zu:")) {
                 if (!unternehmenComboBox.isEmpty()) {
-                    unternehmensperson.setUnternehmen(selected);
-                    unternehmen = selected;
+                    unternehmen = unternehmenComboBox.getValue();
+                    unternehmensperson.setUnternehmen(unternehmen);
                     return true;
                 }
                 return false;
