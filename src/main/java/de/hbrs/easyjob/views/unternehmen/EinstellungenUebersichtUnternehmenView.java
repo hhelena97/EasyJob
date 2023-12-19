@@ -14,18 +14,46 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.LogoutController;
+import de.hbrs.easyjob.views.allgemein.LoginView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+
+import javax.annotation.security.RolesAllowed;
 
 
 @Route("unternehmen/einstellungen")
 @StyleSheet("DialogLayout.css")
-public class EinstellungenUebersichtUnternehmenView extends Div {
+@RolesAllowed("ROLE_UNTERNEHMENSPERSON")
+public class EinstellungenUebersichtUnternehmenView extends Div implements BeforeEnterObserver {
 
     @Autowired
     private LogoutController logoutController;
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
+        if(context != null) {
+            Authentication auth = context.getAuthentication();
+            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
+                event.rerouteTo(LoginView.class);
+            }
+        } else {
+            event.rerouteTo(LoginView.class);
+        }
+    }
+
+    private boolean hasRole(Authentication auth) {
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_UNTERNEHMENSPERSON"));
+    }
+
     public EinstellungenUebersichtUnternehmenView() {
         UI.getCurrent().getPage().addStyleSheet("Einstellungen.css");
 

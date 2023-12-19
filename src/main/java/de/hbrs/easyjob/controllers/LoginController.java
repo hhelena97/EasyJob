@@ -2,22 +2,33 @@ package de.hbrs.easyjob.controllers;
 
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.repositories.PersonRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
+import java.util.Collections;
+
 //@Component
 @RestController
-@RequestMapping("/api/login")
-public class LoginController {
+@AllArgsConstructor
+//@RequestMapping("/api/login")
+public class LoginController{
 
     private Person person = null;
 
+    private String email;
     private final PersonRepository repository;
 
     @Autowired
-    public LoginController(PersonRepository personRepository){
-        this.repository = personRepository;
+    public LoginController(PersonRepository personRepository) {
+        repository=personRepository;
     }
 
 
@@ -35,8 +46,10 @@ public class LoginController {
 
         try {
             this.person = repository.findByEmail(email);
+            //UserDetails user = loadUserByUsername(email);
             //Verknüpft die Person mit der Person der Datenbank, die zu dieser E-Mail-Adresse gespeichert ist
             System.out.println("Datenbankverbindung erfolgreich.");
+            email=person.getEmail();
         } catch ( org.springframework.dao.DataAccessResourceFailureException e ) {
             System.out.println("Problem mit der Datenbankverbindung.");
             return false;
@@ -68,5 +81,8 @@ public class LoginController {
     //Zur Zurückgabe der gefundenen Person an die View
     public Person getPerson(){
         return this.person;
+    }
+    public String getEmail(){
+        return email;
     }
 }

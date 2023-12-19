@@ -14,7 +14,10 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
     Person findByEmail(String mail);
 
 
+
     @Query("SELECT p FROM Person p WHERE p in (SELECT up FROM Unternehmensperson up WHERE up.unternehmen.id_Unternehmen = :unternehmen)")
     List<Person> findAllByUnternehmenId(Integer unternehmen);
 
+    @Query("SELECT p FROM Person p")
+    List<Person> findAllPersons();
 }

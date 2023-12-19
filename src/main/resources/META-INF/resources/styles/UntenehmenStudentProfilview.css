@@ -1,18 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
 
 
-html{
-    box-sizing: border-box;
-    margin: 0;
-
-    --lumo-primary-text-color: rgba(163, 51, 111, 1);
-    --lumo-primary-color:  rgba(163, 51, 111, 1);
-
-}
 body {
     width: 100%;
     margin: 0;
-    font-family: Rubik, sans-serif;
+    font-family: Rubik;
 }
 
 .iconsProf{
@@ -41,7 +33,7 @@ body {
     margin:0;
     color: #000;
     text-align: center;
-    font-family: Rubik, sans-serif;
+    font-family: Rubik;
     font-size: 24px;
     font-style: normal;
     font-weight: 400;
@@ -79,6 +71,8 @@ body {
     justify-content: start;
     justify-items: start;
     text-align: start;
+
+
 }
 
 .zeileDiv{
@@ -89,10 +83,11 @@ body {
     margin-bottom: 20px;
     overflow-x: hidden;
     overflow-y: auto;
+
 }
 .badge{
     border-radius: 25px;
-    background:  rgba(254, 137, 151, 0.25);
+    background:  rgba(139, 206, 255, 0.25);;
     padding: 3px 6px;
     margin-right: 4px;
 
@@ -103,11 +98,5 @@ body {
     margin-bottom: 17px;
 }
 
-
-.imgTest{
-    background-image: url("images/my.png");
-    width: 74px;
-    height: 74px;
-}
 
 

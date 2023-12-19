@@ -42,4 +42,6 @@ public interface StudentRepository extends JpaRepository<Student, Integer> ,JpaS
 
     @Query("SELECT s FROM Student s")
     List<Student> findAllStudents();
+
+    Student findByEmail(String mail);
 }

@@ -10,13 +10,16 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.StellenanzeigeController;
 import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.Date;
 import java.util.List;
 
@@ -26,8 +29,27 @@ import java.util.List;
 @Route(value = "unternehmen", layout = UnternehmenLayout.class)
 @StyleSheet("Variables.css")
 @StyleSheet("ProfilView.css")
-public class ProfilView extends VerticalLayout implements HasUrlParameter<Integer> {
+@RolesAllowed("ROLE_UNTERNEHMENSPERSON")
+public class ProfilView extends VerticalLayout implements HasUrlParameter<Integer>, BeforeEnterObserver {
     private final StellenanzeigeController stellenanzeigeController;
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
+        if(context != null) {
+            Authentication auth = context.getAuthentication();
+            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
+                event.rerouteTo(LoginView.class);
+            }
+        } else {
+            event.rerouteTo(LoginView.class);
+        }
+    }
+
+    private boolean hasRole(Authentication auth) {
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_UNTERNEHMENSPERSON"));
+    }
 
     @Override
     public void setParameter(BeforeEvent event, Integer parameter) {

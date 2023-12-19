@@ -11,15 +11,20 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.hbrs.easyjob.controllers.JobProfilController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.services.UnternehmenService;
+import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.StudentLayout;
 import de.hbrs.easyjob.views.unternehmen.JobDetailsView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 
+import javax.annotation.security.RolesAllowed;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -30,8 +35,8 @@ import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.ST
 @Route(value = "UnternehmenProfile" , layout = StudentLayout.class)
 @RouteAlias(value = "u", layout = StudentLayout.class)
 @PageTitle("Unternehmen Profile")
-@AnonymousAllowed
-public class UnternehmenProfilView extends VerticalLayout implements HasUrlParameter<Integer> {
+@RolesAllowed("ROLE_STUDENT")
+public class UnternehmenProfilView extends VerticalLayout implements HasUrlParameter<Integer>, BeforeEnterObserver {
     //Job Methode
     Section sec = new Section();
     Scroller scroller = new Scroller();
@@ -44,7 +49,22 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
 
     JobProfilController jobController = new JobProfilController();
 
-
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
+        if(context != null) {
+            Authentication auth = context.getAuthentication();
+            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
+                event.rerouteTo(LoginView.class);
+            }
+        } else {
+            event.rerouteTo(LoginView.class);
+        }
+    }
+    private boolean hasRole(Authentication auth) {
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
+    }
 
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Integer unternehmenID) {

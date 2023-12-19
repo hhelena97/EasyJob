@@ -3,7 +3,10 @@ package de.hbrs.easyjob.controllers.registrieren;
 import de.hbrs.easyjob.controllers.ValidationController;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.repositories.PersonRepository;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
+
+import static de.hbrs.easyjob.security.SecurityConfig.getPasswordEncoder;
 
 /**
  * Controller für die Registrierung.
@@ -38,6 +41,10 @@ public abstract class PersonRegistrierenController implements ValidationControll
                 ValidationController.isValidName(person.getVorname()) &&
                 ValidationController.isValidName(person.getNachname());
         if (isValidPerson) {
+            // Passwort als Argon2 Hash speichern
+            Argon2PasswordEncoder encoder = getPasswordEncoder();
+            person.setPasswort(encoder.encode(person.getPasswort()));
+
             // TODO: Prüfen ob Person in Datenbank gespeichert wurde
             personRepository.save(person);
         }

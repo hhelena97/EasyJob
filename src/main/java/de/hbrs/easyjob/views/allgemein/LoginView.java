@@ -1,6 +1,18 @@
 package de.hbrs.easyjob.views.allgemein;
 
-
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.flow.server.VaadinServletResponse;
+import com.vaadin.flow.server.VaadinSession;
+import de.hbrs.easyjob.security.CustomSecurityContextRepository;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -9,29 +21,41 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import de.hbrs.easyjob.controllers.LoginController;
-import de.hbrs.easyjob.entities.Person;
-import de.hbrs.easyjob.entities.Student;
-import de.hbrs.easyjob.entities.Unternehmensperson;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER;
+
 
 @Route("login")
 @RouteAlias("")
 @PageTitle("Login | EasyJob")
 @AnonymousAllowed
 
-public class LoginView extends VerticalLayout {
+public class LoginView extends VerticalLayout implements BeforeEnterObserver {
+
     @Autowired
-    private LoginController loginController;
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private CustomSecurityContextRepository customSecurityContextRepository;
+
+    private void resetSessionAttributes() {
+        VaadinSession session = VaadinSession.getCurrent();
+        if (session != null) {
+            session.setAttribute(SecurityContext.class, null);
+        }
+    }
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        resetSessionAttributes();
+    }
 
 
     public LoginView(){
+        VaadinService.getCurrentResponse().setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        VaadinService.getCurrentResponse().setHeader("Pragma", "no-cache");
+        VaadinService.getCurrentResponse().setHeader("Expires", "-1");
         UI.getCurrent().getPage().addStyleSheet("LoginView.css");
 
 
@@ -113,38 +137,33 @@ public class LoginView extends VerticalLayout {
 
         add(v,fenster);
 
-//Wenn jemand auf einen Button drückt, wird der entsprechende Listener aktiv und startet das Event
 
         logButton.addClickListener(e -> {
-            boolean authen = loginController.authenticate( validEmailField.getValue(), passwordField.getValue() );
-            if(authen){
-                //wenn die authentifizierung erfolgreich war, hole die Person aus dem Controller
-                Person person = loginController.getPerson();
-                // und speichere sie in der Session
-                grabAndSetPersonIntoSession(person);
+            try {
+                String username = validEmailField.getValue();
+                String password = passwordField.getValue();
+                Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(username, password)
+                );
+                SecurityContext sc = SecurityContextHolder.getContext();
+                sc.setAuthentication(authentication);
+                HttpServletRequest request = VaadinServletRequest.getCurrent().getHttpServletRequest();
+                HttpServletResponse response = VaadinServletResponse.getCurrent().getHttpServletResponse();
+                customSecurityContextRepository.saveContext(sc, request, response);
 
-                UI ui = UI.getCurrent();
+                if (hasRole(authentication, "ROLE_STUDENT")) {
+                    UI.getCurrent().navigate("student");
+                } else if (hasRole(authentication, "ROLE_UNTERNEHMENSPERSON")) {
+                    UI.getCurrent().navigate("unternehmen/unternehmenperson");
+                } else {
 
-                if (person instanceof Student){
-                    System.out.println("Es ist ein Student.");
-                    //weiter zur Studenten-Startseite
-                    ui.navigate("student");
+                    Notification.show("Unbekannte Benutzerrolle.");
                 }
-
-                if (person instanceof Unternehmensperson){
-                    System.out.println("Es ist eine Unternehmensperson.");
-                    //TODO: weiter zur Unternehmer-Startseite
-                    ui.navigate("unternehmen/unternehmenperson");
-                }
-                //es ist eine Person, aber kein Student oder Unternehmensperson
-                //hier kommt später die Weiterleitung zur Admin-Seite (Sprint 2)
-
-                //alte Methode von Rafi:
-                //logButton.getUI().ifPresent(ui ->
-                //        ui.navigate("StudentProfilView"));
+            } catch (AuthenticationException ex) {
+                Notification.show("Authentifizierung fehlgeschlagen.");
             }
-            //für false kommt hier später noch ein Fehlerhinweis an den Benutzer
         });
+
 
 
         verButton.addClickListener(event -> {
@@ -166,10 +185,8 @@ public class LoginView extends VerticalLayout {
 
     }
 
-    //Hilfs-Methode um die Person in der Session zu speichern
-    private void grabAndSetPersonIntoSession(Person eingeloggtePerson) {
-        UI.getCurrent().getSession().setAttribute("current_User", eingeloggtePerson);
+    private boolean hasRole(Authentication auth, String role) {
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals(role));
     }
-
-
 }
