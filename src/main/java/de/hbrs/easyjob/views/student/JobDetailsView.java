@@ -4,8 +4,10 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.services.JobService;
+import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.StudentLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.component.button.Button;
@@ -13,20 +15,40 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.router.Route;
 
 import com.vaadin.flow.router.PageTitle;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 
+import javax.annotation.security.RolesAllowed;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Route(value = "job-details",layout = StudentLayout.class)
 @PageTitle("Job Details")
+@RolesAllowed("ROLE_STUDENT")
+public class JobDetailsView extends VerticalLayout implements HasUrlParameter<Integer>, BeforeEnterObserver{
+    @Autowired
+    private final JobService jobService;
 
-public class JobDetailsView extends VerticalLayout implements HasUrlParameter<Integer> {
-    private JobService jobService;
-
-    public JobDetailsView(@Autowired JobService jobService) {
+    public JobDetailsView( JobService jobService) {
         this.jobService = jobService;
     }
 
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
+        if(context != null) {
+            Authentication auth = context.getAuthentication();
+            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
+                event.rerouteTo(LoginView.class);
+            }
+        } else {
+            event.rerouteTo(LoginView.class);
+        }
+    }
+    private boolean hasRole(Authentication auth) {
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
+    }
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Integer jobID) {
         if (jobID != null) {

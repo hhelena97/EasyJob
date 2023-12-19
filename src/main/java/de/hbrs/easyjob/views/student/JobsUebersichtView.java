@@ -2,8 +2,6 @@ package de.hbrs.easyjob.views.student;
 
 import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
@@ -14,14 +12,21 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.services.JobService;
 import de.hbrs.easyjob.services.JobSucheService;
+import de.hbrs.easyjob.views.allgemein.LoginView;
 import org.springframework.beans.factory.annotation.Autowired;
 import de.hbrs.easyjob.views.components.StudentLayout;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+
+import javax.annotation.security.RolesAllowed;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -30,7 +35,9 @@ import java.util.List;
 
 @Route(value = "student/jobs-finden", layout = StudentLayout.class)
 @StyleSheet("JobList.css")
-public class JobsUebersichtView extends VerticalLayout {
+@RolesAllowed("ROLE_STUDENT")
+public class JobsUebersichtView extends VerticalLayout implements BeforeEnterObserver {
+
 
     private final JobService jobService;
     private final JobSucheService jobSucheService;
@@ -38,16 +45,34 @@ public class JobsUebersichtView extends VerticalLayout {
 
 
     @Autowired
+
     public JobsUebersichtView(JobService jobService, JobSucheService jobSucheService ) {
         this.jobService = jobService;
         this.jobSucheService = jobSucheService;
         initializeView();
     }
 
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
+        if(context != null) {
+            Authentication auth = context.getAuthentication();
+            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
+                event.rerouteTo(LoginView.class);
+            }
+        } else {
+            event.rerouteTo(LoginView.class);
+        }
+    }
+    private boolean hasRole(Authentication auth) {
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
+    }
+
     private void initializeView() {
         addClassName("jobs-view");
 
-        //setSizeFull();
+
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.START);
 
@@ -153,7 +178,6 @@ public class JobsUebersichtView extends VerticalLayout {
         titleIconsLocation.add(job.getOrt().getOrt());
 
         if (job.isHomeOffice()){
-            IconFactory g = FontAwesome.Solid.HOME;
             Icon gg =  new Icon(VaadinIcon.HOME);
             gg.addClassName("iconsInJobIcons");
             H1 homeOffice = new H1();

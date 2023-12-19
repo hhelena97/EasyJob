@@ -7,23 +7,44 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeLeaveEvent;
-import com.vaadin.flow.router.BeforeLeaveObserver;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.DeaktivierenConfirmDialog;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+
+import javax.annotation.security.RolesAllowed;
 
 @Route("student/einstellungen/account")
 @PageTitle("Accounteinstellungen")
 @StyleSheet("Registrieren.css")
 @StyleSheet("DialogLayout.css")
-public class EinstellungenAccountStudentView extends VerticalLayout implements BeforeLeaveObserver {
+@RolesAllowed("ROLE_STUDENT")
+public class EinstellungenAccountStudentView extends VerticalLayout implements BeforeLeaveObserver, BeforeEnterObserver {
 
     private final ProfilDeaktivierenController profilDeaktivieren;
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
+        if(context != null) {
+            Authentication auth = context.getAuthentication();
+            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
+                event.rerouteTo(LoginView.class);
+            }
+        } else {
+            event.rerouteTo(LoginView.class);
+        }
+    }
+    private boolean hasRole(Authentication auth) {
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
+    }
 
     public EinstellungenAccountStudentView(PersonRepository personRepository, UnternehmenRepository unternehmenRepository) {
         this.profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository);

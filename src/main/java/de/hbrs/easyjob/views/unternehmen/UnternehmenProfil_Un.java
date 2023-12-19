@@ -9,9 +9,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.hbrs.easyjob.controllers.JobProfilController;
 import de.hbrs.easyjob.controllers.UnternehmenProfilController;
@@ -23,9 +22,13 @@ import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
+import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 
+import javax.annotation.security.RolesAllowed;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -39,7 +42,8 @@ import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.ST
 @PageTitle("Unternehmen Profil")
 @AnonymousAllowed
 @Route(value = "unternehmen/unternehmensprofil" , layout = UnternehmenLayout.class)
-public class UnternehmenProfil_Un extends VerticalLayout {
+@RolesAllowed("ROLE_UNTERNEHMENSPERSON")
+public class UnternehmenProfil_Un extends VerticalLayout implements BeforeEnterObserver {
 
     private Unternehmensperson person ;
     Unternehmen unternehmen;
@@ -54,6 +58,24 @@ public class UnternehmenProfil_Un extends VerticalLayout {
     Section sec = new Section();
     Scroller scroller = new Scroller();
     HorizontalLayout jobs = new HorizontalLayout();
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
+        if(context != null) {
+            Authentication auth = context.getAuthentication();
+            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
+                event.rerouteTo(LoginView.class);
+            }
+        } else {
+            event.rerouteTo(LoginView.class);
+        }
+    }
+
+    private boolean hasRole(Authentication auth) {
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_UNTERNEHMENSPERSON"));
+    }
 
     public UnternehmenProfil_Un(PersonService personService, UnternehmenService unternehmenService){
         this.personService = personService;

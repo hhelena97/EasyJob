@@ -3,6 +3,7 @@ package de.hbrs.easyjob.services;
 import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Transient;
 import org.springframework.stereotype.Service;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Ort;

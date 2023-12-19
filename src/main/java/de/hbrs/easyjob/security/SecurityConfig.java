@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .securityContextRepository(customSecurityContextRepository)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/login", "/registrieren", "/passwortVergessen").permitAll()
                 .antMatchers("/student/**").hasRole("STUDENT")
                 .antMatchers("/unternehmen/**").hasRole("UNTERNEHMENSPERSON")
                 .and()
@@ -37,7 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login").permitAll()
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .sessionFixation().migrateSession()
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false);
     }
@@ -57,5 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static Argon2PasswordEncoder getPasswordEncoder() {
         return new Argon2PasswordEncoder(16, 32, 2, 60000, 10);
     }
+
 
 }
