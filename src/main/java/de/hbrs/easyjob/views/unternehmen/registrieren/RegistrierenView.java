@@ -15,6 +15,7 @@ import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.services.UnternehmenspersonService;
 import de.hbrs.easyjob.views.components.DialogLayout;
 import de.hbrs.easyjob.views.templates.RegistrierenSchritt;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @StyleSheet("Registrieren.css")
 @StyleSheet("DialogLayout.css")
@@ -28,8 +29,8 @@ public class RegistrierenView extends VerticalLayout {
     JobRepository jobRepository;
 
     //Services
-    UnternehmenService unternehmenService;
-    UnternehmenspersonService unternehmenspersonService;
+    @Autowired
+    private final UnternehmenspersonService unternehmenspersonService;
 
     // Entities
     private final Unternehmen unternehmen = new Unternehmen();
@@ -48,15 +49,16 @@ public class RegistrierenView extends VerticalLayout {
     public RegistrierenView(
             OrtController ortController,
             BrancheRepository brancheRepository,
-             JobRepository jobRepository,
+            JobRepository jobRepository,
             UnternehmenRepository unternehmenRepository,
             OrtRepository ortRepository,
-            UnternehmenspersonRepository unternehmenspersonRepository,
+            UnternehmenspersonRepository unternehmenspersonRepository, UnternehmenspersonService unternehmenspersonService,
             Unternehmensperson unternehmensperson
     ) {
         this.ortRepository = ortRepository;
         this.jobRepository = jobRepository;
         this.unternehmenspersonRepository = unternehmenspersonRepository;
+        this.unternehmenspersonService = unternehmenspersonService;
         this.unternehmensperson = unternehmensperson;
         this.unternehmenRepository = unternehmenRepository;
 
@@ -160,9 +162,6 @@ public class RegistrierenView extends VerticalLayout {
         } else if (currentView < views.length - 1) {
             frame.replace(views[currentView], views[++currentView]);
         } else {
-            //Unternehmensperson erstellen
-            unternehmenService = new UnternehmenService(unternehmenRepository, ortRepository, jobRepository);
-            unternehmenspersonService = new UnternehmenspersonService(unternehmenspersonRepository, unternehmenService);
             if(neuesUnternehmen) {
                 unternehmensperson.setUnternehmen(unternehmen);
             }

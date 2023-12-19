@@ -20,6 +20,8 @@ import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.*;
+import de.hbrs.easyjob.services.UnternehmenService;
+import de.hbrs.easyjob.services.UnternehmenspersonService;
 import de.hbrs.easyjob.views.templates.RegistrierenSchritt;
 
 import static de.hbrs.easyjob.controllers.ValidationController.isValidEmail;
@@ -47,7 +49,8 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
     private final JobRepository jobRepository;
     private final UnternehmenspersonRepository unternehmenspersonRepository;
 
-
+    // Services
+    private final UnternehmenspersonService unternehmenspersonService;
     // Components
     private final Button register = new Button("Jetzt Registrieren", new Icon(VaadinIcon.ARROW_RIGHT));
     private final Button cancel = new Button("Abbrechen");
@@ -69,7 +72,7 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
             UnternehmenRepository unternehmenRepository,
             OrtController ortController,
             JobRepository jobRepository,
-            UnternehmenspersonRepository unternehmenspersonRepository) {
+            UnternehmenspersonRepository unternehmenspersonRepository, UnternehmenspersonService unternehmenspersonService) {
         this.berufsFeldRepository = berufsFeldRepository;
         this.brancheRepository = brancheRepository;
         this.jobKategorieRepository = jobKategorieRepository;
@@ -80,6 +83,7 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
         this.ortController = ortController;
         this.jobRepository = jobRepository;
         this.unternehmenspersonRepository = unternehmenspersonRepository;
+        this.unternehmenspersonService = unternehmenspersonService;
 
         // Layout
         addClassName("body");
@@ -245,6 +249,7 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
                     this.unternehmenRepository,
                     this.ortRepository,
                     this.unternehmenspersonRepository,
+                    unternehmenspersonService,
                     (Unternehmensperson) this.person
             ));
             return true;
