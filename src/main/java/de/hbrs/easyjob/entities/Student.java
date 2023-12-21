@@ -19,24 +19,41 @@ import java.util.Set;
 @PrimaryKeyJoinColumn(name = "id_FK_Person")
 public class Student extends Person {
 
-    @Column(name= "Home_Office")
-    private boolean homeOffice;
+//Studenten haben:
 
     @ManyToOne
     @JoinColumn(name = "FK_Studienfach")
     private Studienfach studienfach;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "Student_JobKategorie",
+    @JoinTable(name = "Student_Faehigkeit",
             joinColumns = @JoinColumn(name = "id_Student"),
-            inverseJoinColumns = @JoinColumn(name = "id_Job_Kategorie"))
-    private Set<JobKategorie> jobKategorien=  new HashSet<>();
+            inverseJoinColumns = @JoinColumn(name = "id_Faehigkeit"))
+    private Set<Faehigkeit> faehigkeiten =  new HashSet<>();
 
+    @Column(name = "Freitext", length = 4000)
+    private String freitext;
+
+//Studenten suchen:
+
+//Bereitschaft zu Homeoffice:
+    @Column(name= "Home_Office")
+    private boolean homeOffice;
+
+//mögliche Arbeitsorte:
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "Student_Ort",
             joinColumns = @JoinColumn(name = "id_Student"),
             inverseJoinColumns = @JoinColumn(name = "id_Ort"))
     private Set<Ort> orte=new HashSet<>();
+
+
+//Welche Art von Job:
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "Student_JobKategorie",
+            joinColumns = @JoinColumn(name = "id_Student"),
+            inverseJoinColumns = @JoinColumn(name = "id_Job_Kategorie"))
+    private Set<JobKategorie> jobKategorien=  new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "Student_Branche",
@@ -57,14 +74,18 @@ public class Student extends Person {
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
         return Objects.equals(studienfach, student.studienfach) &&
-                Objects.equals(jobKategorien, student.jobKategorien) &&
+                Objects.equals(faehigkeiten, student.faehigkeiten) &&
+                Objects.equals(freitext, student.freitext) &&
+                Objects.equals(homeOffice, student.homeOffice) &&
                 Objects.equals(orte, student.orte) &&
+                Objects.equals(jobKategorien, student.jobKategorien) &&
                 Objects.equals(branchen, student.branchen) &&
                 Objects.equals(berufsFelder, student.berufsFelder);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(studienfach, jobKategorien, orte, branchen, berufsFelder);
+        return Objects.hash(studienfach, faehigkeiten, freitext,
+                homeOffice, orte, jobKategorien, branchen, berufsFelder);
     }
 }
