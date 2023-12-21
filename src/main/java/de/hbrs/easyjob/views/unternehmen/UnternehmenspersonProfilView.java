@@ -106,7 +106,10 @@ public class UnternehmenspersonProfilView extends VerticalLayout implements Befo
         Icon pen =new Icon(VaadinIcon.PENCIL);
         pen.addClassName("iconsProf");
 
-        iconsProf.add(link,pen);
+        RouterLink link2 = new RouterLink(UnternehmenspersonProfilBearbeitungView.class);
+        link2.add(pen);
+
+        iconsProf.add(link,link2);
 
 
         //Profil Bild

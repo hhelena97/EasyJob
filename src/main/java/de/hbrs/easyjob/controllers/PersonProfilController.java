@@ -44,5 +44,27 @@ public PersonProfilController(PersonRepository personRepository){
         return person.getFoto();
     }
 
+    public void setVorname(String vorname){
+        Person person;
+        person = (Person) UI.getCurrent().getSession().getAttribute("current_User");
+        person.setVorname(vorname);
+    }
 
+    public void setNachname(String nachname){
+        Person person;
+        person = (Person) UI.getCurrent().getSession().getAttribute("current_User");
+        person.setNachname(nachname);
+    }
+
+    public void setTelefon(String telefon){
+        Person person;
+        person = (Person) UI.getCurrent().getSession().getAttribute("current_User");
+        person.setTelefon(telefon);
+    }
+
+    public void setEmail(String email){
+        Person person;
+        person = (Person) UI.getCurrent().getSession().getAttribute("current_User");
+        person.setEmail(email);
+    }
 }
