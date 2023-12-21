@@ -33,6 +33,7 @@ public class Schritt1View extends RegistrierenSchritt {
     public void insertContent() {
         unternehmenAnlegen.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
         unternehmenAnlegen.setItems("Nein, ich möchte ein neues Unternehmensprofil anlegen.", "Ja, ich gehöre zu:");
+        unternehmenAnlegen.setValue("Nein, ich möchte ein neues Unternehmensprofil anlegen.");
 
         unternehmenComboBox.addClassName("unternehmen-auswählen");
 
@@ -63,16 +64,16 @@ public class Schritt1View extends RegistrierenSchritt {
     @Override
     public boolean checkRequirementsAndSave() {
         String choice = unternehmenAnlegen.getValue();
-        Unternehmen selected = unternehmenComboBox.getValue();
         if (!unternehmenAnlegen.isEmpty()) {
             if (choice.equals("Ja, ich gehöre zu:")) {
                 if (!unternehmenComboBox.isEmpty()) {
-                    unternehmensperson.setUnternehmen(selected);
-                    unternehmen = selected;
+                    unternehmen = unternehmenComboBox.getValue();
+                    unternehmensperson.setUnternehmen(unternehmen);
                     return true;
                 }
                 return false;
             } else {
+                if(unternehmensperson.getUnternehmen() != null) unternehmensperson.removeUnternehmen();
                 return true;
             }
         }

@@ -35,4 +35,8 @@ public class Unternehmensperson extends Person {
     public int hashCode() {
         return Objects.hash(unternehmen);
     }
+
+    public void removeUnternehmen() {
+        unternehmen = null;
+    }
 }

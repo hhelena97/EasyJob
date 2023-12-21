@@ -115,7 +115,7 @@ public interface ValidationController {
      * @return true, wenn Vorname gültig ist & false, wenn nicht
      */
     static boolean isValidName(String name) {
-        // TODO: an Test Cases aus ValidationControllerTest anpassen -> (mehrere) Zweitnamen zulassen
+        // TODO: an Test Cases aus ValidationControllerTest anpassen -> (mehrere) Zweitnamen zulassen, Umlaute zulassen!, Nur "-" als Namen nicht zulassen!
         String nameRegex = "^[a-zA-Z\\-]{1,32}$";
 
         Pattern pattern = Pattern.compile(nameRegex);
