@@ -71,7 +71,7 @@ public class LoginController{
         if (eingabePW.equals(dbPW)){
             //prüft, ob das Passwort zum gespeicherten Passwort passt
             System.out.println("Passwort stimmt.");
-            System.out.println(this.person.toString());
+            //System.out.println(this.person.toString());
             return true;
         }
         //Sonstiges Problem

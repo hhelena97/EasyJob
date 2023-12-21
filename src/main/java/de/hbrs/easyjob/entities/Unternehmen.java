@@ -19,33 +19,24 @@ public class Unternehmen {
     @Column(name = "id_Unternehmen")
     private Integer id_Unternehmen;
 
-    @Column(name = "Name")
-    private String name;
-
-    @Column(name = "Kontaktdaten")
-    private String kontaktdaten;
-
-    @Column(name = "Beschreibung", length = 800)
-    private String beschreibung;
-
-
-    @Column(name = "Logo")
-    private String logo;
-
-    @Column(name = "Aktiv")
-    private boolean aktiv;
-
-    @Column(name = "bezahlt")
-    private boolean bezahlt;
-
+    //der "Manager", der das Unternehmen anlegt
     @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "FK_Person")
     private Unternehmensperson unternehmensperson;
 
-    @ManyToOne
-    @JoinColumn(name = "FK_Bezahlung")
-    private Bezahlung bezahlung;
+    @Column(name = "Name")
+    private String name;
+
+    @Column(name = "Logo")
+    private String logo;
+
+    @Column(name = "Bild")
+    private String bild;
+
+    //Adresse des Stammsitzes oder der Personalabteilung
+    @Column(name = "Kontaktdaten")
+    private String kontaktdaten;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -63,6 +54,12 @@ public class Unternehmen {
     )
     private Set<Branche> branchen;
 
+    @Column(name = "Beschreibung", length = 800)
+    private String beschreibung;
+
+    @Column(name = "Aktiv")
+    private boolean aktiv;
+
 
     @Override
     public boolean equals(Object o) {
@@ -70,18 +67,20 @@ public class Unternehmen {
         if (o == null || getClass() != o.getClass()) return false;
         Unternehmen unternehmen = (Unternehmen) o;
         return Objects.equals(id_Unternehmen, unternehmen.id_Unternehmen) &&
+                Objects.equals(unternehmensperson, unternehmen.unternehmensperson) &&
                 Objects.equals(name, unternehmen.name) &&
-                Objects.equals(kontaktdaten, unternehmen.kontaktdaten) &&
-                Objects.equals(beschreibung, unternehmen.beschreibung) &&
                 Objects.equals(logo, unternehmen.logo) &&
+                Objects.equals(bild, unternehmen.bild) &&
+                Objects.equals(kontaktdaten, unternehmen.kontaktdaten) &&
                 Objects.equals(standorte, unternehmen.standorte) &&
-                Objects.equals(bezahlt, unternehmen.bezahlt) &&
-                Objects.equals(aktiv, unternehmen.aktiv) &&
-                Objects.equals(branchen, unternehmen.branchen);
+                Objects.equals(branchen, unternehmen.branchen) &&
+                Objects.equals(beschreibung, unternehmen.beschreibung) &&
+                Objects.equals(aktiv, unternehmen.aktiv);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id_Unternehmen, name, kontaktdaten, beschreibung, logo, standorte, bezahlt, aktiv ,branchen);
+        return Objects.hash(id_Unternehmen, unternehmensperson, name, logo, bild, kontaktdaten, standorte,
+                branchen, beschreibung);
     }
 }
