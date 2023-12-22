@@ -57,6 +57,9 @@ public class EinstellungenAccountStudentView extends VerticalLayout implements B
 
         Label ueber = new Label("Accounteinstellungen");
 
+        System.out.println("EinstellungenAccountStudentView");
+        System.out.println("Session: " + VaadinSession.getCurrent());
+
         Button deaktivieren = new Button("Account deaktivieren", e -> deaktivierenDialog.openDialogOverlay());
 
 

@@ -49,6 +49,7 @@ public class LogoutController {
         System.out.println("Ausloggen-Methode aufgerufen");
         System.out.println("Request: " + request);
         System.out.println("Response: " + response);
+        System.out.println("Session: " + VaadinSession.getCurrent());
 
         if(context != null) {
             Authentication auth = context.getAuthentication();

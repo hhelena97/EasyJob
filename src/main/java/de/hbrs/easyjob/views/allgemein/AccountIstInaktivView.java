@@ -11,14 +11,17 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinServletResponse;
+import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.LogoutController;
 import de.hbrs.easyjob.repositories.PersonRepository;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Route("account-inaktiv")
 @PageTitle("Inaktives Profil")
+@RolesAllowed({"ROLE_UNTERNEHMENSPERSON", "ROLE_STUDENT"})
 public class AccountIstInaktivView extends VerticalLayout {
 
     private LogoutController logoutController;
@@ -49,11 +52,13 @@ public class AccountIstInaktivView extends VerticalLayout {
             System.out.println("Ausloggen-Knopf bei Inaktiv geklickt");
             System.out.println("Request: " + request);
             System.out.println("Response: " + response);
+            System.out.println("Session: " + VaadinSession.getCurrent());
 
             this.logoutController.logout(request, response);
             UI.getCurrent().navigate(LoginView.class);      // mit dieser Zeile wird die Session invalidiert
                                                             // ohne die Zeile wird die Session nicht invalidiert... :(
             System.out.println("Ausgeloggt");
+            System.out.println("Session: " + VaadinSession.getCurrent());
             }
         );
 

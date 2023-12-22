@@ -106,7 +106,8 @@ public class EinstellungenUebersichtStudentView extends Div implements BeforeEnt
 
         dialog.setHeaderTitle("Wirklich ausloggen? ");
 
-
+        System.out.println("EinstellungenUebersichtStudentView");
+        System.out.println("Session: " + VaadinSession.getCurrent());
 
         Button auslogButton = new Button("Ausloggen.");
         auslogButton.addClassName("confirm");
@@ -117,6 +118,7 @@ public class EinstellungenUebersichtStudentView extends Div implements BeforeEnt
             System.out.println("Ausloggen-Knopf bei Übersicht geklickt");
             System.out.println("Request: " + request);
             System.out.println("Response: " + response);
+            System.out.println("Session: " + VaadinSession.getCurrent());
 
             logoutController.logout(request, response);
         });
