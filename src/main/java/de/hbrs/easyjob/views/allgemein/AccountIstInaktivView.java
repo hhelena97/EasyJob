@@ -9,8 +9,13 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.flow.server.VaadinServletResponse;
 import de.hbrs.easyjob.controllers.LogoutController;
 import de.hbrs.easyjob.repositories.PersonRepository;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Route("account-inaktiv")
 @PageTitle("Inaktives Profil")
@@ -36,8 +41,11 @@ public class AccountIstInaktivView extends VerticalLayout {
         ausloggen.addClassName("ausloggen");
 
         ausloggen.addClickListener(e -> ausloggen.getUI().ifPresent(ui -> {
-                    new LogoutController(personRepository).logout();
-                    System.out.println("Ausgeloggt"); ui.navigate("login");
+                    //new LogoutController(personRepository).logout();
+                    HttpServletRequest request = VaadinServletRequest.getCurrent().getHttpServletRequest();
+                    HttpServletResponse response = VaadinServletResponse.getCurrent().getHttpServletResponse();
+                    logoutController.logout(request, response);
+                    System.out.println("Ausgeloggt"); //ui.navigate("login");
                 }
         ));
 
@@ -46,7 +54,6 @@ public class AccountIstInaktivView extends VerticalLayout {
         verticalLayout.setAlignItems(Alignment.CENTER);
         verticalLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         verticalLayout.setSpacing(false);
-
 
         add(verticalLayout);
     }

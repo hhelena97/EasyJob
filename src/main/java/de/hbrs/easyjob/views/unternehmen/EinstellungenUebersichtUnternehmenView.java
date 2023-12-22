@@ -18,6 +18,8 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.flow.server.VaadinServletResponse;
 import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.LogoutController;
 import de.hbrs.easyjob.views.allgemein.LoginView;
@@ -26,6 +28,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 @Route("unternehmen/einstellungen")
@@ -106,11 +110,9 @@ public class EinstellungenUebersichtUnternehmenView extends Div implements Befor
         Button auslogButton = new Button("Ausloggen.");
         auslogButton.addClassName("confirm");
         auslogButton.addClickListener(e -> {
-            dialog.close();
-            auslogButton.getUI().ifPresent(ui ->{
-                logoutController.logout();
-            }
-        );
+            HttpServletRequest request = VaadinServletRequest.getCurrent().getHttpServletRequest();
+            HttpServletResponse response = VaadinServletResponse.getCurrent().getHttpServletResponse();
+            logoutController.logout(request, response);
         });
 
         dialog.getFooter().add(auslogButton);

@@ -29,4 +29,11 @@ public class CustomSecurityContextRepository extends HttpSessionSecurityContextR
         SecurityContext vaadinContext = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
         return vaadinContext != null ? vaadinContext : context;
     }
+
+    public void clearContext() {
+        VaadinSession session = VaadinSession.getCurrent();
+        if (session != null) {
+            session.setAttribute(SecurityContext.class, null);
+        }
+    }
 }
