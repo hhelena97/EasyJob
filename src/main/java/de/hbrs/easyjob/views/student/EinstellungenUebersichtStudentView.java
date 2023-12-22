@@ -113,6 +113,11 @@ public class EinstellungenUebersichtStudentView extends Div implements BeforeEnt
         auslogButton.addClickListener(e -> {
             HttpServletRequest request = VaadinServletRequest.getCurrent().getHttpServletRequest();
             HttpServletResponse response = VaadinServletResponse.getCurrent().getHttpServletResponse();
+
+            System.out.println("Ausloggen-Knopf bei Übersicht geklickt");
+            System.out.println("Request: " + request);
+            System.out.println("Response: " + response);
+
             logoutController.logout(request, response);
         });
 

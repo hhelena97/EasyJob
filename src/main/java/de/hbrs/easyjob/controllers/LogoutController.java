@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@RestController
+@Controller
 public class LogoutController {
 
     @Autowired
@@ -45,6 +45,11 @@ public class LogoutController {
     public void logout (HttpServletRequest request, HttpServletResponse response) {
 
         SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
+
+        System.out.println("Ausloggen-Methode aufgerufen");
+        System.out.println("Request: " + request);
+        System.out.println("Response: " + response);
+
         if(context != null) {
             Authentication auth = context.getAuthentication();
 

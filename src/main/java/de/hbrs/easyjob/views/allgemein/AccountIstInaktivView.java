@@ -24,7 +24,8 @@ public class AccountIstInaktivView extends VerticalLayout {
     private LogoutController logoutController;
     private PersonRepository personRepository;
 
-    public AccountIstInaktivView() {
+    public AccountIstInaktivView(LogoutController logoutController) {
+        this.logoutController = logoutController;
         UI.getCurrent().getPage().addStyleSheet("AccountIstInaktiv.css");
 
         H2 inaktiv = new H2("Ihr Account ist inaktiv.");
@@ -40,14 +41,21 @@ public class AccountIstInaktivView extends VerticalLayout {
         ausloggen.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         ausloggen.addClassName("ausloggen");
 
-        ausloggen.addClickListener(e -> ausloggen.getUI().ifPresent(ui -> {
-                    //new LogoutController(personRepository).logout();
-                    HttpServletRequest request = VaadinServletRequest.getCurrent().getHttpServletRequest();
-                    HttpServletResponse response = VaadinServletResponse.getCurrent().getHttpServletResponse();
-                    logoutController.logout(request, response);
-                    System.out.println("Ausgeloggt"); //ui.navigate("login");
-                }
-        ));
+        ausloggen.addClickListener(e -> {
+
+            HttpServletRequest request = VaadinServletRequest.getCurrent().getHttpServletRequest();
+            HttpServletResponse response = VaadinServletResponse.getCurrent().getHttpServletResponse();
+
+            System.out.println("Ausloggen-Knopf bei Inaktiv geklickt");
+            System.out.println("Request: " + request);
+            System.out.println("Response: " + response);
+
+            this.logoutController.logout(request, response);
+            UI.getCurrent().navigate(LoginView.class);      // mit dieser Zeile wird die Session invalidiert
+                                                            // ohne die Zeile wird die Session nicht invalidiert... :(
+            System.out.println("Ausgeloggt");
+            }
+        );
 
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.add(inaktiv, reaktivieren, oder, ausloggen);
