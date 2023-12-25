@@ -20,7 +20,8 @@ public class UnternehmenspersonController {
     public ResponseEntity<Unternehmensperson> createOrUpdateUnternehmensperson(@RequestBody Unternehmensperson unternehmensperson) {
         //Account aktivieren
         unternehmensperson.setAktiv(true);
-        Unternehmensperson savedUnternehmensperson = unternehmenspersonService.saveUnternehmensperson(unternehmensperson);
-        return new ResponseEntity<>(savedUnternehmensperson, HttpStatus.CREATED);
+        //Unternehmensperson savedUnternehmensperson = unternehmenspersonService.saveUnternehmensperson(unternehmensperson);
+      //  return new ResponseEntity<>(savedUnternehmensperson, HttpStatus.CREATED);
+        return null;
     }
 }

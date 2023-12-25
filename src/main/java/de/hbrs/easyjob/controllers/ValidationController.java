@@ -33,7 +33,6 @@ public interface ValidationController {
      * @return true, wenn Passwort gültig ist & false, wenn nicht
      */
     static boolean isValidPassword(String password) {
-        // TODO: password richtig erkennen
         return passwordHaveCorrectLength(password) &&
                 passwordHasUpperAndLowerCase(password) &&
                 passwordHasSpecialCharacters(password) &&
@@ -115,8 +114,10 @@ public interface ValidationController {
      * @return true, wenn Vorname gültig ist & false, wenn nicht
      */
     static boolean isValidName(String name) {
-        // TODO: an Test Cases aus ValidationControllerTest anpassen -> (mehrere) Zweitnamen zulassen
-        String nameRegex = "^[a-zA-Z\\-]{1,32}$";
+        String nameRegex = "^(?=.{2,32}$)"
+                            + "^[A-Za-zäöüÄÖÜßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ]"
+                            + "+([ -][A-Za-zäöüÄÖÜßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ]+)"
+                            + "*( [A-Za-zäöüÄÖÜßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ]+\\.)?$";
 
         Pattern pattern = Pattern.compile(nameRegex);
         Matcher matcher = pattern.matcher(name);
@@ -179,9 +180,9 @@ public interface ValidationController {
      * @return true, wenn Telefonnummer gültig ist & false, wenn nicht
      */
     static boolean isValidTelefonnummer(String telefonnummer) {
-        // TODO: Telefonnummern mit Bindestrichen und Leerzeichen anpassen (siehe ValidationControllerTest)
         // Erkennung von korrekten deutschen Telefonnummern mit oder ohne Ländervorwahl und mit oder ohne Leerzeichen oder Bindestriche
-        String telefonnummerRegex = "^(\\+49|0)[\\s\\-]?[1-9][0-9]{6,14}$";
+        String telefonnummerRegex = "^(\\+49(?!0)\\s?|0)(\\d{2,}([\\s-]?\\d{2,}([\\s-]?\\d{5,})?)?)$";
+
 
         // Erzeuge ein Pattern-Objekt
         Pattern pattern = Pattern.compile(telefonnummerRegex);

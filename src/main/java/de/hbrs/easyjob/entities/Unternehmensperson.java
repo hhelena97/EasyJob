@@ -19,7 +19,7 @@ import java.util.Objects;
 public class Unternehmensperson extends Person {
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "FK_Unternehmen")
     private Unternehmen unternehmen;
 
@@ -38,5 +38,9 @@ public class Unternehmensperson extends Person {
     @Override
     public int hashCode() {
         return Objects.hash(unternehmen, anschrift);
+    }
+
+    public void removeUnternehmen() {
+        unternehmen = null;
     }
 }

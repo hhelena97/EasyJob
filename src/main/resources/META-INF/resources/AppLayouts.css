@@ -255,6 +255,8 @@ vaadin-radio-group > vaadin-radio-button::part(radio) {
     background-color: var(--icon-hellgrau);
 }
 
+/*Style für Vaadin Text-Area*/
+
 vaadin-text-area {
     height: 245px;
     width: 100%;
@@ -271,6 +273,14 @@ vaadin-text-area::part(label){
     font-size: 13px;
     font-style: normal;
     font-weight: 300;
+}
+
+vaadin-text-area[required]::part(required-indicator)::before {
+    content: "*";
+}
+
+vaadin-text-area[required]::part(required-indicator)::after {
+    display: none;
 }
 
 vaadin-text-area > textarea {

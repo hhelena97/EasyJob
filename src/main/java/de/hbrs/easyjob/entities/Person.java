@@ -40,10 +40,6 @@ public class Person {
     @Column(name = "Aktiv")
     private Boolean aktiv;
 
-
-
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -21,7 +21,7 @@ public class Unternehmen {
 
     //der "Manager", der das Unternehmen anlegt
     @JsonManagedReference
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(/*cascade = CascadeType.ALL*/)
     @JoinColumn(name = "FK_Person")
     private Unternehmensperson unternehmensperson;
 
@@ -80,7 +80,6 @@ public class Unternehmen {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id_Unternehmen, unternehmensperson, name, logo, bild, kontaktdaten, standorte,
-                branchen, beschreibung);
+        return Objects.hash(id_Unternehmen, name, kontaktdaten, beschreibung, logo, standorte, aktiv ,branchen);
     }
 }
