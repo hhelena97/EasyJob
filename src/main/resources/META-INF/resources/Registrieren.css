@@ -159,12 +159,26 @@ vaadin-radio-group.alle-registrieren > vaadin-radio-button[checked]::part(radio)
     object-fit: cover;
 }
 
+/*Logo*/
+
+.logo-frame {
+    position: relative;
+    width: 241px;
+    height: 241px;
+    border-radius: var(--corner-radius);
+    padding: 1px;
+    margin: -1px;
+}
+
 .picture-square {
     width: 241px;
     height: 241px;
     border-radius: var(--corner-radius);
-    border: 3px solid var(--unternehmen-dark);
     overflow: hidden;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
 }
 
 .picture-square img {
@@ -172,6 +186,8 @@ vaadin-radio-group.alle-registrieren > vaadin-radio-button[checked]::part(radio)
     height: 100%;
     object-fit: cover;
 }
+
+/*Upload*/
 
 vaadin-upload::part(file-list) {
     display: none;

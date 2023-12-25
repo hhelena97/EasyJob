@@ -50,17 +50,16 @@ public class UnternehmenService {
     public Ort getFirstStandort(Unternehmen unternehmen) {
         return unternehmen.getStandorte().stream().findFirst().orElse(null);
     }
+    @Transactional
     public Unternehmen savenewUnternehmen(Unternehmen unternehmen, Unternehmensperson unternehmensperson) {
         Set<Ort> aktualisierteStandorte = new HashSet<>();
         for (Ort ort : unternehmen.getStandorte()) {
             Ort gefundenerOrt = ortRepository.findByPLZAndOrt(ort.getPLZ(),ort.getOrt());
-            if (gefundenerOrt ==null){
-                gefundenerOrt = ortRepository.save(new Ort(ort.getPLZ(),ort.getOrt()));
-            }
             aktualisierteStandorte.add(gefundenerOrt);
         }
         unternehmen.setStandorte(aktualisierteStandorte);
         unternehmen.setUnternehmensperson(unternehmensperson);
+        unternehmen.setAktiv(true);
         return unternehmenRepository.save(unternehmen);
     }
     public List<Branche> getAllBranchen() {
