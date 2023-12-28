@@ -1,10 +1,7 @@
 package de.hbrs.easyjob.controllers;
 
 import com.vaadin.flow.server.VaadinSession;
-
-import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.security.CustomSecurityContextRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -21,16 +18,6 @@ public class LogoutController {
     private CustomSecurityContextRepository customSecurityContextRepository;
 
     public LogoutController() {}
-
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // Bitte löschen, sobald die Tests für die richtige Methode logout() fertig sind. :)
-    private PersonRepository personRepository;
-    public LogoutController(PersonRepository personRepository) {
-        this.personRepository = personRepository;
-    }
-    // -----------------------------------------------------------------------------------------------------------------
-
 
     /**
      * Die Methode logout() wird aufgerufen, wenn der Benutzer sich ausloggen möchte.
@@ -60,11 +47,4 @@ public class LogoutController {
             }
         }
     }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // Bitte löschen, sobald die Tests für die richtige Methode logout() fertig sind. :)
-    public boolean logout() {
-        return true;
-    }
-    // -----------------------------------------------------------------------------------------------------------------
 }

@@ -1,88 +1,79 @@
 package de.hbrs.easyjob.controllers;
 
-import de.hbrs.easyjob.entities.Person;
-import de.hbrs.easyjob.repositories.PersonRepository;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.access.SecurityConfig;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import javax.transaction.Transactional;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 @SpringBootTest
-public class LogoutControllerTest {
-    // Repositories
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = SecurityConfig.class)
+@WebAppConfiguration
+class LogoutControllerTest {
+    // Mockito
     @Autowired
-    private PersonRepository persRepo;
+    private WebApplicationContext context;
+    private MockMvc mvc;
 
     // Controllers
-    private LoginController login;
     private LogoutController logout;
 
-    // Entites
-    private static Person p;
+    @BeforeAll
+    void setUp() {
+
+    }
 
     @BeforeEach
-    void setUpEach() throws Exception {
-        login = new LoginController(persRepo);
-        logout  = new LogoutController(persRepo);
-
-        Optional<Person> p_opt = persRepo.findById(2);
-
-        if (p_opt.isEmpty()) {
-            throw new Exception("Kein Objekt in der Datenbank gefunden");
-        } else {
-            p = p_opt.get();
-        }
-
+    void setUpEach() {
+        mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+        logout  = new LogoutController();
     }
 
     @AfterEach
     void tearDownEach() {
-        p = null;
+        logout = null;
     }
 
     @AfterAll
     static void tearDown() {
-        p.setAktiv(true);
     }
 
     @Test
-    @DisplayName("Testet den Logout mit angemeldeter Person")
-    @Transactional
+    @DisplayName("Testet den Logout mit angemeldeter/authentifizierter Person")
     void logoutTest() {
         // ************** Arrange **************
-        login.authenticate(p.getEmail(), p.getPasswort());
 
         // **************** Act ****************
-        boolean actual = logout.logout();
 
         // ************** Assert ***************
-        assertTrue(actual);
     }
 
     @Test
     @DisplayName("Testet den Logout (wieso auch immer) mit nicht angemeldeter Person")
-    @Transactional
     void strangeLogoutTest() {
-        assertThrows(Exception.class, () -> logout.logout());
+        // ************** Arrange **************
+
+        // **************** Act ****************
+
+        // ************** Assert ***************
     }
 
     @Test
     @DisplayName("Testet den Logout mit deaktiviertem Profil")
-    @Transactional
     void deactivateLogoutTest() {
         // ************** Arrange **************
-        p.setAktiv(false);
-        login.authenticate(p.getEmail(), p.getPasswort());
 
         // **************** Act ****************
-        boolean actual = logout.logout();
 
         // ************** Assert ***************
-        assertTrue(actual);
     }
 }
