@@ -1,46 +1,41 @@
 package de.hbrs.easyjob.controllers;
 
+import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.flow.server.VaadinServletResponse;
+import com.vaadin.flow.server.VaadinSession;
+import de.hbrs.easyjob.security.CustomSecurityContextRepository;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.access.SecurityConfig;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = SecurityConfig.class)
-@WebAppConfiguration
 class LogoutControllerTest {
-    // Mockito
     @Autowired
-    private WebApplicationContext context;
-    private MockMvc mvc;
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private CustomSecurityContextRepository customSecurityContextRepository;
 
     // Controllers
-    private LogoutController logout;
+    @Autowired
+    private LogoutController logoutController;
 
     @BeforeAll
-    void setUp() {
+    static void setUp() {
 
     }
 
     @BeforeEach
     void setUpEach() {
-        mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
-        logout  = new LogoutController();
-    }
-
-    @AfterEach
-    void tearDownEach() {
-        logout = null;
     }
 
     @AfterAll
@@ -51,10 +46,42 @@ class LogoutControllerTest {
     @DisplayName("Testet den Logout mit angemeldeter/authentifizierter Person")
     void logoutTest() {
         // ************** Arrange **************
+        // Einloggen mit Testdaten (siehe LoginView.java)
+        String username = "julia.weber@uni-hamburg.de";
+        String password = "Studium2023!";
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(authentication);
+
+        VaadinServletRequest mockRequest = Mockito.mock(VaadinServletRequest.class);
+        VaadinServletResponse mockResponse = Mockito.mock(VaadinServletResponse.class);
+        VaadinSession mockSession = Mockito.mock(VaadinSession.class);
+
+        Mockito.mockStatic(VaadinSession.class).when(VaadinSession::getCurrent).thenReturn(mockSession);
+
+        SecurityContext[] securityContext = {sc};
+
+        Mockito.when(mockSession.getAttribute(SecurityContext.class)).thenReturn(securityContext[0]);
+        
+        Mockito.doAnswer(invocation -> {
+            securityContext[0] = invocation.getArgument(1);
+            return null;
+        }).when(mockSession).setAttribute(Mockito.eq(SecurityContext.class), Mockito.any(SecurityContext.class));
+
+        customSecurityContextRepository.saveContext(sc, mockRequest, mockResponse);
+
+        assertNotNull(customSecurityContextRepository.loadContext(mockRequest).get().getAuthentication());
 
         // **************** Act ****************
+        // Ausloggen
+        logoutController.logout(mockRequest, mockResponse);
 
         // ************** Assert ***************
+        // Überprüfen, ob die Person ausgeloggt ist
+        assertNull(customSecurityContextRepository.loadContext(mockRequest).get().getAuthentication());
     }
 
     @Test
