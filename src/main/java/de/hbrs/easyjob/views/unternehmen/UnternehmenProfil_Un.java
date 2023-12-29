@@ -127,6 +127,7 @@ public class UnternehmenProfil_Un extends VerticalLayout implements BeforeEnterO
         unternehmenIcon.add();
 
 
+
         VerticalLayout unternehmenInfoRecht = new VerticalLayout();
         unternehmenInfoRecht.addClassName("unternehmenInfoRecht");
         unternehmenInfoRecht.setWidth(getMaxWidth());
@@ -172,13 +173,15 @@ public class UnternehmenProfil_Un extends VerticalLayout implements BeforeEnterO
 
 
 
-        IconFactory pen = VaadinIcon.PENCIL;
-        Icon penIcon =  pen.create();
-        penIcon.addClassName("penIcon");
+        Icon pen =new Icon(VaadinIcon.PENCIL);
+        pen.addClassName("iconsProf");
+
+        RouterLink bearbeiten = new RouterLink(UnternehmensprofilBearbeiten.class);
+        bearbeiten.add(pen);
 
 
 
-        unternehmenInfo.add(unternehmenIcon,unternehmenInfoRecht,penIcon);
+        unternehmenInfo.add(unternehmenIcon,unternehmenInfoRecht,bearbeiten);
 
 
         //unternehmen Beschreibung
