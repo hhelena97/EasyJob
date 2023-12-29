@@ -2,23 +2,34 @@ package de.hbrs.easyjob.views.unternehmen;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.UnternehmensperonProfilController;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
+import de.hbrs.easyjob.views.components.FileUpload;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
+import de.hbrs.easyjob.views.unternehmen.registrieren.Schritt3View;
+import de.hbrs.easyjob.views.unternehmen.registrieren.Schritt5View;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.InputStream;
+
+import static de.hbrs.easyjob.controllers.ValidationController.isValidEmail;
 
 
 @StyleSheet("Registrieren.css")
@@ -36,6 +47,7 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     TextField nachname;
     TextField email;
     TextField telefon;
+    Image profilBild2;
     VerticalLayout personKontakt = new VerticalLayout();
 
     UnternehmenspersonProfilBearbeitungView(PersonService personService, UnternehmenService unternehmenService){
@@ -56,21 +68,66 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
         setSpacing(false);
 
 
-        //Profil Bild
-        Div profilBild = new Div();
-        profilBild.addClassName("profilBild");
-        if(person.getFoto() != null){
-            profilBild.add(new Image(person.getFoto(), "EasyJob"));
-        }
+        //Bildrahmen
+        Div rahmen = new Div();
+        rahmen.addClassName("profile-picture-frame");
+        Image ellipse = new Image("images/Ellipse-Lila-Groß.png", "Bildumrandung");
+        ellipse.addClassName("profile-picture-background");
+        rahmen.add(ellipse);
+
+        //Platzhalter Bild
+        Image platzhalterBild = new Image(person.getFoto(), "EasyJob");
+        profilBild2 = platzhalterBild;
+        Div bildDiv = new Div(platzhalterBild);
+        platzhalterBild.addClassName("picture-round");
+        rahmen.add(bildDiv);
+
+        //Bild bearbeiten Button
+        Button bildBearbeiten = new Button("Bild bearbeiten(optional)", new Icon(VaadinIcon.PENCIL));
+        bildBearbeiten.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        bildBearbeiten.addClassName("cancel");
+
+        //Setup Upload
+        MemoryBuffer buffer = new MemoryBuffer();
+        Upload upload = new Upload(buffer);
+        upload.setDropAllowed(false);
+        upload.setAcceptedFileTypes("image/jpeg", "image/jpg, image/png");
+        upload.setUploadButton(bildBearbeiten);
+        Div uploadListe = new Div();
+
+        //Profilbild Upload
+        upload.addSucceededListener(event -> {
+            InputStream fileData = buffer.getInputStream();
+            String fileName = event.getFileName();
+
+            //Custom Upload Liste
+            Div fileInfo = new Div();
+            fileInfo.setText(fileName);
+            fileInfo.addClassName("file-info");
+            Button remove = new Button(new Icon(VaadinIcon.CLOSE));
+            remove.addClassName("remove-file");
+            remove.addThemeVariants(ButtonVariant.LUMO_SMALL);
+            HorizontalLayout dateiName = new HorizontalLayout(fileInfo, remove);
+            dateiName.setAlignItems(Alignment.CENTER);
+
+            //Profilbild entsprechend wechseln
+            Image neuesBild = FileUpload.squareImageUpload(fileData, fileName, 242);
+            upload.addAllFinishedListener(e ->{
+                profilBild2 = neuesBild;
+                uploadListe.add(dateiName);
+                neuesBild.addClassName("picture-round");
+                bildDiv.replace(platzhalterBild, neuesBild);});
+            bildBearbeiten.addClassName("cancel-disabled");
+            remove.addClickListener(e -> {
+                profilBild2 = platzhalterBild;
+                upload.clearFileList();
+                bildDiv.replace(neuesBild, platzhalterBild);
+                dateiName.removeAll();
+                bildBearbeiten.addClassName("cancel");
+            });
+        });
 
 
-        //Link zu Bild Bearbeitung
-        H2 bildBearbeiten = new H2("Bild bearbeiten");
-        bildBearbeiten.addClassName("bildBearbeiten");
-
-
-        // RouterLink linkUnternehmen = new RouterLink(UnternehmenProfil_Un.class);
-     //   linkUnternehmen.add(unternehmenProfil);
 
 
         //Person Info
@@ -117,10 +174,9 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
 
 
 
+       // personInfo.add(profilBild,bildBearbeiten);
+        personInfo.add(rahmen, upload, uploadListe);
 
-
-
-        personInfo.add(profilBild,bildBearbeiten);
 
         add(personInfo,kon,personKontakt);
     }
@@ -140,7 +196,7 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
 
         TextField textField = new TextField();
         textField.addClassName("feld");
-        textField.setPlaceholder(wert);
+        textField.setValue(wert);
         //textField.setClearButtonVisible(true);
 
 
@@ -157,22 +213,24 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     }
 
     private void updateInfos(){
-        System.out.println("Hi" + vorname.getValue());
-        if(vorname.getValue() != null){
             person.setVorname(vorname.getValue());
-        }
 
-        if(nachname.getValue() != null){
             person.setNachname(nachname.getValue());
-        }
-        if(email.getValue() != null){
+
+        if(isValidEmail(email.getValue())){
             person.setEmail(email.getValue());
-        }
-        if(telefon.getValue() != null){
-            person.setTelefon(telefon.getValue());
+            UI.getCurrent().getPage().setLocation("/unternehmen/unternehmenperson");
+        }else {
+
+            Notification.show("falscheEingabe");
         }
 
-        UI.getCurrent().getPage().setLocation("/unternehmen/unternehmenperson");
+
+        person.setTelefon(telefon.getValue());
+        person.setFoto(profilBild2.getSrc());
+
+        personService.savePerson(person);
+
     }
 
 
