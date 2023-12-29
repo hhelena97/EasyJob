@@ -5,6 +5,7 @@ import com.vaadin.flow.server.VaadinServletResponse;
 import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.security.CustomSecurityContextRepository;
 import org.junit.jupiter.api.*;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,74 +15,77 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@SuppressWarnings("unchecked")
 class LogoutControllerTest {
+    // Manager und Repository aus der LoginView, um einen Login zu simulieren
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private CustomSecurityContextRepository customSecurityContextRepository;
 
-    // Controllers
+    // Controller
     @Autowired
     private LogoutController logoutController;
-
-    @BeforeAll
-    static void setUp() {
-
-    }
-
-    @BeforeEach
-    void setUpEach() {
-    }
-
-    @AfterAll
-    static void tearDown() {
-    }
 
     @Test
     @DisplayName("Testet den Logout mit angemeldeter/authentifizierter Person")
     void logoutTest() {
         // ************** Arrange **************
-        // Einloggen mit Testdaten (siehe LoginView.java)
-        String username = "julia.weber@uni-hamburg.de";
-        String password = "Studium2023!";
 
+        /*
+         * Hier wird als 1. Schritt der Login wie in der LoginView simuliert, damit man eine authentifizierte Person
+         * hat, mit der der Logout getestet wird.
+         */
+
+        // Testdaten von einer Person, die in der Datenbank existiert
+        String username_echte_person = "nina.becker@uni-bonn.de";
+        String password_echte_person = "NinaMINT2023";
+
+        // Authentifizierungsschritt aus der LoginView
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
+                new UsernamePasswordAuthenticationToken(username_echte_person, password_echte_person)
         );
-        SecurityContext sc = SecurityContextHolder.getContext();
-        sc.setAuthentication(authentication);
 
+        // SecurityContext definieren und authentication setzen
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authentication);
+
+        SecurityContext[] securityContextField = {securityContext};
+
+        // VaadinSession mocken
         VaadinServletRequest mockRequest = Mockito.mock(VaadinServletRequest.class);
         VaadinServletResponse mockResponse = Mockito.mock(VaadinServletResponse.class);
         VaadinSession mockSession = Mockito.mock(VaadinSession.class);
 
-        Mockito.mockStatic(VaadinSession.class).when(VaadinSession::getCurrent).thenReturn(mockSession);
+        // Hier wird festgelegt, dass, sobald man eine VaadinSession abfragt, die gemockte VaadinSession ausgegeben wird
+        MockedStatic mockedStatic = Mockito.mockStatic(VaadinSession.class);
+        mockedStatic.when(VaadinSession::getCurrent).thenReturn(mockSession);
 
-        SecurityContext[] securityContext = {sc};
+        // Hier soll der zuvor definierte SecurityContext der gemockten Session zugeordnet werden
+        Mockito.when(mockSession.getAttribute(SecurityContext.class)).thenReturn(securityContextField[0]);
 
-        Mockito.when(mockSession.getAttribute(SecurityContext.class)).thenReturn(securityContext[0]);
-        
         Mockito.doAnswer(invocation -> {
-            securityContext[0] = invocation.getArgument(1);
+            securityContextField[0] = invocation.getArgument(1);
             return null;
         }).when(mockSession).setAttribute(Mockito.eq(SecurityContext.class), Mockito.any(SecurityContext.class));
 
-        customSecurityContextRepository.saveContext(sc, mockRequest, mockResponse);
+        // Speicherung des gemockten SecurityContexts, Request und Response in der costumSecurityContextRepository
+        customSecurityContextRepository.saveContext(securityContext, mockRequest, mockResponse);
 
+        // Überprüfung, ob das Mocken des Login geklappt hat
         assertNotNull(customSecurityContextRepository.loadContext(mockRequest).get().getAuthentication());
 
         // **************** Act ****************
-        // Ausloggen
         logoutController.logout(mockRequest, mockResponse);
 
         // ************** Assert ***************
-        // Überprüfen, ob die Person ausgeloggt ist
         assertNull(customSecurityContextRepository.loadContext(mockRequest).get().getAuthentication());
+
+        // ************** After ****************
+        mockedStatic.close();
     }
 
     @Test
@@ -89,9 +93,48 @@ class LogoutControllerTest {
     void strangeLogoutTest() {
         // ************** Arrange **************
 
+        /*
+         * Hier wird kein Login simuliert. Eigentlich sollte dieser Fall nicht eintreffen, aber falls doch, sollte der
+         * abgefangen werden.
+         *
+         * Im Moment kann man sich normal ausloggen und es funktioniert ohne Fehlermeldung.
+         */
+
+        // SecurityContext definieren und authentication setzen
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(null);
+
+        SecurityContext[] securityContextField = {securityContext};
+
+        // VaadinSession mocken
+        VaadinServletRequest mockRequest = Mockito.mock(VaadinServletRequest.class);
+        VaadinServletResponse mockResponse = Mockito.mock(VaadinServletResponse.class);
+        VaadinSession mockSession = Mockito.mock(VaadinSession.class);
+
+        // Hier wird festgelegt, dass, sobald man eine VaadinSession abfragt, die gemockte VaadinSession ausgegeben wird
+        MockedStatic mockedStatic = Mockito.mockStatic(VaadinSession.class);
+        mockedStatic.when(VaadinSession::getCurrent).thenReturn(mockSession);
+
+        // Hier soll der zuvor definierte SecurityContext der gemockten Session zugeordnet werden
+        Mockito.when(mockSession.getAttribute(SecurityContext.class)).thenReturn(securityContextField[0]);
+
+        Mockito.doAnswer(invocation -> {
+            securityContextField[0] = invocation.getArgument(1);
+            return null;
+        }).when(mockSession).setAttribute(Mockito.eq(SecurityContext.class), Mockito.any(SecurityContext.class));
+
+        // Speicherung des gemockten SecurityContexts, Request und Response in der costumSecurityContextRepository
+        customSecurityContextRepository.saveContext(securityContext, mockRequest, mockResponse);
+
         // **************** Act ****************
+        logoutController.logout(mockRequest, mockResponse);
 
         // ************** Assert ***************
+        assertNull(customSecurityContextRepository.loadContext(mockRequest).get().getAuthentication());
+
+        // ************** After ****************
+        mockedStatic.close();
+
     }
 
     @Test
@@ -99,8 +142,56 @@ class LogoutControllerTest {
     void deactivateLogoutTest() {
         // ************** Arrange **************
 
+        /*
+         * Nun wird sich mit einem deaktivierten Profil eingeloggt, hier muss also auch erst einmal wieder der Login
+         * simuliert werden
+         */
+
+        // Testdaten von einer deaktivierten Person, die in der Datenbank existiert
+        String username_echte_person = "helena-heyen@email.de";
+        String password_echte_person = "Test123!";
+
+        // Authentifizierungsschritt aus der LoginView
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username_echte_person, password_echte_person)
+        );
+
+        // SecurityContext definieren und authentication setzen
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authentication);
+
+        SecurityContext[] securityContextField = {securityContext};
+
+        // VaadinSession mocken
+        VaadinServletRequest mockRequest = Mockito.mock(VaadinServletRequest.class);
+        VaadinServletResponse mockResponse = Mockito.mock(VaadinServletResponse.class);
+        VaadinSession mockSession = Mockito.mock(VaadinSession.class);
+
+        // Hier wird festgelegt, dass, sobald man eine VaadinSession abfragt, die gemockte VaadinSession ausgegeben wird
+        MockedStatic mockedStatic = Mockito.mockStatic(VaadinSession.class);
+        mockedStatic.when(VaadinSession::getCurrent).thenReturn(mockSession);
+
+        // Hier soll der zuvor definierte SecurityContext der gemockten Session zugeordnet werden
+        Mockito.when(mockSession.getAttribute(SecurityContext.class)).thenReturn(securityContextField[0]);
+
+        Mockito.doAnswer(invocation -> {
+            securityContextField[0] = invocation.getArgument(1);
+            return null;
+        }).when(mockSession).setAttribute(Mockito.eq(SecurityContext.class), Mockito.any(SecurityContext.class));
+
+        // Speicherung des gemockten SecurityContexts, Request und Response in der costumSecurityContextRepository
+        customSecurityContextRepository.saveContext(securityContext, mockRequest, mockResponse);
+
+        // Überprüfung, ob das Mocken des Login geklappt hat
+        assertNotNull(customSecurityContextRepository.loadContext(mockRequest).get().getAuthentication());
+
         // **************** Act ****************
+        logoutController.logout(mockRequest, mockResponse);
 
         // ************** Assert ***************
+        assertNull(customSecurityContextRepository.loadContext(mockRequest).get().getAuthentication());
+
+        // ************** After ****************
+        mockedStatic.close();
     }
 }
