@@ -30,6 +30,29 @@ class LogoutControllerTest {
     @Autowired
     private LogoutController logoutController;
 
+    // Mockito
+    private MockedStatic mockedStatic;
+    private VaadinServletResponse mockResponse;
+    private VaadinServletRequest mockRequest;
+    private VaadinSession mockSession;
+
+    @BeforeEach
+    void setUpEach() {
+        // VaadinSession mocken
+        mockRequest = Mockito.mock(VaadinServletRequest.class);
+        mockResponse = Mockito.mock(VaadinServletResponse.class);
+        mockSession = Mockito.mock(VaadinSession.class);
+
+        // Hier wird festgelegt, dass, sobald man eine VaadinSession abfragt, die gemockte VaadinSession ausgegeben wird
+        mockedStatic = Mockito.mockStatic(VaadinSession.class);
+        mockedStatic.when(VaadinSession::getCurrent).thenReturn(mockSession);
+    }
+
+    @AfterEach
+    void tearDownEach() {
+        mockedStatic.close();
+    }
+
     @Test
     @DisplayName("Testet den Logout mit angemeldeter/authentifizierter Person")
     void logoutTest() {
@@ -55,15 +78,6 @@ class LogoutControllerTest {
 
         SecurityContext[] securityContextField = {securityContext};
 
-        // VaadinSession mocken
-        VaadinServletRequest mockRequest = Mockito.mock(VaadinServletRequest.class);
-        VaadinServletResponse mockResponse = Mockito.mock(VaadinServletResponse.class);
-        VaadinSession mockSession = Mockito.mock(VaadinSession.class);
-
-        // Hier wird festgelegt, dass, sobald man eine VaadinSession abfragt, die gemockte VaadinSession ausgegeben wird
-        MockedStatic mockedStatic = Mockito.mockStatic(VaadinSession.class);
-        mockedStatic.when(VaadinSession::getCurrent).thenReturn(mockSession);
-
         // Hier soll der zuvor definierte SecurityContext der gemockten Session zugeordnet werden
         Mockito.when(mockSession.getAttribute(SecurityContext.class)).thenReturn(securityContextField[0]);
 
@@ -83,9 +97,6 @@ class LogoutControllerTest {
 
         // ************** Assert ***************
         assertNull(customSecurityContextRepository.loadContext(mockRequest).get().getAuthentication());
-
-        // ************** After ****************
-        mockedStatic.close();
     }
 
     @Test
@@ -111,10 +122,6 @@ class LogoutControllerTest {
         VaadinServletResponse mockResponse = Mockito.mock(VaadinServletResponse.class);
         VaadinSession mockSession = Mockito.mock(VaadinSession.class);
 
-        // Hier wird festgelegt, dass, sobald man eine VaadinSession abfragt, die gemockte VaadinSession ausgegeben wird
-        MockedStatic mockedStatic = Mockito.mockStatic(VaadinSession.class);
-        mockedStatic.when(VaadinSession::getCurrent).thenReturn(mockSession);
-
         // Hier soll der zuvor definierte SecurityContext der gemockten Session zugeordnet werden
         Mockito.when(mockSession.getAttribute(SecurityContext.class)).thenReturn(securityContextField[0]);
 
@@ -131,10 +138,6 @@ class LogoutControllerTest {
 
         // ************** Assert ***************
         assertNull(customSecurityContextRepository.loadContext(mockRequest).get().getAuthentication());
-
-        // ************** After ****************
-        mockedStatic.close();
-
     }
 
     @Test
@@ -162,15 +165,6 @@ class LogoutControllerTest {
 
         SecurityContext[] securityContextField = {securityContext};
 
-        // VaadinSession mocken
-        VaadinServletRequest mockRequest = Mockito.mock(VaadinServletRequest.class);
-        VaadinServletResponse mockResponse = Mockito.mock(VaadinServletResponse.class);
-        VaadinSession mockSession = Mockito.mock(VaadinSession.class);
-
-        // Hier wird festgelegt, dass, sobald man eine VaadinSession abfragt, die gemockte VaadinSession ausgegeben wird
-        MockedStatic mockedStatic = Mockito.mockStatic(VaadinSession.class);
-        mockedStatic.when(VaadinSession::getCurrent).thenReturn(mockSession);
-
         // Hier soll der zuvor definierte SecurityContext der gemockten Session zugeordnet werden
         Mockito.when(mockSession.getAttribute(SecurityContext.class)).thenReturn(securityContextField[0]);
 
@@ -190,8 +184,5 @@ class LogoutControllerTest {
 
         // ************** Assert ***************
         assertNull(customSecurityContextRepository.loadContext(mockRequest).get().getAuthentication());
-
-        // ************** After ****************
-        mockedStatic.close();
     }
 }
