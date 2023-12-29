@@ -2,7 +2,9 @@ package de.hbrs.easyjob.controllers;
 
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Unternehmen;
+import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ public class ProfilDeaktivierenController {
 
     private PersonRepository personRepository;
     private UnternehmenRepository unternehmenRepository;
+    private JobRepository jobRepository;
 
     /**
      * Konstruktor
@@ -26,11 +29,12 @@ public class ProfilDeaktivierenController {
     public ProfilDeaktivierenController(PersonRepository pR, UnternehmenRepository uR) {
         this.personRepository = pR;
         this.unternehmenRepository = uR;
+        //this.jobRepository = jR;
     }
 
     /**
      * Diese Methode deaktiviert den gesamten Account eines Studenten. Alle Informationen über diese Person bleiben
-     * in der Datenbank. Das Profil ist aber für niemanden mehr sichtbar (Admin?)
+     * in der Datenbank. Das Profil ist nur noch für den Admin sichtbar
      * @param person das Profil welches deaktiviert werden soll
      * @return true, wenn der Account erfolgreich deaktiviert wurde, wenn irgendein Fehler aufgetreten ist false
      */
@@ -72,5 +76,18 @@ public class ProfilDeaktivierenController {
             }
         }
         return success;
+    }
+
+    /**
+     * Diese Methode deaktiviert einen Job
+     * @param job   der Job der deaktiviert werden soll
+     * @return true, wenn der Account erfolgreich deaktiviert wurde, wenn irgendein Fehler aufgetreten ist false
+     */
+    public boolean profilDeaktivierenJob(Job job) {
+        if (job == null) {
+            return false;
+        }
+        job.setAktiv(false);
+        return !jobRepository.save(job).getAktiv();
     }
 }
