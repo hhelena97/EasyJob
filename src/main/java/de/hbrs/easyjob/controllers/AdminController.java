@@ -21,10 +21,10 @@ public class AdminController {
      * Legt einen Admin an.
      *
      * @param admin Admin, der angelegt werden soll
-     * @param adminRepository das PersonRepository zum Speichern des Admins
+     * @param repository das PersonRepository zum Speichern des Admins
      * @return true, wenn Person angelegt wurde & false, wenn nicht
      */
-    boolean createAdmin(Admin admin, PersonRepository adminRepository) {
+    boolean createAdmin(Admin admin, PersonRepository repository) {
         admin.setAktiv(true);
         // Prüfe Email und Passwort
         boolean isValidPerson = ValidationController.isValidEmail(admin.getEmail()) &&
@@ -34,20 +34,22 @@ public class AdminController {
             Argon2PasswordEncoder encoder = getPasswordEncoder();
             admin.setPasswort(encoder.encode(admin.getPasswort()));
 
+            //admin speichern:
+            repository.save(admin);
             // TODO: Prüfen ob Person in Datenbank gespeichert wurde
-            adminRepository.save(admin);
         }
         return isValidPerson;
     }
 
-    /** aktualisiert einen Admin
-     */
+    /** von Helena kopiert
+
     @PostMapping
     public ResponseEntity<Admin> createOrUpdateAdmin(@RequestBody Admin admin) {
         //Account aktivieren
         admin.setAktiv(true);
         return new ResponseEntity<>(admin, HttpStatus.CREATED);
     }
+     */
 
     /** Deaktiviert einen Admin
      *

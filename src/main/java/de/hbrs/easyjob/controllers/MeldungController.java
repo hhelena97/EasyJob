@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.controllers;
-import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.services.JobService;
+
+import de.hbrs.easyjob.entities.Meldung;
+import de.hbrs.easyjob.services.MeldungService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,23 +13,20 @@ import java.util.List;
 @RequestMapping("/api/meldung")
 public class MeldungController {
 
-    private final JobService jobService;
+    private final MeldungService meldungService;
 
     @Autowired
-    public MeldungController(JobService jobService) {
-        this.jobService = jobService;
+    public MeldungController(MeldungService meldungService) {
+        this.meldungService = meldungService;
     }
 
     @PostMapping
-    public ResponseEntity<Job> createJob(@RequestBody Job job) {
-        Job savedJob = jobService.saveJob(job);
-        return  new ResponseEntity<>(savedJob, HttpStatus.CREATED);
+    public ResponseEntity<Meldung> createMeldung(@RequestBody Meldung meldung) {
+        meldung.setBearbeitet(false);
+        Meldung savedMeldung = meldungService.saveMeldung(meldung);
+        return new ResponseEntity<>(savedMeldung, HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<List<Job>> getAllJobs() {
-        List<Job> jobs = jobService.getAllJobs();
-        return ResponseEntity.ok(jobs);
-    }
+
 
 }
