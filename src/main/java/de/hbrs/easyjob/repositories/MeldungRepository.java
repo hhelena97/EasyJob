@@ -13,6 +13,14 @@ import java.util.Set;
 @Component
 public interface MeldungRepository extends JpaRepository<Meldung, Integer> {
 
+
+    //eigentlich braucht es hier findAll deren bearbeitet noch auf false steht
+    //findAll deren Person nicht null ist
+    //findAll deren Unternehmen nicht null ist
+    //findAll deren Job nicht null ist
+
+
+
     //public Meldung findById(Integer id);
     public Meldung findAllByPerson(Person person);
 
