@@ -39,9 +39,12 @@ public class UnternehmenService {
     public Unternehmen saveUnternehmen(Unternehmen unternehmen) {
         return unternehmenRepository.save(unternehmen);
     }
+    //TODO: checken, ob Unternehmen valide (null-Unternehmen speichern sinnlos (siehe Test hierzu)
     public Unternehmen findByID(Integer id){
         return unternehmenRepository.findById(id).get();
     }
+    //TODO: Fehler abfangen, wenn man kein Unternehmen findet (wie z.B. bei findByName, wo dann nur null ausgegeben
+    // wird, wenn nichts gefunden wurde)
     public int anzahlJobs(Unternehmen unternehmen){
         return jobRepository.countByUnternehmenId_Unternehmen(unternehmen.getId_Unternehmen());
     }
@@ -90,4 +93,6 @@ public class UnternehmenService {
         return result;
 
     }
+    // Macht die Methode hier nicht das gleiche wie getFirstStandort?
 }
+//TODO: Java-Docs schreiben (z.B. wozu ist getFirstStandort?) & wieso gibt es saveUnternehmen und savenewUnternehmen?

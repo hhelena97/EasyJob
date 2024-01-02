@@ -20,11 +20,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class UnternehmenRegistrierenControllerTest {
     // Repositories
     @Autowired
-    private UnternehmenRepository unternehmenRepository;
+    private JobRepository jobRepository;
     @Autowired
     private OrtRepository ortRepository;
     @Autowired
-    private JobRepository jobRepository;
+    private UnternehmenRepository unternehmenRepository;
 
     // Controller
     private UnternehmenController unternehmenController;

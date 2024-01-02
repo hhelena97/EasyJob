@@ -22,21 +22,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class UnternehmenspersonRegistrierenControllerTest {
     // Repositories
     @Autowired
-    private UnternehmenRepository unternehmenRepository;
-    @Autowired
-    private PersonRepository personRepository;
+    private JobRepository jobRepository;
     @Autowired
     private OrtRepository ortRepository;
     @Autowired
-    private JobRepository jobRepository;
+    private PersonRepository personRepository;
+    @Autowired
+    private UnternehmenRepository unternehmenRepository;
 
     // Controllers
-    private UnternehmenspersonRegistrierenController unternehmenspersonRegistrierenController;
     private UnternehmenController unternehmenController;
+    private UnternehmenspersonRegistrierenController unternehmenspersonRegistrierenController;
 
     // Entities
-    private Unternehmensperson unternehmensperson;
     private Unternehmen unternehmen;
+    private Unternehmensperson unternehmensperson;
 
     @BeforeEach
     void setUp() {
@@ -44,8 +44,8 @@ class UnternehmenspersonRegistrierenControllerTest {
         UnternehmenService unternehmenService = new UnternehmenService(unternehmenRepository, ortRepository, jobRepository);
 
         // Controllers
-        unternehmenspersonRegistrierenController = new UnternehmenspersonRegistrierenController(personRepository, unternehmenRepository);
         unternehmenController = new UnternehmenController(unternehmenService);
+        unternehmenspersonRegistrierenController = new UnternehmenspersonRegistrierenController(personRepository, unternehmenRepository);
 
         // Entities
         unternehmen = unternehmenRepository.findByName("Kaffee-Pause");
@@ -55,8 +55,8 @@ class UnternehmenspersonRegistrierenControllerTest {
     @AfterEach
     void tearDown() {
         // Controllers
-        unternehmenspersonRegistrierenController = null;
         unternehmenController = null;
+        unternehmenspersonRegistrierenController = null;
 
         // Entities
         unternehmen = null;
