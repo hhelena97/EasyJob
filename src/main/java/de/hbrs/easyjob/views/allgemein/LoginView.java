@@ -101,6 +101,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         validEmailField.getElement().setAttribute("name", "email");
         validEmailField.setValue("");
         validEmailField.setErrorMessage("Enter a valid email address");
+        validEmailField.setId("emailloginfeld_id");
         validEmailField.setClearButtonVisible(true);
 
         //Pass
@@ -108,6 +109,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         passwordField.addClassName("btn");
         passwordField.setLabel("Password");
         passwordField.setValue("");
+        passwordField.setId("passwordloginfeld_id");
 
 
 
@@ -118,6 +120,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         logButton.addClassName("btn");
         logButton.addClassName("logButton");
         logButton.addClassName("log");
+        logButton.setId("loginbutton_id_loginpage");
 
         logButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 

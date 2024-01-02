@@ -1,10 +1,20 @@
 package de.hbrs.easyjob.controllers;
 
+import com.vaadin.flow.component.UI;
 import de.hbrs.easyjob.entities.Ort;
+import de.hbrs.easyjob.repositories.OrtRepository;
 import de.hbrs.easyjob.services.OrtService;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +22,15 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static java.time.Duration.ofSeconds;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
 @SpringBootTest
 class OrtControllerTest {
+    // Repositories
+    @Autowired
+    private OrtRepository ortRepository;
 
     // Services
     private final static OrtService ortService = Mockito.mock(OrtService.class);
@@ -49,7 +64,6 @@ class OrtControllerTest {
         ortService.saveOrt(ort1);
         ortService.saveOrt(ort2);
         ortService.saveOrt(ort3);
-
     }
 
     /**
@@ -68,16 +82,59 @@ class OrtControllerTest {
         ortController = null;
     }
 
-    //TODO: getOrtItemFilter()-Test
-    /*
+    //TODO: getOrtItemFilter()-Test*************************************************************************************
+    /**
      * testet die Methode getOrtItemFilter()
-     *
+     */
     @Test
     @DisplayName("Test für getOrtItemFilter()")
     void getOrtItemFilterTest() {
+        /* ************* Arrange ************* */
+        // WebDriver Setup
+        System.setProperty("webdriver.gecko.driver", "/C:/Users/Vanessa/Downloads/geckodriver-v0.33.0-win64/geckodriver.exe");
+        WebDriverManager.firefoxdriver().setup();
+        WebDriver driver = new FirefoxDriver();
 
+        // Seite laden
+        driver.get("http://localhost:8080/login");
+
+        new WebDriverWait(driver, ofSeconds(30), ofSeconds(1))
+                .until(titleIs("Login | EasyJob"));
+
+        // Einloggen bei Unternehmensperson
+        var email = "l.mueller@ecosustainable.de";
+        var password = "EcoPass2023!";
+
+        var emailTextInput = driver.findElement(By.id("emailloginfeld_id"));
+        String js = "arguments[0].setAttribute('value','"+email+"')";
+        ((JavascriptExecutor) driver).executeScript(js, emailTextInput);
+
+        var passwordTextInput = driver.findElement(By.id("passwordloginfeld_id"));
+        String js2 = "arguments[0].setAttribute('value','"+password+"')";
+        ((JavascriptExecutor) driver).executeScript(js2, passwordTextInput);
+
+        //TODO: automatisierter Login fixen
+
+        driver.findElement(By.id("loginbutton_id_loginpage")).click();
+
+        new WebDriverWait(driver, ofSeconds(30), ofSeconds(1))
+                .until(titleIs("Profil"));
+
+        // Auf Unternehmensperson-Profil landen
+        var url = driver.getCurrentUrl();
+        assertEquals("http://localhost:8080/unternehmen/unternehmenperson", url);
+
+        // Zur Stellenanzeige Erstellen-View wechseln
+        UI.getCurrent().navigate("unternehmen/stellenanzeige/erstellen");
+
+        /* *************** Act *************** */
+        Select standortAuswahl = new Select(driver.findElement(By.className("standort")));
+        standortAuswahl.selectByVisibleText("Bonn (53111)");
+
+        /* ************* Tear down ************ */
+        driver.quit();
     }
-     */
+
 
     /**
      * testet die Methode getAlleOrte() mit einer ungeordneten Liste
