@@ -22,5 +22,7 @@ public class UnternehmenController {
         unternehmen.setAktiv(true);
         Unternehmen savedUnternehmen = unternehmenService.saveUnternehmen(unternehmen);
         return new ResponseEntity<>(savedUnternehmen, HttpStatus.CREATED);
+
+        //TODO: checken, ob das Unternehmen valide ist (siehe Test-Klasse, 2. Test)
     }
 }
