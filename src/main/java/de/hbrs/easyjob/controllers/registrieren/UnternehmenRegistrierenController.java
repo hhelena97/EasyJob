@@ -43,4 +43,5 @@ public class UnternehmenRegistrierenController implements ValidationController {
         }
         return ret;
     }
+    //TODO: null-cases abfangen (Name ist null oder Branchen sind null, etc.)
 }
