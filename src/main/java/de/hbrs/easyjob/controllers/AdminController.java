@@ -1,6 +1,8 @@
 package de.hbrs.easyjob.controllers;
 
 import de.hbrs.easyjob.entities.Admin;
+import de.hbrs.easyjob.entities.Student;
+import de.hbrs.easyjob.repositories.OrtRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,38 +13,51 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
+import java.util.List;
+
 import static de.hbrs.easyjob.security.SecurityConfig.getPasswordEncoder;
 
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
 
+
+    private PersonRepository repository;
+    @Autowired
+    public AdminController(PersonRepository repository) {
+        this.repository = repository;
+    }
+
     /**
      * Legt einen Admin an.
      *
      * @param admin Admin, der angelegt werden soll
-     * @param repository das PersonRepository zum Speichern des Admins
      * @return true, wenn Person angelegt wurde & false, wenn nicht
      */
-    boolean createAdmin(Admin admin, PersonRepository repository) {
+    boolean createAdmin(Admin admin) {
         admin.setAktiv(true);
         // Prüfe Email und Passwort
-        boolean isValidPerson = ValidationController.isValidEmail(admin.getEmail()) &&
+        boolean ok = ValidationController.isValidEmail(admin.getEmail()) &&
                 ValidationController.isValidPassword(admin.getPasswort());
-        if (isValidPerson) {
+        if (ok) {
             // Passwort als Argon2 Hash speichern
             Argon2PasswordEncoder encoder = getPasswordEncoder();
             admin.setPasswort(encoder.encode(admin.getPasswort()));
 
             //admin speichern:
             repository.save(admin);
-            // TODO: Prüfen ob Person in Datenbank gespeichert wurde
+            //Test ob der Admin in der Datenbank ist
+            if (repository.findByEmail(admin.getEmail())== null){
+                return false;
+            } else {
+                ok = repository.findByEmail(admin.getEmail()).getAktiv();
+            }
         }
-        return isValidPerson;
+        return ok;
     }
 
     /** von Helena kopiert
-
     @PostMapping
     public ResponseEntity<Admin> createOrUpdateAdmin(@RequestBody Admin admin) {
         //Account aktivieren
@@ -54,41 +69,55 @@ public class AdminController {
     /** Deaktiviert einen Admin
      *
      * @param admin
-     * @param adminRepository
      * @return true, wenn Admin in Datenbank gefunden
      */
-    boolean deleteAdmin(Admin admin, PersonRepository adminRepository) {
+    boolean deleteAdmin(Admin admin) {
 
-        boolean inDatenbank = true;
-        // TODO: Prüfe ob Admin in Datenbank
-        //inDatenbank = ...
+        if (repository.findByEmail(admin.getEmail()) == null){
+            return false;
+        }
+        boolean inDatenbank = repository.findByEmail(admin.getEmail()).getAktiv();
 
         admin.setAktiv(false);
-        adminRepository.save(admin);
+        repository.save(admin);
         return inDatenbank;
     }
 
     /**
      * Gibt einem Admin ein neues Passwort
      *
-     * @param admin Admin, der angelegt werden soll
-     * @param adminRepository das PersonRepository zum Speichern des Admins
+     * @param admin Admin, dessen Passwort verändert wird
      * @return true, wenn Admin in Datenbank gefunden & false, wenn nicht
      */
-    boolean newPasswordAdmin(Admin admin, String neuesPasswort, PersonRepository adminRepository) {
-        boolean inDatenbank = true;
-        // TODO: Prüfe ob Admin in Datenbank
-        //inDatenbank = ...
+    boolean newPasswordAdmin(Admin admin, String neuesPasswort) {
+
+        //Prüfe, ob Admin in der Datenbank ist
+        if (admin.getEmail() == null) {
+            return false;
+        }
+        if(repository.findByEmail(admin.getEmail()) == null){
+            return false;
+        }
+
+        boolean inDatenbank = repository.findByEmail(admin.getEmail()).getAktiv();
 
         // Prüfe Passwort
-        boolean isValidPasswort = ValidationController.isValidPassword(neuesPasswort);
-        if (isValidPasswort) {
-            // Passwort als Argon2 Hash speichern
-            Argon2PasswordEncoder encoder = getPasswordEncoder();
-            admin.setPasswort(encoder.encode(neuesPasswort));
+        boolean ok = ValidationController.isValidPassword(neuesPasswort);
+        if (inDatenbank){
+            if (ok) {
+                // Passwort als Argon2 Hash speichern
+                Argon2PasswordEncoder encoder = getPasswordEncoder();
+                admin.setPasswort(encoder.encode(neuesPasswort));
 
-            adminRepository.save(admin);
+                repository.save(admin);
+            }
         }
-        return inDatenbank;
+        return inDatenbank && ok;
     }
+
+    /**
+     * Finde alle Admins
+     */
+
+
 }

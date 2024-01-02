@@ -25,7 +25,7 @@ class AdminControllerTest {
 
     @BeforeEach
     void setUp() {
-        adminController = new AdminController();
+        adminController = new AdminController(personRepository);
         admin = new Admin();
     }
 
@@ -43,7 +43,7 @@ class AdminControllerTest {
         admin.setEmail("tollervalideradmin@yeah.de");
 
         /* ************************ ACT ************************ */
-        boolean actual = adminController.createAdmin(admin, personRepository);
+        boolean actual = adminController.createAdmin(admin);
 
         /* *********************** ASSERT ********************** */
         assertTrue(actual);
@@ -59,7 +59,7 @@ class AdminControllerTest {
         admin.setEmail("nichtvalideradmin.de");
 
         /* ************************ ACT ************************ */
-        boolean actual = adminController.createAdmin(admin, personRepository);
+        boolean actual = adminController.createAdmin(admin);
 
         /* *********************** ASSERT ********************** */
         assertFalse(actual);
@@ -71,10 +71,10 @@ class AdminControllerTest {
         /* ********************** ARRANGE ********************** */
         admin.setPasswort("Test123!");
         admin.setEmail("supertolleradmin@yeah.de");
-        adminController.createAdmin(admin, personRepository);
+        adminController.createAdmin(admin);
 
         /* ************************ ACT ************************ */
-        boolean actual = adminController.deleteAdmin(admin, personRepository);
+        boolean actual = adminController.deleteAdmin(admin);
 
         /* *********************** ASSERT ********************** */
         assertTrue(actual);
@@ -92,12 +92,12 @@ class AdminControllerTest {
         admin.setEmail("schlechternichtexistierenderadmin@yeah.de");
 
         /* ************************ ACT ************************ */
-        boolean actual = adminController.deleteAdmin(admin, personRepository);
+        boolean actual = adminController.deleteAdmin(admin);
 
         // -------------------------------------------------------------------------------------------------------------
         // Es sollte kein Admin angelegt werden, sondern einfach nur false ausgegeben werden.
         // wenn gefixt, kann dieser Teil hier gelöscht werden
-        personRepository.delete(personRepository.getReferenceById(admin.getId_Person()));
+        //personRepository.delete(personRepository.getReferenceById(admin.getId_Person()));
         // -------------------------------------------------------------------------------------------------------------
 
         /* *********************** ASSERT ********************** */
@@ -110,12 +110,12 @@ class AdminControllerTest {
         /* ********************** ARRANGE ********************** */
         admin.setPasswort("Test123!");
         admin.setEmail("tolleradmin@yeah.de");
-        adminController.createAdmin(admin, personRepository);
+        adminController.createAdmin(admin);
 
         String notExpected = admin.getPasswort();
 
         /* ************************ ACT ************************ */
-        boolean actual = adminController.newPasswordAdmin(admin, "Ilikecats123!", personRepository);
+        boolean actual = adminController.newPasswordAdmin(admin, "Ilikecats123!");
 
         /* *********************** ASSERT ********************** */
         assertTrue(actual);
@@ -133,12 +133,12 @@ class AdminControllerTest {
         admin.setEmail("tolleradmin@yeah.de");
 
         /* ************************ ACT ************************ */
-        boolean actual = adminController.newPasswordAdmin(admin, "Ilikecats123!", personRepository);
+        boolean actual = adminController.newPasswordAdmin(admin, "Ilikecats123!");
 
         // -------------------------------------------------------------------------------------------------------------
         // Es sollte kein Admin angelegt werden, sondern einfach nur false ausgegeben werden.
         // wenn gefixt, kann dieser Teil hier gelöscht werden
-        personRepository.delete(personRepository.getReferenceById(admin.getId_Person()));
+        //personRepository.delete(personRepository.getReferenceById(admin.getId_Person()));
         // -------------------------------------------------------------------------------------------------------------
 
         /* *********************** ASSERT ********************** */
@@ -151,12 +151,12 @@ class AdminControllerTest {
         /* ********************** ARRANGE ********************** */
         admin.setPasswort("Test123!");
         admin.setEmail("tolleradmin@yeah.de");
-        adminController.createAdmin(admin, personRepository);
+        adminController.createAdmin(admin);
 
         String expected = admin.getPasswort();
 
         /* ************************ ACT ************************ */
-        boolean actual = adminController.newPasswordAdmin(admin, "l", personRepository);
+        boolean actual = adminController.newPasswordAdmin(admin, "l");
 
         /* ********************** TEAR DOWN ******************** */
         personRepository.delete(personRepository.getReferenceById(admin.getId_Person()));
