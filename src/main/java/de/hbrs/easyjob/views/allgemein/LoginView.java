@@ -1,30 +1,19 @@
 package de.hbrs.easyjob.views.allgemein;
 
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.VaadinService;
-import com.vaadin.flow.server.VaadinServletRequest;
-import com.vaadin.flow.server.VaadinServletResponse;
-import com.vaadin.flow.server.VaadinSession;
-import de.hbrs.easyjob.security.CustomSecurityContextRepository;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.Authentication;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import org.springframework.beans.factory.annotation.Autowired;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import de.hbrs.easyjob.controllers.SessionController;
+
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER;
 
 
@@ -34,30 +23,32 @@ import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CE
 @AnonymousAllowed
 
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
+    private final transient SessionController sessionController;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private CustomSecurityContextRepository customSecurityContextRepository;
-
-    private void resetSessionAttributes() {
-        VaadinSession session = VaadinSession.getCurrent();
-        if (session != null) {
-            session.setAttribute(SecurityContext.class, null);
-        }
-    }
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        resetSessionAttributes();
+        if (sessionController.isLoggedIn()) {
+            if (sessionController.hasRole("ROLE_ADMIN")) {
+                event.rerouteTo("admin");
+            } else if (sessionController.hasRole("ROLE_STUDENT")) {
+                event.rerouteTo("student");
+            } else if (sessionController.hasRole("ROLE_UNTERNEHMENSPERSON")) {
+                event.rerouteTo("unternehmen/unternehmenperson");
+            } else {
+                Notification.show("Unbekannte Benutzerrolle. Logge Nutzer aus.");
+                sessionController.logout();
+            }
+        }
     }
 
 
-    public LoginView(){
+    public LoginView(SessionController sessionController) {
+        this.sessionController = sessionController;
+
         VaadinService.getCurrentResponse().setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         VaadinService.getCurrentResponse().setHeader("Pragma", "no-cache");
         VaadinService.getCurrentResponse().setHeader("Expires", "-1");
         UI.getCurrent().getPage().addStyleSheet("LoginView.css");
-
 
 
         //Logo Teil----------------------------------------------------------------
@@ -75,7 +66,6 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         setPadding(false);
 
 
-
         VerticalLayout v = new VerticalLayout(div);
         v.addClassName("v");
         v.setSizeFull();
@@ -86,12 +76,10 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         setJustifyContentMode(JustifyContentMode.START);
 
 
-
-
         //Form----------------------------------------------------------------
 
         //Title
-        H2 log =  new H2("Log in");
+        H2 log = new H2("Log in");
 
 
         //Email Feld
@@ -110,7 +98,6 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         passwordField.setLabel("Password");
         passwordField.setValue("");
         passwordField.setId("passwordloginfeld_id");
-
 
 
         //Buttons
@@ -133,40 +120,29 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         regButton.addClassName("regButton");
         regButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
-        VerticalLayout fenster = new VerticalLayout(log,validEmailField,passwordField,verButton,logButton,regButton);
+        VerticalLayout fenster = new VerticalLayout(log, validEmailField, passwordField, verButton, logButton, regButton);
         fenster.setAlignItems(Alignment.CENTER);
         fenster.setJustifyContentMode(JustifyContentMode.CENTER);
         fenster.setSpacing(false);
 
-        add(v,fenster);
+        add(v, fenster);
 
 
         logButton.addClickListener(e -> {
-            try {
-                String username = validEmailField.getValue();
-                String password = passwordField.getValue();
-                Authentication authentication = authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(username, password)
-                );
-                SecurityContext sc = SecurityContextHolder.getContext();
-                sc.setAuthentication(authentication);
-                HttpServletRequest request = VaadinServletRequest.getCurrent().getHttpServletRequest();
-                HttpServletResponse response = VaadinServletResponse.getCurrent().getHttpServletResponse();
-                customSecurityContextRepository.saveContext(sc, request, response);
-
-                if (hasRole(authentication, "ROLE_STUDENT")) {
-                    UI.getCurrent().navigate("student");
-                } else if (hasRole(authentication, "ROLE_UNTERNEHMENSPERSON")) {
-                    UI.getCurrent().navigate("unternehmen/unternehmenperson");
-                } else {
-
-                    Notification.show("Unbekannte Benutzerrolle.");
-                }
-            } catch (AuthenticationException ex) {
+            String username = validEmailField.getValue();
+            String password = passwordField.getValue();
+            if (!sessionController.login(username, password)) {
                 Notification.show("Authentifizierung fehlgeschlagen.");
+            } else if (sessionController.hasRole("ROLE_ADMIN")) {
+                UI.getCurrent().navigate("admin");
+            } else if (sessionController.hasRole("ROLE_STUDENT")) {
+                UI.getCurrent().navigate("student");
+            } else if (sessionController.hasRole("ROLE_UNTERNEHMENSPERSON")) {
+                UI.getCurrent().navigate("unternehmen/unternehmenperson");
+            } else {
+                Notification.show("Unbekannte Benutzerrolle.");
             }
         });
-
 
 
         verButton.addClickListener(event -> {
@@ -183,13 +159,5 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
             // Leitet zur Registrieren-Seite
             ui.navigate("/registrieren");
         });
-
-
-
-    }
-
-    private boolean hasRole(Authentication auth, String role) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals(role));
     }
 }
