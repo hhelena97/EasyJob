@@ -2,7 +2,6 @@ package de.hbrs.easyjob.controllers;
 
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinServletResponse;
-import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.security.CustomSecurityContextRepository;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 public class SessionController {
-    private SecurityContext securityContext = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
     private final PersonRepository personRepository;
     private final CustomSecurityContextRepository customSecurityContextRepository;
     private final AuthenticationManager authenticationManager;
@@ -50,8 +48,9 @@ public class SessionController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, password)
             );
-            securityContext = SecurityContextHolder.getContext();
+            SecurityContext securityContext = SecurityContextHolder.getContext();
             securityContext.setAuthentication(authentication);
+
             customSecurityContextRepository.saveContext(
                     securityContext,
                     VaadinServletRequest.getCurrent().getHttpServletRequest(),
@@ -71,8 +70,8 @@ public class SessionController {
         if (isLoggedIn()) {
             new SecurityContextLogoutHandler().logout(
                     VaadinServletRequest.getCurrent().getHttpServletRequest(),
-                    VaadinServletResponse.getCurrent().getHttpServletResponse(),
-                    securityContext.getAuthentication()
+                    null,
+                    null
             );
             customSecurityContextRepository.clearContext();
             return true;
@@ -84,6 +83,7 @@ public class SessionController {
      * @return true, falls der Benutzer eingeloggt ist, sonst false
      */
     public boolean isLoggedIn() {
+        SecurityContext securityContext = getSecurityContext();
         if (securityContext != null) {
             Authentication auth = securityContext.getAuthentication();
             return auth != null && auth.isAuthenticated();
@@ -97,6 +97,7 @@ public class SessionController {
      */
     public boolean hasRole(String... roles) {
         if (isLoggedIn()) {
+            SecurityContext securityContext = getSecurityContext();
             Authentication auth = securityContext.getAuthentication();
             if (auth != null && auth.isAuthenticated()) {
                 for (String role : roles) {
@@ -113,6 +114,7 @@ public class SessionController {
      * @return Person-Objekt des eingeloggten Benutzers, falls vorhanden, sonst null
      */
     public Person getPerson() {
+        SecurityContext securityContext = getSecurityContext();
         if (securityContext != null) {
             Authentication auth = securityContext.getAuthentication();
             if (auth != null && auth.isAuthenticated()) {
@@ -122,5 +124,9 @@ public class SessionController {
             }
         }
         return null;
+    }
+
+    private SecurityContext getSecurityContext() {
+        return customSecurityContextRepository.loadContext(VaadinServletRequest.getCurrent().getHttpServletRequest()).get();
     }
 }
