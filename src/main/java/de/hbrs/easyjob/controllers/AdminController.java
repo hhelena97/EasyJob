@@ -1,8 +1,7 @@
 package de.hbrs.easyjob.controllers;
 
 import de.hbrs.easyjob.entities.Admin;
-import de.hbrs.easyjob.entities.Student;
-import de.hbrs.easyjob.repositories.OrtRepository;
+import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +22,8 @@ import static de.hbrs.easyjob.security.SecurityConfig.getPasswordEncoder;
 public class AdminController {
 
 
-    private PersonRepository repository;
-    @Autowired
+    private final PersonRepository repository;
+
     public AdminController(PersonRepository repository) {
         this.repository = repository;
     }
@@ -115,9 +114,29 @@ public class AdminController {
         return inDatenbank && ok;
     }
 
+
+    /** Passwort ändern für Personen (ohne altes Passwort)
+     * @param email E-Mail der Person
+     * @param newPassword neues Passwort
+     * @return true, wenn das Passwort geändert wurde, sonst false
+     */
+    public boolean changePassword(String email, String newPassword) {
+        Person person = repository.findByEmail(email);
+        if (person == null || !ValidationController.isValidPassword(newPassword)) {
+            return false;
+        }
+        person.setPasswort(getPasswordEncoder().encode(newPassword));
+        repository.save(person);
+        return true;
+    }
+
     /**
      * Finde alle Admins
      */
+    public List<Admin> getAllAdmins(){
+        return repository.findAllAdmins();
+    }
+
 
 
 }

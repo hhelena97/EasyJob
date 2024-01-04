@@ -7,6 +7,7 @@ import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,9 +18,11 @@ public class ProfilDeaktivierenController {
     //TODO: immer wenn Profil aufgerufen wird muss geprüft werden, ob die Spalte Aktiv false oder true ist:
     // nur aufrufen, wenn true ist.
 
-    private PersonRepository personRepository;
-    private UnternehmenRepository unternehmenRepository;
+    private final PersonRepository personRepository;
+    private final UnternehmenRepository unternehmenRepository;
+    @Autowired
     private JobRepository jobRepository;
+    //private ChatRepository chatRepository;
 
     /**
      * Konstruktor
@@ -29,7 +32,6 @@ public class ProfilDeaktivierenController {
     public ProfilDeaktivierenController(PersonRepository pR, UnternehmenRepository uR) {
         this.personRepository = pR;
         this.unternehmenRepository = uR;
-        //this.jobRepository = jR;
     }
 
     /**
@@ -84,7 +86,7 @@ public class ProfilDeaktivierenController {
      * @return true, wenn der Account erfolgreich deaktiviert wurde, wenn irgendein Fehler aufgetreten ist false
      */
     public boolean profilDeaktivierenJob(Job job) {
-        if (job == null) {
+        if (job == null || job.getAktiv()) {
             return false;
         }
         job.setAktiv(false);

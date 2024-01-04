@@ -1,5 +1,6 @@
 package de.hbrs.easyjob.services;
 
+import de.hbrs.easyjob.entities.Admin;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
@@ -40,6 +41,8 @@ public class MyUserDetailService implements UserDetailsService {
             authorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
         } else if (person instanceof Unternehmensperson) {
             authorities.add(new SimpleGrantedAuthority("ROLE_UNTERNEHMENSPERSON"));
+        } else if (person instanceof Admin){
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
         return authorities;
     }
