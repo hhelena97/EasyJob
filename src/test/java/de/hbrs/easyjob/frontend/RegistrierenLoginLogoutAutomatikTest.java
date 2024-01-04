@@ -1,10 +1,8 @@
 package de.hbrs.easyjob.frontend;
 
+import de.hbrs.easyjob.repositories.PersonRepository;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -14,7 +12,10 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.transaction.Transactional;
 
 import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,8 +23,12 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
 @SpringBootTest
 class RegistrierenLoginLogoutAutomatikTest {
-
+    // WebDriver
     private final WebDriver[] drivers = new WebDriver[2];
+
+    // Repositories
+    @Autowired
+    private PersonRepository personRepository;
 
     @BeforeAll
     static void setUp() {
@@ -51,6 +56,8 @@ class RegistrierenLoginLogoutAutomatikTest {
     }
 
     @Test
+    @DisplayName("Geht einmal den Registrierungsprozess bis Login & Logout durch")
+    @Transactional
     void SeleniumTest() {
         int i = 0;
         String password = "piratesOfTheC4rib34N!#";
@@ -62,6 +69,7 @@ class RegistrierenLoginLogoutAutomatikTest {
                     email,
                     password
             );
+            //personRepository.delete(personRepository.findByEmail(email)); <- klappt noch nicht
         }
     }
 
@@ -138,7 +146,7 @@ class RegistrierenLoginLogoutAutomatikTest {
         masterCombobox.click();
 
         // Studienfach auswählen (hier CyberSecurity bzw. Molekularbiologie)
-        WebElement studienfachCombobox = driver.findElement(By.cssSelector("#studienfach_combobox_id > input"));
+        WebElement studienfachCombobox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#studienfach_combobox_id > input")));
         studienfachCombobox.click();
         studienfachCombobox.sendKeys(Keys.UP);
         studienfachCombobox.sendKeys(Keys.UP);
@@ -247,6 +255,9 @@ class RegistrierenLoginLogoutAutomatikTest {
 
         // Checken, ob wieder auf Login-Seite
         wait.until(titleIs("Login | EasyJob"));
+        // ---------------------------------------------------------------------------------------kann weg, wenn  gefixt
+        driver.get("http://localhost:8080/login");
+        //--------------------------------------------------------------------------------------------------------------
         assertEquals("http://localhost:8080/login", driver.getCurrentUrl());
     }
 }
