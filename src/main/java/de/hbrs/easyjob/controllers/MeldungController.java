@@ -15,7 +15,6 @@ public class MeldungController {
     @Autowired
     public MeldungController(MeldungRepository meldungRepository) {
         this.meldungRepository = meldungRepository;
-
     }
 
     /**
@@ -26,7 +25,6 @@ public class MeldungController {
      * @return true, wenn gespeichert
      */
     public boolean saveMeldung(Meldung meldung, Person person) {
-
         meldung.setPerson(person);
         meldung.setBearbeitet(false);
         meldungRepository.save(meldung);
@@ -34,27 +32,20 @@ public class MeldungController {
         return !t.isBearbeitet();
     }
 
-    //weitermachen
-    public Meldung saveMeldung(Meldung meldung, Unternehmen u) {
-
-        meldung.setUnternehmen(u);
-        meldung.setBearbeitet(false);
-        return meldungRepository.save(meldung);
-    }
-
-    public Meldung saveMeldung(Meldung meldung, Job job) {
-
+    public boolean saveMeldung(Meldung meldung, Job job) {
         meldung.setJob(job);
         meldung.setBearbeitet(false);
-        return meldungRepository.save(meldung);
+        meldungRepository.save(meldung);
+        Meldung t = meldungRepository.findById_Meldung(meldung.getId_Meldung());
+        return !t.isBearbeitet();
     }
 
-
-    public Meldung saveMeldung(Meldung meldung, Chat chat) {
-
+    public boolean saveMeldung(Meldung meldung, Chat chat) {
         meldung.setChat(chat);
         meldung.setBearbeitet(false);
-        return meldungRepository.save(meldung);
+        meldungRepository.save(meldung);
+        Meldung t = meldungRepository.findById_Meldung(meldung.getId_Meldung());
+        return !t.isBearbeitet();
     }
 
 
@@ -66,6 +57,30 @@ public class MeldungController {
         return meldungRepository.findAllPersonen();
     }
 
+    /**
+     * Finde alle gemeldeten Unternehmen
+     * @return Liste aller Meldungen zu Unternehmen
+     */
+    public List<Meldung> getAllGemeldeteUnternehmen(){
+        return meldungRepository.findAllUnternehmen();
+    }
+
+
+    /**
+     * Finde alle gemeldeten Jobs
+     * @return Liste aller Meldungen zu Jobs
+     */
+    public List<Meldung> getAllGemeldeteJobs(){
+        return meldungRepository.findAllJobs();
+    }
+
+    /**
+     * Finde alle gemeldeten Chats
+     * @return Liste aller Meldungen zu Chats
+     */
+    public List<Meldung> getAllGemeldeteChats(){
+        return meldungRepository.findAllChats();
+    }
 
     /**
      * Meldung bearbeiten
