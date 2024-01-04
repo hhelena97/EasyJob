@@ -23,7 +23,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 @SpringBootTest
 class RegistrierenLoginLogoutAutomatikTest {
 
-    private WebDriver[] drivers = new WebDriver[2];;
+    private final WebDriver[] drivers = new WebDriver[2];
 
     @BeforeAll
     static void setUp() {
