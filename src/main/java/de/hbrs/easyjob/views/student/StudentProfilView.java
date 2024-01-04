@@ -18,6 +18,7 @@ import javax.annotation.security.RolesAllowed;
 
 @Route(value = "student" , layout = StudentLayout.class)
 @RolesAllowed("ROLE_STUDENT")
+@PageTitle("Profil")
 public class StudentProfilView extends VerticalLayout implements BeforeEnterObserver  {
 
     private Student student;
