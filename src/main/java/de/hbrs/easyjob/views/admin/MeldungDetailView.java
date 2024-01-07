@@ -29,7 +29,7 @@ import javax.annotation.security.RolesAllowed;
 public class MeldungDetailView extends VerticalLayout implements BeforeEnterObserver {
 
     private final SessionController sessionController;
-    private final String gemeldet;
+    //private final String gemeldet;
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
@@ -40,9 +40,9 @@ public class MeldungDetailView extends VerticalLayout implements BeforeEnterObse
     }
 
     @Autowired
-    public MeldungDetailView(SessionController sessionController, String gemeldet){
+    public MeldungDetailView(SessionController sessionController){
         this.sessionController = sessionController;
-        this.gemeldet = gemeldet;
+        //this.gemeldet = gemeldet;
 
         Div bericht = new Div();
 
@@ -57,9 +57,9 @@ public class MeldungDetailView extends VerticalLayout implements BeforeEnterObse
 
         Paragraph meldung = new Paragraph("Gemeldet: ");
 
-        Paragraph werWas = new Paragraph(gemeldet);
+        //Paragraph werWas = new Paragraph(gemeldet);
 
-        bericht.add(titel, leer, meldung, werWas);
+        bericht.add(titel, leer, meldung);
 
         Button btnSperren = new Button("Profil sperren", new Icon (VaadinIcon.LOCK));
         btnSperren.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
