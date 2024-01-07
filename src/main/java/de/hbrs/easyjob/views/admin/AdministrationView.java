@@ -11,6 +11,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.controllers.SessionController;
+import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.views.components.AdminLayout;
 
 @Route(value = "administration", layout = AdminLayout.class)
@@ -20,7 +21,7 @@ import de.hbrs.easyjob.views.components.AdminLayout;
 //@RolesAllowed("ROLE_ADMIN")
 public class AdministrationView extends VerticalLayout implements BeforeEnterObserver {
 
-    //private final AdminRepository adminRepository;
+    private PersonRepository personRepository;
     private final SessionController sessionController;
 
     @Override
@@ -30,9 +31,9 @@ public class AdministrationView extends VerticalLayout implements BeforeEnterObs
         }
     }
 
-    public AdministrationView(SessionController sessionController/*, AdminRepository adminRepository*/) {
+    public AdministrationView(SessionController sessionController, PersonRepository personRepository) {
         this.sessionController = sessionController;
-        //this.adminRepository = adminRepository;
+        this.personRepository = personRepository;
 
         Icon back = new Icon(VaadinIcon.CHEVRON_LEFT);
         back.addClassName("backArrow");
