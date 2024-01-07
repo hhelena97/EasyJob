@@ -35,7 +35,7 @@ public class MeldungDetailView extends VerticalLayout implements BeforeEnterObse
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         if(!sessionController.isLoggedIn() || sessionController.hasRole("ROLE_ADMIN")){
             //beforeEnterEvent.rerouteTo(LoginView.class);
-            //später: erst prüfen, ob Admin, sonst weiterleiten zur Startseite
+            //für später: um erst zu prüfen, ob Admin, sonst weiterleiten zur Startseite
         }
     }
 

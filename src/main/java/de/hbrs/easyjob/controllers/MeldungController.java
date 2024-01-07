@@ -32,6 +32,14 @@ public class MeldungController {
         return !t.isBearbeitet();
     }
 
+    public boolean saveMeldung(Meldung meldung, Unternehmen unternehmen) {
+        meldung.setUnternehmen(unternehmen);
+        meldung.setBearbeitet(false);
+        meldungRepository.save(meldung);
+        Meldung t = meldungRepository.findById(meldung.getId_Meldung()).get();
+        return !t.isBearbeitet();
+    }
+
     public boolean saveMeldung(Meldung meldung, Job job) {
         meldung.setJob(job);
         meldung.setBearbeitet(false);
@@ -50,7 +58,7 @@ public class MeldungController {
 
 
     /**
-     * Finde alle gemeldeten Personen
+     * Finde alle Meldungen zu Personen
      * @return Liste aller Meldungen zu Personen
      */
     public List<Meldung> getAllGemeldetePersonen(){
@@ -58,7 +66,7 @@ public class MeldungController {
     }
 
     /**
-     * Finde alle gemeldeten Unternehmen
+     * Finde alle Meldungen zu Unternehmen
      * @return Liste aller Meldungen zu Unternehmen
      */
     public List<Meldung> getAllGemeldeteUnternehmen(){
@@ -67,7 +75,7 @@ public class MeldungController {
 
 
     /**
-     * Finde alle gemeldeten Jobs
+     * Finde alle Meldungen zu Jobs
      * @return Liste aller Meldungen zu Jobs
      */
     public List<Meldung> getAllGemeldeteJobs(){
@@ -75,7 +83,7 @@ public class MeldungController {
     }
 
     /**
-     * Finde alle gemeldeten Chats
+     * Finde alle gemeldeten Meldungen zu Chats
      * @return Liste aller Meldungen zu Chats
      */
     public List<Meldung> getAllGemeldeteChats(){
@@ -84,6 +92,9 @@ public class MeldungController {
 
     /**
      * Meldung bearbeiten
+     * setzt die mitgebene Meldung auf "bearbeitet" und schließt damit den Meldungsvorgang ab
+     * @param meldung, die Meldung, die bearbeitet wird
+     * @return true, wenn Meldung als bearbeitet gespeichert.
      */
     public boolean meldungBearbeiten(Meldung meldung) {
         if (meldung == null) {
@@ -92,18 +103,19 @@ public class MeldungController {
         meldung.setBearbeitet(true);
         meldungRepository.save(meldung);
 
-        return true;
+        return meldungRepository.findById(meldung.getId_Meldung()).get().isBearbeitet();
     }
 
-    //TODO: saveMeldungUnternehmen
+    //saveMeldungUnternehmen - erledigt
 
-    // sollte man wirklich eine null-Meldung zuweisen können? -> Vorschlag: Grund als Pflichtfeld
+    // sollte man wirklich eine null-Meldung zuweisen können? -> Vorschlag: Grund als Pflichtfeld - Grund wird nicht umgesetzt Es gibt nur "leere" Meldungen.
 
-    // so kann man einer Meldung sowohl eine Person, einen Chat und einen Job zu weisen (soll das so)?
+    // so kann man einer Meldung sowohl eine Person, einen Chat und einen Job zu weisen (soll das so)? Ja, genau. Man gibt der Meldung das mit, was gemeldet wird.
 
     //TODO: JavaDocs anpassen bei getAlleGemeldetenXXX
     // Die getAlleGemeldetenPersonen/Jobs/etc.-Methoden sind verwirrend. Sollen die Jobs/Personen/etc. oder die Meldungen dazu gefunden werden?
 
     //TODO: JavaDocs anpassen bei meldungBearbeiten
     // Wozu ist diese Funktion? Wie bearbeitet man im Endeffekt Meldung?
+    //Der Admin prüft die Meldung und sperrt dann den Account (Profil deaktivieren) oder lässt es und drückt den Knopf "Meldung abschließen" dadurch wird sie "bearbeitet"
 }
