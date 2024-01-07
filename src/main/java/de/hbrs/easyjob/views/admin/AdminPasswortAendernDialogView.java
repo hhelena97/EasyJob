@@ -4,7 +4,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.PasswordField;
 import de.hbrs.easyjob.views.components.DialogLayout;
 
-public class EigenesPasswortAendernDialogView extends DialogLayout {
+public class AdminPasswortAendernDialogView extends DialogLayout {
 
     Div passwoeterAendern = new Div(
             new PasswordField("Altes Passwort"),
@@ -12,7 +12,7 @@ public class EigenesPasswortAendernDialogView extends DialogLayout {
             new PasswordField("Passwort wiederholen")
     );
 
-    public EigenesPasswortAendernDialogView(boolean answerRequired) {
+    public AdminPasswortAendernDialogView(boolean answerRequired) {
         super(true);
         insertContentDialogContent("Passwort ändern", passwoeterAendern, "Abbrechen", "Passwort speichern");
     }
