@@ -3,6 +3,7 @@ import de.hbrs.easyjob.entities.Admin;
 import de.hbrs.easyjob.entities.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -24,4 +25,7 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
 
     @Query("SELECT a FROM Admin a")
     List<Admin> findAllAdmins();
+
+    @Query("SELECT COUNT(a) FROM Admin a")
+    int countAdmins();
 }

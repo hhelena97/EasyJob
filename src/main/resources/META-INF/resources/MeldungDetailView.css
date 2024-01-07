@@ -1,0 +1,46 @@
+@import "Variables.css";
+
+.bericht{
+    height: 321px;
+    width: 100%;
+    align-self: center;
+    margin-bottom: 150px;
+}
+
+.zurueckAdmin{
+    color: var(--admin-dark);
+}
+
+.btnSperren{
+    display: flex;
+    width: 300px;
+    height: 46px;
+    padding: 8px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+
+    border-radius: 30px;
+    background: var(--admin-dark, #289A32);
+
+    align-self: center;
+}
+
+.btnFertig{
+    display: flex;
+    width: 300px;
+    height: 46px;
+    padding: 8px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+
+    border-radius: 30px;
+    border: 2.5px solid var(--admin-dark, #289A32);
+    background: var(--hintergrund-weiß, #FFF);
+    color: var(--admin-dark, #289A32);
+
+    align-self: center;
+}
