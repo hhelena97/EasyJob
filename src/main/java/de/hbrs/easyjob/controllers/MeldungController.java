@@ -28,7 +28,7 @@ public class MeldungController {
         meldung.setPerson(person);
         meldung.setBearbeitet(false);
         meldungRepository.save(meldung);
-        Meldung t = meldungRepository.findById_Meldung(meldung.getId_Meldung());
+        Meldung t = meldungRepository.findById(meldung.getId_Meldung()).get();
         return !t.isBearbeitet();
     }
 
@@ -36,7 +36,7 @@ public class MeldungController {
         meldung.setJob(job);
         meldung.setBearbeitet(false);
         meldungRepository.save(meldung);
-        Meldung t = meldungRepository.findById_Meldung(meldung.getId_Meldung());
+        Meldung t = meldungRepository.findById(meldung.getId_Meldung()).get();
         return !t.isBearbeitet();
     }
 
@@ -44,7 +44,7 @@ public class MeldungController {
         meldung.setChat(chat);
         meldung.setBearbeitet(false);
         meldungRepository.save(meldung);
-        Meldung t = meldungRepository.findById_Meldung(meldung.getId_Meldung());
+        Meldung t = meldungRepository.findById(meldung.getId_Meldung()).get();
         return !t.isBearbeitet();
     }
 

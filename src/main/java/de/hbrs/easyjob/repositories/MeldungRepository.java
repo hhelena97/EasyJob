@@ -3,18 +3,13 @@ package de.hbrs.easyjob.repositories;
 import de.hbrs.easyjob.entities.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 
 
 @Component
 public interface MeldungRepository extends JpaRepository<Meldung, Integer> {
-
-
-    Meldung findById_Meldung(Integer id_meldung);
 
     @Query("SELECT m FROM Meldung m")
     List<Meldung> findAllMeldungen();
