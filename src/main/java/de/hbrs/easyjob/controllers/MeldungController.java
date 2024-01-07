@@ -95,4 +95,15 @@ public class MeldungController {
         return true;
     }
 
+    //TODO: saveMeldungUnternehmen
+
+    // sollte man wirklich eine null-Meldung zuweisen können? -> Vorschlag: Grund als Pflichtfeld
+
+    // so kann man einer Meldung sowohl eine Person, einen Chat und einen Job zu weisen (soll das so)?
+
+    //TODO: JavaDocs anpassen bei getAlleGemeldetenXXX
+    // Die getAlleGemeldetenPersonen/Jobs/etc.-Methoden sind verwirrend. Sollen die Jobs/Personen/etc. oder die Meldungen dazu gefunden werden?
+
+    //TODO: JavaDocs anpassen bei meldungBearbeiten
+    // Wozu ist diese Funktion? Wie bearbeitet man im Endeffekt Meldung?
 }
