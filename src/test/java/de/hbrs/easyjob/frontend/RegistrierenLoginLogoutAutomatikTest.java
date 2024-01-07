@@ -1,18 +1,13 @@
 package de.hbrs.easyjob.frontend;
 
-import de.hbrs.easyjob.repositories.PersonRepository;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
@@ -25,10 +20,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 class RegistrierenLoginLogoutAutomatikTest {
     // WebDriver
     private final WebDriver[] drivers = new WebDriver[2];
-
-    // Repositories
-    @Autowired
-    private PersonRepository personRepository;
 
     @BeforeAll
     static void setUp() {
@@ -145,9 +136,20 @@ class RegistrierenLoginLogoutAutomatikTest {
         WebElement masterCombobox = driver.findElement(By.id("vaadin-combo-box-item-1"));
         masterCombobox.click();
 
+
         // Studienfach auswählen (hier CyberSecurity bzw. Molekularbiologie)
         WebElement studienfachCombobox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#studienfach_combobox_id > input")));
         studienfachCombobox.click();
+
+        // Den Driver zwingen, 2 Sekunden zu warten
+        WebDriverWait tempWait = new WebDriverWait(driver, ofSeconds(2));
+        try {
+            tempWait.until(titleIs("Login"));
+        }
+        catch (TimeoutException e) {
+            // nichts soll hier passieren
+        }
+
         studienfachCombobox.sendKeys(Keys.UP);
         studienfachCombobox.sendKeys(Keys.UP);
         studienfachCombobox.sendKeys(Keys.UP);
