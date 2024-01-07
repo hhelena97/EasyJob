@@ -1,0 +1,17 @@
+html{
+    box-sizing: border-box;
+    margin: 0;
+    --lumo-primary-text-color: #289A32;
+
+}
+body {
+    width: 100%;
+    margin: 0;
+
+}
+
+.icon{
+    width: 25px;
+    height: 25px;
+
+}

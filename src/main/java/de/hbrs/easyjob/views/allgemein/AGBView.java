@@ -162,7 +162,4 @@ public class AGBView extends VerticalLayout {
                 "Die Datenschutzerklärung wurde zuletzt aktualisiert \n" +
                 "am 20.11.2023.";
     }
-
-
-
 }
