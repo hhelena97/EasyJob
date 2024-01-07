@@ -109,6 +109,4 @@ class JobServiceTest {
         verify(joKaRepo, times(1)).findByKategorie(anyString());
         verify(jobRepo, times(1)).save(any(Job.class));
     }
-
-    // TODO: andere Methoden aus JobService testen
 }
