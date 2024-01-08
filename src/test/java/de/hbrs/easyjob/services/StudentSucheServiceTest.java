@@ -113,8 +113,6 @@ class StudentSucheServiceTest {
         List<Student> actual = stuSeSe.teilZeichenSuche("Bon");
 
         // ************* Assert **************
-        System.out.println("Expected: " + expected);
-        System.out.println("Actual  : " + actual);
         assertEquals(expected, actual);
     }
 

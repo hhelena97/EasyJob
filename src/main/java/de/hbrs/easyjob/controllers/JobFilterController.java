@@ -1,7 +1,7 @@
 package de.hbrs.easyjob.controllers;
 import org.springframework.web.bind.annotation.*;
 
-
+//TODO: Controller löschen (?)
 @RestController
 @RequestMapping("/api/jobsfiltering")
 public class JobFilterController {

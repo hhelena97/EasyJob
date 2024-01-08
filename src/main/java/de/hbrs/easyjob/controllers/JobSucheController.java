@@ -35,6 +35,7 @@ public class JobSucheController {
         }
     }*/
 
+    //TODO: Test zu Teilzeichensuche grün
     public List<Job> searchJobs(String searchText) {
         // Entscheiden, welche Suchmethode zu verwenden ist
         if (jobService.isVollTextSuche(searchText)) {
