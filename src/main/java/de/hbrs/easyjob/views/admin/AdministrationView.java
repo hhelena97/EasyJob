@@ -2,6 +2,8 @@ package de.hbrs.easyjob.views.admin;
 
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -13,6 +15,7 @@ import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.views.components.AdminLayout;
+import de.hbrs.easyjob.entities.Admin;
 
 @Route(value = "administration", layout = AdminLayout.class)
 @PageTitle("Administration")
@@ -50,20 +53,27 @@ public class AdministrationView extends VerticalLayout implements BeforeEnterObs
         Div adminListe = new Div();
         adminListe.addClassName("adminListe");
 
-        //TODO: erster Admin, aktueller Nutzer mit anderen Zeichen
+        //TODO: es gibt noch keine Emails bei Admins
+        H3 mailAdmin = new H3("E-Mail Adresse" /*+ sessionController.getPerson().getEmail()*/);
+        mailAdmin.addClassName("text");
 
-        //TODO: für jeden Admin den es gibt mache folgendes:
-        /*Div admins = new Div(
-                new H2(adminRepository.getMail()),
-                new Icon(VaadinIcon.EDIT),
-                new Icon(VaadinIcon.MINUS)
+        HorizontalLayout aktuellerAdmin = new HorizontalLayout(
+                 mailAdmin,
+                new Div(new Icon(VaadinIcon.EDIT))
         );
+        aktuellerAdmin.addClassName("admins");
+        adminListe.add(aktuellerAdmin);
 
-        adminListe.add(admins);
+        for (Admin a: personRepository.findAllAdmins()) {
+            HorizontalLayout einAdmin = new HorizontalLayout(
+                    new H2("" /*+ a.getMail()*/), //TODO: es gibt noch keine Emails bei Admins
+                    new Div(new Icon(VaadinIcon.MINUS),
+                    new Icon(VaadinIcon.EDIT))
+            );
+            einAdmin.addClassName("admins");
 
-        */
-
-
+            adminListe.add(einAdmin);
+        }
         add(willkommen, adminListe);
     }
 
