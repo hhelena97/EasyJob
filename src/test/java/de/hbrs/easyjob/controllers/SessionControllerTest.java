@@ -131,7 +131,7 @@ class SessionControllerTest {
 
     @Test
     @DisplayName("Login mit leerem Passwort")
-    void loginWithEmptyPasswordTest()  {
+    void loginWithEmptyPasswordTest() {
         /* ************************************************** ACT *************************************************** */
         boolean actual = sessionController.login(existing_person_password, null);
 
@@ -142,7 +142,7 @@ class SessionControllerTest {
 
     @Test
     @DisplayName("Login mit leerer E-Mail und leerem Passwort")
-    void loginWithEmptyEmailAndPasswordTest()  {
+    void loginWithEmptyEmailAndPasswordTest() {
         /* ************************************************** ACT *************************************************** */
         boolean actual = sessionController.login(null, null);
 
@@ -158,16 +158,26 @@ class SessionControllerTest {
         sessionController.login(existing_person_email, existing_person_password);
 
         /* ************************************************** ACT *************************************************** */
-        //TODO: boolean actual = sessionController.logout();
+        try {
+            SecurityContext securityContext = (SecurityContext) VaadinSession.getCurrent().getAttribute(
+                    "org.springframework.security.core.context.SecurityContext"
+            );
+            assertTrue(securityContext.getAuthentication().isAuthenticated());
+            sessionController.logout();  // Wirft exception, siehe https://github.com/mvysny/karibu-testing/issues/148
+        } catch (IllegalStateException e) {  // Muss wegen Karibu gecatched werden
 
-        /* ************************************************* ASSERT ************************************************* */
-        //assertTrue(actual);
-        assertFalse(sessionController.isLoggedIn());
+            /* ************************************************* ASSERT ********************************************* */
+            SecurityContext securityContext = (SecurityContext) VaadinSession.getCurrent().getAttribute(
+                    "org.springframework.security.core.context.SecurityContext"
+            );
 
+            // Wenn Authentication=null, ist man nicht mehr eingeloggt (= ausgeloggt!)
+            assertNull(securityContext.getAuthentication());
+        }
     }
 
     @Test
-    @DisplayName("Testet den Logout (wieso auch immer) mit nicht angemeldeter Person")
+    @DisplayName("Testet den Logout (falls Methode fälschlicher Weise aufgerufen) mit nicht angemeldeter Person")
     void logoutStrangeTest() {
         /* ************************************************** ACT *************************************************** */
         boolean actual = sessionController.logout();
@@ -184,11 +194,22 @@ class SessionControllerTest {
         sessionController.login(deactivated_person_email, deactivated_person_password);
 
         /* ************************************************** ACT *************************************************** */
-        //TODO: boolean actual = sessionController.logout();
+        try {
+            SecurityContext securityContext = (SecurityContext) VaadinSession.getCurrent().getAttribute(
+                    "org.springframework.security.core.context.SecurityContext"
+            );
+            assertTrue(securityContext.getAuthentication().isAuthenticated());
+            sessionController.logout();  // Wirft exception, siehe https://github.com/mvysny/karibu-testing/issues/148
+        } catch (IllegalStateException e) {  // Muss wegen Karibu gecatched werden
 
-        /* ************************************************* ASSERT ************************************************* */
-        //assertTrue(actual);
-        assertFalse(sessionController.isLoggedIn());
+            /* ************************************************* ASSERT ********************************************* */
+            SecurityContext securityContext = (SecurityContext) VaadinSession.getCurrent().getAttribute(
+                    "org.springframework.security.core.context.SecurityContext"
+            );
+
+            // Wenn Authentication=null, ist man nicht mehr eingeloggt (= ausgeloggt!)
+            assertNull(securityContext.getAuthentication());
+        }
     }
 
     @Test
@@ -198,13 +219,15 @@ class SessionControllerTest {
         boolean actual = sessionController.isLoggedIn();
         sessionController.login(existing_person_email, existing_person_password);
         boolean actual2 = sessionController.isLoggedIn();
-        //TODO: sessionController.logout();
-        boolean actual3 = sessionController.isLoggedIn();
+
+        /*
+         * logout wird nicht getestet, da Karibu da Probleme hat
+         * siehe https://github.com/mvysny/karibu-testing/issues/148
+         */
 
         /* ************************************************* ASSERT ************************************************* */
         assertFalse(actual);
         assertTrue(actual2);
-        assertFalse(actual3);
     }
 
     @Test
