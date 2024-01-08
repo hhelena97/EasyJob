@@ -59,6 +59,7 @@ body {
 
 vaadin-vertical-layout {
     padding: 0;
+    vaadin-app-layout-navbar-offset-size: 0px;
 }
 
 vaadin-button.ausloggen {

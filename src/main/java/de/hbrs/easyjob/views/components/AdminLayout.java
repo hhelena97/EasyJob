@@ -10,6 +10,10 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.RouterLink;
+import de.hbrs.easyjob.views.admin.AdministrationView;
+import de.hbrs.easyjob.views.admin.EinstellungenStartView;
+import de.hbrs.easyjob.views.admin.MeldungenListeView;
+import de.hbrs.easyjob.views.admin.PersonenSuchenView;
 import de.hbrs.easyjob.views.unternehmen.*;
 
 @StyleSheet("AdminLayout.css")
@@ -25,9 +29,9 @@ public class AdminLayout extends AppLayout {
     private Tabs getTabs() {
         Tabs tabs = new Tabs();
         tabs.add(
-                createTab(FontAwesome.Solid.USERS_COG, UnternehmenspersonProfilView.class), //TODO: klassen ändern
-                createTab(FontAwesome.Solid.USER_EDIT, StatistikenView.class),
-                createTab(FontAwesome.Solid.EXCLAMATION_CIRCLE, BewerbungenView.class)
+                createTab(FontAwesome.Solid.USERS_COG, EinstellungenStartView.class),
+                createTab(FontAwesome.Solid.USER_EDIT, PersonenSuchenView.class),
+                createTab(FontAwesome.Solid.EXCLAMATION_CIRCLE, MeldungenListeView.class)
         );
         tabs.addThemeVariants(TabsVariant.LUMO_MINIMAL,
                 TabsVariant.LUMO_EQUAL_WIDTH_TABS);
