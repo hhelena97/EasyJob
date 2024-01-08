@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -47,6 +48,7 @@ class MeldungControllerTest {
 
     @Test
     @DisplayName("Testet, ob man eine Person einer Meldung zuweisen kann")
+    @Transactional
     void saveMeldungPersonTest() {
         /* ************************************************ ARRANGE ************************************************* */
         meldung.setGrund("Unhöfliches Nutzerverhalten");
@@ -59,11 +61,12 @@ class MeldungControllerTest {
         assertEquals(person, meldung.getPerson());
 
         /* ************************************************ TEAR DOWN *********************************************** */
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung.getId_Meldung()));
+        meldungRepository.delete(meldungRepository.findById(meldung.getId_Meldung()).get());
     }
 
     @Test
     @DisplayName("Testet, ob man eine Person einer leeren Meldung (ohne Grund) zuweisen kann")
+    @Transactional
     void saveNullMeldungPersonTest() {
         /* ************************************************** ACT *************************************************** */
         boolean actual = meldungController.saveMeldung(meldung, person);
@@ -73,11 +76,12 @@ class MeldungControllerTest {
         assertEquals(person, meldung.getPerson());
 
         /* ************************************************ TEAR DOWN *********************************************** */
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung.getId_Meldung()));
+        meldungRepository.delete(meldungRepository.findById(meldung.getId_Meldung()).get());
     }
 
     @Test
     @DisplayName("Testet, ob man einen Job einer Meldung zuweisen kann")
+    @Transactional
     void saveMeldungJobTest() {
         /* ************************************************ ARRANGE ************************************************* */
         meldung.setGrund("Schlechte Bezahlung");
@@ -90,11 +94,12 @@ class MeldungControllerTest {
         assertEquals(job, meldung.getJob());
 
         /* ************************************************ TEAR DOWN *********************************************** */
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung.getId_Meldung()));
+        meldungRepository.delete(meldungRepository.findById(meldung.getId_Meldung()).get());
     }
 
     @Test
     @DisplayName("Testet, ob man einen Chat einer Meldung zuweisen kann")
+    @Transactional
     void saveMeldungChatTest() {
         /* ************************************************ ARRANGE ************************************************* */
         meldung.setGrund("Unangemessene Kraftausdrücke");
@@ -107,21 +112,30 @@ class MeldungControllerTest {
         assertEquals(chat, meldung.getChat());
 
         /* ************************************************ TEAR DOWN *********************************************** */
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung.getId_Meldung()));
+        meldungRepository.delete(meldungRepository.findById(meldung.getId_Meldung()).get());
     }
 
     @Test
     @DisplayName("Testet, ob man ein Unternehmen einer Meldung zuweisen kann")
+    @Transactional
     void saveMeldungUnternehmenTest() {
         /* ************************************************ ARRANGE ************************************************* */
+        meldung.setGrund("Unhöfliches Nutzerverhalten");
 
         /* ************************************************** ACT *************************************************** */
+        boolean actual = meldungController.saveMeldung(meldung, unternehmen);
 
         /* ************************************************* ASSERT ************************************************* */
+        assertTrue(actual);
+        assertEquals(unternehmen, meldung.getUnternehmen());
+
+        /* ************************************************ TEAR DOWN *********************************************** */
+        meldungRepository.delete(meldungRepository.findById(meldung.getId_Meldung()).get());
     }
 
     @Test
     @DisplayName("Testet, ob man sich alle gemeldeten Personen ausgeben lassen kann")
+    @Transactional
     void getAllGemeldetePersonen() {
         /* ************************************************ ARRANGE ************************************************* */
         meldung.setGrund("unhöfliches Nutzerverhalten");
@@ -144,23 +158,44 @@ class MeldungControllerTest {
         assertEquals(expected, actual);
 
         /* ************************************************ TEAR DOWN *********************************************** */
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung.getId_Meldung()));
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung2.getId_Meldung()));
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung3.getId_Meldung()));
+        meldungRepository.delete(meldungRepository.findById(meldung.getId_Meldung()).get());
+        meldungRepository.delete(meldungRepository.findById(meldung2.getId_Meldung()).get());
+        meldungRepository.delete(meldungRepository.findById(meldung3.getId_Meldung()).get());
     }
 
     @Test
     @DisplayName("Testet, ob man sich alle gemeldeten Unternehmen ausgeben lassen kann")
+    @Transactional
     void getAllGemeldeteUnternehmen() {
         /* ************************************************ ARRANGE ************************************************* */
+        meldung.setGrund("unhöfliches Nutzerverhalten");
+        meldungController.saveMeldung(meldung, unternehmen);
+
+        Meldung meldung2 = new Meldung();
+        meldung2.setGrund("Ein ganz toller Grund");
+        meldungController.saveMeldung(meldung2, unternehmen);
+
+        Meldung meldung3 = new Meldung();
+        meldung3.setGrund("Ein noch viel besserer Grund");
+        meldungController.saveMeldung(meldung2, job);
+
+        List<Meldung> expected = List.of(meldung, meldung2);
 
         /* ************************************************** ACT *************************************************** */
+        List<Meldung> actual = meldungController.getAllGemeldeteUnternehmen();
 
         /* ************************************************* ASSERT ************************************************* */
+        assertEquals(expected, actual);
+
+        /* ************************************************ TEAR DOWN *********************************************** */
+        meldungRepository.delete(meldungRepository.findById(meldung.getId_Meldung()).get());
+        meldungRepository.delete(meldungRepository.findById(meldung2.getId_Meldung()).get());
+        meldungRepository.delete(meldungRepository.findById(meldung3.getId_Meldung()).get());
     }
 
     @Test
     @DisplayName("Testet, ob man sich alle gemeldeten Jobs ausgeben lassen kann")
+    @Transactional
     void getAllGemeldeteJobs() {
         /* ************************************************ ARRANGE ************************************************* */
         meldung.setGrund("unhöfliches Nutzerverhalten");
@@ -184,13 +219,14 @@ class MeldungControllerTest {
         assertEquals(expected, actual);
 
         /* ************************************************ TEAR DOWN *********************************************** */
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung.getId_Meldung()));
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung2.getId_Meldung()));
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung3.getId_Meldung()));
+        meldungRepository.delete(meldungRepository.findById(meldung.getId_Meldung()).get());
+        meldungRepository.delete(meldungRepository.findById(meldung2.getId_Meldung()).get());
+        meldungRepository.delete(meldungRepository.findById(meldung3.getId_Meldung()).get());
     }
 
     @Test
     @DisplayName("Testet, ob man sich alle gemeldeten Chats ausgeben lassen kann")
+    @Transactional
     void getAllGemeldeteChats() {
         /* ************************************************ ARRANGE ************************************************* */
         Chat chat2 = new Chat();
@@ -215,13 +251,14 @@ class MeldungControllerTest {
         assertEquals(expected, actual);
 
         /* ************************************************ TEAR DOWN *********************************************** */
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung.getId_Meldung()));
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung2.getId_Meldung()));
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung3.getId_Meldung()));
+        meldungRepository.delete(meldungRepository.findById(meldung.getId_Meldung()).get());
+        meldungRepository.delete(meldungRepository.findById(meldung2.getId_Meldung()).get());
+        meldungRepository.delete(meldungRepository.findById(meldung3.getId_Meldung()).get());
     }
 
     @Test
     @DisplayName("Testet, ob man Meldungen bearbeiten kann")
+    @Transactional
     void meldungBearbeiten() {
         /* ************************************************ ARRANGE ************************************************* */
         meldung.setGrund("unhöfliches Nutzerverhalten");
@@ -234,11 +271,12 @@ class MeldungControllerTest {
         assertTrue(actual);
 
         /* ************************************************ TEAR DOWN *********************************************** */
-        meldungRepository.delete(meldungRepository.findById_Meldung(meldung.getId_Meldung()));
+        meldungRepository.delete(meldungRepository.findById(meldung.getId_Meldung()).get());
     }
 
     @Test
     @DisplayName("Testet, ob man null-Meldungen bearbeiten kann")
+    @Transactional
     void nullMeldungBearbeiten() {
         /* ************************************************** ACT *************************************************** */
         boolean actual = meldungController.meldungBearbeiten(null);

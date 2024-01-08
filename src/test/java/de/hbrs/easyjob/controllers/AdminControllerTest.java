@@ -225,7 +225,7 @@ class AdminControllerTest {
         personRepository.delete(personRepository.getReferenceById(p1.getId_Person()));
 
         /* *********************** ASSERT ********************** */
-        assertFalse(actual);
+        assertTrue(actual);
         assertNotEquals(old,neu);
     }
 
