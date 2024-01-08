@@ -27,24 +27,23 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 class StudentProfilFilterServiceTest {
     // Repositories
-    private final static OrtRepository ortRepo = mock(OrtRepository.class);
-    private final static JobKategorieRepository joKaRepo = mock(JobKategorieRepository.class);
-    private final static StudienfachRepository stuFaRepo = mock(StudienfachRepository.class);
-    private final static StudentRepository stuRepo = mock(StudentRepository.class);
+    private final static OrtRepository ortRepository = mock(OrtRepository.class);
+    private final static JobKategorieRepository jobKategorieRepository = mock(JobKategorieRepository.class);
+    private final static StudienfachRepository studienfachRepository = mock(StudienfachRepository.class);
+    private final static StudentRepository studentRepository = mock(StudentRepository.class);
 
     // Services
     @InjectMocks
-    private StudentProfilFilterService stuFiS;
-    private static StudentService stuSe;
+    private StudentProfilFilterService studentProfilFilterService;
 
-    // Datenobjekte
-    private static Student p1;
-    private static Student p2;
-    private final static Studienfach stuFa1 = new Studienfach();
-    private final static JobKategorie joKa1 = new JobKategorie();
+    // Entities
+    private static Student student1;
+    private static Student student2;
+    private final static Studienfach studienfach1 = new Studienfach();
+    private final static JobKategorie jobKategorie1 = new JobKategorie();
     private final static Ort ort1 = new Ort();
-    private final static Studienfach stuFa2 = new Studienfach();
-    private final static JobKategorie joKa2 = new JobKategorie();
+    private final static Studienfach studienfach2 = new Studienfach();
+    private final static JobKategorie jobKategorie2 = new JobKategorie();
     private final static Ort ort2 = new Ort();
 
     /**
@@ -52,49 +51,49 @@ class StudentProfilFilterServiceTest {
      */
     @BeforeAll
     static void setUp() {
-        // Daten für Studenten aufsetzen
-        joKa1.setKategorie("Masterarbeit");
+        // Daten für Studenten setzen
+        jobKategorie1.setKategorie("Masterarbeit");
         ort1.setPLZ("53111");
         ort1.setOrt("Bonn");
-        stuFa1.setAbschluss("Master");
-        stuFa1.setFach("Informatik");
+        studienfach1.setAbschluss("Master");
+        studienfach1.setFach("Informatik");
         Set<JobKategorie> tmp = new HashSet<>();
-        tmp.add(joKa1);
+        tmp.add(jobKategorie1);
         Set<Ort> tmp2 = new HashSet<>();
         tmp2.add(ort1);
 
-        joKa2.setKategorie("Praktikum");
+        jobKategorie2.setKategorie("Praktikum");
         ort2.setPLZ("50667");
         ort2.setOrt("Köln");
-        stuFa2.setAbschluss("Bachelor");
-        stuFa2.setFach("Informatik");
+        studienfach2.setAbschluss("Bachelor");
+        studienfach2.setFach("Informatik");
         Set<JobKategorie> tmp3 = new HashSet<>();
-        tmp3.add(joKa1);
-        tmp3.add(joKa2);
+        tmp3.add(jobKategorie1);
+        tmp3.add(jobKategorie2);
         Set<Ort> tmp4 = new HashSet<>();
         tmp4.add(ort2);
 
         // Daten in Studenten einsetzen
-        p1 = new Student();
-        p1.setVorname("Max");
-        p1.setNachname("Mustermann");
-        p1.setEmail("max.mustermann@example.de");
-        p1.setStudienfach(stuFa1);
-        p1.setJobKategorien(tmp);
-        p1.setOrte(tmp2);
+        student1 = new Student();
+        student1.setVorname("Max");
+        student1.setNachname("Mustermann");
+        student1.setEmail("max.mustermann@example.de");
+        student1.setStudienfach(studienfach1);
+        student1.setJobKategorien(tmp);
+        student1.setOrte(tmp2);
 
-        p2 = new Student();
-        p2.setVorname("Mareike");
-        p2.setNachname("Musterfrau");
-        p2.setEmail("mareike.musterfrau@example.de");
-        p2.setStudienfach(stuFa1);
-        p2.setJobKategorien(tmp3);
-        p2.setOrte(tmp4);
+        student2 = new Student();
+        student2.setVorname("Mareike");
+        student2.setNachname("Musterfrau");
+        student2.setEmail("mareike.musterfrau@example.de");
+        student2.setStudienfach(studienfach1);
+        student2.setJobKategorien(tmp3);
+        student2.setOrte(tmp4);
 
         // Studenten speichern
-        stuSe = new StudentService(stuRepo, stuFaRepo, joKaRepo, ortRepo);
-        stuSe.saveStudent(p1);
-        stuSe.saveStudent(p2);
+        StudentService studentService = new StudentService(studentRepository, studienfachRepository, jobKategorieRepository, ortRepository);
+        studentService.saveStudent(student1);
+        studentService.saveStudent(student2);
     }
 
     /**
@@ -102,8 +101,8 @@ class StudentProfilFilterServiceTest {
      */
     @BeforeEach
     void setUpEach() {
-        stuFiS = new StudentProfilFilterService();
-        stuFiS.studentRepository = stuRepo;
+        studentProfilFilterService = new StudentProfilFilterService();
+        studentProfilFilterService.studentRepository = studentRepository;
     }
 
     /**
@@ -111,10 +110,10 @@ class StudentProfilFilterServiceTest {
      */
     @AfterAll
     static void tearDown() {
-        Mockito.reset(stuFaRepo);
-        Mockito.reset(joKaRepo);
-        Mockito.reset(stuRepo);
-        Mockito.reset(ortRepo);
+        Mockito.reset(studienfachRepository);
+        Mockito.reset(jobKategorieRepository);
+        Mockito.reset(studentRepository);
+        Mockito.reset(ortRepository);
     }
 
     /**
@@ -125,10 +124,10 @@ class StudentProfilFilterServiceTest {
     @DisplayName("Test nach Studentensuche, wenn keine Filterangaben gemacht sind")
     void filterStudentsWithoutFilter() {
         // ************* Arrange *************
-        List<Student> expected = List.of(p1, p2);
-        when(stuRepo.findAll(any(Specification.class))).thenReturn(expected);
+        List<Student> expected = List.of(student1, student2);
+        when(studentRepository.findAll(any(Specification.class))).thenReturn(expected);
         // *************** Act ***************
-        List<Student> actual = stuFiS.filterStudents(null,null, null);
+        List<Student> actual = studentProfilFilterService.filterStudents(null,null, null);
         // ************* Assert **************
         assertEquals(expected, actual);
     }
@@ -141,19 +140,19 @@ class StudentProfilFilterServiceTest {
     @DisplayName("Test nach Studentensuche über nur Studienfächer")
     void filterStudentsAfterStudienfaecher() {
         // ************* Arrange *************
-        List<Student> expected = List.of(p1, p2);
-        when(stuRepo.findAll(any(Specification.class))).thenReturn(expected);
+        List<Student> expected = List.of(student1, student2);
+        when(studentRepository.findAll(any(Specification.class))).thenReturn(expected);
         // *************** Act ***************
-        List<Student> actual = stuFiS.filterStudents(null,null, Set.of(stuFa1));
-        List<Student> actual2 = stuFiS.filterStudents(null,null, Set.of(stuFa1,stuFa2));
+        List<Student> actual = studentProfilFilterService.filterStudents(null,null, Set.of(studienfach1));
+        List<Student> actual2 = studentProfilFilterService.filterStudents(null,null, Set.of(studienfach1, studienfach2));
         // ************* Assert **************
         assertEquals(expected, actual);
         assertEquals(expected, actual2);
 
         // ************* Arrange ************* 2
-        when(stuRepo.findAll(any(Specification.class))).thenReturn(List.of());
+        when(studentRepository.findAll(any(Specification.class))).thenReturn(List.of());
         // *************** Act *************** 2
-        List<Student> actual3 = stuFiS.filterStudents(null,null, Set.of(stuFa2));
+        List<Student> actual3 = studentProfilFilterService.filterStudents(null,null, Set.of(studienfach2));
         // ************* Assert ************** 2
         assertEquals(0, actual3.size());
     }
@@ -166,11 +165,11 @@ class StudentProfilFilterServiceTest {
     @DisplayName("Test nach Studentensuche über nur JobKategorien")
     void filterStudentsAfterJobKategorie() {
         // ************* Arrange *************
-        List<Student> expected = List.of(p1, p2);
-        when(stuRepo.findAll(any(Specification.class))).thenReturn(expected);
+        List<Student> expected = List.of(student1, student2);
+        when(studentRepository.findAll(any(Specification.class))).thenReturn(expected);
         // *************** Act ***************
-        List<Student> actual = stuFiS.filterStudents(null,Set.of(joKa1), null);
-        List<Student> actual2 = stuFiS.filterStudents(null,Set.of(joKa1, joKa2), null);
+        List<Student> actual = studentProfilFilterService.filterStudents(null,Set.of(jobKategorie1), null);
+        List<Student> actual2 = studentProfilFilterService.filterStudents(null,Set.of(jobKategorie1, jobKategorie2), null);
         // ************* Assert **************
         assertEquals(expected, actual);
         assertEquals(expected, actual2);
@@ -184,10 +183,10 @@ class StudentProfilFilterServiceTest {
     @DisplayName("Test nach Studentensuche über nur Orte")
     void filterStudentsAfterLocation() {
         // ************* Arrange *************
-        List<Student> expected = List.of(p1);
-        when(stuRepo.findAll(any(Specification.class))).thenReturn(expected);
+        List<Student> expected = List.of(student1);
+        when(studentRepository.findAll(any(Specification.class))).thenReturn(expected);
         // *************** Act ***************
-        List<Student> actual = stuFiS.filterStudents(ort1,null, null);
+        List<Student> actual = studentProfilFilterService.filterStudents(ort1,null, null);
         // ************* Assert **************
         assertEquals(expected, actual);
     }
@@ -200,20 +199,20 @@ class StudentProfilFilterServiceTest {
     @DisplayName("Test nach Studentensuche über Studienfächer & JobKategorien")
     void filterStudentsAfterStudienFaehcerUndJobKategorie() {
         // ************* Arrange *************
-        List<Student> expected = List.of(p1);
-        when(stuRepo.findAll(any(Specification.class))).thenReturn(expected);
+        List<Student> expected = List.of(student1);
+        when(studentRepository.findAll(any(Specification.class))).thenReturn(expected);
         // *************** Act ***************
-        List<Student> actual = stuFiS.filterStudents(null,Set.of(joKa1), Set.of(stuFa1));
-        List<Student> actual2 = stuFiS.filterStudents(null,Set.of(joKa1, joKa2), Set.of(stuFa1));
+        List<Student> actual = studentProfilFilterService.filterStudents(null,Set.of(jobKategorie1), Set.of(studienfach1));
+        List<Student> actual2 = studentProfilFilterService.filterStudents(null,Set.of(jobKategorie1, jobKategorie2), Set.of(studienfach1));
         // ************* Assert **************
         assertEquals(expected, actual);
         assertEquals(expected, actual2);
 
         // ************* Arrange *************
-        List<Student> expected2 = List.of(p1, p2);
-        when(stuRepo.findAll(any(Specification.class))).thenReturn(expected2);
+        List<Student> expected2 = List.of(student1, student2);
+        when(studentRepository.findAll(any(Specification.class))).thenReturn(expected2);
         // *************** Act ***************
-        List<Student> actual3 = stuFiS.filterStudents(null,Set.of(joKa1, joKa2), Set.of(stuFa1, stuFa2));
+        List<Student> actual3 = studentProfilFilterService.filterStudents(null,Set.of(jobKategorie1, jobKategorie2), Set.of(studienfach1, studienfach2));
         // ************* Assert **************
         assertEquals(expected2, actual3);
     }
@@ -226,18 +225,18 @@ class StudentProfilFilterServiceTest {
     @DisplayName("Test nach Studentensuche über Studienfächer & Orte")
     void filterStudentsAfterLocationUndStudienFaecher() {
         // ************* Arrange *************
-        List<Student> expected = List.of(p1);
-        when(stuRepo.findAll(any(Specification.class))).thenReturn(expected);
+        List<Student> expected = List.of(student1);
+        when(studentRepository.findAll(any(Specification.class))).thenReturn(expected);
         // *************** Act ***************
-        List<Student> actual = stuFiS.filterStudents(ort1,Set.of(joKa1), null);
+        List<Student> actual = studentProfilFilterService.filterStudents(ort1,Set.of(jobKategorie1), null);
         // ************* Assert **************
         assertEquals(expected, actual);
 
         // ************* Arrange *************
-        List<Student> expected2 = List.of(p2);
-        when(stuRepo.findAll(any(Specification.class))).thenReturn(expected2);
+        List<Student> expected2 = List.of(student2);
+        when(studentRepository.findAll(any(Specification.class))).thenReturn(expected2);
         // *************** Act ***************
-        List<Student> actual2 = stuFiS.filterStudents(ort2,Set.of(joKa1, joKa2), null);
+        List<Student> actual2 = studentProfilFilterService.filterStudents(ort2,Set.of(jobKategorie1, jobKategorie2), null);
         // ************* Assert **************
         assertEquals(expected, actual2);
     }
@@ -250,17 +249,17 @@ class StudentProfilFilterServiceTest {
     @DisplayName("Test nach Studentensuche über Orte & JobKategorien")
     void filterStudentsAfterLocationUndJobKategorie() {
         // ************* Arrange *************
-        List<Student> expected = List.of(p1);
-        when(stuRepo.findAll(any(Specification.class))).thenReturn(expected);
+        List<Student> expected = List.of(student1);
+        when(studentRepository.findAll(any(Specification.class))).thenReturn(expected);
         // *************** Act ***************
-        List<Student> actual = stuFiS.filterStudents(ort1,null, Set.of(stuFa1, stuFa2));
+        List<Student> actual = studentProfilFilterService.filterStudents(ort1,null, Set.of(studienfach1, studienfach2));
         // ************* Assert **************
         assertEquals(expected, actual);
 
         // ************* Arrange *************
-        when(stuRepo.findAll(any(Specification.class))).thenReturn(List.of());
+        when(studentRepository.findAll(any(Specification.class))).thenReturn(List.of());
         // *************** Act ***************
-        List<Student> actual2 = stuFiS.filterStudents(ort2,null, Set.of(stuFa2));
+        List<Student> actual2 = studentProfilFilterService.filterStudents(ort2,null, Set.of(studienfach2));
         // ************* Assert **************
         assertEquals(0, actual2.size());
     }
@@ -273,18 +272,18 @@ class StudentProfilFilterServiceTest {
     @DisplayName("Test nach Studentensuche über Studienfächer & JobKategorien & Orte")
     void filterStudents() {
         // ************* Arrange *************
-        List<Student> expected = List.of(p1);
-        when(stuRepo.findAll(any(Specification.class))).thenReturn(expected);
+        List<Student> expected = List.of(student1);
+        when(studentRepository.findAll(any(Specification.class))).thenReturn(expected);
         // *************** Act ***************
-        List<Student> actual = stuFiS.filterStudents(ort1,Set.of(joKa1), Set.of(stuFa1, stuFa2));
+        List<Student> actual = studentProfilFilterService.filterStudents(ort1,Set.of(jobKategorie1), Set.of(studienfach1, studienfach2));
         // ************* Assert **************
         assertEquals(expected, actual);
 
         // ************* Arrange *************
-        List<Student> expected2 = List.of(p2);
-        when(stuRepo.findAll(any(Specification.class))).thenReturn(expected2);
+        List<Student> expected2 = List.of(student2);
+        when(studentRepository.findAll(any(Specification.class))).thenReturn(expected2);
         // *************** Act ***************
-        List<Student> actual2 = stuFiS.filterStudents(ort2,Set.of(joKa1, joKa2), Set.of(stuFa1));
+        List<Student> actual2 = studentProfilFilterService.filterStudents(ort2,Set.of(jobKategorie1, jobKategorie2), Set.of(studienfach1));
         // ************* Assert **************
         assertEquals(expected2, actual2);
     }
