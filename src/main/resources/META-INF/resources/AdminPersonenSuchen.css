@@ -1,0 +1,31 @@
+body {
+    width: 100%;
+    background: var(--hintergrund-weiß);
+    font-family: Rubik, sans-serif; /* Rubik als Standardschriftart und fallback sans-serif */
+}
+
+.titel{
+    color: var(--hintergrund-weiß);
+    padding-left: 27px;
+    margin-top: 7px;
+    margin-bottom: 0;
+    width: 266px;
+    height: 55px;
+    padding-bottom: 20px;
+    padding-right: 82px;
+    padding-top: 25px;
+}
+
+.search-field {
+    width: 100%;
+    position: relative;
+    background: var(--hintergrund-weiß);
+}
+
+.gruenerblock{
+    background-color: var(--admin-dark);
+    height: 150px;
+    width: 100%;
+    max-width: 600px;
+    align-self: center;
+}
