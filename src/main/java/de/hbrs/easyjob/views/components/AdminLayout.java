@@ -27,7 +27,6 @@ public class AdminLayout extends AppLayout {
         tabs.add(
                 createTab(FontAwesome.Solid.USERS_COG, UnternehmenspersonProfilView.class), //TODO: klassen ändern
                 createTab(FontAwesome.Solid.USER_EDIT, StatistikenView.class),
-                createTab(FontAwesome.Solid.USER_LOCK, MitarbeiterFindenView.class),
                 createTab(FontAwesome.Solid.EXCLAMATION_CIRCLE, BewerbungenView.class)
         );
         tabs.addThemeVariants(TabsVariant.LUMO_MINIMAL,
