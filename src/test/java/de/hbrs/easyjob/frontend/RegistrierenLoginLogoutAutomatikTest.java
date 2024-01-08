@@ -210,7 +210,7 @@ class RegistrierenLoginLogoutAutomatikTest {
         wait.until(titleIs("Login | EasyJob"));
         assertEquals("http://localhost:8080/login", driver.getCurrentUrl());
 
-        // Seite neu laden, weil Selenium doof ist
+        // Seite neu laden, weil Selenium da nicht gut hinterher kommt
         driver.get("http://localhost:8080/login");
 
         // E-Mail eingeben
