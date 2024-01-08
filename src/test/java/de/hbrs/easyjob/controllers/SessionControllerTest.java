@@ -2,6 +2,7 @@ package de.hbrs.easyjob.controllers;
 
 import com.github.mvysny.kaributesting.v10.MockVaadin;
 import com.github.mvysny.kaributesting.v10.Routes;
+import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.security.CustomSecurityContextRepository;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 
