@@ -1,20 +1,15 @@
 package de.hbrs.easyjob.controllers;
 
-import com.vaadin.flow.component.UI;
 import de.hbrs.easyjob.entities.Ort;
-import de.hbrs.easyjob.repositories.OrtRepository;
 import de.hbrs.easyjob.services.OrtService;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +23,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
 @SpringBootTest
 class OrtControllerTest {
-    // Repositories
-    @Autowired
-    private OrtRepository ortRepository;
-
     // Services
     private final static OrtService ortService = Mockito.mock(OrtService.class);
 
@@ -82,54 +73,109 @@ class OrtControllerTest {
         ortController = null;
     }
 
-    //TODO: getOrtItemFilter()-Test*************************************************************************************
     /**
      * testet die Methode getOrtItemFilter()
      */
     @Test
     @DisplayName("Test für getOrtItemFilter()")
-    void getOrtItemFilterTest() {
+    void getOrtItemFilterAndLabelFilterGeneratorTest() {
         /* ************* Arrange ************* */
         // WebDriver Setup
         System.setProperty("webdriver.gecko.driver", "/C:/Users/Vanessa/Downloads/geckodriver-v0.33.0-win64/geckodriver.exe");
         WebDriverManager.firefoxdriver().setup();
         WebDriver driver = new FirefoxDriver();
+        WebDriverWait wait = new WebDriverWait(driver, ofSeconds(30), ofSeconds(1));
 
-        // Seite laden
+        // Warten, bis Login-Seite geladen
+        driver.manage().window().maximize();
+        driver.get("http://localhost:8080/login");
+        wait.until(titleIs("Login | EasyJob"));
+        assertEquals("http://localhost:8080/login", driver.getCurrentUrl());
+
+        // Seite neu laden, weil Selenium doof ist
         driver.get("http://localhost:8080/login");
 
-        new WebDriverWait(driver, ofSeconds(30), ofSeconds(1))
-                .until(titleIs("Login | EasyJob"));
+        // E-Mail eingeben
+        WebElement emailTextInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#emailloginfeld_id > input")));
+        emailTextInput.click();
+        emailTextInput.sendKeys("rudolf@christmas.org");
 
-        // Einloggen bei Unternehmensperson
-        var email = "l.mueller@ecosustainable.de";
-        var password = "EcoPass2023!";
+        // Passwort eingeben
+        WebElement passwordTextInput = driver.findElement(By.cssSelector("#passwordloginfeld_id > input"));
+        passwordTextInput.click();
+        passwordTextInput.sendKeys("sicheresPasswort123");
 
-        var emailTextInput = driver.findElement(By.id("emailloginfeld_id"));
-        String js = "arguments[0].setAttribute('value','"+email+"')";
-        ((JavascriptExecutor) driver).executeScript(js, emailTextInput);
+        // Passwort anzeigen
+        WebElement passwortLoginInputAuge = driver.findElement(By.cssSelector("#passwordloginfeld_id > vaadin-password-field-button"));
+        passwortLoginInputAuge.click();
 
-        var passwordTextInput = driver.findElement(By.id("passwordloginfeld_id"));
-        String js2 = "arguments[0].setAttribute('value','"+password+"')";
-        ((JavascriptExecutor) driver).executeScript(js2, passwordTextInput);
-
-        //TODO: automatisierter Login fixen
-
+        // Auf Login-Button drücken
         driver.findElement(By.id("loginbutton_id_loginpage")).click();
 
-        new WebDriverWait(driver, ofSeconds(30), ofSeconds(1))
-                .until(titleIs("Profil"));
-
         // Auf Unternehmensperson-Profil landen
-        var url = driver.getCurrentUrl();
-        assertEquals("http://localhost:8080/unternehmen/unternehmenperson", url);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("unternehmenProfil")));
+        assertEquals("http://localhost:8080/unternehmen/unternehmenperson", driver.getCurrentUrl());
 
         // Zur Stellenanzeige Erstellen-View wechseln
-        UI.getCurrent().navigate("unternehmen/stellenanzeige/erstellen");
+        driver.findElement(By.xpath("//a[@href='unternehmen/unternehmensprofil']")).click();
 
-        /* *************** Act *************** */
-        Select standortAuswahl = new Select(driver.findElement(By.className("standort")));
-        standortAuswahl.selectByVisibleText("Bonn (53111)");
+        // Auf Unternehmensprofil landen
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("grosseTitleUnternehmen")));
+        assertEquals("http://localhost:8080/unternehmen/unternehmensprofil", driver.getCurrentUrl());
+
+        // Auf Stellenangebot hinzufuegen klicken
+        driver.findElement(By.xpath("//a[@href='unternehmen/jobdetails']"));
+        driver.get("http://localhost:8080/unternehmen/stellenanzeige/erstellen"); // eigentlich müsste man ja über den Link dahinkommen, aber scheinbar ist die Weiterleitung noch nicht richtig
+
+        // Auf Stellenanzeige erstellen landen
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("zurueck-button")));
+        assertEquals("http://localhost:8080/unternehmen/stellenanzeige/erstellen", driver.getCurrentUrl());
+
+        /* **************** Act *************** */
+        WebElement date = driver.findElement(By.id("input-vaadin-date-picker-16"));
+        date.click();
+        date.sendKeys("1.12.2024");
+        date.sendKeys(Keys.RETURN);
+
+        WebElement berufsbezeichnung = driver.findElement(By.id("input-vaadin-combo-box-18"));
+        berufsbezeichnung.click();
+        berufsbezeichnung.sendKeys(Keys.UP);
+        berufsbezeichnung.sendKeys(Keys.UP);
+        berufsbezeichnung.sendKeys(Keys.RETURN);
+
+        WebElement standort = driver.findElement(By.id("input-vaadin-combo-box-20"));
+        standort.click();
+        standort.sendKeys(Keys.DOWN);
+        standort.sendKeys(Keys.RETURN);
+
+        WebElement titel = driver.findElement(By.id("input-vaadin-text-field-21"));
+        titel.click();
+        titel.sendKeys("Kapitän der Flying Dutchman");
+
+        WebElement stellenbeschreibung = driver.findElement(By.id("textarea-vaadin-text-area-22"));
+        stellenbeschreibung.click();
+        stellenbeschreibung.sendKeys("Dies ist voll die tolle Stelle, ich hoffe, Sie wollen hier WIRKLICH arbeiten. Die Flying Dutchman braucht nämlich einen neuen Kapitän, weil Will Turner zurück nachhause zu seiner Family will.");
+
+        driver.findElement(By.id("input-vaadin-checkbox-23")).click();
+
+        driver.findElement(By.className("abbrechen-button")).click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("close-unternehmen")));
+        driver.findElement(By.className("close-unternehmen")).click();
+
+        WebDriverWait tempWait = new WebDriverWait(driver, ofSeconds(2)); // define local/temp wait only for the "sleep"
+        try {
+            tempWait.until(titleIs("Login")); // condition you are certain won't be true
+        }
+        catch (TimeoutException e) {
+             // catch the exception and continue the code
+        }
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("fertig-button")));
+        driver.findElement(By.className("fertig-button")).click();
+
+        //TODO: Fall -> was passiert, wenn Vorgaben nicht erfüllt?
+        //TODO: weiterleitung & speicherung überprüfen
 
         /* ************* Tear down ************ */
         driver.quit();
@@ -206,17 +252,6 @@ class OrtControllerTest {
         // ************* Assert **************
         assertEquals(expected, actual);
     }
-
-    //TODO: Test für getOrtItemLabelGenerator
-    /*
-     * testet die Methode getOrtItemLabelGenerator
-     *
-    @Test
-    @DisplayName("Testet getOrtItemLabelGeneratorTest")
-    void getOrtItemLabelGeneratorTest() {
-
-    }
-     */
 
     /**
      * testet die Methode createOrt() mit einem Ort-Objekt
