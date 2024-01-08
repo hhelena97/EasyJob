@@ -1,6 +1,9 @@
 package de.hbrs.easyjob.controllers;
 
-import de.hbrs.easyjob.entities.*;
+import de.hbrs.easyjob.entities.JobKategorie;
+import de.hbrs.easyjob.entities.Ort;
+import de.hbrs.easyjob.entities.Student;
+import de.hbrs.easyjob.entities.Studienfach;
 import de.hbrs.easyjob.services.StudentProfilFilterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +17,6 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/studentfiltering")
 public class StudentProfilFilterController {
-
 
     @Autowired
     private StudentProfilFilterService studentsFilterService;
