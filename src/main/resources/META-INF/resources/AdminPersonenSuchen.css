@@ -29,3 +29,9 @@ body {
     max-width: 600px;
     align-self: center;
 }
+
+/*Das hier macht dass der grüne Kasten bis in die Ecken geht. Um alle Komponenten ist nämlich noch
+ ein Vertival Layout drum, weil du das als Layout Art verwendest. Das macht der automatisch drum.*/
+vaadin-vertical-layout {
+    padding: 0;
+}
