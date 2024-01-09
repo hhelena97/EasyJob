@@ -1,8 +1,14 @@
+body {
+    width: 100%;
+    background: var(--hintergrund-weiß);
+    font-family: Rubik, sans-serif; /* Rubik als Standardschriftart und fallback sans-serif */
+}
 
 .titelbox {
     background-color: var(--admin-dark);
     height: 150px;
     width: 100%;
+    max-width: 600px;
     align-self: center;
 }
 

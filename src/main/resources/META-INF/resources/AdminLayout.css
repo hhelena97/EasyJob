@@ -21,6 +21,9 @@ vaadin-app-layout::part(navbar) {
     display: flex;
     justify-content: center;
 
+    /*kein Abstand oben zum grünen Kasten */
+    vaadin-app-layout-navbar-offset-size: 0px;
+
     /* Leiste unten */
     top: auto;
     bottom: 0;

@@ -8,7 +8,7 @@ body {
     color: var(--hintergrund-weiß);
     padding-left: 27px;
     margin-top: 7px;
-    margin-bottom: 0;
+    margin-bottom: 0px;
     width: 266px;
     height: 55px;
     padding-bottom: 20px;
@@ -18,15 +18,25 @@ body {
 
 .search-field {
     width: 100%;
+    padding-top: 0px;
+    padding-bottom: 0px;
     position: relative;
-    background: var(--hintergrund-weiß);
+    align-self: center;
+}
+
+.search-layout {
+    background: white;
+    border-radius: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+    align-self: center;
 }
 
 .gruenerblock{
     background-color: var(--admin-dark);
-    height: 150px;
     width: 100%;
     max-width: 600px;
+    padding-bottom: 10px;
     align-self: center;
 }
 
@@ -34,4 +44,8 @@ body {
  ein Vertival Layout drum, weil du das als Layout Art verwendest. Das macht der automatisch drum.*/
 vaadin-vertical-layout {
     padding: 0;
+}
+
+.personListLayout{
+
 }
