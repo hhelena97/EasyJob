@@ -34,7 +34,7 @@ public class AdminController {
      * @param admin Admin, der angelegt werden soll
      * @return true, wenn Person angelegt wurde & false, wenn nicht
      */
-    boolean createAdmin(Admin admin) {
+    public boolean createAdmin(Admin admin) {
         admin.setAktiv(true);
         // Prüfe Email und Passwort
         boolean ok = ValidationController.isValidEmail(admin.getEmail()) &&

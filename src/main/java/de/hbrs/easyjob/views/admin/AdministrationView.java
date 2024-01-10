@@ -1,5 +1,6 @@
 package de.hbrs.easyjob.views.admin;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -12,6 +13,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import de.hbrs.easyjob.controllers.AdminController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.views.components.AdminLayout;
@@ -25,6 +27,8 @@ import de.hbrs.easyjob.entities.Admin;
 public class AdministrationView extends VerticalLayout implements BeforeEnterObserver {
 
     private PersonRepository personRepository;
+
+    private final AdminController adminController;
     private final SessionController sessionController;
 
     @Override
@@ -34,9 +38,10 @@ public class AdministrationView extends VerticalLayout implements BeforeEnterObs
         }
     }
 
-    public AdministrationView(SessionController sessionController, PersonRepository personRepository) {
+    public AdministrationView(SessionController sessionController, PersonRepository personRepository, AdminController adminController) {
         this.sessionController = sessionController;
         this.personRepository = personRepository;
+        this.adminController = adminController;
 
         Icon back = new Icon(VaadinIcon.CHEVRON_LEFT);
         back.addClassName("backArrow");
@@ -44,7 +49,11 @@ public class AdministrationView extends VerticalLayout implements BeforeEnterObs
         Icon userPlus = new Icon(VaadinIcon.PLUS);
         userPlus.addClassName("userPlus");
 
-        HorizontalLayout willkommenText = new HorizontalLayout(back, userPlus);
+        ZugangAnlegenDialogView zugangAnlegen = new ZugangAnlegenDialogView(true, adminController);
+        Button neuerAdmin = new Button(userPlus, e -> zugangAnlegen.openDialogOverlay());
+
+        //HorizontalLayout willkommenText = new HorizontalLayout(back, userPlus);
+        HorizontalLayout willkommenText = new HorizontalLayout(back, neuerAdmin);
         willkommenText.addClassName("willkommen-text");
 
         Div willkommen = new Div(willkommenText);

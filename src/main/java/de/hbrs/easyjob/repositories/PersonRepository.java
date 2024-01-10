@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.repositories;
 import de.hbrs.easyjob.entities.Admin;
 import de.hbrs.easyjob.entities.Person;
+import de.hbrs.easyjob.entities.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,4 +29,13 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
 
     @Query("SELECT COUNT(a) FROM Admin a")
     int countAdmins();
+
+    @Query(value = "SELECT p.* FROM easy_job.person p " +
+            "coalesce(p.nachname,'') || ' ' || " +
+            "coalesce(p.vorname,'') || ' ' ||  " +
+            ") @@ plainto_tsquery(?1)",
+            nativeQuery = true)
+    List<Person> vollTextSuche(String volltext);
+
+
 }
