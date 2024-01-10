@@ -3,6 +3,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
 
@@ -24,14 +25,17 @@ public class Nachricht {
     private Chat chat;
 
     @JsonManagedReference
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "FK_Person")
     private Person absender;
 
     //Empfänger ergibt sich aus dem Chat
 
-    @Column(name = "Zeitpunkt")
-    private Date zeitpunkt;
+    @Column(name = "Zeitpunkt", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Instant zeitpunkt;
+
+    @Column(name = "TopicId")
+    private String topicId;
 
     @Column(name = "Gelesen")
     private boolean gelesen;

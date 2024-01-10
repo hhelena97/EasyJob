@@ -25,7 +25,11 @@ public class Chat {
 
     @ManyToOne
     @JoinColumn(name = "FK_Person")
-    private Job student;
+    private Student student;
+
+    @ManyToOne
+    @JoinColumn(name = "FK_Unternehmensperson")
+    private Unternehmensperson unternehmensperson;
 
     @Column(name = "Aktiv")
     private boolean aktiv;
