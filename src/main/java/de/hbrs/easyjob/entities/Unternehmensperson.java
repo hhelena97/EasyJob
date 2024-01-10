@@ -19,21 +19,29 @@ import java.util.Objects;
 public class Unternehmensperson extends Person {
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "FK_Unternehmen")
     private Unternehmen unternehmen;
+
+    @Column(name = "Anschrift", length = 1000)
+    private String anschrift;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Unternehmensperson person = (Unternehmensperson) o;
-        return Objects.equals(unternehmen, person.unternehmen);
+        return Objects.equals(unternehmen, person.unternehmen)&&
+                Objects.equals(anschrift, person.anschrift);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(unternehmen);
+        return Objects.hash(unternehmen, anschrift);
+    }
+
+    public void removeUnternehmen() {
+        unternehmen = null;
     }
 
     public void removeUnternehmen() {

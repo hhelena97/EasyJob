@@ -4,16 +4,7 @@ import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Collection;
-import java.util.Collections;
 
 //@Component
 @RestController
@@ -71,7 +62,7 @@ public class LoginController{
         if (eingabePW.equals(dbPW)){
             //prüft, ob das Passwort zum gespeicherten Passwort passt
             System.out.println("Passwort stimmt.");
-            System.out.println(this.person.toString());
+            //System.out.println(this.person.toString());
             return true;
         }
         //Sonstiges Problem

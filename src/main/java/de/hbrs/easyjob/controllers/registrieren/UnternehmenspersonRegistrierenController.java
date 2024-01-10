@@ -31,10 +31,16 @@ public class UnternehmenspersonRegistrierenController extends PersonRegistrieren
      * @param hasAcceptedAGB     Prüfung, ob AGB akzeptiert wurden
      * @return true, wenn Unternehmensperson angelegt wurde & false, wenn nicht
      */
-    public boolean createUnternehmensperson(Unternehmensperson unternehmensperson, boolean hasAcceptedAGB) {
+    public boolean createUnternehmenspersonWithCompany(Unternehmensperson unternehmensperson, boolean hasAcceptedAGB) {
         //Account aktivieren
         unternehmensperson.setAktiv(true);
         return isValidUnternehmen(unternehmensperson.getUnternehmen()) && super.createPerson(unternehmensperson, hasAcceptedAGB);
+    }
+
+    public boolean createUnternehmenspersonWithoutCompany(Unternehmensperson unternehmensperson, boolean hasAcceptedAGB) {
+        //Account aktivieren
+        unternehmensperson.setAktiv(true);
+        return super.createPerson(unternehmensperson, hasAcceptedAGB);
     }
 
     /**

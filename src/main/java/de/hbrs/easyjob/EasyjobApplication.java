@@ -3,7 +3,6 @@ package de.hbrs.easyjob;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.VaadinServiceInitListener;
-import de.hbrs.easyjob.security.CustomSecurityContextRepository;
 import de.hbrs.easyjob.security.CustomVaadinServiceInitListener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,10 +26,7 @@ public class EasyjobApplication extends SpringBootServletInitializer implements 
 		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
 		SpringApplication.run(EasyjobApplication.class, args);
 	}
-	@Bean
-	public CustomSecurityContextRepository customSecurityContextRepository() {
-		return new CustomSecurityContextRepository();
-	}
+
 	@Bean
 	public VaadinServiceInitListener vaadinServiceInitListener() {
 		return new CustomVaadinServiceInitListener();

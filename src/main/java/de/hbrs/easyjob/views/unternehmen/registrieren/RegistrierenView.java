@@ -11,7 +11,6 @@ import de.hbrs.easyjob.controllers.OrtController;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.*;
-import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.services.UnternehmenspersonService;
 import de.hbrs.easyjob.views.components.DialogLayout;
 import de.hbrs.easyjob.views.templates.RegistrierenSchritt;
@@ -76,7 +75,7 @@ public class RegistrierenView extends VerticalLayout {
         views[0] = new Schritt1View(unternehmenRepository, unternehmensperson, unternehmen);
         views[1] = new Schritt2View(brancheRepository, ortController, unternehmen);
         views[2] = new Schritt3View(unternehmen);
-        views[3] = new Schritt4View(unternehmensperson);
+        views[3] = new Schritt4View(ortController, unternehmensperson);
         views[4] = new Schritt5View(unternehmensperson);
 
         frame.add(views[currentView]);

@@ -3,6 +3,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,27 +19,26 @@ public class Person {
     @Column(name = "id_Pesron")
     private Integer id_Person;
 
-    @Column(name = "Vorname")
-    private String vorname;
-
-    @Column(name = "Nachname")
-    private String nachname;
-
     @Column(name = "Email")
     private String email;
 
     @Column(name = "Passwort")
     private String passwort;
 
+    @Column(name = "Vorname")
+    private String vorname;
+
+    @Column(name = "Nachname")
+    private String nachname;
+
+    @Column(name = "Foto")
+    private String foto;
+
     @Column(name = "Telefon")
     private String telefon;
 
     @Column(name = "Aktiv")
     private Boolean aktiv;
-
-    @Column(name = "Foto")
-    private String foto;
-
 
     @Override
     public boolean equals(Object o) {
@@ -60,7 +61,4 @@ public class Person {
         return result;
     }
 
-    public String toString(){
-        return vorname + " " + nachname + ", id: " + id_Person;
-    }
 }
