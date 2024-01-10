@@ -9,12 +9,12 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
-import de.hbrs.easyjob.entities.JobKategorie;
-import de.hbrs.easyjob.entities.Ort;
-import de.hbrs.easyjob.entities.Student;
+import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.student.EinstellungenUebersichtStudentView;
+import de.hbrs.easyjob.views.student.StudentProfilBearbeitungView;
+import java.util.StringJoiner;
 
 import java.util.stream.Collectors;
 
@@ -74,15 +74,28 @@ public class StudentProfileComponent extends VerticalLayout {
         Icon pen =new Icon(VaadinIcon.PENCIL);
         pen.addClassName("iconsProf");
 
-        iconsProf.add(link,pen);
+        RouterLink linkPen = new RouterLink(StudentProfilBearbeitungView.class);
+        linkPen.add(pen);
+
+        iconsProf.add(link,linkPen);
 
 
 
         //Profil Bild
-        Div profilBild = new Div();
-        profilBild.addClassName("profilBild");
+        //Bildrahmen
+        Div rahmen = new Div();
+        rahmen.addClassName("profile-picture-frame");
+        Image ellipse = new Image("images/Ellipse-Lila-Groß.png", "Bildumrandung");
+        ellipse.addClassName("profile-picture-background");
+        rahmen.add(ellipse);
 
-        profilBild.add(new Image(student.getFoto() != null ? student.getFoto() : "images/blank-profile-picture.png", "EasyJob"));
+        //Platzhalter Bild
+        boolean hasBild = student.getFoto() != null;
+        Image platzhalterBild = new Image(hasBild? student.getFoto(): "images/blank-profile-picture.png", "EasyJob");
+        Image profilBild2 = platzhalterBild;
+        Div bildDiv = new Div(platzhalterBild);
+        platzhalterBild.addClassName("picture-round");
+        rahmen.add(bildDiv);
 
         //Name
         H1 name = new H1();
@@ -137,7 +150,7 @@ public class StudentProfileComponent extends VerticalLayout {
         setContent(tabs.getSelectedTab());
 
 
-        studentInfo.add(iconsProf,profilBild,name,/*location,*/tabs, content);
+        studentInfo.add(iconsProf,rahmen,name,/*location,*/tabs, content);
 
 
         add(studentInfo);
@@ -146,6 +159,14 @@ public class StudentProfileComponent extends VerticalLayout {
     private void setContent(Tab tab) {
         content.removeAll();
 
+
+        String branche = student.getBranchen().stream()
+                .map(Branche::getName)
+                .collect(Collectors.joining(", "));
+
+        String berufsfelder = student.getBerufsFelder().stream()
+                .map(BerufsFelder::getName)
+                .collect(Collectors.joining(", "));
 
         Div allgemeinDiv = new Div();
         allgemeinDiv.addClassName("myTab");
@@ -157,8 +178,12 @@ public class StudentProfileComponent extends VerticalLayout {
                         .map(JobKategorie::getKategorie).collect(Collectors.joining(",")) ),
                 completeZeile("Bevorzugt in der Nähe von:", studentService.getAllOrte(student.getId_Person()).stream().map(Ort::getOrt)
                         .collect(Collectors.joining(", "))),
-                completeZeile("Bevorzugte Branche(n):", " "),
-                completeZeile("Bevorzugte Berufsfelder:", " ")
+
+
+
+
+                completeZeile("Bevorzugte Branche(n):", branche),
+                completeZeile("Bevorzugte Berufsfelder:", berufsfelder)
 
         );
 
@@ -189,11 +214,7 @@ public class StudentProfileComponent extends VerticalLayout {
 
         Div ueberDiv = new Div();
         ueberDiv.addClassName("myTab");
-        ueberDiv.add("Hallo! Mein Name ist Max Mustermann, und ich befinde mich derzeit im 5. Semester meines Informatikstudiums an der Hochschule Bonn Rhein-Sieg. Als begeisterter und zielstrebiger Student habe ich eine Leidenschaft für die Welt der Informationstechnologie und insbesondere für das aufregende Feld der Cybersecurity.\n" +
-                "\n" +
-                "Mein Studium hat mir nicht nur ein solides Fundament in Programmierung, Datenanalyse und Informationssystemen vermittelt, sondern auch meine Neugier und meinen Wunsch geweckt, zur Sicherheit und Integrität digitaler Systeme beizutragen. Mein Ziel ist es, meine Leidenschaft für Cybersecurity in eine erfüllende und herausfordernde berufliche Laufbahn Hallo! Mein Name ist Max Mustermann, und ich befinde mich derzeit im 5. Semester meines Informatikstudiums an der Hochschule Bonn Rhein-Sieg. Als begeisterter und zielstrebiger Student habe ich eine Leidenschaft für die Welt der Informationstechnologie und insbesondere für das aufregende Feld der Cybersecurity.\n" +
-                "\n" +
-                "Mein Studium hat mir nicht nur ein solides Fundament in Programmierung, Datenanalyse und Informationssystemen vermittelt, sondern auch meine Neugier und meinen Wunsch geweckt, zur Sicherheit und Integrität digitaler Systeme beizutragen. Mein Ziel ist es, meine Leidenschaft für Cybersecurity in eine erfüllende und herausfordernde berufliche Laufbahn ");
+        ueberDiv.add(student.getFreitext());
 
 
 
