@@ -5,7 +5,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -17,11 +16,10 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.components.FileUpload;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
@@ -39,8 +37,9 @@ public class UnternehmensprofilBearbeiten extends VerticalLayout {
 
     private Unternehmensperson person ;
     Unternehmen unternehmen;
-    @Autowired
-    private final PersonService personService;
+
+    private final transient SessionController sessionController;
+
     @Autowired
     private final UnternehmenService unternehmenService;
 
@@ -49,7 +48,8 @@ public class UnternehmensprofilBearbeiten extends VerticalLayout {
     TextField unternehmensname;
     Image logo;
 
-    UnternehmensprofilBearbeiten(PersonService personService, UnternehmenService unternehmenService){
+    UnternehmensprofilBearbeiten(SessionController sessionController, UnternehmenService unternehmenService){
+        this.sessionController = sessionController;
 
 
         UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilBearbeitungView.css");
@@ -59,8 +59,8 @@ public class UnternehmensprofilBearbeiten extends VerticalLayout {
         UI.getCurrent().getPage().addStyleSheet("unternehmenProfil_Un.css");
 
 
-        this.personService = personService;
-        person = (Unternehmensperson) personService.getCurrentPerson();
+
+        person = (Unternehmensperson) this.sessionController.getPerson();
         this.unternehmenService = unternehmenService;
         unternehmen = person.getUnternehmen();
 
