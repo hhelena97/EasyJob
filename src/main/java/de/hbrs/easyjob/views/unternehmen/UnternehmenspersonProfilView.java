@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.views.unternehmen;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
@@ -14,6 +15,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.SessionController;
+import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
@@ -28,6 +30,9 @@ import javax.annotation.security.RolesAllowed;
 
 @Route(value = "unternehmen/unternehmenperson", layout = UnternehmenLayout.class)
 @RolesAllowed("ROLE_UNTERNEHMENSPERSON")
+@StyleSheet("Registrieren.css")
+@StyleSheet("DialogLayout.css")
+@StyleSheet("UnternehmenRegistrieren.css")
 public class UnternehmenspersonProfilView extends VerticalLayout {
 
     private Unternehmensperson person;
@@ -81,11 +86,20 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
 
 
         //Profil Bild
-        Div profilBild = new Div();
-        profilBild.addClassName("profilBild");
-        if(person.getFoto() != null){
-            profilBild.add(new Image(person.getFoto(), "EasyJob"));
-        }
+        //Bildrahmen
+        Div rahmen = new Div();
+        rahmen.addClassName("profile-picture-frame");
+        Image ellipse = new Image("images/Ellipse-Lila-Groß.png", "Bildumrandung");
+        ellipse.addClassName("profile-picture-background");
+        rahmen.add(ellipse);
+
+        //Platzhalter Bild
+        boolean hasBild = person.getFoto() != null;
+        Image platzhalterBild = new Image(hasBild? person.getFoto(): "images/blank-profile-picture.png", "EasyJob");
+        Image profilBild2 = platzhalterBild;
+        Div bildDiv = new Div(platzhalterBild);
+        platzhalterBild.addClassName("picture-round");
+        rahmen.add(bildDiv);
 
 
 
@@ -124,12 +138,14 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
         completeZeile("Email:" , person.getEmail());
         completeZeile("Telefon:", person.getTelefon());
 
-        completeZeile("Büroanschrift:" , unternehmenService.getUnternehmensOrte(person.getUnternehmen()));
+        Unternehmen u = person.getUnternehmen();
+
+
+        completeZeile("Büroanschrift:" , u.getKontaktdaten());
 
 
 
-
-        personInfo.add(iconsProf,profilBild,name,linkUnternehmen);
+        personInfo.add(iconsProf,rahmen,name,linkUnternehmen);
 
         add(personInfo,kon,personKontakt);
 
