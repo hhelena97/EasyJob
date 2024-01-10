@@ -10,7 +10,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.vaadin.collaborationengine.CollaborationEngineConfiguration;
-
+import com.vaadin.collaborationengine.CollaborationEngineConfiguration;
 /**
  * Hauptklasse der Anwendung
  * @see <a href="https://vaadin.com/docs/v23/advanced/modifying-the-bootstrap-page#application-shell">Vaadin Application Shell</a>
@@ -42,6 +42,5 @@ public class EasyjobApplication extends SpringBootServletInitializer implements 
 		configuration.setDataDir("/src/main/java/de/hbrs/easyjob/collaborationEngine/ce-license.json");
 		return configuration;
 	}
-
 
 }

@@ -2,18 +2,13 @@ package de.hbrs.easyjob.views.student;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
-import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.components.StudentLayout;
-import de.hbrs.easyjob.views.unternehmen.EinstellungenUebersichtUnternehmenView;
 import de.hbrs.easyjob.views.unternehmen.UnternehmenProfil_Un;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,7 +16,7 @@ import javax.annotation.security.RolesAllowed;
 
 @Route(value = "student-unternehmensprofilview" , layout = StudentLayout.class)
 @RolesAllowed("ROLE_STUDENT")
-public class UnternehmenspersonProfilView extends VerticalLayout implements HasUrlParameter<Integer> {
+public class UnternehmensPersonProfilView extends VerticalLayout implements HasUrlParameter<Integer> {
 
     private Unternehmensperson person;
     @Autowired
@@ -30,7 +25,7 @@ public class UnternehmenspersonProfilView extends VerticalLayout implements HasU
     private final UnternehmenService unternehmenService;
     VerticalLayout personKontakt = new VerticalLayout();
 
-    public UnternehmenspersonProfilView(PersonService personService, UnternehmenService unternehmenService) {
+    public UnternehmensPersonProfilView(PersonService personService, UnternehmenService unternehmenService) {
         this.personService = personService;
         this.unternehmenService = unternehmenService;
     }

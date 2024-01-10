@@ -80,12 +80,12 @@ public class ChatsView extends VerticalLayout {
         Jobtitel.addClassName("name-label");
         Jobtitel.add(job.getTitel());
 
-        HorizontalLayout studyFieldLayout = new HorizontalLayout();
+        HorizontalLayout nameLayout = new HorizontalLayout();
         Label personInfoLabel = new Label(person.getVorname() + " " + person.getNachname());
         personInfoLabel.addClassName("detail-label");
-        studyFieldLayout.add(personInfoLabel);
+        nameLayout.add(personInfoLabel);
 
-        HorizontalLayout locationLayout = new HorizontalLayout();
+        HorizontalLayout nachrichtTextLayout = new HorizontalLayout();
         List<Nachricht> nachrichten = chatService.getNachrichten(chat);
         String nachrichtText = ""; // Default text
 
@@ -95,9 +95,9 @@ public class ChatsView extends VerticalLayout {
         }
         Label letzeNachrichtLabel = new Label(limitText(nachrichtText, 30));
         letzeNachrichtLabel.addClassName("detail-label");
-        locationLayout.add(letzeNachrichtLabel);
+        nachrichtTextLayout.add(letzeNachrichtLabel);
 
-        studienDetails.add(Jobtitel,studyFieldLayout,locationLayout);
+        studienDetails.add(Jobtitel,nameLayout,nachrichtTextLayout);
         frame.add(foto,studienDetails);
 
         card.add(frame);
