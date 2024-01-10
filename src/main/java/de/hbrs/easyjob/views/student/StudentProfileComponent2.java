@@ -6,6 +6,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -27,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.InputStream;
 import java.util.stream.Collectors;
 
+import static de.hbrs.easyjob.controllers.ValidationController.isValidEmail;
+
 public class StudentProfileComponent2 extends VerticalLayout {
     private Student person;
 
@@ -42,6 +45,7 @@ public class StudentProfileComponent2 extends VerticalLayout {
     private final StudentService personService;
 
     Image profilBild2;
+    VerticalLayout personKontakt = new VerticalLayout();
 
 
     public StudentProfileComponent2(Student student, String styleClass, StudentService studentService) {
@@ -142,6 +146,39 @@ public class StudentProfileComponent2 extends VerticalLayout {
 
 
 
+        //Person Info
+        VerticalLayout personInfo = new VerticalLayout();
+        personInfo.addClassName("personInfo");
+        personInfo.setAlignItems(Alignment.CENTER);
+
+
+
+
+        // Buttons
+        Button next = new Button("fertig", new Icon(VaadinIcon.ARROW_RIGHT));
+        next.addClassName("next");
+        next.addClickListener(e -> updateInfos());
+
+        Button back = new Button("Zurück", new Icon(VaadinIcon.ARROW_LEFT));
+        back.addClassName("back");
+        back.addClickListener(e -> UI.getCurrent().getPage().setLocation("/unternehmen/unternehmenperson"));
+
+        Button cancel = new Button("Abbrechen");
+        //cancel.addClickListener(e -> abbrechenDialog.openDialogOverlay());
+        cancel.addClassName("cancel");
+
+        // Buttons Container
+        HorizontalLayout actions = new HorizontalLayout(back, next);
+        actions.setSpacing(true);
+        actions.setJustifyContentMode(JustifyContentMode.CENTER);
+
+        personKontakt.add(actions);
+        personKontakt.setAlignSelf(Alignment.CENTER,actions);
+
+
+
+
+
 /*
         //die Icons zu einstellungen und Bearbeitung
         HorizontalLayout iconsProf = new HorizontalLayout();
@@ -232,7 +269,7 @@ public class StudentProfileComponent2 extends VerticalLayout {
         setContent(tabs.getSelectedTab());
 
 
-        studentInfo.add(rahmen,/*location,*/tabs, content);
+        studentInfo.add(rahmen,upload,uploadListe,/*location,*/tabs, content, personKontakt);
 
 
         add(studentInfo);
@@ -368,5 +405,31 @@ public class StudentProfileComponent2 extends VerticalLayout {
         return completeZeile;
 
 
+    }
+
+
+
+    private void updateInfos(){
+        /*
+        person.setVorname(vorname.getValue());
+
+        person.setNachname(nachname.getValue());
+
+        if(isValidEmail(email.getValue())){
+            person.setEmail(email.getValue());
+            UI.getCurrent().getPage().setLocation("/unternehmen/unternehmenperson");
+        }else {
+
+            Notification.show("falscheEingabe");
+        }
+
+
+        person.setTelefon(telefon.getValue());
+        person.setFoto(profilBild2.getSrc());
+
+        personService.savePerson(person);
+
+
+         */
     }
 }
