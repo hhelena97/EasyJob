@@ -48,4 +48,8 @@ public class PersonService {
     public List<Person> saveAllPersons(List<Person> persons) {
         return personRepository.saveAll(persons);
     }
+
+    public Person getPersonByID(Integer id){
+        return personRepository.findById(id).get();
+    }
 }
