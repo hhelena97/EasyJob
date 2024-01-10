@@ -19,11 +19,8 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinSession;
-import de.hbrs.easyjob.controllers.LogoutController;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.views.allgemein.LoginView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -33,26 +30,18 @@ import javax.annotation.security.RolesAllowed;
 @RolesAllowed("ROLE_STUDENT")
 public class EinstellungenUebersichtStudentView extends Div implements BeforeEnterObserver {
 
-    @Autowired
-    private LogoutController logoutController;
+    private final SessionController sessionController;
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if (!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_STUDENT")) {
             event.rerouteTo(LoginView.class);
         }
     }
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
-    }
-    public EinstellungenUebersichtStudentView() {
+
+    public EinstellungenUebersichtStudentView(SessionController sessionController) {
+        this.sessionController = sessionController;
+
         UI.getCurrent().getPage().addStyleSheet("Einstellungen.css");
 
         VerticalLayout v = new VerticalLayout();
@@ -102,16 +91,15 @@ public class EinstellungenUebersichtStudentView extends Div implements BeforeEnt
 
         dialog.setHeaderTitle("Wirklich ausloggen? ");
 
-
+        System.out.println("EinstellungenUebersichtStudentView");
+        System.out.println("Session: " + VaadinSession.getCurrent());
 
         Button auslogButton = new Button("Ausloggen.");
         auslogButton.addClassName("confirm");
         auslogButton.addClickListener(e -> {
-            dialog.close();
-            auslogButton.getUI().ifPresent(ui ->{
-                logoutController.logout();
+            if (sessionController.logout()) {
+                UI.getCurrent().navigate(LoginView.class);
             }
-        );
         });
 
         dialog.getFooter().add(auslogButton);
@@ -135,7 +123,6 @@ public class EinstellungenUebersichtStudentView extends Div implements BeforeEnt
 
         v.add(linkzuruck,linkDea, app_Benachrichtigungen, sprache,impressum);
         add(v,ausloggen,dialog);
-
     }
 
     private Details createDetails(String summary, Anchor... anchors) {
