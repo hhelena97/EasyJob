@@ -16,15 +16,12 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
-import de.hbrs.easyjob.controllers.UnternehmensperonProfilController;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.components.FileUpload;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
-import de.hbrs.easyjob.views.unternehmen.registrieren.Schritt3View;
-import de.hbrs.easyjob.views.unternehmen.registrieren.Schritt5View;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.InputStream;
@@ -43,6 +40,8 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     @Autowired
     private final UnternehmenService unternehmenService;
 
+    private final transient SessionController  sessionController;
+
     TextField vorname;
     TextField nachname;
     TextField email;
@@ -50,12 +49,15 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     Image profilBild2;
     VerticalLayout personKontakt = new VerticalLayout();
 
-    UnternehmenspersonProfilBearbeitungView(PersonService personService, UnternehmenService unternehmenService){
+    UnternehmenspersonProfilBearbeitungView(PersonService personService, UnternehmenService unternehmenService, SessionController sessionController){
         this.personService = personService;
         this.unternehmenService = unternehmenService;
-        person = (Unternehmensperson) personService.getCurrentPerson();
+        this.sessionController = sessionController;
+        person = (Unternehmensperson) sessionController.getPerson();
+        initialView();
+    }
 
-
+    private void initialView(){
         UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilBearbeitungView.css");
         UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilView.css");
         UI.getCurrent().getPage().addStyleSheet("Registrieren.css");
@@ -76,7 +78,8 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
         rahmen.add(ellipse);
 
         //Platzhalter Bild
-        Image platzhalterBild = new Image(person.getFoto(), "EasyJob");
+        boolean hasBild = person.getFoto() != null;
+        Image platzhalterBild = new Image(hasBild? person.getFoto(): "images/blank-profile-picture.png", "EasyJob");
         profilBild2 = platzhalterBild;
         Div bildDiv = new Div(platzhalterBild);
         platzhalterBild.addClassName("picture-round");
@@ -174,13 +177,12 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
 
 
 
-       // personInfo.add(profilBild,bildBearbeiten);
+        // personInfo.add(profilBild,bildBearbeiten);
         personInfo.add(rahmen, upload, uploadListe);
 
 
         add(personInfo,kon,personKontakt);
     }
-
 
     private TextField completeZeile(String title, String wert){
 
@@ -213,9 +215,9 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     }
 
     private void updateInfos(){
-            person.setVorname(vorname.getValue());
+        person.setVorname(vorname.getValue());
 
-            person.setNachname(nachname.getValue());
+        person.setNachname(nachname.getValue());
 
         if(isValidEmail(email.getValue())){
             person.setEmail(email.getValue());
