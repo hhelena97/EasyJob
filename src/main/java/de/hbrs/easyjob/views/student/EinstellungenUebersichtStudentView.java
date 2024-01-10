@@ -13,7 +13,7 @@ public class EinstellungenUebersichtStudentView extends EinstellungenUebersichtV
 
 
     public EinstellungenUebersichtStudentView() {
-        super("#A3336F", "ROLE_STUDENT");
+        super("#A3336F");
 
     }
 

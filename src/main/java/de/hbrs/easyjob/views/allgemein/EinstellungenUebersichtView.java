@@ -25,33 +25,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 
 @StyleSheet("DialogLayout.css")
-public class EinstellungenUebersichtView extends Div implements BeforeEnterObserver {
+public class EinstellungenUebersichtView extends Div {
 
     @Autowired
     private LogoutController logoutController;
 
-    String role = "";
 
-    @Override
-    public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
-            event.rerouteTo(LoginView.class);
-        }
-    }
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals(role));
-    }
-    public EinstellungenUebersichtView(String style, String role){
+    public EinstellungenUebersichtView(String style){
         UI.getCurrent().getPage().addStyleSheet("Einstellungen.css");
 
-        this.role = role;
+
 
 
         VerticalLayout v = new VerticalLayout();

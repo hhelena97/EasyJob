@@ -12,7 +12,7 @@ import javax.annotation.security.RolesAllowed;
 public class EinstellungenUebersichtUnternehmenView extends EinstellungenUebersichtView {
 
     public EinstellungenUebersichtUnternehmenView() {
-        super("#2D34A0","ROLE_UNTERNEHMENSPERSON");
+        super("#2D34A0");
     }
 
 }
