@@ -36,7 +36,7 @@ public class StellenanzeigeController {
      * @param studienfaecher Studienfächer, die für die Stelle relevant sind
      * @return Die erstellte Stellenanzeige
      */
-    public Job stellenanzeigeErstellen(
+    public Job stellenanzeigeErstellen( // TODO: Aktiv als parameter einführen
             String titel,
             String freitext,
             Date eintrittsdatum,

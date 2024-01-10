@@ -5,6 +5,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -19,7 +20,11 @@ import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.controllers.OrtController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.controllers.StellenanzeigeController;
-import de.hbrs.easyjob.entities.*;
+import de.hbrs.easyjob.controllers.StudienfachController;
+import de.hbrs.easyjob.entities.JobKategorie;
+import de.hbrs.easyjob.entities.Ort;
+import de.hbrs.easyjob.entities.Studienfach;
+import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.JobKategorieRepository;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.PrefixUtil;
@@ -28,7 +33,6 @@ import de.hbrs.easyjob.views.components.StyledDialog;
 import javax.annotation.security.RolesAllowed;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Set;
 //TODO: Weiterleitung von Unternehmensprofil fixen (siehe Testklasse)
 @Route("unternehmen/stellenanzeige/erstellen")
 @PageTitle("Stellenanzeige erstellen")
@@ -40,6 +44,7 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
     private final DatePicker eintrittsdatum;
     private final ComboBox<JobKategorie> berufsbezeichnung;
     private final ComboBox<Ort> standort;
+    private final MultiSelectComboBox<Studienfach> studienfach;
     private final TextField titel;
     private final TextArea stellenbeschreibung;
     private final Checkbox homeOffice;
@@ -66,9 +71,9 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
      * @param stellenanzeigeController Controller für Stellenanzeige
      * @param sessionController Controller für Session
      */
-    public StellenanzeigeErstellenView(JobKategorieRepository jobKategorieRepository, OrtController ortController, StellenanzeigeController stellenanzeigeController, SessionController sessionController) {
-        this.stellenanzeigeController = stellenanzeigeController;
+    public StellenanzeigeErstellenView(JobKategorieRepository jobKategorieRepository, OrtController ortController, StellenanzeigeController stellenanzeigeController, StudienfachController studienfachController, SessionController sessionController) {
         this.sessionController = sessionController;
+        this.stellenanzeigeController = stellenanzeigeController;
 
         unternehmensperson = (Unternehmensperson) sessionController.getPerson();
 
@@ -116,6 +121,17 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
         berufsbezeichnung.setItemLabelGenerator(JobKategorie::getKategorie);
         berufsbezeichnung.setPlaceholder("Berufsbezeichnung(en) auswählen");
         frame.add(berufsbezeichnung);
+
+        // Studienfach
+        studienfach = new MultiSelectComboBox<>("Studienfach");
+        studienfach.getStyle().set("--lumo-contrast-60pct","--hintergrund-weiß");
+        studienfach.setItems(studienfachController.getAlleStudienfaecher());
+        studienfach.setItemLabelGenerator(studienfachController.getStudienfachItemLabelGenerator());
+        studienfach.setPlaceholder("Studienfach auswählen");
+
+        frame.add(studienfach);
+
+
 
         // Standort
         standort = new ComboBox<>("Standort");
@@ -175,18 +191,16 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
     private void fertigHandler() {
         // Convert LocalDate to Date
         Date eintrittsdatumDate = Date.from(eintrittsdatum.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        // TODO: Unternehmen und Unternehmensperson aus Session holen
-        // TODO: Studienfach input in Mock-Up anlegen
 
         stellenanzeigeController.stellenanzeigeErstellen(
                 titel.getValue(),
                 stellenbeschreibung.getValue(),
                 eintrittsdatumDate,
-                new Unternehmen(),
-                new Unternehmensperson(),
+                unternehmensperson.getUnternehmen(),
+                unternehmensperson,
                 standort.getValue(),
                 berufsbezeichnung.getValue(),
-                Set.of(new Studienfach()),
+                studienfach.getValue(),
                 homeOffice.getValue()
         );
         UI.getCurrent().navigate("unternehmen");

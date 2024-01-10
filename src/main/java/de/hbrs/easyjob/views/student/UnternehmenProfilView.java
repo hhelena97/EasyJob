@@ -12,14 +12,13 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.hbrs.easyjob.controllers.JobProfilController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.StudentLayout;
-import de.hbrs.easyjob.views.unternehmen.JobDetailsView;
+import de.hbrs.easyjob.views.allgemein.AbstractJobDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -387,7 +386,7 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
 
 
 
-        RouterLink linkJobDetails = new RouterLink(JobDetailsView.class);
+        RouterLink linkJobDetails = new RouterLink(AbstractJobDetails.class);
         linkJobDetails.add(job);
         jobs.add(linkJobDetails);
     }

@@ -1,35 +1,31 @@
 package de.hbrs.easyjob.views.unternehmen;
 
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
+import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinSession;
-import de.hbrs.easyjob.views.allgemein.LoginView;
+import de.hbrs.easyjob.controllers.SessionController;
+import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.repositories.JobRepository;
+import de.hbrs.easyjob.views.allgemein.AbstractJobDetails;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
-import javax.annotation.security.RolesAllowed;
-
-@Route(value = "unternehmen/jobdetails", layout = UnternehmenLayout.class)
-@RolesAllowed("ROLE_UNTERNEHMENSPERSON")
-public class JobDetailsView extends VerticalLayout implements BeforeEnterObserver {
-    @Override
-    public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
-            event.rerouteTo(LoginView.class);
-        }
+@Route(value = "unternehmen/job", layout = UnternehmenLayout.class)
+@StyleSheet("JobDetailsUnternehmen.css")
+public class JobDetailsView extends AbstractJobDetails {
+    public JobDetailsView(SessionController sessionController, JobRepository jobRepository) {
+        super(sessionController, jobRepository);
     }
 
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_UNTERNEHMENSPERSON"));
+    @Override
+    public void displayJob(Job job) {
+        super.displayJob(job);
+        // Editieren
+        // TODO: Check if user is part of company
+        Button edit = new Button(FontAwesome.Solid.PENCIL.create());
+        edit.addClassName("job-details-edit-button");
+        edit.addClickListener(event -> UI.getCurrent().navigate("unternehmen/job/" + job.getId_Job() + "/edit"));
+        buttons.add(edit);
     }
 }

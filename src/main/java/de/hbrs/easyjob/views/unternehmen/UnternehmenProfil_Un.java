@@ -13,15 +13,12 @@ import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.hbrs.easyjob.controllers.JobProfilController;
-import de.hbrs.easyjob.controllers.UnternehmenProfilController;
-import de.hbrs.easyjob.controllers.UnternehmensperonProfilController;
 import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
+import de.hbrs.easyjob.views.allgemein.AbstractJobDetails;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +30,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Set;
 
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.START;
 
@@ -161,7 +157,7 @@ public class UnternehmenProfil_Un extends VerticalLayout implements BeforeEnterO
 
         H1 neuStellen = new H1("Stellenangebote hinzufügen");
         //hier muss link angepasst werden
-        RouterLink linkneuStellen = new RouterLink(JobDetailsView.class);
+        RouterLink linkneuStellen = new RouterLink(AbstractJobDetails.class);
         linkneuStellen.add(neuStellen);
         linkneuStellen.getStyle().set("text-decoration","none");
         neuStellen.addClassName("neuStellen");
@@ -389,7 +385,7 @@ public class UnternehmenProfil_Un extends VerticalLayout implements BeforeEnterO
 
 
 
-        RouterLink linkJobDetails = new RouterLink(JobDetailsView.class);
+        RouterLink linkJobDetails = new RouterLink(AbstractJobDetails.class);
         linkJobDetails.add(job);
         jobs.add(linkJobDetails);
     }
