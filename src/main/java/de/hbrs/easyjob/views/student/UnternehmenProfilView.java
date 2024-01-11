@@ -3,10 +3,13 @@ package de.hbrs.easyjob.views.student;
 import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.contextmenu.ContextMenu;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -14,8 +17,11 @@ import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.hbrs.easyjob.controllers.JobProfilController;
+import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.entities.Meldung;
 import de.hbrs.easyjob.entities.Unternehmen;
+import de.hbrs.easyjob.repositories.MeldungRepository;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.StudentLayout;
@@ -35,6 +41,7 @@ import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.ST
 @Route(value = "UnternehmenProfile" , layout = StudentLayout.class)
 @RouteAlias(value = "u", layout = StudentLayout.class)
 @PageTitle("Unternehmen Profile")
+@StyleSheet("unternehmenProfil_Student.css")
 @RolesAllowed("ROLE_STUDENT")
 public class UnternehmenProfilView extends VerticalLayout implements HasUrlParameter<Integer>, BeforeEnterObserver {
     //Job Methode
@@ -48,6 +55,10 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
 
 
     JobProfilController jobController = new JobProfilController();
+
+    @Autowired
+    MeldungRepository meldungRepository;
+    MeldungController meldungController = new MeldungController(meldungRepository);
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
@@ -171,9 +182,32 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         Icon bellIcon =  bel.create();
         bellIcon.addClassName("bellIcon");
 
+        // -------------------------------------------------------------------------------------------------------------
+        // Code für Melde-Funktion:
+        HorizontalLayout frame = new HorizontalLayout();
+        VerticalLayout dotsLayout = new VerticalLayout();
+
+        // Drei-Punkte-Icon für das Dropdown-Menü
+        Icon dots = new Icon(VaadinIcon.ELLIPSIS_DOTS_V);
+        dots.getStyle().set("cursor", "pointer");
+        dots.setSize("1em");
+
+        // Dropdown-Menü erstellen
+        ContextMenu contextMenu = new ContextMenu();
+        contextMenu.setTarget(dots);
+        contextMenu.setOpenOnClick(true);
+        contextMenu.addItem("Melden", e -> {
+            Meldung meldung = new Meldung();
+            meldungController.saveMeldung(meldung, unternehmen);
+            Notification.show("Gemeldet", 3000, Notification.Position.TOP_STRETCH);
+        });
+
+        dotsLayout.add(dots);
+        frame.add(dotsLayout);
+        // -------------------------------------------------------------------------------------------------------------
 
 
-        unternehmenInfo.add(unternehmenIcon,unternehmenInfoRecht,bellIcon);
+        unternehmenInfo.add(unternehmenIcon,unternehmenInfoRecht,bellIcon,frame);
 
         //unternehmen Beschreibung
         Div unternehmenBeschreibung = new Div();

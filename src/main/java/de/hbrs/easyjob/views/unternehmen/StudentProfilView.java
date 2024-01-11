@@ -5,7 +5,6 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
-import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
@@ -16,7 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
-import java.util.Optional;
+
 
 @Route(value = "studnet-Profil",layout = UnternehmenLayout.class)
 @PageTitle("Student Profile")
