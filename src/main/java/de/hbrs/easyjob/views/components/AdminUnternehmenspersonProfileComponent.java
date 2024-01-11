@@ -17,7 +17,7 @@ import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.admin.PersonenSuchenView;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.unternehmen.JobDetailsView;
-import de.hbrs.easyjob.views.unternehmen.UnternehmenProfil_Un;
+import de.hbrs.easyjob.views.unternehmen.UnternehmenProfilUn;
 
 import java.time.LocalDate;
 import java.time.ZoneId;

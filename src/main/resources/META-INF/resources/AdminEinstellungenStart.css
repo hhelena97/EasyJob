@@ -4,33 +4,7 @@ body {
     font-family: Rubik, sans-serif; /* Rubik als Standardschriftart und fallback sans-serif */
 }
 
-.willkommen-box {
-    background-color: var(--admin-dark);
-    height: 150px;
-    width: 100%;
-    max-width: 600px;
-    align-self: center;
-}
-
-.willkommen-text {
-    color: var(--hintergrund-weiß);
-    padding-left: 27px;
-    margin-top: 7px;
-    margin-bottom: 0;
-    width: 266px;
-    height: 55px;
-    padding-bottom: 20px;
-    padding-right: 82px;
-    padding-top: 75px;
-}
-
-
-.willkommen-text > h3 {
-    color: var(--hintergrund-weiß);
-    margin-bottom: 0;
-    margin-top: 0;
-}
-
+/* Elemente */
 .buttons {
     width: 289px;
     height: 20px;
@@ -62,15 +36,25 @@ vaadin-vertical-layout {
     vaadin-app-layout-navbar-offset-size: 0px;
 }
 
-vaadin-button.ausloggen {
+vaadin-vertical-layout {
+    padding: 0;
+}
+
+
+/* Grüne Box oben */
+.gruene-box {
+    background-color: var(--admin-dark);
+    height: 150px;
+    width: 100%;
+    max-width: 600px;
+    align-self: center;
+}
+
+/* Buttons für in die Box */
+.ausloggen{
     color: var(--signalfarben-rot);
     font-family: Rubik, sans-serif;
     align: right;
-}
-
-vaadin-button.ausloggen::part(label){
-    text-decoration: underline;
-    text-underline: var(--signalfarben-rot);
 }
 
 .userPlus {
@@ -79,6 +63,27 @@ vaadin-button.ausloggen::part(label){
     color: white;
 }
 
+/* Texte in der grünen Box */
+.willkommen-text {
+    color: var(--hintergrund-weiß);
+    padding-left: 27px;
+    margin-top: 7px;
+    margin-bottom: 0;
+    width: 266px;
+    height: 55px;
+    padding-bottom: 20px;
+    padding-right: 82px;
+    padding-top: 75px;
+}
+
+
+.willkommen-text > h3 {
+    color: var(--hintergrund-weiß);
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+/* Inhalt Startseite */
 .adminListe {
     width: 100%;
     height: 244px;
@@ -112,6 +117,16 @@ vaadin-button.ausloggen::part(label){
     padding-top: 3px;
 }
 
-vaadin-vertical-layout {
-    padding: 0;
+/* Buttons der Startseite */
+.editAdmin{
+
 }
+
+.minus{
+
+}
+
+
+
+
+

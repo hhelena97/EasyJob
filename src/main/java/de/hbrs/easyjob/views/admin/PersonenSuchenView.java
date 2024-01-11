@@ -21,6 +21,7 @@ import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.services.UnternehmenService;
+import de.hbrs.easyjob.views.admin.dialog.PasswortAendernDialogView;
 import de.hbrs.easyjob.views.components.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -195,7 +196,7 @@ public class PersonenSuchenView extends VerticalLayout implements BeforeEnterObs
             } else if (person instanceof Admin) {
                 Paragraph admininfo = new Paragraph("Das ist ein Admin.");
                 Paragraph adminlink = new Paragraph("Zur Administration");
-                RouterLink linkAdmin = new RouterLink(AdministrationView.class);
+                RouterLink linkAdmin = new RouterLink(EinstellungenStartView.class);
                 linkAdmin.add(adminlink);
                 personLayout.add(admininfo, linkAdmin);
 

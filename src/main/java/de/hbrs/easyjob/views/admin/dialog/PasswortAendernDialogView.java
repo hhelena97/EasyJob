@@ -1,4 +1,4 @@
-package de.hbrs.easyjob.views.admin;
+package de.hbrs.easyjob.views.admin.dialog;
 
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -13,6 +13,6 @@ public class PasswortAendernDialogView extends DialogLayout {
 
     public PasswortAendernDialogView(boolean answerRequired) {
         super(true);
-        insertContentDialogContent("Passwort Ändern", passwoerterEingabe, "Passwort speichern", "Abbrechen");
+        insertContentDialogContent("Passwort Ändern", passwoerterEingabe, "Abbrechen", "Passwort speichern");
     }
 }

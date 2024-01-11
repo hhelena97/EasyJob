@@ -1,4 +1,4 @@
-package de.hbrs.easyjob.views.admin;
+package de.hbrs.easyjob.views.admin.dialog;
 
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.PasswordField;

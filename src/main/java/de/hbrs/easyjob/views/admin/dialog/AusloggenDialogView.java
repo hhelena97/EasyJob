@@ -1,4 +1,4 @@
-package de.hbrs.easyjob.views.admin;
+package de.hbrs.easyjob.views.admin.dialog;
 
 import de.hbrs.easyjob.views.components.DialogLayout;
 

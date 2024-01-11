@@ -1,13 +1,9 @@
 package de.hbrs.easyjob.views.admin;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.details.Details;
-import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
@@ -22,16 +18,13 @@ import de.hbrs.easyjob.controllers.AdminController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Admin;
 import de.hbrs.easyjob.repositories.PersonRepository;
-import de.hbrs.easyjob.views.allgemein.LoginView;
+import de.hbrs.easyjob.views.admin.dialog.*;
 import de.hbrs.easyjob.views.components.AdminLayout;
-
-import javax.annotation.security.RolesAllowed;
-import javax.sound.sampled.Line;
 
 @Route(value = "admin", layout = AdminLayout.class)
 @PageTitle("Admin")
 @StyleSheet("Variables.css")
-@StyleSheet("AdminEinstellungenStart.css")
+@StyleSheet("AdminLayout.css")
 //@RolesAllowed("ROLE_ADMIN")
 public class EinstellungenStartView extends VerticalLayout implements BeforeEnterObserver {
 
@@ -46,6 +39,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         if (!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_ADMIN")) {
             //event.rerouteTo(LoginView.class);
         }
+        //todo: prüfe, ob der Admin auch aktiv ist. Sonst zurück zu login.
     }
 
     public EinstellungenStartView(SessionController sessionController, AdminController adminController, PersonRepository repository) {
@@ -55,17 +49,15 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
         //grüner Kasten oben
         HorizontalLayout willkommenBox = new HorizontalLayout();
-        willkommenBox.addClassName("willkommen-box");
+        willkommenBox.addClassName("gruene-box");
 
         //Ausloggen
+        AusloggenDialogView ausloggenDialog = new AusloggenDialogView(true);
         Button ausloggen = new Button(new Icon(VaadinIcon.SIGN_OUT));
         ausloggen.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         ausloggen.addClassName("ausloggen");
-        ausloggen.addClickListener(e -> {
-            if (sessionController.logout()) {
-                UI.getCurrent().navigate(LoginView.class);
-            }
-        });
+        ausloggen.addClickListener(e -> ausloggenDialog.openDialogOverlay());
+        //Todo: ausloggen-Dialog Funktionen
 
         //Begrüßungstext
         Div willkommenText = new Div(
@@ -81,61 +73,61 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
         ZugangAnlegenDialogView zugangAnlegen = new ZugangAnlegenDialogView(true, adminController);
         Button neuerAdmin = new Button(userPlus, e -> zugangAnlegen.openDialogOverlay());
+        //Todo: Admin-anlegen-Dialog Funktionen
 
         //alles in den grünen Kasten
         willkommenBox.add(ausloggen, willkommenText, neuerAdmin);
 
 
-
+        // der Bereich unter dem grünen Kasten
         Div adminListe = new Div();
         adminListe.addClassName("adminListe");
 
 
-        H3 mailAdmin = new H3(sessionController.getPerson().getEmail());
+        Paragraph mailAdmin = new Paragraph(sessionController.getPerson().getEmail());
         mailAdmin.addClassName("text");
+
+        Icon edit = new Icon(VaadinIcon.EDIT);
+        edit.addClassName("editAdmin");
+
+        AdminPasswortAendernDialogView eigenespasswortAendern = new AdminPasswortAendernDialogView(true);
+        Button editAdmin = new Button(edit, e-> eigenespasswortAendern.openDialogOverlay());
+        //Todo: Passwort-Dialog Funktionen
 
         HorizontalLayout aktuellerAdmin = new HorizontalLayout(
                 mailAdmin,
-                new Div(new Icon(VaadinIcon.EDIT))
+                editAdmin
         );
         aktuellerAdmin.addClassName("admins");
         adminListe.add(aktuellerAdmin);
 
         for (Admin a: personRepository.findAllAdmins()) {
-            HorizontalLayout einAdmin = new HorizontalLayout(
-                    new H2("" + a.getEmail()),
-                    new Div(new Icon(VaadinIcon.MINUS),
-                            new Icon(VaadinIcon.EDIT))
-            );
+            HorizontalLayout einAdmin = new HorizontalLayout();
+
+            Paragraph mail = new Paragraph("" + a.getEmail());
+            mail.addClassName("text");
+
+            Div icons = new Div();
+
+            Icon minus = new Icon(VaadinIcon.MINUS);
+            minus.addClassName("minus");
+
+            ZugangEntfernenDialogView adminLoeschen = new ZugangEntfernenDialogView(true);
+            Button btnMinus = new Button(minus, e -> adminLoeschen.openDialogOverlay());
+            //Todo: Admin löschen Dialog Funktionen
+
+            PasswortAendernDialogView passwortAendern = new PasswortAendernDialogView(true);
+            Button btnAdmin = new Button(edit, e-> passwortAendern.openDialogOverlay());
+            //Todo: Passwort-Dialog Funktionen
+
+            icons.add(btnMinus, btnAdmin);
+
+            einAdmin.add(mail, icons);
             einAdmin.addClassName("admins");
 
             adminListe.add(einAdmin);
         }
         add(willkommenBox, adminListe);
-
-        /*
-        Div buttonAuswahl = new Div();
-        buttonAuswahl.addClassName("buttonAuswahl");
-
-        Details administration = new Details("Administration");
-        administration.addClassName("buttons");
-        administration.addThemeVariants(DetailsVariant.REVERSE);
-
-        Details agb = new Details("AGB und Datenschutzerklärung");
-        agb.addClassName("buttons");
-        agb.addThemeVariants(DetailsVariant.REVERSE);
-
-        Details impressum = new Details("Impressum");
-        impressum.addClassName("buttons");
-        impressum.addThemeVariants(DetailsVariant.REVERSE);
-
-
-
-        buttonAuswahl.add(administration, agb, impressum, ausloggen);
-
-        add(willkommen, buttonAuswahl);
-
-         */
     }
 
 }

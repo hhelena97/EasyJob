@@ -10,14 +10,9 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.RouterLink;
-import de.hbrs.easyjob.views.admin.AdministrationView;
 import de.hbrs.easyjob.views.admin.EinstellungenStartView;
 import de.hbrs.easyjob.views.admin.MeldungenListeView;
 import de.hbrs.easyjob.views.admin.PersonenSuchenView;
-import de.hbrs.easyjob.views.admin.AdministrationView;
-import de.hbrs.easyjob.views.admin.MeldungenListeView;
-import de.hbrs.easyjob.views.admin.PersonenSuchenView;
-import de.hbrs.easyjob.views.unternehmen.*;
 
 @StyleSheet("AdminLayout.css")
 public class AdminLayout extends AppLayout {
