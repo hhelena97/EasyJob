@@ -63,7 +63,7 @@ public class AdministrationView extends VerticalLayout implements BeforeEnterObs
         adminListe.addClassName("adminListe");
 
         //TODO: es gibt noch keine Emails bei Admins
-        H3 mailAdmin = new H3("E-Mail Adresse" /*+ sessionController.getPerson().getEmail()*/);
+        H3 mailAdmin = new H3("E-Mail Adresse" + sessionController.getPerson().getEmail());
         mailAdmin.addClassName("text");
 
         HorizontalLayout aktuellerAdmin = new HorizontalLayout(
