@@ -32,11 +32,13 @@ public class Schritt1View extends RegistrierenSchritt {
     public void insertContent() {
         //Textfelder
         vorname.setRequired(true);
+        vorname.setId("vorname_registrieren_1");
         if (student.getVorname() != null) {
             vorname.setValue(student.getVorname());
         }
 
         nachname.setRequired(true);
+        nachname.setId("nachname_registrieren_1");
         if (student.getNachname() != null) {
             nachname.setValue(student.getNachname());
         }
@@ -44,8 +46,10 @@ public class Schritt1View extends RegistrierenSchritt {
         //Combo-Boxen
         abschluss.setItems("Bachelor", "Master");
         abschluss.setValue("Bachelor");
+        abschluss.setId("abschluss_combobox_id");
         studiengang.setItems(studienfachRepository.findAllByAbschluss("Bachelor"));
         studiengang.setItemLabelGenerator(Studienfach::getFach);
+        studiengang.setId("studienfach_combobox_id");
         abschluss.setRequiredIndicatorVisible(true);
         abschluss.addValueChangeListener(e ->
         {
