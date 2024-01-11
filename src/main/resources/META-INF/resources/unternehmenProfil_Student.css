@@ -123,11 +123,6 @@ body {
 
  */
 
-/* Melden Button */
-.vaadin-context-menu-item::part("Melden") {
-    color: var(--signalfarben-rot);
-}
-
 
 /*  Job Section
 

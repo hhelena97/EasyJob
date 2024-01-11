@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
+import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.StudentService;
@@ -23,10 +24,14 @@ public class StudentProfilView extends VerticalLayout implements BeforeEnterObse
     private Student student;
     private final StudentService studentService;
     private final PersonService personService;
+
+    private final MeldungController meldungController;
+
     @Autowired
-    public StudentProfilView(StudentService studentService, PersonService personService) {
+    public StudentProfilView(StudentService studentService, PersonService personService, MeldungController meldungController) {
         this.studentService = studentService;
         this.personService = personService;
+        this.meldungController = meldungController;
         SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
         if(context != null) {
             Authentication auth = context.getAuthentication();
@@ -46,7 +51,7 @@ public class StudentProfilView extends VerticalLayout implements BeforeEnterObse
             UI.getCurrent().navigate(LoginView.class);
             return;
         }
-        StudentProfileComponent studentProfile = new StudentProfileComponent(student, "StudentProfilView.css",studentService);
+        StudentProfileComponent studentProfile = new StudentProfileComponent(student, "StudentProfilView.css",studentService, meldungController);
         add(studentProfile);
     }
 

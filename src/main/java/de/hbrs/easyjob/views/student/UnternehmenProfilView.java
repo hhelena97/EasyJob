@@ -4,6 +4,7 @@ import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
+import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
@@ -15,13 +16,11 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.hbrs.easyjob.controllers.JobProfilController;
 import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Meldung;
 import de.hbrs.easyjob.entities.Unternehmen;
-import de.hbrs.easyjob.repositories.MeldungRepository;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.StudentLayout;
@@ -54,11 +53,10 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
 
 
 
-    JobProfilController jobController = new JobProfilController();
+    private final JobProfilController jobController;
 
-    @Autowired
-    MeldungRepository meldungRepository;
-    MeldungController meldungController = new MeldungController(meldungRepository);
+
+    private final MeldungController meldungController;
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
@@ -196,11 +194,13 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         ContextMenu contextMenu = new ContextMenu();
         contextMenu.setTarget(dots);
         contextMenu.setOpenOnClick(true);
-        contextMenu.addItem("Melden", e -> {
+        MenuItem item = contextMenu.addItem("Melden", e -> {
             Meldung meldung = new Meldung();
             meldungController.saveMeldung(meldung, unternehmen);
             Notification.show("Gemeldet", 3000, Notification.Position.TOP_STRETCH);
         });
+
+        item.getElement().getStyle().set("color", "red");
 
         dotsLayout.add(dots);
         frame.add(dotsLayout);
@@ -347,8 +347,10 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         v.add(bildUnternehmen,unternehmenInfo,unternehmenBeschreibung,jobsTitle,sec/*,bewertungTitle,bewertung*/);
         return v;
     }
-    public UnternehmenProfilView(@Autowired UnternehmenService unternehmenService){
+    public UnternehmenProfilView(UnternehmenService unternehmenService, JobProfilController jobController, MeldungController meldungController){
         this.unetrnehmenService=unternehmenService;
+        this.jobController = jobController;
+        this.meldungController = meldungController;
         UI.getCurrent().getPage().addStyleSheet("unternehmenProfil_Student.css");
     }
 
