@@ -30,10 +30,8 @@ public class Nachricht {
     private Person absender;
 
     //Empfänger ergibt sich aus dem Chat
-
     @Column(name = "Zeitpunkt", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Instant zeitpunkt;
-
     @Column(name = "TopicId")
     private String topicId;
 

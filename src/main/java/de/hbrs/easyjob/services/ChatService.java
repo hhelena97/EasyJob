@@ -1,5 +1,6 @@
 package de.hbrs.easyjob.services;
 
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.repositories.ChatRepository;
 import de.hbrs.easyjob.repositories.NachrichtRepository;
@@ -19,23 +20,45 @@ public class ChatService {
     private JobService jobService;
     @Autowired
     private StudentService studentService;
+    @Autowired
+    private PersonService personService;
+
+    private final transient SessionController sessionController;
+
+    public ChatService(SessionController sessionController) {
+        this.sessionController = sessionController;
+    }
 
     public Chat createOrGetChat(String topicId) {
         // Logik zur Extraktion von jobId und studentId aus topicId
         String[] parts = topicId.split("-");
-        Integer jobId = Integer.parseInt(parts[1]);
-        Integer studentId = Integer.parseInt(parts[2]);
+        String topic = parts[0];
+        if (topic.equals("Job")) {
+            Integer jobId = Integer.parseInt(parts[1]);
+            Integer personId = Integer.parseInt(parts[2]);
+            return createOrGetChatForJob(jobId, personId, topicId);
+        } else if (topic.equals("Student")) {
+            Integer personId = Integer.parseInt(parts[1]);
+            Integer studentId = Integer.parseInt(parts[2]);
+            return createOrGetChatForStudent(personId, studentId, topicId);
+        } else {
+            return null;
+        }
 
-        return createOrGetChat(jobId, studentId);
+
     }
 
-    public Chat createOrGetChat(Integer jobId, Integer studentId) {
+    private Chat createOrGetChatForStudent(Integer personId, Integer studentId, String topicId) {
+        return null;
+    }
+
+
+    public Chat createOrGetChatForJob(Integer jobId, Integer studentId, String topicId) {
         Student student = studentService.getStudentByID(studentId);
         if (student == null) {
             System.out.println("Student is null");
             return null;
         }
-
 
         Chat existingChat = chatRepository.findByJobIdAndStudentId(jobId, studentId);
         if (existingChat != null) {
@@ -53,6 +76,7 @@ public class ChatService {
             newChat.setStudent(student);
             newChat.setUnternehmensperson(unternehmensperson);
             newChat.setAktiv(true);
+            newChat.setTopicId(topicId);
             chatRepository.save(newChat);
             return newChat;
         }

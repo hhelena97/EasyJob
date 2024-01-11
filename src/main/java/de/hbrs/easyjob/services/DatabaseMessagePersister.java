@@ -5,6 +5,7 @@ import com.vaadin.collaborationengine.CollaborationMessagePersister;
 import com.vaadin.collaborationengine.TopicConnection;
 import com.vaadin.collaborationengine.UserInfo;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Chat;
 import de.hbrs.easyjob.entities.Nachricht;
 import de.hbrs.easyjob.repositories.NachrichtRepository;
@@ -20,15 +21,22 @@ public class DatabaseMessagePersister implements CollaborationMessagePersister  
     @Autowired
     private ChatService chatService;
 
+    private final transient SessionController sessionController;
+
+    public DatabaseMessagePersister(SessionController sessionController) {
+        this.sessionController = sessionController;
+    }
+
     @Override
     public Stream<CollaborationMessage> fetchMessages(FetchQuery query) {
-        Chat chat = chatService.createOrGetChat(query.getTopicId()); // Annahme, dass diese Methode den Chat anhand der Topic-ID findet oder erstellt
+        Chat chat = chatService.createOrGetChat(query.getTopicId());
 
         return chatService.getNachrichten(chat).stream()
-                .filter(nachricht -> !nachricht.getZeitpunkt().isBefore(query.getSince()))
+                .filter(nachricht -> nachricht.getZeitpunkt().isAfter(query.getSince()) || nachricht.getZeitpunkt().equals(query.getSince()))
                 .filter(nachricht -> nachricht.getAbsender() != null)
                 .map(nachricht -> new CollaborationMessage(
-                        new UserInfo(nachricht.getAbsender().getId_Person().toString(), nachricht.getAbsender().getVorname()+" "+nachricht.getAbsender().getNachname()),
+                        new UserInfo(nachricht.getAbsender().getId_Person().toString(), nachricht.getAbsender().getVorname()+" "+nachricht.getAbsender().getNachname(),
+                                nachricht.getAbsender().getFoto()!= null ? nachricht.getAbsender().getFoto() : "images/blank-profile-picture.png"),
                         nachricht.getTextfeld(),
                         nachricht.getZeitpunkt())
                 );
@@ -41,11 +49,11 @@ public class DatabaseMessagePersister implements CollaborationMessagePersister  
 
         Nachricht nachricht = new Nachricht();
         nachricht.setChat(chat);
-        nachricht.setAbsender(chatService.getPersonById(Integer.parseInt(message.getUser().getId())));
+        nachricht.setAbsender(sessionController.getPerson());
         nachricht.setTextfeld(message.getText());
         nachricht.setZeitpunkt(message.getTime());
-        nachricht.setGelesen(false); // Nachricht wird als ungelesen markiert
         nachricht.setTopicId(request.getTopicId());
+        nachricht.setGelesen(false); // Nachricht wird als ungelesen markiert
 
         chatService.saveNachricht(nachricht);
     }

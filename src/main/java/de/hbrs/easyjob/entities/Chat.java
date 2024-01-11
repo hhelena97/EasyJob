@@ -33,7 +33,8 @@ public class Chat {
 
     @Column(name = "Aktiv")
     private boolean aktiv;
-
+    @Column(name = "TopicId")
+    private String topicId;
 
     @Override
     public boolean equals(Object o) {
@@ -43,11 +44,12 @@ public class Chat {
         return Objects.equals(id_Chat, chat.id_Chat) &&
                 Objects.equals(job, chat.job) &&
                 Objects.equals(student, chat.student) &&
+                Objects.equals(unternehmensperson, chat.unternehmensperson) &&
                 Objects.equals(aktiv, chat.aktiv);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id_Chat, job, student, aktiv);
+        return Objects.hash(id_Chat, job, student, unternehmensperson,aktiv);
     }
 }
