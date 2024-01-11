@@ -19,6 +19,7 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.controllers.OrtController;
+import de.hbrs.easyjob.controllers.PersonController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Ort;
 import de.hbrs.easyjob.entities.Unternehmen;
@@ -44,10 +45,12 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     private final PersonService personService;
     @Autowired
     private final UnternehmenService unternehmenService;
-    ComboBox<Ort> ort = new ComboBox<>("Ort");
+
     TextField strasse = new TextField();
 
     OrtController ortController;
+    PersonController personControler;
+
 
     private final transient SessionController  sessionController;
 
@@ -55,14 +58,16 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     TextField nachname;
     TextField email;
     TextField telefon;
+    TextField adresse;
     Image profilBild2;
     VerticalLayout personKontakt = new VerticalLayout();
 
-    UnternehmenspersonProfilBearbeitungView(PersonService personService, UnternehmenService unternehmenService, SessionController sessionController,OrtController ortController){
+    UnternehmenspersonProfilBearbeitungView(PersonService personService, UnternehmenService unternehmenService, SessionController sessionController,OrtController ortController,PersonController personControler){
         this.personService = personService;
         this.unternehmenService = unternehmenService;
         this.sessionController = sessionController;
         this.ortController = ortController;
+        this.personControler = personControler;
         person = (Unternehmensperson) sessionController.getPerson();
         initialView();
     }
@@ -161,27 +166,7 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
         nachname = completeZeile("Nachname:" , person.getNachname());
         email = completeZeile("Email:", person.getEmail());
         telefon = completeZeile("Telefon:" , person.getTelefon());
-/*
-        Unternehmen u = person.getUnternehmen();
-        String adresse = u.getKontaktdaten();
-        String[] parts = adresse.split(",");
-        String str = parts[0].trim();
-        String s = parts[1].trim();
-
-        String[] parts2 = s.split(" ");
-        String plz = parts2[0].trim();
-        String o = parts2[1].trim();
-
-
-        Ort ort1 = new Ort(plz,ort);
-        ort.setItems(ortController.getOrtItemFilter(), ortController.getAlleOrte());
-        ort.setValue((ortController.createOrt(ort1));
-
-        ort.setItemLabelGenerator(ortController.getOrtItemLabelGenerator());
-
-
- */
-
+        adresse = completeZeile("Adresse:" , person.getUnternehmen().getKontaktdaten());
 
 
 
@@ -212,7 +197,7 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
         personInfo.add(rahmen, upload, uploadListe);
 
 
-        add(personInfo,kon,personKontakt, ort);
+        add(personInfo,kon,personKontakt);
     }
 
     private TextField completeZeile(String title, String wert){
@@ -224,7 +209,6 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
         HorizontalLayout wertH = new HorizontalLayout();
         wertH.setSizeFull();
         wertH.addClassName("wert");
-
 
 
         TextField textField = new TextField();
@@ -259,14 +243,20 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
         }
 
 
+
         person.setTelefon(telefon.getValue());
         person.setFoto(profilBild2.getSrc());
+
+
+        person.getUnternehmen().setKontaktdaten(adresse.getValue());
+        unternehmenService.saveUnternehmen(person.getUnternehmen());
+
+
+
 
         personService.savePerson(person);
 
     }
-
-
 
 
 }
