@@ -28,28 +28,22 @@ public class ZugangAnlegenDialogView extends DialogLayout {
                 email = new EmailField("E-Mail"),
                 pw = new PasswordField("Passwort"),
                 pw2 = new PasswordField("Passwort wiederholen")
-
                 //TODO: Überprüfen ob pw und pw2 gleich sind
         );
 
         HorizontalLayout actionButtons = new HorizontalLayout();
         actionButtons.setClassName("action-buttons");
 
-        Button btnabbrechen = new Button("Abbrechen");
-        btnabbrechen.setClassName("button-abbrechen");
-        btnabbrechen.addClickListener(e -> abbrechen());
 
         Button btnAdminAnlegen = new Button("Admin anlegen");
         btnAdminAnlegen.setClassName("button-adminanlegen");
         btnAdminAnlegen.addClickListener(e -> adminAnlegen());
 
-        actionButtons.add(btnabbrechen, btnAdminAnlegen);
+        actionButtons.add(btnAdminAnlegen);
 
         zugangsdaten.add(actionButtons);
 
-        insertContentDialogContent("Neuen Zugang anlegen", zugangsdaten, "Test1", "Test2");
-
-
+        insertContentDialogContent("Neuen Admin anlegen", zugangsdaten, "Abbrechen", "Test2");
     }
 
     private void adminAnlegen(){
@@ -61,7 +55,4 @@ public class ZugangAnlegenDialogView extends DialogLayout {
         UI.getCurrent().getPage().getHistory().back();
     }
 
-    private void abbrechen(){
-        //Todo: zurück zur Administrationsseite
-    }
 }
