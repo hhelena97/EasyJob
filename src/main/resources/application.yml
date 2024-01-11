@@ -24,5 +24,7 @@ logging:
    # org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.security: DEBUG
     de.hbrs.easyjob: DEBUG
+server:
+  port: 8080
 vaadin:
   whitelisted-packages: com/flowingcode
