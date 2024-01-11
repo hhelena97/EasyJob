@@ -1,5 +1,6 @@
 package de.hbrs.easyjob.views.admin;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
@@ -26,7 +27,7 @@ import javax.sound.sampled.Line;
 @PageTitle("Admin")
 @StyleSheet("Variables.css")
 @StyleSheet("AdminEinstellungenStart.css")
-//@RolesAllowed("ROLE_ADMIN")
+@RolesAllowed("ROLE_ADMIN")
 public class EinstellungenStartView extends VerticalLayout implements BeforeEnterObserver {
 
     private final SessionController sessionController;
@@ -34,7 +35,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         if (!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_ADMIN")) {
-            //event.rerouteTo(LoginView.class);
+            event.rerouteTo(LoginView.class);
         }
     }
 
@@ -68,6 +69,11 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         Button ausloggen = new Button("Ausloggen", new Icon(VaadinIcon.SIGN_OUT));
         ausloggen.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         ausloggen.addClassName("ausloggen");
+        ausloggen.addClickListener(e -> {
+            if (sessionController.logout()) {
+                UI.getCurrent().navigate(LoginView.class);
+            }
+        });
 
         buttonAuswahl.add(administration, agb, impressum, ausloggen);
 

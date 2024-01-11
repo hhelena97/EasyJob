@@ -14,6 +14,9 @@ import de.hbrs.easyjob.views.admin.AdministrationView;
 import de.hbrs.easyjob.views.admin.EinstellungenStartView;
 import de.hbrs.easyjob.views.admin.MeldungenListeView;
 import de.hbrs.easyjob.views.admin.PersonenSuchenView;
+import de.hbrs.easyjob.views.admin.AdministrationView;
+import de.hbrs.easyjob.views.admin.MeldungenListeView;
+import de.hbrs.easyjob.views.admin.PersonenSuchenView;
 import de.hbrs.easyjob.views.unternehmen.*;
 
 @StyleSheet("AdminLayout.css")
