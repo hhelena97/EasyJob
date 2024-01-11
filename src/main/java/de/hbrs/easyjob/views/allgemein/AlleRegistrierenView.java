@@ -119,14 +119,18 @@ public class AlleRegistrierenView extends RegistrierenSchritt {
 
         mail.setRequired(true);
         mail.addValueChangeListener(event -> enableRegisterButton());
+        mail.setId("email_registrieren_id");
         pw1.setRequired(true);
         pw1.setHelperText("Mind. 8 Zeichen, mind. 1 Großbuchstabe, mind. 1 Sonderzeichen");
+        pw1.setId("passwort1_registrieren_id");
         pw1.addValueChangeListener(event -> enableRegisterButton());
         pw2.setRequired(true);
+        pw2.setId("passwort2_registrieren_id");
         pw2.addValueChangeListener(event -> enableRegisterButton());
 
         checkbox.getStyle().set("--lumo-contrast-20pct","var(--icon-hellgrau)");
         checkbox.getStyle().set("--lumo-primary-color","var(--studierende-dark)");
+        checkbox.setId("checkbox_agbs_registrieren_id");
         checkbox.addValueChangeListener(event -> enableRegisterButton());
 
         Button agbs = new Button("AGB und Datenschutzerklärung akzeptieren");

@@ -49,20 +49,24 @@ public class Schritt2View extends RegistrierenSchritt {
         berufsbezeichnung.setItems(jobKategorieRepository.findAll());
         berufsbezeichnung.setItemLabelGenerator(JobKategorie::getKategorie);
         berufsbezeichnung.setValue(student.getJobKategorien());
+        berufsbezeichnung.setId("berufsbezeichnung_feld_id");
 
         branche.getStyle().set("--lumo-contrast-60pct","--hintergrund-weiß");
         branche.setItems(brancheRepository.findAll());
         branche.setItemLabelGenerator(Branche::getName);
         branche.setValue(student.getBranchen());
+        branche.setId("branche_feld_id");
 
         berufsfeld.getStyle().set("--lumo-contrast-60pct","--hintergrund-weiß");
         berufsfeld.setItems(berufsFelderRepository.findAll());
         berufsfeld.setItemLabelGenerator(BerufsFelder::getName);
         berufsfeld.setValue(student.getBerufsFelder());
+        berufsfeld.setId("berufsfeld_feld_id");
 
         standort.getStyle().set("--lumo-contrast-60pct","--hintergrund-weiß");
         standort.setItems(ortController.getOrtItemFilter(), ortController.getAlleOrte());
         standort.setItemLabelGenerator(ortController.getOrtItemLabelGenerator());
+        standort.setId("standort_feld_id");
         standort.setRequired(true);
         standort.setValue(student.getOrte());
 

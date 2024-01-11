@@ -11,18 +11,13 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
-import de.hbrs.easyjob.controllers.JobProfilController;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.StudentLayout;
 import de.hbrs.easyjob.views.unternehmen.JobDetailsView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
 import java.time.LocalDate;
@@ -32,44 +27,43 @@ import java.util.List;
 
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.START;
 
-@Route(value = "UnternehmenProfile" , layout = StudentLayout.class)
+@Route(value = "UnternehmenProfile", layout = StudentLayout.class)
 @RouteAlias(value = "u", layout = StudentLayout.class)
 @PageTitle("Unternehmen Profile")
 @RolesAllowed("ROLE_STUDENT")
 public class UnternehmenProfilView extends VerticalLayout implements HasUrlParameter<Integer>, BeforeEnterObserver {
-    //Job Methode
-    Section sec = new Section();
-    Scroller scroller = new Scroller();
-    HorizontalLayout jobs = new HorizontalLayout();
+    // Job Methode
+    private final Section sec = new Section();
+    private final Scroller scroller = new Scroller();
+    private final HorizontalLayout jobs = new HorizontalLayout();
 
+    // Service
+    private final transient UnternehmenService unternehmenService;
 
-    private UnternehmenService unetrnehmenService;
+    // Controller
+    private final transient SessionController sessionController;
 
+    // Konstanten
+    private static final String ICONS_IN_JOB_ICONS = "iconsInJobIcons";
+    private static final String TITLE_ICONS = "titleIcons";
 
-
-    JobProfilController jobController = new JobProfilController();
+    public UnternehmenProfilView(UnternehmenService unternehmenService, SessionController sessionController) {
+        this.unternehmenService = unternehmenService;
+        this.sessionController = sessionController;
+        UI.getCurrent().getPage().addStyleSheet("unternehmenProfil_Student.css");
+    }
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if(!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_STUDENT")) {
             event.rerouteTo(LoginView.class);
         }
-    }
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
     }
 
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Integer unternehmenID) {
         if (unternehmenID != null) {
-            Unternehmen unternehmen = unetrnehmenService.findByID(unternehmenID);
+            Unternehmen unternehmen = unternehmenService.findByID(unternehmenID);
             addClassName("all");
             setSizeFull();
             setPadding(false);
@@ -80,7 +74,7 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         }
     }
 
-    private Component createUnternehmenLayout(Unternehmen unternehmen){
+    private Component createUnternehmenLayout(Unternehmen unternehmen) {
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("v");
@@ -91,11 +85,9 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         v.setAlignItems(START);
         setJustifyContentMode(JustifyContentMode.START);
 
-
         Div bildUnternehmen = new Div();
         bildUnternehmen.addClassName("bildUnternehmen");
         bildUnternehmen.setWidth(getMaxWidth());
-
 
         //Section Unternehmen Info
         HorizontalLayout unternehmenInfo = new HorizontalLayout();
@@ -109,7 +101,6 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         Div unternehmenIcon = new Div();
         unternehmenIcon.addClassName("unternehmenIcon");
 
-
         VerticalLayout unternehmenInfoRecht = new VerticalLayout();
         unternehmenInfoRecht.addClassName("unternehmenInfoRecht");
         unternehmenInfoRecht.setWidth(getMaxWidth());
@@ -122,7 +113,6 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         grosseTitleUnternehmen.addClassName("grosseTitleUnternehmen");
         grosseTitleUnternehmen.add(unternehmen.getName());
 
-
         HorizontalLayout verifiziertplusIcon = new HorizontalLayout();
         verifiziertplusIcon.addClassName("verifiziertplusIcon");
         verifiziertplusIcon.setSpacing(false);
@@ -132,15 +122,14 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         verifiziertplusIcon.setMargin(false);
 
         IconFactory ver = FontAwesome.Solid.CHECK_CIRCLE;
-        Icon vv =  ver.create();
+        Icon vv = ver.create();
         vv.addClassName("verIcon");
 
         H1 verifiziert = new H1();
         verifiziert.addClassName("verifiziert");
         verifiziert.add("Verifiziertes Unternehmen");
 
-        verifiziertplusIcon.add(vv,verifiziert);
-
+        verifiziertplusIcon.add(vv, verifiziert);
 
         HorizontalLayout locationPlusAnzahl = new HorizontalLayout();
         locationPlusAnzahl.addClassName("locationPlusAnzahl");
@@ -149,33 +138,28 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         locationPlusAnzahl.setMargin(false);
 
         IconFactory lo = FontAwesome.Solid.MAP_MARKED_ALT;
-        Icon loc =  lo.create();
+        Icon loc = lo.create();
         loc.addClassName("iconsInUnternehmen");
 
         H1 stadt = new H1();
         stadt.addClassName("stadt");
-        stadt.add(unetrnehmenService.getFirstStandort(unternehmen).getOrt());
+        stadt.add(unternehmenService.getFirstStandort(unternehmen).getOrt());
 
         H1 anzahlAngebote = new H1();
         anzahlAngebote.addClassName("anzahlAngebote");
-        anzahlAngebote.add(unetrnehmenService.anzahlJobs(unternehmen)+" Stellenangebot");
+        anzahlAngebote.add(unternehmenService.anzahlJobs(unternehmen) + " Stellenangebot");
 
         locationPlusAnzahl.add(loc, stadt, anzahlAngebote);
 
-
-        unternehmenInfoRecht.add(grosseTitleUnternehmen,verifiziertplusIcon,locationPlusAnzahl);
-
-
+        unternehmenInfoRecht.add(grosseTitleUnternehmen, verifiziertplusIcon, locationPlusAnzahl);
 
         IconFactory bel = VaadinIcon.BELL_SLASH_O;
-        Icon bellIcon =  bel.create();
+        Icon bellIcon = bel.create();
         bellIcon.addClassName("bellIcon");
 
+        unternehmenInfo.add(unternehmenIcon, unternehmenInfoRecht, bellIcon);
 
-
-        unternehmenInfo.add(unternehmenIcon,unternehmenInfoRecht,bellIcon);
-
-        //unternehmen Beschreibung
+        // Unternehmen Beschreibung
         Div unternehmenBeschreibung = new Div();
         unternehmenBeschreibung.addClassName("job");
         H1 unternehmenBeschreibungText = new H1();
@@ -183,107 +167,33 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         unternehmenBeschreibungText.add(unternehmen.getBeschreibung());
         unternehmenBeschreibung.add(unternehmenBeschreibungText);
 
-
-
-
-
         // Job Section
-
         H1 jobsTitle = new H1("JobsUebersichtView");
         jobsTitle.addClassName("title");
 
-
-       List<Job> jobsUn= unetrnehmenService.getAllJobs(unternehmen.getId_Unternehmen());
-        for (Job jobSet:jobsUn
-        ) {
+        List<Job> jobsUn = unternehmenService.getAllJobs(unternehmen.getId_Unternehmen());
+        for (Job jobSet : jobsUn) {
 
             jobMeth(jobSet, unternehmen);
 
         }
 
-
-
-
-
-
-
-
-        //kopie von job
-/*
-        Div job2 = new Div();
-        job2.addClassName("job");
-        job2.setWidth(getMaxWidth());
-        job2.add("hdsgfhasgjhfa hdfjfhjas hjdhjsfdhs fdsjha");
-        RouterLink linkJobDetails2 = new RouterLink(JobDetailsView.class);
-        linkJobDetails2.add(job2);
-
-
-
-        //job2.add(jobBeschreibung,jobIcons,jobBText,jobDatum);
-
-
-
-        Div job3 = new Div();
-        job3.addClassName("job");
-        //job3.setWidth(getMaxWidth());
-
-        job3.add(jobBeschreibung,jobIcons,jobBText,jobDatum);
-
-        //Ende kopie von job
-
-
-        //Scroller
-        Section sec = new Section();
-        sec.setMaxWidth("100%");
-        sec.setWidth("360px");
-        sec.getStyle().set("border", "1px solid var(--lumo-contrast-20pct)");
-
-
-        Scroller scroller = new Scroller();
-        scroller.setScrollDirection(Scroller.ScrollDirection.HORIZONTAL);
-
-        HorizontalLayout jobs = new HorizontalLayout(job,job);
-        jobs.setPadding(true);
-        jobs.getStyle().set("display", "inline-flex");
-
-        scroller.setContent(jobs);
-        sec.add(scroller);
-
-
-
-
-
- */
-
-        // tag::snippet[]
-
-
         sec.setMaxWidth("100%");
         sec.setWidth("100%");
         sec.getStyle().set("border", "1px solid var(--lumo-contrast-20pct)");
 
-
-
         scroller.setScrollDirection(Scroller.ScrollDirection.HORIZONTAL);
         scroller.addClassName("scroller");
-
-
 
         jobs.setPadding(true);
         jobs.getStyle().set("display", "inline-flex");
 
         scroller.setContent(jobs);
         sec.add(scroller);
-        //add(scroller);
-        // end::snippet[]
 
-
-
-        //Bewertung Section
-
+        // Bewertung Section
         H1 bewertungTitle = new H1("Bewertungen");
         bewertungTitle.addClassName("title");
-
 
         Div bewertung = new Div();
         bewertung.addClassName("bewertung");
@@ -292,7 +202,6 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         sternePlusDatum.addClassName("sternePlusDatum");
         sternePlusDatum.setMargin(false);
         sternePlusDatum.setPadding(false);
-        //.....
 
         H1 bewertungBeschreibung = new H1();
         bewertungBeschreibung.addClassName("bewertungBeschreibung");
@@ -302,99 +211,81 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         bewertungText.addClassName("bewertungText");
         bewertungText.add("Die Masterarbeit bei EasyQube im Bereich Cybersecurity war eine herausragende Erfahrung! Als Student konnte ich von Anfang an spüren, dass EasyQube eine ...");
 
-        bewertung.add(bewertungBeschreibung,bewertungText);
+        bewertung.add(bewertungBeschreibung, bewertungText);
 
-
-
-
-
-
-
-        v.add(bildUnternehmen,unternehmenInfo,unternehmenBeschreibung,jobsTitle,sec/*,bewertungTitle,bewertung*/);
+        v.add(bildUnternehmen, unternehmenInfo, unternehmenBeschreibung, jobsTitle, sec/*,bewertungTitle,bewertung*/);
         return v;
     }
-    public UnternehmenProfilView(@Autowired UnternehmenService unternehmenService){
-        this.unetrnehmenService=unternehmenService;
-        UI.getCurrent().getPage().addStyleSheet("unternehmenProfil_Student.css");
-    }
 
-
-    private void jobMeth(Job jobSet,Unternehmen unternehmen){
-
+    private void jobMeth(Job jobSet, Unternehmen unternehmen) {
         Div job = new Div();
         job.addClassName("job");
         job.setWidth(getMaxWidth());
 
         H1 jobBeschreibung = new H1();
         jobBeschreibung.addClassName("jobBeschreibung");
-        jobBeschreibung.add(jobController.getTitel(jobSet));
+        jobBeschreibung.add(jobSet.getTitel());
 
         HorizontalLayout jobIcons = new HorizontalLayout();
         jobIcons.setSpacing(false);
         jobIcons.setAlignItems(Alignment.CENTER);
 
         IconFactory i = FontAwesome.Solid.BRIEFCASE;
-        Icon ii =  i.create();
-        ii.addClassName("iconsInJobIcons");
+        Icon ii = i.create();
+        ii.addClassName(ICONS_IN_JOB_ICONS);
 
         H1 titleIconsUnternehmen = new H1();
-        titleIconsUnternehmen.addClassName("titleIcons");
+        titleIconsUnternehmen.addClassName(TITLE_ICONS);
         titleIconsUnternehmen.add(unternehmen.getName());
 
         IconFactory l = FontAwesome.Solid.MAP_MARKED_ALT;
-        Icon ll =  l.create();
-        ll.addClassName("iconsInJobIcons");
+        Icon ll = l.create();
+        ll.addClassName(ICONS_IN_JOB_ICONS);
         H1 titleIconsLocation = new H1();
-        titleIconsLocation.addClassName("titleIcons");
-        titleIconsLocation.add(jobController.getOrt(jobSet));
+        titleIconsLocation.addClassName(TITLE_ICONS);
+        titleIconsLocation.add(jobSet.getOrt().getOrt());
 
         IconFactory g = FontAwesome.Solid.GRADUATION_CAP;
-        Icon gg =  g.create();
-        gg.addClassName("iconsInJobIcons");
+        Icon gg = g.create();
+        gg.addClassName(ICONS_IN_JOB_ICONS);
         H1 titleIconsJob = new H1();
-        titleIconsJob.addClassName("titleIcons");
-        titleIconsJob.add(jobController.getJobKategorie(jobSet));
+        titleIconsJob.addClassName(TITLE_ICONS);
+        titleIconsJob.add(jobSet.getJobKategorie().getKategorie());
 
-        jobIcons.add(ii,titleIconsUnternehmen,ll,titleIconsLocation,gg,titleIconsJob);
+        jobIcons.add(ii, titleIconsUnternehmen, ll, titleIconsLocation, gg, titleIconsJob);
 
-
-        Paragraph jobDescription = new Paragraph(limitText(jobSet.getFreitext(), 230));
+        Paragraph jobDescription = new Paragraph(limitText(jobSet.getFreitext()));
 
         H1 jobBText = new H1();
         jobBText.addClassName("jobBText");
 
         jobBText.add(jobDescription);
 
-
-
-
-        // Veröffentlichungsdatum des JobsUebersichtView
-        LocalDate jobDate = jobSet.getErstellt_am().toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
+        // Veröffentlichungsdatum der JobsUebersichtView
+        LocalDate jobDate = jobSet.getErstellt_am().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         long daysBetween = ChronoUnit.DAYS.between(jobDate, LocalDate.now());
-        String daysAgoText = daysBetween == 0 ? "Heute" : daysBetween + (daysBetween == 1 ? " Tag" : " Tage");
+        String tagTage = daysBetween == 1 ? " Tag" : " Tage";
+        String daysAgoText = daysBetween == 0 ? "Heute" : daysBetween + tagTage;
 
         Span postedTime = new Span("Vor " + daysAgoText);
-
 
         H1 jobDatum = new H1();
         jobDatum.addClassName("jobDatum");
         jobDatum.add(postedTime);
 
-
-        job.add(jobBeschreibung,jobIcons,jobBText,jobDatum);
-
-
+        job.add(jobBeschreibung, jobIcons, jobBText, jobDatum);
 
         RouterLink linkJobDetails = new RouterLink(JobDetailsView.class);
         linkJobDetails.add(job);
         jobs.add(linkJobDetails);
     }
 
-
-    private String limitText(String text, int maxLength) {
-        return text.length() > maxLength ? text.substring(0, maxLength - 3) + "..." : text;
+    /**
+     * kürzt den eingegebenen Text
+     * @param text - zu kürzender Text
+     * @return gekürzten Text
+     */
+    private String limitText(String text) {
+        return text.length() > 230 ? text.substring(0, 227) + "..." : text;
     }
-
 }
