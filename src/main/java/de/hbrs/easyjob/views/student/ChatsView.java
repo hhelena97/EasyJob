@@ -74,9 +74,10 @@ public class ChatsView extends VerticalLayout {
         studienDetails.setSpacing(false);
         studienDetails.setAlignItems(Alignment.START);
         studienDetails.addClassName("student-details");
+        String[] split = chat.getTopicId().split("-");
+        String topicId = split[0]+"/"+split[1];
 
-
-        RouterLink Jobtitel = new RouterLink("", ChatView.class, job.getId_Job() + "/" + chat.getStudent().getId_Person());
+        RouterLink Jobtitel = new RouterLink("", ChatView.class, topicId);
         Jobtitel.addClassName("name-label");
         Jobtitel.add(job.getTitel());
 

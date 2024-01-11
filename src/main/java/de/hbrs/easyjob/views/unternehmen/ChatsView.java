@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.views.unternehmen;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
@@ -28,6 +29,7 @@ import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @Route(value = "unternehmen/nachrichten", layout = UnternehmenLayout.class)
+@StyleSheet("styles/MitarbeiterFindenView.css")
 @RolesAllowed("ROLE_UNTERNEHMENSPERSON")
 public class ChatsView extends VerticalLayout {
     private final ChatService chatService;
@@ -84,7 +86,7 @@ public class ChatsView extends VerticalLayout {
         studienDetails.addClassName("student-details");
 
 
-        RouterLink Jobtitel = new RouterLink("", ChatView.class, job.getId_Job() + "/" + job.getPerson().getId_Person());
+        RouterLink Jobtitel = new RouterLink("", chatViewUnternehmensperson.class, chat.getTopicId());
         Jobtitel.addClassName("name-label");
         Jobtitel.add(job.getTitel());
 

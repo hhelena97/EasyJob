@@ -77,7 +77,7 @@ public class JobDetailsView extends VerticalLayout implements HasUrlParameter<In
         // Weitere Details wie Anforderungen und was geboten wird, können als Paragraphen hinzugefügt werden
 
         // Button zur Bewerbung
-        Button applyButton = new Button("Jetzt bewerben", e -> UI.getCurrent().navigate("chat/" + job.getId_Job() + "/" + student.getId_Person()));
+        Button applyButton = new Button("Jetzt bewerben", e -> UI.getCurrent().navigate("chat/" + "Job"+ "/"+job.getId_Job() ));
         applyButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         // Button, um mehr JobsUebersichtView zu entdecken

@@ -1,4 +1,4 @@
-package de.hbrs.easyjob.views.student;
+package de.hbrs.easyjob.views.unternehmen;
 
 import com.vaadin.collaborationengine.CollaborationMessageInput;
 import com.vaadin.collaborationengine.CollaborationMessageList;
@@ -18,72 +18,73 @@ import com.vaadin.flow.router.*;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Person;
+import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.services.DatabaseMessagePersister;
 import de.hbrs.easyjob.services.JobService;
+import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.components.StudentLayout;
+import de.hbrs.easyjob.views.components.UnternehmenLayout;
+import de.hbrs.easyjob.views.student.ChatsView;
+import de.hbrs.easyjob.views.student.UnternehmensPersonProfilView;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.vaadin.flow.component.avatar.Avatar;
-import javax.annotation.security.RolesAllowed;
 
-@Route(value = "chat/", layout = StudentLayout.class)
-@RolesAllowed("ROLE_STUDENT")
-public class ChatView extends VerticalLayout implements HasUrlParameter<String> {
+import javax.annotation.security.RolesAllowed;
+@Route(value = "chat-unternehmensperson", layout = UnternehmenLayout.class)
+@RolesAllowed("ROLE_UNTERNEHMENSPERSON")
+public class chatViewUnternehmensperson extends VerticalLayout implements HasUrlParameter<String> {
 
     private final DatabaseMessagePersister databaseMessagePersister;
 
+    private final StudentService studentService;
     private final SessionController sessionController;
     private final JobService jobService;
 
     @Autowired
-    public ChatView(DatabaseMessagePersister databaseMessagePersister, SessionController sessionController, JobService jobService) {
+    public chatViewUnternehmensperson(DatabaseMessagePersister databaseMessagePersister, StudentService studentService, SessionController sessionController, JobService jobService) {
         this.databaseMessagePersister = databaseMessagePersister;
+        this.studentService = studentService;
         this.sessionController = sessionController;
         this.jobService = jobService;
         setSizeFull();
     }
 
     @Override
-    public void setParameter(BeforeEvent event, @WildcardParameter String parameter) {
-        String[] params = parameter.split("/");
-        if (params.length == 2) {
-            try {
-                String topic = params[0];
-                Integer id = Integer.parseInt(params[1]);
-                Person person = sessionController.getPerson();
-                String topicId = topic + "-" + id + "-"+ person.getId_Person();
-                if(topic.equals("Job")) {
-                    setupChatForJob(id, person, topicId);
-                } else if(topic.equals("Student")) {
-                    setupChatForstudent(id, person, topicId);
-                } else {
-                    add(new H1("Fehler"));
-                }
-
-            } catch (NumberFormatException e) {
-                // Wenn jobId oder studentId keine Zahl ist, geben Sie eine Fehlermeldung aus
-                add(new H1("Fehler"));
-
-            }
+    public void setParameter(BeforeEvent event, @OptionalParameter String topicId) {
+        if (topicId != null) {
+            setupChat(topicId);
+        } else {
+            add(new H1("Job-ID fehlt in der URL"));
         }
+    }
+    private void setupChat(String topicId) {
+        // Logik zur Extraktion von jobId und studentId aus topicId
+        String[] parts = topicId.split("-");
+        String topic = parts[0];
+        Integer Id = Integer.parseInt(parts[1]);
+
+
+
+
+        if (topic.equals("Job")) {
+            Job job = jobService.getJobById(Id);
+            createOrGetChatForJob(job, topicId);
+        } else if (topic.equals("Student")) {
+            Student student = studentService.getStudentByID(Id);
+            createOrGetChatForStudent(student, topicId);
+        } else {
+            System.out.println("Topic is null");
+            return;
+        }
+
 
     }
 
-    private void setupChatForstudent(Integer id, Person person, String topic) {
-        String foto = person.getFoto()!=null ? person.getFoto() : "images/blank-profile-picture.png";
-        UserInfo currentUserInfo = new UserInfo(person.getId_Person() + "", person.getVorname() + " " + person.getNachname(), foto);
+    private void createOrGetChatForStudent(Student student, String topic) {
+        Component header = createChatHeader(jobService.getJobById(1));
+        Person person = sessionController.getPerson();
+        UserInfo currentUserInfo = new UserInfo(person.getId_Person() + "", person.getVorname() + " " + person.getNachname());
 
-        Component header = createChatHeader(jobService.getJobById(id));
-        // Erstellen der Collaboration Engine-Komponenten
-        CollaborationMessageList messageList = new CollaborationMessageList(currentUserInfo, topic,databaseMessagePersister);
-
-        CollaborationMessageInput messageInput = new CollaborationMessageInput(messageList);
-
-        // Layout für den Nachrichtenbereich
-        VerticalLayout messageLayout = new VerticalLayout(messageList, messageInput);
-        messageLayout.setSizeFull();
-        messageLayout.setFlexGrow(0, messageList);
-        messageLayout.setFlexGrow(0, messageInput);
-        messageLayout.setAlignItems(Alignment.STRETCH);
+        VerticalLayout messageLayout = getVerticalLayout(topic, person, currentUserInfo);
 
         // Gesamtes Chat-Layout
         VerticalLayout chatLayout = new VerticalLayout(header, messageLayout);
@@ -97,10 +98,29 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         setPadding(false);
     }
 
-    private void setupChatForJob(Integer id, Person person, String topicId) {
+    private void createOrGetChatForJob(Job job, String topic) {
+        Person person = sessionController.getPerson();
         String foto = person.getFoto()!=null ? person.getFoto() : "images/blank-profile-picture.png";
+        Component header = createChatHeader(job);
+
         UserInfo currentUserInfo = new UserInfo(person.getId_Person() + "", person.getVorname() + " " + person.getNachname(), foto);
-        Component header = createChatHeader(jobService.getJobById(id));
+
+        VerticalLayout messageLayout = getVerticalLayout(topic, person, currentUserInfo);
+
+        // Gesamtes Chat-Layout
+        VerticalLayout chatLayout = new VerticalLayout(header, messageLayout);
+        chatLayout.setFlexGrow(0, header);
+        chatLayout.setFlexGrow(1, messageLayout);
+        chatLayout.setSizeFull();
+        chatLayout.setAlignItems(Alignment.STRETCH);
+
+        add(chatLayout);
+        setSizeFull();
+        setPadding(false);
+    }
+
+    private VerticalLayout getVerticalLayout(String topic, Person person, UserInfo currentUserInfo) {
+        String topicId = topic +"-"+ person.getId_Person();
         // Erstellen der Collaboration Engine-Komponenten
         CollaborationMessageList messageList = new CollaborationMessageList(currentUserInfo, topicId,databaseMessagePersister);
 
@@ -111,17 +131,7 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         messageLayout.setFlexGrow(0, messageList);
         messageLayout.setFlexGrow(0, messageInput);
         messageLayout.setAlignItems(Alignment.STRETCH);
-
-        // Gesamtes Chat-Layout
-        VerticalLayout chatLayout = new VerticalLayout(header, messageLayout);
-        chatLayout.setFlexGrow(0, header);
-        chatLayout.setFlexGrow(1, messageLayout);
-        chatLayout.setSizeFull();
-        chatLayout.setAlignItems(Alignment.STRETCH);
-
-        add(chatLayout);
-        setSizeFull();
-        setPadding(false);
+        return messageLayout;
     }
 
     private Component createChatHeader(Job job) {
@@ -195,3 +205,5 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
     }
 
 }
+
+
