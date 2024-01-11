@@ -5,7 +5,7 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
-import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
@@ -16,7 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
-import java.util.Optional;
+
 
 @Route(value = "studnet-Profil",layout = UnternehmenLayout.class)
 @PageTitle("Student Profile")
@@ -25,8 +25,11 @@ public class StudentProfilView extends VerticalLayout implements HasUrlParameter
     @Autowired
     private final StudentService studentService;
 
-    public StudentProfilView(StudentService studentService) {
+    private final MeldungController meldungController;
+
+    public StudentProfilView(StudentService studentService, MeldungController meldungController) {
         this.studentService = studentService;
+        this.meldungController = meldungController;
     }
 
     @Override
@@ -60,6 +63,6 @@ public class StudentProfilView extends VerticalLayout implements HasUrlParameter
     }
 
     private Component createStudentDetailLayout(Student student) {
-        return new StudentProfileComponent(student, "styles/UnternehmenStudentProfilView.css",studentService);
+        return new StudentProfileComponent(student, "styles/UnternehmenStudentProfilView.css",studentService, meldungController);
     }
 }
