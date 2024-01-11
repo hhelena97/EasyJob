@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.views.student;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
@@ -18,6 +19,10 @@ import javax.annotation.security.RolesAllowed;
 
 @Route(value = "student" , layout = StudentLayout.class)
 @RolesAllowed("ROLE_STUDENT")
+@StyleSheet("Registrieren.css")
+@StyleSheet("DialogLayout.css")
+@StyleSheet("StudentRegistrieren.css")
+@StyleSheet("StudentProfilView.css")
 public class StudentProfilView extends VerticalLayout implements BeforeEnterObserver  {
 
     private Student student;

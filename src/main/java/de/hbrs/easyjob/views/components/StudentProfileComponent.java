@@ -189,17 +189,6 @@ public class StudentProfileComponent extends VerticalLayout {
 
 
 
-        /*
-
-        allgemeinDiv.add(zeileDiv("Studienfach:", "B. Sc. Informatik"),
-                         zeileDiv("Hochschulsemester:", "5"),
-                         zeileDiv("Ich suche nach:", "Abschlussarbeit"),
-                zeileDiv("Bevorzugt in der Nähe von:", "Sankt Augustin, Bonn"),
-                zeileDiv("Bevorzugte Branche(n):", "Wissenschaft/ Forschung"),
-                zeileDiv("Bevorzugte Berufsfelder:", "Cyber Security, Forschung")
-        );
-*/
-
         Div kenntnisseDiv = new Div();
         kenntnisseDiv.addClassName("myTab");
 
@@ -215,6 +204,8 @@ public class StudentProfileComponent extends VerticalLayout {
         Div ueberDiv = new Div();
         ueberDiv.addClassName("myTab");
         ueberDiv.add(student.getFreitext());
+
+
 
 
 
