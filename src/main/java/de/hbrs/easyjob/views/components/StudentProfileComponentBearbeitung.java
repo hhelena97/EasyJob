@@ -9,6 +9,7 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -102,10 +103,6 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
 
 
 
-        UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilBearbeitungView.css");
-        UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilView.css");
-        UI.getCurrent().getPage().addStyleSheet("Registrieren.css");
-        UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilView.css");
 
 
         addClassName("all");
@@ -250,6 +247,12 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
 
     private void setContent(Tab tab) {
         content.removeAll();
+
+        Notification notification = Notification
+                .show("nicht gespeicherte Änderungen werden verworfen");
+        notification.setPosition(Notification.Position.BOTTOM_START);
+      //  notification.setDuration(1);
+
 
 
         allgemeinDiv = new Div();
