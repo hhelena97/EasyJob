@@ -20,12 +20,12 @@ import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.controllers.OrtController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.controllers.StellenanzeigeController;
-import de.hbrs.easyjob.controllers.StudienfachController;
 import de.hbrs.easyjob.entities.JobKategorie;
 import de.hbrs.easyjob.entities.Ort;
 import de.hbrs.easyjob.entities.Studienfach;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.JobKategorieRepository;
+import de.hbrs.easyjob.repositories.StudienfachRepository;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.PrefixUtil;
 import de.hbrs.easyjob.views.components.StyledDialog;
@@ -33,7 +33,8 @@ import de.hbrs.easyjob.views.components.StyledDialog;
 import javax.annotation.security.RolesAllowed;
 import java.time.ZoneId;
 import java.util.Date;
-//TODO: Weiterleitung von Unternehmensprofil fixen (siehe Testklasse)
+
+// TODO: Weiterleitung von Unternehmensprofil fixen (siehe Testklasse)
 @Route("unternehmen/stellenanzeige/erstellen")
 @PageTitle("Stellenanzeige erstellen")
 @StyleSheet("Variables.css")
@@ -50,11 +51,12 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
     private final Checkbox homeOffice;
     private final transient StellenanzeigeController stellenanzeigeController;
     private final transient SessionController sessionController;
-    private final Unternehmensperson unternehmensperson;
+    private final transient Unternehmensperson unternehmensperson;
 
     /**
      * Prüft, ob der Nutzer eingeloggt ist und die Rolle ROLE_UNTERNEHMENSPERSON hat.
      * Wenn nicht, wird er auf die Login-Seite weitergeleitet.
+     *
      * @param event Event, das vor dem Aufruf der View ausgelöst wird
      */
     @Override
@@ -66,12 +68,20 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
 
     /**
      * Erstellt die View zum Erstellen einer Stellenanzeige.
-     * @param jobKategorieRepository Repository für JobKategorie
-     * @param ortController Controller für Ort
-     * @param stellenanzeigeController Controller für Stellenanzeige
-     * @param sessionController Controller für Session
+     *
+     * @param jobKategorieRepository   Repository für JobKategorien
+     * @param studienfachRepository    Repository für Studienfächer
+     * @param ortController            Controller für Orte
+     * @param sessionController        Controller für die Session
+     * @param stellenanzeigeController Controller für Stellenanzeigen
      */
-    public StellenanzeigeErstellenView(JobKategorieRepository jobKategorieRepository, OrtController ortController, StellenanzeigeController stellenanzeigeController, StudienfachController studienfachController, SessionController sessionController) {
+    public StellenanzeigeErstellenView(
+            JobKategorieRepository jobKategorieRepository,
+            StudienfachRepository studienfachRepository,
+            OrtController ortController,
+            SessionController sessionController,
+            StellenanzeigeController stellenanzeigeController
+    ) {
         this.sessionController = sessionController;
         this.stellenanzeigeController = stellenanzeigeController;
 
@@ -104,6 +114,7 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
         // Zurück Button
         Button zurueckButton = new Button("zurück", FontAwesome.Solid.CHEVRON_LEFT.create());
         zurueckButton.setClassName("zurueck-button");
+
         // TODO: Einträge speichern
         zurueckButton.addClickListener(e -> zurueckHandler());
 
@@ -124,13 +135,12 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
 
         // Studienfach
         studienfach = new MultiSelectComboBox<>("Studienfach");
-        studienfach.getStyle().set("--lumo-contrast-60pct","--hintergrund-weiß");
-        studienfach.setItems(studienfachController.getAlleStudienfaecher());
-        studienfach.setItemLabelGenerator(studienfachController.getStudienfachItemLabelGenerator());
+        studienfach.getStyle().set("--lumo-contrast-60pct", "--hintergrund-weiß");
+        studienfach.setItems(studienfachRepository.findAll());
+        studienfach.setItemLabelGenerator(fach -> fach.getFach() + " (" + fach.getAbschluss() + ")");
         studienfach.setPlaceholder("Studienfach auswählen");
 
         frame.add(studienfach);
-
 
 
         // Standort
