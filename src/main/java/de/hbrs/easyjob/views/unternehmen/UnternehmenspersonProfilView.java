@@ -13,17 +13,12 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
-import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -89,7 +84,7 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
         //Bildrahmen
         Div rahmen = new Div();
         rahmen.addClassName("profile-picture-frame");
-        Image ellipse = new Image("images/Ellipse-Lila-Groß.png", "Bildumrandung");
+        Image ellipse = new Image("images/Ellipse-Blau-Groß.png", "Bildumrandung");
         ellipse.addClassName("profile-picture-background");
         rahmen.add(ellipse);
 
