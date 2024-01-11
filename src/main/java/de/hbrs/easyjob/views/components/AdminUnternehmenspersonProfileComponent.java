@@ -11,23 +11,20 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.JobProfilController;
 import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.services.PersonService;
-import de.hbrs.easyjob.services.PersonSuchenService;
 import de.hbrs.easyjob.services.UnternehmenService;
+import de.hbrs.easyjob.views.admin.PersonenSuchenView;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.unternehmen.JobDetailsView;
 import de.hbrs.easyjob.views.unternehmen.UnternehmenProfil_Un;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-public class UnternehmenspersonProfileComponent extends VerticalLayout {
+public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
 
     private Unternehmensperson person;
     private final String style;
@@ -44,8 +41,9 @@ public class UnternehmenspersonProfileComponent extends VerticalLayout {
     Scroller scroller = new Scroller();
     HorizontalLayout jobs = new HorizontalLayout();
 
-    public UnternehmenspersonProfileComponent(Unternehmensperson person, String styleClass, UnternehmenService unternehmenservice){
+    public AdminUnternehmenspersonProfileComponent(Unternehmensperson person, String styleClass, UnternehmenService unternehmenservice){
         this.person = person;
+        this.unternehmen = person.getUnternehmen();
         this.style = styleClass;
         this.unternehmenService = unternehmenservice;
         initializeComponent();
@@ -54,7 +52,7 @@ public class UnternehmenspersonProfileComponent extends VerticalLayout {
     private void initializeComponent() {
 
         if (person == null) {
-            UI.getCurrent().navigate(LoginView.class);
+            UI.getCurrent().navigate(PersonenSuchenView.class);
             return;
         }
 
@@ -67,23 +65,13 @@ public class UnternehmenspersonProfileComponent extends VerticalLayout {
 
         Div infos = new Div();
 
-        //Profil Bild
-        Div profilBild = new Div();
-        profilBild.addClassName("profilBild");
-        profilBild.add(new Image(person.getFoto() != null ? person.getFoto() : "images/blank-profile-picture.png", "EasyJob"));
-
-        //Name
-        H1 name = new H1();
-        name.addClassName("name");
-        name.add(person.getVorname() +" "+ person.getNachname());
 
         //Link zu Unternehmen
-        H2 unternehmenProfil = new H2("zum Unternehmensprofil");
+        Paragraph unternehmenProfil = new Paragraph("zum Unternehmensprofil");
         unternehmenProfil.addClassName("unternehmenProfil");
-        unternehmenProfil.getStyle().set("color", "#323232");
-        //TODO: hier noch ändern zur Admin-Sicht auf UnternehmenProfil
-        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfil_Un.class);
+        RouterLink linkUnternehmen = new RouterLink(AdminUnternehmenComponent.class);
         linkUnternehmen.add(unternehmenProfil);
+
 
         //Person Info
         VerticalLayout personInfo = new VerticalLayout();
@@ -99,11 +87,11 @@ public class UnternehmenspersonProfileComponent extends VerticalLayout {
         completeZeile("Email:" , person.getEmail());
         completeZeile("Telefon:", person.getTelefon());
 
-        infos.add(profilBild,name,linkUnternehmen, personInfo, kon, personKontakt);
+        infos.add(linkUnternehmen, personInfo, kon, personKontakt);
 
         // Job Section
-        H1 jobsTitle = new H1("JobsUebersichtView");
-        jobsTitle.addClassName("title");
+        H3 jobsTitle = new H3("Eingestellte Jobs");
+        jobsTitle.addClassName("Untertitel");
 
 
         List<Job> jobsUn =  unternehmenService.getAllJobs(unternehmen.getId_Unternehmen());
@@ -134,7 +122,7 @@ public class UnternehmenspersonProfileComponent extends VerticalLayout {
 
         HorizontalLayout titleH = new HorizontalLayout();
         titleH.setSizeFull();
-        titleH.addClassName("title");
+        titleH.addClassName("untertitel");
         titleH.add(title);
         HorizontalLayout wertH = new HorizontalLayout();
         wertH.setSizeFull();
@@ -189,7 +177,7 @@ public class UnternehmenspersonProfileComponent extends VerticalLayout {
 
         Paragraph jobDescription = new Paragraph(limitText(jobSet.getFreitext(), 230));
 
-        H1 jobBText = new H1();
+        Paragraph jobBText = new Paragraph();
         jobBText.addClassName("jobBText");
 
         jobBText.add(jobDescription);

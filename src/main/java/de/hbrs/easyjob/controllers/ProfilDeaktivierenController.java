@@ -41,6 +41,10 @@ public class ProfilDeaktivierenController {
      * @return true, wenn der Account erfolgreich deaktiviert wurde, wenn irgendein Fehler aufgetreten ist false
      */
     public boolean profilDeaktivierenPerson(Person person) {
+
+        //Todo: prüfen, ob die Person Manager des Unternehmens ist. Wenn ja, weitere Person suchen,
+        //die dadurch Manager wird, ansonsten Unternehmen mit deaktivieren.
+
         if (person == null) {
             return false;
         }
@@ -81,15 +85,28 @@ public class ProfilDeaktivierenController {
     }
 
     /**
-     * Diese Methode deaktiviert einen Job
-     * @param job   der Job der deaktiviert werden soll
-     * @return true, wenn der Account erfolgreich deaktiviert wurde, wenn irgendein Fehler aufgetreten ist false
+     * Diese Methode löscht einen Job
+     * @param job   der Job der gelöscht werden soll
      */
-    public boolean profilDeaktivierenJob(Job job) {
-        if (job == null || job.getAktiv()) {
+    public void profilDeaktivierenJob(Job job) {
+        job.setAktiv(false);
+    }
+
+    /**
+     * Diese Methode reaktiviert den Account einer Person.
+     * @param person das Profil welches reaktiviert werden soll
+     * @return true, wenn der Account erfolgreich reaktiviert wurde, wenn irgendein Fehler aufgetreten ist false
+     */
+    public boolean profilReaktivierenPerson(Person person) {
+        if (person == null) {
             return false;
         }
-        job.setAktiv(false);
-        return !jobRepository.save(job).getAktiv();
+        person.setAktiv(true);
+        return personRepository.save(person).getAktiv();
     }
+
+
+    /** Unternehmen und Jobs können nicht reaktiviert werden. (ist zu umständlich)
+     *
+     */
 }

@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.views.admin;
 
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
@@ -10,15 +11,19 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
+import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.controllers.SessionController;
+import de.hbrs.easyjob.entities.Admin;
 import de.hbrs.easyjob.entities.Person;
-import de.hbrs.easyjob.services.PersonSuchenService;
-import de.hbrs.easyjob.views.components.AdminLayout;
-import de.hbrs.easyjob.views.admin.PersonVerwaltenView;
+import de.hbrs.easyjob.entities.Student;
+import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.repositories.PersonRepository;
+import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import de.hbrs.easyjob.services.StudentService;
+import de.hbrs.easyjob.services.UnternehmenService;
+import de.hbrs.easyjob.views.components.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
-
-import java.util.List;
 
 
 @Route(value = "admin/personenSuchen", layout = AdminLayout.class)
@@ -28,11 +33,39 @@ import java.util.List;
 //@RolesAllowed("ROLE_ADMIN")
 
 public class PersonenSuchenView extends VerticalLayout implements BeforeEnterObserver {
-    private final PersonSuchenService personService;
+    //private final PersonSuchenService personService;
+    private final PersonRepository personRepository;
+    private final UnternehmenRepository unternehmenRepository;
 
     private final SessionController sessionController;
 
-    private VerticalLayout personListLayout;
+    private VerticalLayout personLayout;
+
+    TextField searchField;
+    String email;
+
+    private final ProfilDeaktivierenController personSperrencController;
+
+    private String sperrbutton = "Profil sperren";
+
+    private final StudentService studentService;
+
+    private final UnternehmenService unternehmenService;
+
+
+
+    public PersonenSuchenView(SessionController sessionController,
+                              UnternehmenRepository unternehmenRepository, PersonRepository personRepository,
+                              ProfilDeaktivierenController profilDeaktivierenController,
+                              StudentService studentService, UnternehmenService unternehmenService) {
+        this.sessionController = sessionController;
+        this.personRepository = personRepository;
+        this.unternehmenRepository = unternehmenRepository;
+        this.personSperrencController = profilDeaktivierenController;
+        this.studentService = studentService;
+        this.unternehmenService = unternehmenService;
+        initializeView();
+    }
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
@@ -52,11 +85,7 @@ public class PersonenSuchenView extends VerticalLayout implements BeforeEnterObs
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
     }
 
-    public PersonenSuchenView(SessionController sessionController, PersonSuchenService personService) {
-        this.sessionController = sessionController;
-        this.personService = personService;
-        initializeView();
-    }
+
 
     private void initializeView(){
         addClassName("person-suchen-view");
@@ -65,11 +94,15 @@ public class PersonenSuchenView extends VerticalLayout implements BeforeEnterObs
         titel.addClassName("titel");
 
         // Suchfeld mit Enter-Aktivierung und Options-Icon
-        TextField searchField = new TextField();
+        searchField = new TextField();
         searchField.setPlaceholder("E-Mail der gesuchten Person");
         searchField.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
         searchField.addClassName("search-field");
-        searchField.addKeyPressListener(Key.ENTER, e -> searchPerson(searchField.getValue()));
+        searchField.addKeyPressListener(Key.ENTER, e -> {
+            VaadinSession.getCurrent().setAttribute("email", searchField.getValue());
+            loadPerson();
+        });
+        //Todo: die Person wird erst beim Erneuern der Seite aufgerufen. Warum ist das so?
 
         // Layout für das Suchfeld
         HorizontalLayout searchLayout = new HorizontalLayout(searchField);
@@ -79,74 +112,100 @@ public class PersonenSuchenView extends VerticalLayout implements BeforeEnterObs
         Div gruenerBlock = new Div(titel, searchLayout);
         gruenerBlock.addClassName("gruenerblock");
 
-        //Liste für Ergebnisse
-        personListLayout = new VerticalLayout();
-        personListLayout.setWidthFull();
-        personListLayout.setAlignItems(Alignment.STRETCH);
-        personListLayout.setClassName("ergebnis-list-layout");
+        //Ergebnis
+        personLayout = new VerticalLayout();
+        //personLayout.setWidth("90%");
+        //personLayout.setAlignItems(Alignment.STRETCH);
+        personLayout.setClassName("ergebnis-layout");
 
         // Person laden und anzeigen
-        loadPerson();
+        //loadPerson();
 
+        // wieder aufräumen
+        VaadinSession.getCurrent().setAttribute("email", null);
 
-        add(gruenerBlock, personListLayout);
+        add(gruenerBlock, personLayout);
     }
 
 
     private void loadPerson() {
-        Object sessionAttribute = VaadinSession.getCurrent().getAttribute("filteredPersonenIDs");
-        if (sessionAttribute instanceof List) {
-            List<Integer> personIds = (List<Integer>) sessionAttribute;
-            if (!personIds.isEmpty()) {
-                List<Person> personen = personService.getPersonenByIds(personIds);
-                personen.forEach(this::addPersonComponentToLayout);
+        personLayout.removeAll();
 
-                // Entfernen der IDs aus der Sitzung, um zukünftige Konflikte zu vermeiden
-                VaadinSession.getCurrent().setAttribute("filteredPersonenIds", null);
+        email = (String) VaadinSession.getCurrent().getAttribute("email");
+        if (email != null) {
+            Person person = personRepository.findByEmail(email);
+
+            if (person != null) {
+                Div infos = new Div();
+
+                //Profil Bild
+                VerticalLayout profilBild = new VerticalLayout();
+                profilBild.setWidth("200px");
+                profilBild.addClassName("profilBild");
+                profilBild.add(new Image(person.getFoto() != null ? person.getFoto() : "images/blank-profile-picture.png", "EasyJob"));
+
+                //Name
+                H2 name = new H2();
+                name.addClassName("name");
+                name.add(person.getVorname() + " " + person.getNachname());
+
+                infos.add(profilBild, name);
+
+                //Buttons
+                Div buttons = new Div();
+                PasswortAendernDialogView passwortAendernDialog = new PasswortAendernDialogView(true);
+
+                Button btnneuesPasswort = new Button("Passwort ändern", e -> passwortAendernDialog.openDialogOverlay());
+                btnneuesPasswort.addClassName("btnNeuesPasswort");
+
+
+                //Sperr-Button mit Nachfrage
+                if (!person.getAktiv()) {
+                    sperrbutton = "Profil entsperren";
+                }
+                //Dialog zum Nachfragen
+                Div nachfragen = new Div();
+                Paragraph p;
+                Button btnDialogSperren;
+
+                if (!person.getAktiv()){
+                    p = new Paragraph ("Wollen Sie " + person.getVorname() + " " + person.getNachname() + " sperren?");
+                    btnDialogSperren = new Button("sperren", e-> personSperrencController.profilDeaktivierenPerson(person));
+                } else {
+                    p = new Paragraph ("Wollen Sie " + person.getVorname() + " " + person.getNachname() + " reaktivieren?");
+                    btnDialogSperren = new Button("entsperren", e-> personSperrencController.profilReaktivierenPerson(person));
+                }
+                nachfragen.add(p, btnDialogSperren);
+                DialogLayout d = new DialogLayout(true);
+
+                Button btnSperren = new Button(sperrbutton, e-> d.insertContentDialogContent("", nachfragen, "abbrechen", "???"));
+                btnSperren.addClassName("btnSperren");
+
+                buttons.add(btnneuesPasswort, btnSperren);
+
+                personLayout.add(infos, buttons);
+
+                if (person instanceof Student) {
+                    Student student = (Student) person;
+                    personLayout.add(new AdminStudentProfileComponent(student, "AdminProfilVerwalten.css", studentService));
+                } else if (person instanceof Unternehmensperson) {
+                    Unternehmensperson uperson = (Unternehmensperson) person;
+                    personLayout.add(new AdminUnternehmenspersonProfileComponent(uperson, "AdminProfilVerwalten.css", unternehmenService));
+                }
+            } else if (person instanceof Admin) {
+                Paragraph admininfo = new Paragraph("Das ist ein Admin.");
+                Paragraph adminlink = new Paragraph("Zur Administration");
+                RouterLink linkAdmin = new RouterLink(AdministrationView.class);
+                linkAdmin.add(adminlink);
+                personLayout.add(admininfo, linkAdmin);
+
+            } else {
+                Paragraph p = new Paragraph("Die Person wurde nicht gefunden");
+                p.addClassName("nicht-gefunden");
+
+                personLayout.add(p);
             }
-        }else {
-            List<Person> personen = personService.getAllPersonen();
-            personen.forEach(this::addPersonComponentToLayout);
-            VaadinSession.getCurrent().setAttribute("searchedPersonen", personen);
+
         }
     }
-
-    private void searchPerson(String searchText) {
-        personListLayout.removeAll();
-        List<Person> personen = personService.vollTextSuche(searchText);
-        personen.forEach(this::addPersonComponentToLayout);
-
-        VaadinSession.getCurrent().setAttribute("searchedPersonen", personen);
-    }
-
-    private void addPersonComponentToLayout(Person person){
-        VerticalLayout card = new VerticalLayout();
-        card.addClassName("person-card");
-        card.setPadding(false);
-        card.setSpacing(false);
-        card.setAlignItems(Alignment.STRETCH);
-        card.setWidth("100%");
-
-        HorizontalLayout frame = new HorizontalLayout();
-
-        VerticalLayout foto = new VerticalLayout();
-        foto.setWidth("63px");
-        Image profilePic = new Image("images/blank-profile-picture.png", "Profilbild");
-        profilePic.addClassName("ellipse-profile-picture");
-        foto.add(profilePic);
-
-        VerticalLayout personDetails = new VerticalLayout();
-        personDetails.setSpacing(false);
-        personDetails.setAlignItems(Alignment.START);
-        personDetails.addClassName("student-details");
-
-
-        RouterLink vorUndNachname = new RouterLink("", PersonVerwaltenView.class, person.getId_Person());
-        vorUndNachname.addClassName("name-label");
-        vorUndNachname.add(person.getVorname() + " " + person.getNachname());
-
-        card.add(frame);
-        personListLayout.add(card);
-    }
-
 }
