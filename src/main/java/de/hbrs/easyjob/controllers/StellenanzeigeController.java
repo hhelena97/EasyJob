@@ -10,7 +10,6 @@ import java.util.Set;
 
 /**
  * Controller für die Stellenanzeigen
- * TODO: Möglicherweise mit JobSucheService zusammenführen
  */
 @Component
 public class StellenanzeigeController {

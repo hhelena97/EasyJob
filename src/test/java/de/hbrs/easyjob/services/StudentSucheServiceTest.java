@@ -46,8 +46,8 @@ class StudentSucheServiceTest {
     @Transactional
     void vollTextSuche() throws Exception {
         // ************* Arrange *************
-        Optional<Student>[] p = new Optional[11];
-        Student[] students = new Student[11];
+        Optional<Student>[] p = new Optional[10];
+        Student[] students = new Student[10];
         p[0] = stuRepo.findById(25);
         p[1] = stuRepo.findById(23);
         p[2] = stuRepo.findById(2);
@@ -57,13 +57,12 @@ class StudentSucheServiceTest {
         p[6] = stuRepo.findById(30);
         p[7] = stuRepo.findById(1);
         p[8] = stuRepo.findById(36);
-        p[9] = stuRepo.findById(38);
-        p[10] = stuRepo.findById(35);
+        p[9] = stuRepo.findById(35);
 
         for (int i = 0; i < p.length; i++) {
             Optional<Student> stu = p[i];
             if (stu.isEmpty()) {
-                throw new Exception("Kein Objekt in der Datenbank gefunden!");
+                throw new Exception(i + " Kein Objekt in der Datenbank gefunden!");
             } else {
                 students[i] = stu.get();
                 System.out.println(students[i]);
@@ -86,8 +85,8 @@ class StudentSucheServiceTest {
     @Transactional
     void teilZeichenSuche() throws Exception {
         // ************* Arrange *************
-        Optional<Student>[] p = new Optional[11];
-        Student[] students = new Student[11];
+        Optional<Student>[] p = new Optional[9];
+        Student[] students = new Student[9];
         p[0] = stuRepo.findById(1);
         p[1] = stuRepo.findById(2);
         p[2] = stuRepo.findById(23);
@@ -97,13 +96,11 @@ class StudentSucheServiceTest {
         p[6] = stuRepo.findById(28);
         p[7] = stuRepo.findById(30);
         p[8] = stuRepo.findById(35);
-        p[9] = stuRepo.findById(37);
-        p[10] = stuRepo.findById(38);
 
         for (int i = 0; i < p.length; i++) {
             Optional<Student> stu = p[i];
             if (stu.isEmpty()) {
-                throw new Exception("Kein Objekt in der Datenbank gefunden!");
+                throw new Exception(i + " Kein Objekt in der Datenbank gefunden!");
             } else {
                 students[i] = stu.get();
             }

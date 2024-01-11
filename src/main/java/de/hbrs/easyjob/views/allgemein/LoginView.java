@@ -91,6 +91,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         validEmailField.setErrorMessage("Enter a valid email address");
         validEmailField.setId("emailloginfeld_id");
         validEmailField.setClearButtonVisible(true);
+        validEmailField.setId("emailloginfeld_id");
 
         //Pass
         PasswordField passwordField = new PasswordField();
@@ -119,6 +120,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         regButton.addClassName("btn");
         regButton.addClassName("regButton");
         regButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        regButton.setId("registrierenbutton_id");
 
         VerticalLayout fenster = new VerticalLayout(log, validEmailField, passwordField, verButton, logButton, regButton);
         fenster.setAlignItems(Alignment.CENTER);
