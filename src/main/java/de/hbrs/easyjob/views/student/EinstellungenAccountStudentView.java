@@ -65,4 +65,6 @@ public class EinstellungenAccountStudentView extends VerticalLayout implements B
             System.out.printf("Profil '%s' deaktiviert.\n", person.getEmail());
         }
     }
+
+    //TODO: aus irgendeinem Grund landet man nicht auf http://localhost:8080/login beim Ausloggen (siehe Seleniumtest)
 }

@@ -14,10 +14,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.views.allgemein.LoginView;
@@ -28,6 +25,7 @@ import javax.annotation.security.RolesAllowed;
 @Route("student/einstellungen")
 @StyleSheet("DialogLayout.css")
 @RolesAllowed("ROLE_STUDENT")
+@PageTitle("Einstellungen")
 public class EinstellungenUebersichtStudentView extends Div implements BeforeEnterObserver {
 
     private final SessionController sessionController;
