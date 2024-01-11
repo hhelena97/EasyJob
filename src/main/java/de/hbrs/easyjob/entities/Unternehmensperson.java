@@ -40,11 +40,5 @@ public class Unternehmensperson extends Person {
         return Objects.hash(unternehmen, anschrift);
     }
 
-    public void removeUnternehmen() {
-        unternehmen = null;
-    }
 
-    public void removeUnternehmen() {
-        unternehmen = null;
-    }
 }

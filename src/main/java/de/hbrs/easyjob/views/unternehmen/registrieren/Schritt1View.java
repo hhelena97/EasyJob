@@ -73,7 +73,7 @@ public class Schritt1View extends RegistrierenSchritt {
                 }
                 return false;
             } else {
-                if(unternehmensperson.getUnternehmen() != null) unternehmensperson.removeUnternehmen();
+                if(unternehmensperson.getUnternehmen() != null);
                 return true;
             }
         }
