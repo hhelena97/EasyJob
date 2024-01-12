@@ -32,7 +32,7 @@ public class DatabaseMessagePersister implements CollaborationMessagePersister  
         Chat chat = chatService.createOrGetChat(query.getTopicId());
 
         return chatService.getNachrichten(chat).stream()
-                .filter(nachricht -> nachricht.getZeitpunkt().isAfter(query.getSince()) || nachricht.getZeitpunkt().equals(query.getSince()))
+                .filter(nachricht -> nachricht.getZeitpunkt().equals(query.getSince()) || nachricht.getZeitpunkt().isAfter(query.getSince()))
                 .filter(nachricht -> nachricht.getAbsender() != null)
                 .map(nachricht -> new CollaborationMessage(
                         new UserInfo(nachricht.getAbsender().getId_Person().toString(), nachricht.getAbsender().getVorname()+" "+nachricht.getAbsender().getNachname(),

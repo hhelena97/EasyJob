@@ -9,7 +9,7 @@ import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.components.StudentLayout;
-import de.hbrs.easyjob.views.unternehmen.UnternehmenProfil_Un;
+import de.hbrs.easyjob.views.unternehmen.UnternehmenProfilUn;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.security.RolesAllowed;
@@ -68,7 +68,7 @@ public class UnternehmensPersonProfilView extends VerticalLayout implements HasU
         H2 unternehmenProfil = new H2("zum Unternehmensprofil");
         unternehmenProfil.addClassName("unternehmenProfil");
         unternehmenProfil.getStyle().set("color", "#323232");
-        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfil_Un.class);
+        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfilUn.class);
         linkUnternehmen.add(unternehmenProfil);
 
 

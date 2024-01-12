@@ -6,6 +6,7 @@ import com.vaadin.collaborationengine.UserInfo;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
+import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
@@ -22,7 +23,7 @@ import de.hbrs.easyjob.services.DatabaseMessagePersister;
 import de.hbrs.easyjob.services.JobService;
 import de.hbrs.easyjob.views.components.StudentLayout;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.vaadin.flow.component.avatar.Avatar;
+
 import javax.annotation.security.RolesAllowed;
 
 @Route(value = "chat/", layout = StudentLayout.class)
@@ -133,13 +134,13 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
 
 
         HorizontalLayout frame = new HorizontalLayout();
-        VerticalLayout foto = new VerticalLayout();
+        //VerticalLayout foto = new VerticalLayout();
         Person person = job.getPerson();
         boolean hasProfileImage = person.getFoto() != null;
         String profileImageSource = hasProfileImage ? person.getFoto() : "images/blank-profile-picture.png";
         Image profileImage = new Image(profileImageSource, "Profile Image");
         profileImage.setHeight("50px");
-        foto.add(profileImage);
+        //foto.add(profileImage);
 
         VerticalLayout chatDetails = new VerticalLayout();
         chatDetails.setSpacing(false);
@@ -149,18 +150,18 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         name.getStyle().set("font-weight", "bold");
         name.add(person.getVorname() + " " + person.getNachname());
 
-        HorizontalLayout companyNameLayout = new HorizontalLayout();
+        //HorizontalLayout companyNameLayout = new HorizontalLayout();
         Label company = new Label(job.getUnternehmen().getName());
         company.getStyle().set("color", "grey");
-        companyNameLayout.add(company);
+        //companyNameLayout.add(company);
 
-        HorizontalLayout jobtitelLayout = new HorizontalLayout();
+        //HorizontalLayout jobtitelLayout = new HorizontalLayout();
         Label jobtitel = new Label(job.getTitel());
         jobtitel.getStyle().set("color", "grey");
-        jobtitelLayout.add(jobtitel);
+        ///jobtitelLayout.add(jobtitel);
 
-        chatDetails.add(name, companyNameLayout, jobtitelLayout);
-        VerticalLayout zurueck = new VerticalLayout();
+        chatDetails.add(name, company, jobtitel);
+        //VerticalLayout zurueck = new VerticalLayout();
         Icon chevronLeft = new Icon(VaadinIcon.CHEVRON_LEFT);
         chevronLeft.getStyle().set("cursor", "pointer");
         chevronLeft.setSize("1em");
@@ -168,9 +169,9 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
             // Logik um zur Chatübersicht zu navigieren
             UI.getCurrent().navigate(ChatsView.class); // Den tatsächlichen Pfad zur Chatübersicht einsetzen
         });
-        zurueck.add(chevronLeft);
+       // zurueck.add(chevronLeft);
 
-        VerticalLayout dotsLayout = new VerticalLayout();
+        //VerticalLayout dotsLayout = new VerticalLayout();
         // Drei-Punkte-Icon für das Dropdown-Menü
         Icon dots = new Icon(VaadinIcon.ELLIPSIS_DOTS_V);
         dots.getStyle().set("cursor", "pointer");
@@ -181,12 +182,14 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         ContextMenu contextMenu = new ContextMenu();
         contextMenu.setTarget(dots);
         contextMenu.setOpenOnClick(true);
-        contextMenu.addItem("Melden", e -> {
+        MenuItem melden = contextMenu.addItem("Melden", e -> {
+
             // Logik, die ausgeführt wird, wenn auf "Melden" geklickt wird
             Notification.show("Gemeldet", 3000, Notification.Position.MIDDLE);
         });
-        dotsLayout.add(dots);
-        frame.add(zurueck,foto, chatDetails, dotsLayout);
+        melden.getElement().getStyle().set("color", "red");
+        //dotsLayout.add(dots);
+        frame.add(chevronLeft,profileImage, chatDetails, dots);
 
 
         card.add(frame);
