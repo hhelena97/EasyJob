@@ -1,23 +1,17 @@
 package de.hbrs.easyjob.services;
-import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.entities.JobKategorie;
-import de.hbrs.easyjob.entities.Ort;
-import de.hbrs.easyjob.entities.Studienfach;
 
 import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.repositories.JobRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.data.jpa.domain.Specification;
 import de.hbrs.easyjob.services.specifications.JobSpecification;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class JobFilterService {
-
 
     @Autowired
     private JobRepository jobRepository;
@@ -56,6 +50,6 @@ public class JobFilterService {
                 .filter(job -> studienfacher.isEmpty() || studienfacher.contains(job.getStudienfacher()))
                 .filter(job -> !homeOffice || job.isHomeOffice())
                 .filter(job -> branchen.isEmpty() || branchen.stream().anyMatch(branche -> job.getUnternehmen().getBranchen().contains(branche)))
-                .collect(Collectors.toList());
+                .toList();
     }
 }

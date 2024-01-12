@@ -30,6 +30,7 @@ class JobFilterServiceTest {
     private final static PersonRepository persRepo = mock(PersonRepository.class);
     private final static UnternehmenRepository unterRepo = mock(UnternehmenRepository.class);
     private final static JobRepository jobRepo = mock(JobRepository.class);
+    private final static BrancheRepository braRepo = mock(BrancheRepository.class);
 
     // Services
     @InjectMocks
@@ -48,6 +49,7 @@ class JobFilterServiceTest {
     private final static Unternehmen u2 = new Unternehmen();
     private final static Unternehmensperson p1 = new Unternehmensperson();
     private final static Unternehmensperson p2 = new Unternehmensperson();
+    private final static Branche b1 = new Branche();
 
     /**
      * setzt die Daten für die Job-Objekte
@@ -67,6 +69,7 @@ class JobFilterServiceTest {
         p2.setEmail("mareike.musterfrau@example.de");
         u1.setUnternehmensperson(p1);
         u1.setName("EasyQube");
+        u1.setBranchen(Set.of(b1));
         u2.setUnternehmensperson(p2);
         u2.setName("BWI");
         joKa1.setKategorie("Masterarbeit");
@@ -105,6 +108,7 @@ class JobFilterServiceTest {
         Mockito.reset(persRepo);
         Mockito.reset(unterRepo);
         Mockito.reset(ortRepo);
+        Mockito.reset(braRepo);
     }
 
     /**
@@ -283,5 +287,34 @@ class JobFilterServiceTest {
         assertEquals(expected, actual);
     }
 
-    // TODO: zusaetzliche Tests für neue Funktion in JobFilterService
+    @Test
+    @DisplayName("Test für Jobsuche nach HomeOffice")
+    void filterJobsAfterHomeoffice() {
+        // ********* Arrange *********
+        List<Job> expected = List.of(job2);
+        job1.setHomeOffice(true);
+        job2.setHomeOffice(false);
+        when(jobRepo.findAll(any(Specification.class))).thenReturn(expected);
+
+        // *********** Act ***********
+        List<Job> actual = joFiS.filterJobs(null, null, null, null, false, null);
+
+        // ********* Assert **********
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("Test für Jobsuche nach Branchen")
+    void filterJobsAfterBranche() {
+        // ********* Arrange *********
+        List<Job> expected = List.of(job1);
+
+        when(jobRepo.findAll(any(Specification.class))).thenReturn(expected);
+
+        // *********** Act ***********
+        List<Job> actual = joFiS.filterJobs(null, null, null, null, false, Set.of(b1));
+
+        // ********* Assert **********
+        assertEquals(expected, actual);
+    }
 }

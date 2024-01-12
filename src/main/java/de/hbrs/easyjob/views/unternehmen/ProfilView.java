@@ -31,7 +31,8 @@ import java.util.List;
 @StyleSheet("ProfilView.css")
 @RolesAllowed("ROLE_UNTERNEHMENSPERSON")
 public class ProfilView extends VerticalLayout implements HasUrlParameter<Integer>, BeforeEnterObserver {
-    private final StellenanzeigeController stellenanzeigeController;
+    private final transient StellenanzeigeController stellenanzeigeController;
+    private static final String STELLENANZEIGE_TAG = "stellenanzeige-tag";
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
@@ -98,19 +99,19 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
 
         // Tag: Unternehmen
         Div tagUnternehmen = new Div();
-        tagUnternehmen.addClassName("stellenanzeige-tag");
+        tagUnternehmen.addClassName(STELLENANZEIGE_TAG);
         Span unternehmensName = new Span(job.getUnternehmen().getName());
         tagUnternehmen.add(FontAwesome.Solid.BRIEFCASE.create(), unternehmensName);
 
         // Tag: Ort
         Div tagOrt = new Div();
-        tagOrt.addClassName("stellenanzeige-tag");
+        tagOrt.addClassName(STELLENANZEIGE_TAG);
         Span ort = new Span(job.getOrt().getOrt());
         tagOrt.add(FontAwesome.Solid.MAP_MARKER_ALT.create(), ort);
 
         // Tag: Kategorie
         Div tagKategorie = new Div();
-        tagKategorie.addClassName("stellenanzeige-tag");
+        tagKategorie.addClassName(STELLENANZEIGE_TAG);
         Span kategorie = new Span(job.getJobKategorie().getKategorie());
         tagKategorie.add(FontAwesome.Solid.GRADUATION_CAP.create(), kategorie);
 

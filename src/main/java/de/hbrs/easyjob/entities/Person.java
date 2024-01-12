@@ -40,6 +40,11 @@ public class Person {
     @Column(name = "Aktiv")
     private Boolean aktiv;
 
+    /* die neue Variable, mit der der Admin Personen sperrt
+    @Column(name = "gesperrt")
+    private Boolean gesperrt;
+     */
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

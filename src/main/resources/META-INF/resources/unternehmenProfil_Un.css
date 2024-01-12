@@ -36,6 +36,9 @@ body {
     margin: 14px;
     border-radius: 5px;
 
+    max-width: 74px;
+    max-height: 74px;
+
 
 }
 .unternehmenIcon img{

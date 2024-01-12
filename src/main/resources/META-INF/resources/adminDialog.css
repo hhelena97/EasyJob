@@ -1,0 +1,16 @@
+
+.confirm{
+    display: flex;
+    width: 300px;
+    height: 46px;
+    padding: 8px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+
+    border-radius: 30px;
+    background: var(--admin-dark, #289A32);
+
+    align-self: center;
+}

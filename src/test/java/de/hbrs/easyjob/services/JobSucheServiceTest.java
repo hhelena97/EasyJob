@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("unchecked")
 @SpringBootTest
 class JobSucheServiceTest {
-
     // Repositories
     @Autowired
     private JobRepository jobRepo;
@@ -105,6 +104,8 @@ class JobSucheServiceTest {
 
         // ********* Assert **********
         assertEquals(expected, actual);
+        System.out.println(expected);
+        System.out.println(actual);
     }
 
     /**

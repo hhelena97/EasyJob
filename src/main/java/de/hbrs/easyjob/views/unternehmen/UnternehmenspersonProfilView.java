@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.views.unternehmen;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
@@ -10,45 +11,30 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.SessionController;
-import de.hbrs.easyjob.controllers.UnternehmenProfilController;
-import de.hbrs.easyjob.controllers.UnternehmensperonProfilController;
-import de.hbrs.easyjob.entities.Student;
+import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.services.PersonService;
-import de.hbrs.easyjob.services.UnternehmenService;
-import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
 
 
 @Route(value = "unternehmen/unternehmenperson", layout = UnternehmenLayout.class)
 @RolesAllowed("ROLE_UNTERNEHMENSPERSON")
+@StyleSheet("Registrieren.css")
+@StyleSheet("DialogLayout.css")
+@StyleSheet("UnternehmenRegistrieren.css")
 public class UnternehmenspersonProfilView extends VerticalLayout {
 
-    private Unternehmensperson person;
-    private final transient SessionController sessionController;
-
-    @Autowired
-    private final UnternehmenService unternehmenService;
-    VerticalLayout personKontakt = new VerticalLayout();
+    private final transient Unternehmensperson person;
+    private final transient VerticalLayout personKontakt = new VerticalLayout();
 
 
-    public UnternehmenspersonProfilView(SessionController sessionController, UnternehmenService unternehmenService) {
-        this.sessionController = sessionController;
-        this.unternehmenService = unternehmenService;
+    public UnternehmenspersonProfilView(SessionController sessionController) {
         person = (Unternehmensperson) sessionController.getPerson();
         initializeView();
-
     }
 
     private void initializeView(){
@@ -81,24 +67,34 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
         Icon pen =new Icon(VaadinIcon.PENCIL);
         pen.addClassName("iconsProf");
 
-        iconsProf.add(link,pen);
+        RouterLink link2 = new RouterLink(UnternehmenspersonProfilBearbeitungView.class);
+        link2.add(pen);
+
+        iconsProf.add(link,link2);
 
 
         //Profil Bild
-        Div profilBild = new Div();
-        profilBild.addClassName("profilBild");
-        if(person.getFoto() != null){
-            profilBild.add(new Image(person.getFoto(), "EasyJob"));
-        }
+        //Bildrahmen
+        Div rahmen = new Div();
+        rahmen.addClassName("profile-picture-frame");
+        Image ellipse = new Image("images/Ellipse-Blau-Groß.png", "Bildumrandung");
+        ellipse.addClassName("profile-picture-background");
+        rahmen.add(ellipse);
+
+        //Platzhalter Bild
+        boolean hasBild = person.getFoto() != null;
+        Image platzhalterBild = new Image(hasBild? person.getFoto(): "images/blank-profile-picture.png", "EasyJob");
+        Div bildDiv = new Div(platzhalterBild);
+        platzhalterBild.addClassName("picture-round");
+        rahmen.add(bildDiv);
 
 
 
 
 
-        //Name
+        // Name
         H1 name = new H1();
         name.addClassName("name");
-        //name.add("Max Mustermann");
         name.add(person.getVorname()+" "+ person.getNachname());
 
 
@@ -106,7 +102,7 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
         H2 unternehmenProfil = new H2("zum Unternehmensprofil");
         unternehmenProfil.addClassName("unternehmenProfil");
         unternehmenProfil.getStyle().set("color", "#323232");
-        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfil_Un.class);
+        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfilUn.class);
         linkUnternehmen.add(unternehmenProfil);
 
 
@@ -128,12 +124,14 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
         completeZeile("Email:" , person.getEmail());
         completeZeile("Telefon:", person.getTelefon());
 
-        completeZeile("Büroanschrift:" , unternehmenService.getUnternehmensOrte(person.getUnternehmen()));
+        Unternehmen u = person.getUnternehmen();
+
+
+        completeZeile("Büroanschrift:" , u.getKontaktdaten());
 
 
 
-
-        personInfo.add(iconsProf,profilBild,name,linkUnternehmen);
+        personInfo.add(iconsProf,rahmen,name,linkUnternehmen);
 
         add(personInfo,kon,personKontakt);
 
