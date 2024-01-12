@@ -85,11 +85,17 @@ public class ProfilDeaktivierenController {
     }
 
     /**
-     * Diese Methode löscht einen Job
-     * @param job   der Job der gelöscht werden soll
+     * Diese Methode sperrrt einen Job
+     * //neue Variable gesperrt (true wenn gesperrt)
+     * @param job   der Job der gesperrt werden soll
      */
-    public void profilDeaktivierenJob(Job job) {
+    public boolean profilDeaktivierenJob(Job job) {
+        if (job == null) {
+            return false;
+        }
         job.setAktiv(false);
+        return true;
+        // personRepository.save(job).getAktiv();
     }
 
     /**
@@ -104,9 +110,4 @@ public class ProfilDeaktivierenController {
         person.setAktiv(true);
         return personRepository.save(person).getAktiv();
     }
-
-
-    /** Unternehmen und Jobs können nicht reaktiviert werden. (ist zu umständlich)
-     *
-     */
 }

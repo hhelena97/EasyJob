@@ -36,7 +36,8 @@ public class StudentProfilView extends VerticalLayout implements BeforeEnterObse
         if(context != null) {
             Authentication auth = context.getAuthentication();
             if (auth != null && auth.isAuthenticated() && hasRole(auth)) {
-                    student = (Student) personService.getCurrentPerson();
+                    //Sarah: das wirft einen Fehler, ich weiß nicht warum
+                    //student = (Student) personService.getCurrentPerson();
                     initializeView();
             } else {
                 UI.getCurrent().navigate(LoginView.class);

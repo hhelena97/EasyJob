@@ -45,7 +45,8 @@ public class DialogLayout {
         Button close = new Button(closeTitel, e -> dialog.close());
         Button confirm = new Button(confirmTitel);
         confirm.addClassName("confirm");
-        confirm.addClickListener(e -> {dialog.close();}); //TODO: noch Info anzeigen dass es gespeichert wurde
+        confirm.addClickListener(e -> {
+            dialog.close();}); //TODO: noch Info anzeigen dass es gespeichert wurde
         dialog.setHeaderTitle(header);
         dialog.add(content);
         dialog.getFooter().add(confirm);
