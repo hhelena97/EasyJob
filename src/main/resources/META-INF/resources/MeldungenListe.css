@@ -1,0 +1,50 @@
+body {
+    width: 100%;
+    background: var(--hintergrund-weiß);
+    font-family: Rubik, sans-serif; /* Rubik als Standardschriftart und fallback sans-serif */
+}
+
+.titelbox {
+    background-color: var(--admin-dark);
+    height: 150px;
+    width: 100%;
+    max-width: 600px;
+    align-self: center;
+}
+
+.titeltext{
+    color: var(--hintergrund-weiß);
+    padding-left: 27px;
+    margin-top: 7px;
+    margin-bottom: 0;
+    width: 266px;
+    height: 55px;
+    padding-bottom: 20px;
+    padding-right: 82px;
+    padding-top: 25px;
+}
+
+.titeltext > h3{
+    color: var(--hintergrund-weiß);
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.tableiste{
+}
+
+.meldungTab {
+    color: var(--hintergrund-weiß);
+    text-align: center;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 22px;
+    align-self: center;
+}
+
+.content{
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+}

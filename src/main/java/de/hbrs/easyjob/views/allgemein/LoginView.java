@@ -150,8 +150,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
             // Ruft die UI-Instanz ab
             UI ui = UI.getCurrent();
             // Leitet zur gewünschten Seite
-            //ui.navigate("passwortVergessen");
-            System.out.println("Passwort vergessen gedrückt");
+            ui.navigate("passwortVergessen");
         });
 
         regButton.addClickListener(event -> {

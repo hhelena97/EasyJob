@@ -1,20 +1,18 @@
 package de.hbrs.easyjob.views.components;
 
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.contextmenu.ContextMenu;
-import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
-import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.entities.JobKategorie;
-import de.hbrs.easyjob.entities.Meldung;
 import de.hbrs.easyjob.entities.Ort;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.services.StudentService;
@@ -23,10 +21,10 @@ import de.hbrs.easyjob.views.student.EinstellungenUebersichtStudentView;
 
 import java.util.stream.Collectors;
 
-public class StudentProfileComponent extends VerticalLayout {
+public class AdminStudentProfileComponent extends VerticalLayout {
     private Student student;
 
-    private  Tab allgemein;
+    private Tab allgemein;
     private  Tab kenntnisse;
     private  Tab ueberMich;
     private  VerticalLayout content;
@@ -34,22 +32,11 @@ public class StudentProfileComponent extends VerticalLayout {
 
     private final StudentService studentService;
 
-    private final MeldungController meldungController;
 
-    boolean isUnternehmensPerson;
-
-
-    public StudentProfileComponent(Student student, String styleClass, StudentService studentService, MeldungController meldungController) {
+    public AdminStudentProfileComponent(Student student, String styleClass, StudentService studentService) {
         this.student = student;
         this.studentService = studentService;
         style=styleClass;
-        this.meldungController = meldungController;
-        if (style == "styles/UnternehmenStudentProfilView.css") {
-            isUnternehmensPerson = true;
-        } else {
-            isUnternehmensPerson = false;
-        }
-
         initializeComponent();
     }
 
@@ -67,96 +54,14 @@ public class StudentProfileComponent extends VerticalLayout {
         setPadding(false);
         setSpacing(false);
 
-        HorizontalLayout iconsProf = new HorizontalLayout();
-        HorizontalLayout frame = new HorizontalLayout();
 
 
-        if (!isUnternehmensPerson) {
-
-            //die Icons zu einstellungen und Bearbeitung
-
-            iconsProf.setPadding(false);
-            iconsProf.setMargin(false);
-            iconsProf.setJustifyContentMode(JustifyContentMode.END);
-
-
-            //Einstellungen Icon
-            Icon cog = new Icon(VaadinIcon.COG);
-            cog.addClassName("iconsProf");
-
-            RouterLink link = new RouterLink(EinstellungenUebersichtStudentView.class);
-            link.add(cog);
-
-
-            Icon pen = new Icon(VaadinIcon.PENCIL);
-            pen.addClassName("iconsProf");
-
-            iconsProf.add(link, pen);
-
-        } else {
-
-            VerticalLayout dotsLayout = new VerticalLayout();
-            // Drei-Punkte-Icon für das Dropdown-Menü
-            Icon dots = new Icon(VaadinIcon.ELLIPSIS_DOTS_V);
-            dots.getStyle().set("cursor", "pointer");
-            dots.setSize("1em");
-
-            // Dropdown-Menü erstellen
-            ContextMenu contextMenu = new ContextMenu();
-            contextMenu.setTarget(dots);
-            contextMenu.setOpenOnClick(true);
-            MenuItem item = contextMenu.addItem("Melden", e -> {
-                Meldung meldung = new Meldung();
-                meldungController.saveMeldung(meldung, student);
-                Notification.show("Gemeldet", 3000, Notification.Position.TOP_STRETCH);
-            });
-
-            item.getElement().getStyle().set("color", "red");
-
-            dotsLayout.add(dots);
-            frame.add(dotsLayout);
-        }
-
-        //Profil Bild
-        Div profilBild = new Div();
-        profilBild.addClassName("profilBild");
-
-        profilBild.add(new Image(student.getFoto() != null ? student.getFoto() : "images/blank-profile-picture.png", "EasyJob"));
-
-        //Name
-        H1 name = new H1();
-        name.addClassName("name");
-        name.add(student.getVorname() +" "+ student.getNachname());
-
-        //Ort
-        /*
-        HorizontalLayout location = new HorizontalLayout();
-        location.addClassName("location");
-        location.setSpacing(false);
-        location.setPadding(false);
-        location.setMargin(false);
-
-        IconFactory lo = FontAwesome.Solid.MAP_MARKED_ALT;
-        Icon loc =  lo.create();
-        loc.addClassName("iconsInUnternehmen");
-
-        H1 stadt = new H1();
-        stadt.addClassName("stadt");
-        stadt.add("Bonn");
-
-        location.add(loc, stadt);
-
-         */
 
         VerticalLayout studentInfo = new VerticalLayout();
         studentInfo.addClassName("studentInfo");
         studentInfo.setAlignItems(Alignment.CENTER);
 
-        if(!isUnternehmensPerson) {
-            studentInfo.setAlignSelf(Alignment.END,iconsProf);
-        } else {
-            studentInfo.setAlignSelf(Alignment.END,frame);
-        }
+        studentInfo.setAlignSelf(Alignment.END);
 
 
         //Tabs
@@ -178,11 +83,8 @@ public class StudentProfileComponent extends VerticalLayout {
         setContent(tabs.getSelectedTab());
 
 
-        if (!isUnternehmensPerson) {
-            studentInfo.add(iconsProf,profilBild,name,/*location,*/tabs, content);
-        } else {
-            studentInfo.add(frame,profilBild,name,/*location,*/tabs, content);
-        }
+        studentInfo.add(tabs, content);
+
 
         add(studentInfo);
     }
@@ -206,16 +108,6 @@ public class StudentProfileComponent extends VerticalLayout {
 
         );
 
-        /*
-
-        allgemeinDiv.add(zeileDiv("Studienfach:", "B. Sc. Informatik"),
-                         zeileDiv("Hochschulsemester:", "5"),
-                         zeileDiv("Ich suche nach:", "Abschlussarbeit"),
-                zeileDiv("Bevorzugt in der Nähe von:", "Sankt Augustin, Bonn"),
-                zeileDiv("Bevorzugte Branche(n):", "Wissenschaft/ Forschung"),
-                zeileDiv("Bevorzugte Berufsfelder:", "Cyber Security, Forschung")
-        );
-*/
 
         Div kenntnisseDiv = new Div();
         kenntnisseDiv.addClassName("myTab");
@@ -236,6 +128,8 @@ public class StudentProfileComponent extends VerticalLayout {
                 "Mein Studium hat mir nicht nur ein solides Fundament in Programmierung, Datenanalyse und Informationssystemen vermittelt, sondern auch meine Neugier und meinen Wunsch geweckt, zur Sicherheit und Integrität digitaler Systeme beizutragen. Mein Ziel ist es, meine Leidenschaft für Cybersecurity in eine erfüllende und herausfordernde berufliche Laufbahn Hallo! Mein Name ist Max Mustermann, und ich befinde mich derzeit im 5. Semester meines Informatikstudiums an der Hochschule Bonn Rhein-Sieg. Als begeisterter und zielstrebiger Student habe ich eine Leidenschaft für die Welt der Informationstechnologie und insbesondere für das aufregende Feld der Cybersecurity.\n" +
                 "\n" +
                 "Mein Studium hat mir nicht nur ein solides Fundament in Programmierung, Datenanalyse und Informationssystemen vermittelt, sondern auch meine Neugier und meinen Wunsch geweckt, zur Sicherheit und Integrität digitaler Systeme beizutragen. Mein Ziel ist es, meine Leidenschaft für Cybersecurity in eine erfüllende und herausfordernde berufliche Laufbahn ");
+
+
 
         if (tab.equals(allgemein)) {
             content.add(allgemeinDiv);
