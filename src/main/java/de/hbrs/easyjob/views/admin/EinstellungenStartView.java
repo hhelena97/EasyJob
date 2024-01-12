@@ -3,6 +3,7 @@ package de.hbrs.easyjob.views.admin;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
@@ -23,10 +24,12 @@ import de.hbrs.easyjob.controllers.PersonController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Admin;
 import de.hbrs.easyjob.repositories.PersonRepository;
+import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.views.admin.dialog.*;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.AdminLayout;
 import de.hbrs.easyjob.views.components.DialogLayout;
+import de.hbrs.easyjob.views.components.PasswortAendernDialog;
 
 @Route(value = "admin", layout = AdminLayout.class)
 @PageTitle("Admin")
@@ -63,29 +66,28 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         HorizontalLayout willkommenBox = new HorizontalLayout();
         willkommenBox.addClassName("gruene-box");
 
-        //Ausloggen
-        //Inhalt des Dialogfensters
-        Div dialogAuslogen = new Div();
-        Paragraph wirklichAusloggen = new Paragraph("Wollen Sie sich wirklich ausloggen");
-        dialogAuslogen.add(wirklichAusloggen);
+        //Ausloggen#
+        Dialog dialogAusloggen = new Dialog();
+        dialogAusloggen.add(new Paragraph("Wollen Sie sich wirklich ausloggen"));
 
-        //DialogFenster
-        DialogLayout ausloggenDialog = new DialogLayout(true);
-        ausloggenDialog.insertContentDialogContent("", dialogAuslogen, "abbrechen", "ausloggen" );
-        /*
-        //TODO: Wo schreib ich, was bei confirm passiert?
-            ausloggenDialog.addConfrimListener(e -> {
+        Button btnAbbruch = new Button ("abbrechen");
+        btnAbbruch.addClassName("buttonAbbruch");
+        btnAbbruch.addClickListener(e -> dialogAusloggen.close());
+
+        String bestaetigen = "ausloggen";
+        Button btnBestaetigen = new Button(bestaetigen);
+        btnBestaetigen.addClassName("buttonBestaetigen");
+        btnBestaetigen.addClickListener(e -> {
             sessionController.logout();
             UI.getCurrent().getPage().setLocation("/login");
-            }
-        );
-         */
+        });
+        dialogAusloggen.getFooter().add(btnAbbruch, btnBestaetigen);
 
         //der Knopf um den Ausloggen-Dialog zu öffnen
         Button ausloggen = new Button(new Icon(VaadinIcon.SIGN_OUT));
         ausloggen.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         ausloggen.addClassName("ausloggen");
-        ausloggen.addClickListener(e -> ausloggenDialog.openDialogOverlay());
+        ausloggen.addClickListener(e -> dialogAusloggen.open());
 
 
         //Begrüßungstext
@@ -116,35 +118,13 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         Paragraph mailAdmin = new Paragraph(sessionController.getPerson().getEmail());
         mailAdmin.addClassName("text");
 
-        //Dialog zum Passwort ändern
-        Dialog dialog = new Dialog();
-
-        dialog.setHeaderTitle("Passwort ändern");
-        PasswordField altesPasswort = new PasswordField("Altes Passwort");
-        PasswordField neuesPasswort = new PasswordField("Neues Passwort");
-        PasswordField passwortWiederholen = new PasswordField("Passwort wiederholen");
-
-        Div passwoeterAendern = new Div(altesPasswort, neuesPasswort, passwortWiederholen);
-
-
-        Button btnPasswortAendern = new Button("Passwort ändern");
-        btnPasswortAendern.addClassName("confirm");
-        btnPasswortAendern.addClickListener(e -> {
-            personController.changePassword(altesPasswort.getValue(), neuesPasswort.getValue(), admin.getEmail());
-            dialog.close();
-        });
-
-        dialog.getFooter().add(btnPasswortAendern);
-
-        Button cancelButton = new Button("abbrechen", (e) -> dialog.close());
-        cancelButton.addClassName("close-admin");
-        dialog.getFooter().add(cancelButton);
 
         Icon edit = new Icon(VaadinIcon.EDIT);
         edit.addClassName("editAdmin");
 
-        Button editAdmin = new Button(edit, e-> dialog.open());
-        //Todo: Testen
+        PasswortAendernDialog passwortAendernDialog = new PasswortAendernDialog(admin, "adminDialog.css", new PasswortService(personRepository));
+        Button editAdmin = new Button(edit, e-> passwortAendernDialog.open());
+
 
         HorizontalLayout aktuellerAdmin = new HorizontalLayout(
                 mailAdmin,
