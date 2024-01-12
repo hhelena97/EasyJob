@@ -2,18 +2,17 @@ package de.hbrs.easyjob.views.student;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.controllers.MeldungController;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Student;
-import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.StudentLayout;
 import de.hbrs.easyjob.views.components.StudentProfileComponent;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -21,30 +20,24 @@ import javax.annotation.security.RolesAllowed;
 @RolesAllowed("ROLE_STUDENT")
 public class StudentProfilView extends VerticalLayout implements BeforeEnterObserver  {
 
-    private Student student;
-    private final StudentService studentService;
-    private final PersonService personService;
 
+    private final transient SessionController sessionController;
+    private Student student;
+    private final transient StudentService studentService;
     private final MeldungController meldungController;
 
     @Autowired
-    public StudentProfilView(StudentService studentService, PersonService personService, MeldungController meldungController) {
+    public StudentProfilView(SessionController sessionController, StudentService studentService, MeldungController meldungController) {
+        this.sessionController = sessionController;
         this.studentService = studentService;
-        this.personService = personService;
+        student= (Student) sessionController.getPerson();
         this.meldungController = meldungController;
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth != null && auth.isAuthenticated() && hasRole(auth)) {
-                    //Sarah: das wirft einen Fehler, ich weiß nicht warum
-                    //student = (Student) personService.getCurrentPerson();
-                    initializeView();
-            } else {
-                UI.getCurrent().navigate(LoginView.class);
-            }
-        } else {
+        if(student == null) {
             UI.getCurrent().navigate(LoginView.class);
+            return;
         }
+        initializeView();
+
     }
 
     private void initializeView() {
@@ -52,27 +45,15 @@ public class StudentProfilView extends VerticalLayout implements BeforeEnterObse
             UI.getCurrent().navigate(LoginView.class);
             return;
         }
-        StudentProfileComponent studentProfile = new StudentProfileComponent(student, "StudentProfilView.css",studentService, meldungController);
+        StudentProfileComponent studentProfile = new StudentProfileComponent(student, "StudentProfilView.css",studentService,meldungController);
         add(studentProfile);
     }
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if(!sessionController.isLoggedIn()|| !sessionController.hasRole("ROLE_STUDENT")){
             event.rerouteTo(LoginView.class);
         }
-    }
-
-
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
     }
 
 }

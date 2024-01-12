@@ -3,7 +3,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -39,11 +38,6 @@ public class Person {
 
     @Column(name = "Aktiv")
     private Boolean aktiv;
-
-    /* die neue Variable, mit der der Admin Personen sperrt
-    @Column(name = "gesperrt")
-    private Boolean gesperrt;
-     */
 
     @Override
     public boolean equals(Object o) {
