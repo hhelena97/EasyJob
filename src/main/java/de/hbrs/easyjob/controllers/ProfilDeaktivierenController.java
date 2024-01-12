@@ -22,7 +22,6 @@ public class ProfilDeaktivierenController {
     private final UnternehmenRepository unternehmenRepository;
     @Autowired
     private JobRepository jobRepository;
-    //private ChatRepository chatRepository;
 
     /**
      * Konstruktor
@@ -34,6 +33,7 @@ public class ProfilDeaktivierenController {
         this.unternehmenRepository = uR;
     }
 
+
     /**
      * Diese Methode deaktiviert den gesamten Account eines Studenten. Alle Informationen über diese Person bleiben
      * in der Datenbank. Das Profil ist nur noch für den Admin sichtbar
@@ -42,7 +42,8 @@ public class ProfilDeaktivierenController {
      */
     public boolean profilDeaktivierenPerson(Person person) {
 
-        //Todo: prüfen, ob die Person Manager des Unternehmens ist. Wenn ja, weitere Person suchen,
+        //Todo: prüfen, ob die Person eine Unternehmensperson ist und wenn ja, prüfen ob sie
+        // Manager des Unternehmens ist. Wenn ja, weitere Person suchen,
         //die dadurch Manager wird, ansonsten Unternehmen mit deaktivieren.
 
         if (person == null) {
