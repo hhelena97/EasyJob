@@ -40,4 +40,5 @@ public class Unternehmensperson extends Person {
         return Objects.hash(unternehmen, anschrift);
     }
 
+
 }
