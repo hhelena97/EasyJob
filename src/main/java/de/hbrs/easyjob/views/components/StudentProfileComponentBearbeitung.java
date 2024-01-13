@@ -6,7 +6,9 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -14,18 +16,24 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.OrtController;
+import de.hbrs.easyjob.controllers.PersonController;
 import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.repositories.*;
 import de.hbrs.easyjob.services.FaehigkeitService;
+import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
+import de.hbrs.easyjob.views.unternehmen.StellenanzeigeErstellenView;
 
+import java.awt.*;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Objects;
@@ -75,8 +83,12 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
     FaehigkeitRepository faehigkeitRepository;
     OrtController ortController;
 
+    private PasswortService passwortService;
+
+
     Image profilBild2;
     private final String style;
+
 
     public StudentProfileComponentBearbeitung(Student student,
                                               String styleClass,
@@ -87,7 +99,8 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
                                               BrancheRepository brancheRepository,
                                               JobKategorieRepository jobKategorieRepository,
                                               FaehigkeitRepository faehigkeitRepository,
-                                              OrtController ortController
+                                              OrtController ortController,
+                                              PasswortService passwortService
                                     ) {
         this.student = student;
         this.studentService = studentService;
@@ -98,6 +111,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         this.jobKategorieRepository = jobKategorieRepository;
         this.faehigkeitRepository = faehigkeitRepository;
         this.ortController = ortController;
+        this.passwortService = passwortService;
         style=styleClass;
 
         UI.getCurrent().getPage().addStyleSheet("StudentProfilView.css");
@@ -122,6 +136,15 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         //Bildupload in Methode ausgelagert
         bildUpload();
 
+
+
+        //Password ändern
+        Icon edit = new Icon(VaadinIcon.EDIT);
+        PasswortAendernDialog passwort = new PasswortAendernDialog(student,"StudentProfilView.css", passwortService);
+        Button editAdmin = new Button("Password Ändern", edit,e -> passwort.open());
+
+
+
         studentInfo.addClassName("studentInfo");
         studentInfo.setAlignItems(Alignment.CENTER);
 
@@ -136,7 +159,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
                 event -> setContent(event.getSelectedTab()));
 
         content.setWidth("100%");
-        content.setMaxWidth("1000px");
+        content.setMaxWidth("100em");
         content.setAlignItems(Alignment.STRETCH);
         setContent(tabs.getSelectedTab());
 
@@ -164,7 +187,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         actions.setJustifyContentMode(JustifyContentMode.CENTER);
         actions.setAlignSelf(Alignment.CENTER,actions);
 
-        studentInfo.add(tabs, content, actions);
+        studentInfo.add(editAdmin,tabs, content, actions);
         add(studentInfo);
     }
 

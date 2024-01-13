@@ -65,18 +65,11 @@ public class EinstellungenUebersichtStudentView extends Div implements BeforeEnt
         //Einstellungen--------------------------------------------------------
 
 
-        Details accounts = new Details("Accounts");
+        Details accounts = new Details("Account");
         RouterLink linkDea = new RouterLink(EinstellungenAccountStudentView.class);
         linkDea.add(accounts);
         linkDea.getStyle().set("text-decoration","none");
         accounts.addThemeVariants(DetailsVariant.REVERSE);
-
-        //createDetails wird erstmal nicht genutzt
-        Details app_Benachrichtigungen = createDetails("App-BenachrichtigungenView");
-        app_Benachrichtigungen.addThemeVariants(DetailsVariant.REVERSE);
-
-        Details sprache = createDetails("Sprache");
-        sprache.addThemeVariants(DetailsVariant.REVERSE);
 
 
         Details impressum = createDetails("Impressum");
@@ -87,7 +80,7 @@ public class EinstellungenUebersichtStudentView extends Div implements BeforeEnt
         //Dialog beim Ausloggen klicken
         Dialog dialog = new Dialog();
 
-        dialog.setHeaderTitle("Wirklich ausloggen? ");
+        dialog.setHeaderTitle("Wirklich ausloggen?");
 
         System.out.println("EinstellungenUebersichtStudentView");
         System.out.println("Session: " + VaadinSession.getCurrent());
@@ -119,13 +112,12 @@ public class EinstellungenUebersichtStudentView extends Div implements BeforeEnt
 
 
 
-        v.add(linkzuruck,linkDea, app_Benachrichtigungen, sprache,impressum);
+        v.add(linkzuruck,linkDea,impressum);
         add(v,ausloggen,dialog);
     }
 
     private Details createDetails(String summary, Anchor... anchors) {
-        Details details = new Details(summary, createContent(anchors));
-        return details;
+        return new Details(summary, createContent(anchors));
     }
 
     private VerticalLayout createContent(Anchor... anchors) {
