@@ -89,12 +89,16 @@ body {
     margin-bottom: 20px;
     overflow-x: hidden;
     overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
 }
 .badge{
     border-radius: 25px;
-    background:  rgba(254, 137, 151, 0.25);
+    color: var(--studierende-dark);
+    background:  var(--hintergrund-peachy);
     padding: 3px 6px;
     margin-right: 4px;
+    margin-bottom: 4px;
 
 }
 
@@ -103,11 +107,12 @@ body {
     margin-bottom: 17px;
 }
 
-
+/*
 .imgTest{
     background-image: url("images/my.png");
     width: 74px;
     height: 74px;
 }
+ */
 
 
