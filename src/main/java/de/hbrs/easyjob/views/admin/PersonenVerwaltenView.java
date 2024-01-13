@@ -27,16 +27,19 @@ import de.hbrs.easyjob.repositories.UnternehmenspersonRepository;
 import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.services.UnternehmenService;
+import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
+
+import javax.annotation.security.RolesAllowed;
 
 
 @Route(value = "admin/personenVerwalten", layout = AdminLayout.class)
 @PageTitle("Personen Verwalten")
 @StyleSheet("Variables.css")
 @StyleSheet("AdminLayout.css")
-//@RolesAllowed("ROLE_ADMIN")
+@RolesAllowed("ROLE_ADMIN")
 
 public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnterObserver {
     //private final PersonSuchenService personService;
@@ -87,10 +90,10 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
         if(context != null) {
             Authentication auth = context.getAuthentication();
             if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                //event.rerouteTo(LoginView.class);
+                event.rerouteTo(LoginView.class);
             }
         } else {
-            //event.rerouteTo(LoginView.class);
+            event.rerouteTo(LoginView.class);
         }
     }
 

@@ -129,4 +129,5 @@ public class SessionController {
     private SecurityContext getSecurityContext() {
         return customSecurityContextRepository.loadContext(VaadinServletRequest.getCurrent().getHttpServletRequest()).get();
     }
+
 }

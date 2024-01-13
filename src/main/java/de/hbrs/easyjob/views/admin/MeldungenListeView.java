@@ -12,15 +12,17 @@ import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Meldung;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.repositories.MeldungRepository;
+import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.AdminLayout;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @Route(value = "admin/meldungenListe", layout = AdminLayout.class)
 @PageTitle("Meldungen")
 @StyleSheet("Variables.css")
 @StyleSheet("MeldungenListe.css")
-//@RolesAllowed("ROLE_ADMIN")
+@RolesAllowed("ROLE_ADMIN")
 public class MeldungenListeView extends VerticalLayout implements BeforeEnterObserver {
 
     private final SessionController sessionController;
@@ -36,9 +38,9 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
 
 
     @Override
-    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+    public void beforeEnter(BeforeEnterEvent event) {
         if (!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_ADMIN")) {
-            //event.rerouteTo(LoginView.class);
+            event.rerouteTo(LoginView.class);
         }
     }
 
@@ -70,7 +72,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         add(titelbox, tabs, content);
     }
 
-//Inhalt anzeigen funktioniert noch überhautp nicht
+//Inhalt anzeigen funktioniert noch überhaupt nicht
     private void setContent(Tab tab){
         content.removeAll();
 

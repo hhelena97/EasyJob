@@ -25,7 +25,7 @@ import javax.annotation.security.RolesAllowed;
 @StyleSheet("Variables.css")
 @StyleSheet("MeldungDetailView.css")
 //Reihenfolge wichtig. Das erste kann im zweiten verwendet werden
-//@RolesAllowed("ROLE_ADMIN")
+@RolesAllowed("ROLE_ADMIN")
 public class MeldungDetailView extends VerticalLayout implements BeforeEnterObserver {
 
     private final SessionController sessionController;
@@ -34,7 +34,7 @@ public class MeldungDetailView extends VerticalLayout implements BeforeEnterObse
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         if(!sessionController.isLoggedIn() || sessionController.hasRole("ROLE_ADMIN")){
-            //beforeEnterEvent.rerouteTo(LoginView.class);
+            beforeEnterEvent.rerouteTo(LoginView.class);
             //für später: um erst zu prüfen, ob Admin, sonst weiterleiten zur Startseite
         }
     }
