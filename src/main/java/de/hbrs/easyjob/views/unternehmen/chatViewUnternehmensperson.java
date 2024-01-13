@@ -176,7 +176,7 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
         chevronLeft.setSize("1em");
         chevronLeft.addClickListener(event -> {
             // Logik um zur Chatübersicht zu navigieren
-            UI.getCurrent().navigate(ChatsView.class); // Den tatsächlichen Pfad zur Chatübersicht einsetzen
+            UI.getCurrent().navigate("unternehmen/nachrichten");
         });
         zurueck.add(chevronLeft);
 
