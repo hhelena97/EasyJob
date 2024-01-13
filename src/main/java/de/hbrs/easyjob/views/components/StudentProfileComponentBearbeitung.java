@@ -136,7 +136,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
                 event -> setContent(event.getSelectedTab()));
 
         content.setWidth("100%");
-        content.setMaxWidth("1000px");
+        content.setMaxWidth("100em");
         content.setAlignItems(Alignment.STRETCH);
         setContent(tabs.getSelectedTab());
 

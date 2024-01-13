@@ -64,19 +64,11 @@ public class EinstellungenUebersichtUnternehmenView extends Div implements Befor
 
         //Einstellungen--------------------------------------------------------
 
-        Details accounts = new Details("Accounts");
+        Details accounts = new Details("Account");
         RouterLink linkDea = new RouterLink(EinstellungenAccountUnternehmenView.class);
         linkDea.getStyle().set("text-decoration","none");
         linkDea.add(accounts);
         accounts.addThemeVariants(DetailsVariant.REVERSE);
-
-        //createDetails wird erstmal nicht genutzt
-        Details app_Benachrichtigungen = createDetails("App-BenachrichtigungenView");
-        app_Benachrichtigungen.addThemeVariants(DetailsVariant.REVERSE);
-
-        Details sprache = createDetails("Sprache");
-        sprache.addThemeVariants(DetailsVariant.REVERSE);
-
 
         Details impressum = createDetails("Impressum");
         impressum.addThemeVariants(DetailsVariant.REVERSE);
@@ -86,7 +78,7 @@ public class EinstellungenUebersichtUnternehmenView extends Div implements Befor
         //Dialog beim Ausloggen klicken
         Dialog dialog = new Dialog();
 
-        dialog.setHeaderTitle("Wirklich ausloggen? ");
+        dialog.setHeaderTitle("Wirklich ausloggen?");
 
         Button auslogButton = new Button("Ausloggen.");
         auslogButton.addClassName("confirm");
@@ -114,14 +106,13 @@ public class EinstellungenUebersichtUnternehmenView extends Div implements Befor
 
 
 
-        v.add(linkzuruck,linkDea, app_Benachrichtigungen, sprache,impressum);
+        v.add(linkzuruck,linkDea,impressum);
         add(v,ausloggen,dialog);
 
     }
 
     private Details createDetails(String summary, Anchor... anchors) {
-        Details details = new Details(summary, createContent(anchors));
-        return details;
+        return new Details(summary, createContent(anchors));
     }
 
     private VerticalLayout createContent(Anchor... anchors) {
