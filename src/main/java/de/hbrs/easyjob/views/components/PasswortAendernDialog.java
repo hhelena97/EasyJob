@@ -8,6 +8,7 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.textfield.PasswordField;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.services.PasswortService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Eine Klasse für ein Dialog-Fenster das nach dem alten Passwort fragt und ein neues Passwort
@@ -20,15 +21,14 @@ import de.hbrs.easyjob.services.PasswortService;
 
 public class PasswortAendernDialog extends Dialog {
 
-    private Person person;
+
     private final String style;
 
-    private final PasswortService passwortService;
+
 
     public PasswortAendernDialog(Person person, String styleClass, PasswortService passwortService){
-        this.person = person;
         this.style = styleClass;
-        this.passwortService = passwortService;
+
 
         addClassName(style);
 

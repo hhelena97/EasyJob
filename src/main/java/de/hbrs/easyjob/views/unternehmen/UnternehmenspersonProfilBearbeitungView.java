@@ -24,9 +24,12 @@ import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Ort;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.repositories.PersonRepository;
+import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.components.FileUpload;
+import de.hbrs.easyjob.views.components.PasswortAendernDialog;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,15 +44,18 @@ import static de.hbrs.easyjob.controllers.ValidationController.isValidEmail;
 @Route(value = "unternehmen/unternehmenpersonbearbeitung", layout = UnternehmenLayout.class)
 public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     private Unternehmensperson person;
-    @Autowired
     private final PersonService personService;
     @Autowired
     private final UnternehmenService unternehmenService;
 
+private final PersonRepository personRepository;
+
+   @Autowired
+    private final PasswortService passwortService;
+
     TextField strasse = new TextField();
 
     OrtController ortController;
-    PersonController personControler;
 
 
     private final transient SessionController  sessionController;
@@ -62,12 +68,13 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     Image profilBild2;
     VerticalLayout personKontakt = new VerticalLayout();
 
-    UnternehmenspersonProfilBearbeitungView(PersonService personService, UnternehmenService unternehmenService, SessionController sessionController,OrtController ortController,PersonController personControler){
+    UnternehmenspersonProfilBearbeitungView(PersonService personService, UnternehmenService unternehmenService, SessionController sessionController,OrtController ortController, PasswortService passwortService,PersonRepository personRepository){
         this.personService = personService;
         this.unternehmenService = unternehmenService;
         this.sessionController = sessionController;
         this.ortController = ortController;
-        this.personControler = personControler;
+        this.passwortService = passwortService;
+        this.personRepository = personRepository;
         person = (Unternehmensperson) sessionController.getPerson();
         initialView();
     }
@@ -148,6 +155,24 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
 
 
 
+        //Password ändern
+        Icon edit = new Icon(VaadinIcon.EDIT);
+        PasswortAendernDialog passwort = new PasswortAendernDialog(person,"UnternehmenRegistrieren.css", new PasswortService(personRepository));
+        Button editAdmin = new Button("Password Ändern", edit,e -> passwort.open());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         //Person Info
         VerticalLayout personInfo = new VerticalLayout();
         personInfo.addClassName("personInfo");
@@ -197,7 +222,7 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
         personInfo.add(rahmen, upload, uploadListe);
 
 
-        add(personInfo,kon,personKontakt);
+        add(personInfo,editAdmin,kon,personKontakt);
     }
 
     private TextField completeZeile(String title, String wert){
