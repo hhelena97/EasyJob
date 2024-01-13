@@ -14,6 +14,7 @@ import de.hbrs.easyjob.services.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.Comparator;
 import java.util.List;
 
 @Route(value = "student/nachrichten", layout = StudentLayout.class)
@@ -89,9 +90,9 @@ public class ChatsView extends VerticalLayout {
         HorizontalLayout nachrichtTextLayout = new HorizontalLayout();
         List<Nachricht> nachrichten = chatService.getNachrichten(chat);
         String nachrichtText = ""; // Default text
-
+        nachrichten.sort(Comparator.comparing(Nachricht::getZeitpunkt).reversed());
         if (nachrichten != null && !nachrichten.isEmpty()) {
-            Nachricht lastNachricht = nachrichten.get(nachrichten.size() - 1);
+            Nachricht lastNachricht = nachrichten.get(0);
             nachrichtText = lastNachricht != null ? lastNachricht.getTextfeld() : ""; // Default if text is null
         }
         Label letzeNachrichtLabel = new Label(limitText(nachrichtText, 30));
