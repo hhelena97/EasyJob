@@ -280,11 +280,14 @@ public class StudentProfileComponent extends VerticalLayout {
         wertH.setSizeFull();
         wertH.addClassName("wert");
         wertH.add(wert);
-        HorizontalLayout completeZeile = new HorizontalLayout(titleH,wertH);
-        completeZeile.setAlignItems(Alignment.STRETCH);
+        HorizontalLayout completeZeile = new HorizontalLayout();
+        completeZeile.setWidthFull();
+        completeZeile.add(titleH);
+        completeZeile.setAlignItems(Alignment.START);
+        completeZeile.add(wertH);
+        completeZeile.setAlignItems(Alignment.END);
         completeZeile.addClassName("completeZeile");
+
         return completeZeile;
-
-
     }
 }
