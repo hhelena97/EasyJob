@@ -7,6 +7,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.security.RolesAllowed;
 
 @Route(value = "chat/", layout = StudentLayout.class)
+@StyleSheet("ChatStudent.css")
 @RolesAllowed("ROLE_STUDENT")
 public class ChatView extends VerticalLayout implements HasUrlParameter<String> {
 
@@ -117,6 +119,7 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         VerticalLayout chatLayout = new VerticalLayout(header, messageLayout);
         chatLayout.setFlexGrow(0, header);
         chatLayout.setFlexGrow(1, messageLayout);
+        chatLayout.setPadding(false);
         chatLayout.setSizeFull();
         chatLayout.setAlignItems(Alignment.STRETCH);
 
@@ -134,48 +137,61 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
 
 
         HorizontalLayout frame = new HorizontalLayout();
-        //VerticalLayout foto = new VerticalLayout();
+        VerticalLayout foto = new VerticalLayout();
+        foto.addClassName("foto");
         Person person = job.getPerson();
         boolean hasProfileImage = person.getFoto() != null;
         String profileImageSource = hasProfileImage ? person.getFoto() : "images/blank-profile-picture.png";
         Image profileImage = new Image(profileImageSource, "Profile Image");
         profileImage.setHeight("50px");
-        //foto.add(profileImage);
+        profileImage.addClassNames("profileImage");
+        foto.add(profileImage);
 
         VerticalLayout chatDetails = new VerticalLayout();
         chatDetails.setSpacing(false);
         chatDetails.setAlignItems(Alignment.START);
-        chatDetails.addClassName("student-details");
+        chatDetails.addClassName("student-details2");
         RouterLink name = new RouterLink("", UnternehmensPersonProfilView.class, person.getId_Person());
         name.getStyle().set("font-weight", "bold");
         name.add(person.getVorname() + " " + person.getNachname());
+        name.addClassName("name");
 
-        //HorizontalLayout companyNameLayout = new HorizontalLayout();
+        HorizontalLayout companyNameLayout = new HorizontalLayout();
+        companyNameLayout.setPadding(false);
+        companyNameLayout.setMargin(false);
         Label company = new Label(job.getUnternehmen().getName());
-        company.getStyle().set("color", "grey");
-        //companyNameLayout.add(company);
+        company.getStyle().set("color", "white");
+        company.getStyle().set("font-size", "8px");
+        companyNameLayout.addClassName("name2");
+        companyNameLayout.add(company);
 
-        //HorizontalLayout jobtitelLayout = new HorizontalLayout();
+        HorizontalLayout jobtitelLayout = new HorizontalLayout();
+        jobtitelLayout.setPadding(false);
+        jobtitelLayout.setMargin(false);
+        jobtitelLayout.addClassName("name2");
         Label jobtitel = new Label(job.getTitel());
-        jobtitel.getStyle().set("color", "grey");
-        ///jobtitelLayout.add(jobtitel);
+        jobtitel.getStyle().set("color", "white");
+        jobtitel.getStyle().set("font-size", "8px");
+        jobtitelLayout.add(jobtitel);
 
-        chatDetails.add(name, company, jobtitel);
-        //VerticalLayout zurueck = new VerticalLayout();
+        chatDetails.add(name, company, jobtitelLayout);
+        VerticalLayout zurueck = new VerticalLayout();
         Icon chevronLeft = new Icon(VaadinIcon.CHEVRON_LEFT);
+        zurueck.addClassName("zurueck");
         chevronLeft.getStyle().set("cursor", "pointer");
-        chevronLeft.setSize("1em");
+        //chevronLeft.setSize("1em");
         chevronLeft.addClickListener(event -> {
             // Logik um zur Chatübersicht zu navigieren
             UI.getCurrent().navigate(ChatsView.class); // Den tatsächlichen Pfad zur Chatübersicht einsetzen
         });
-       // zurueck.add(chevronLeft);
+        zurueck.add(chevronLeft);
 
-        //VerticalLayout dotsLayout = new VerticalLayout();
+        VerticalLayout dotsLayout = new VerticalLayout();
         // Drei-Punkte-Icon für das Dropdown-Menü
         Icon dots = new Icon(VaadinIcon.ELLIPSIS_DOTS_V);
         dots.getStyle().set("cursor", "pointer");
         dots.setSize("1em");
+        dotsLayout.addClassName("dotsLayout");
 
 
         // Dropdown-Menü erstellen
@@ -188,8 +204,11 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
             Notification.show("Gemeldet", 3000, Notification.Position.MIDDLE);
         });
         melden.getElement().getStyle().set("color", "red");
-        //dotsLayout.add(dots);
-        frame.add(chevronLeft,profileImage, chatDetails, dots);
+        dotsLayout.add(dots);
+        frame.add(zurueck,profileImage, chatDetails, dotsLayout);
+        frame.addClassName("frame");
+        frame.setSpacing(false);
+
 
 
         card.add(frame);

@@ -6,6 +6,7 @@ import com.vaadin.collaborationengine.UserInfo;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
@@ -30,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.security.RolesAllowed;
 @Route(value = "chat-unternehmensperson", layout = UnternehmenLayout.class)
+@StyleSheet("Chat.css")
 @RolesAllowed("ROLE_UNTERNEHMENSPERSON")
 public class chatViewUnternehmensperson extends VerticalLayout implements HasUrlParameter<String> {
 
@@ -38,7 +40,7 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
     private final StudentService studentService;
     private final SessionController sessionController;
     private final JobService jobService;
-
+    private Student student;
     @Autowired
     public chatViewUnternehmensperson(DatabaseMessagePersister databaseMessagePersister, StudentService studentService, SessionController sessionController, JobService jobService) {
         this.databaseMessagePersister = databaseMessagePersister;
@@ -61,7 +63,7 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
         String[] parts = topicId.split("-");
         String topic = parts[0];
         Integer Id = Integer.parseInt(parts[1]);
-
+        student= studentService.getStudentByID(Integer.parseInt(parts[2]));
         if (topic.equals("Job")) {
             Job job = jobService.getJobById(Id);
             createOrGetChatForJob(job, topicId);
@@ -71,6 +73,8 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
 
 
     private void createOrGetChatForJob(Job job, String topic) {
+        setPadding(false);
+        setMargin(false);
         Person person = sessionController.getPerson();
         String foto = person.getFoto()!=null ? person.getFoto() : "images/blank-profile-picture.png";
         Component header = createChatHeader(job);
@@ -82,6 +86,7 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
         // Gesamtes Chat-Layout
 
         VerticalLayout chatLayout = new VerticalLayout(header, messageLayout);
+        chatLayout.setPadding(false);
         chatLayout.setFlexGrow(0, header);
         chatLayout.setFlexGrow(1, messageLayout);
         chatLayout.setSizeFull();
@@ -89,7 +94,7 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
 
         add(chatLayout);
         setSizeFull();
-        setPadding(false);
+
     }
 
     private VerticalLayout getVerticalLayout(String topic, Person person, UserInfo currentUserInfo) {
@@ -117,33 +122,41 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
 
         HorizontalLayout frame = new HorizontalLayout();
         VerticalLayout foto = new VerticalLayout();
-        Person person = job.getPerson();
-        boolean hasProfileImage = person.getFoto() != null;
-        String profileImageSource = hasProfileImage ? person.getFoto() : "images/blank-profile-picture.png";
+       // Person person = job.getPerson();
+        boolean hasProfileImage = student.getFoto() != null;
+        String profileImageSource = hasProfileImage ? student.getFoto() : "images/blank-profile-picture.png";
         Image profileImage = new Image(profileImageSource, "Profile Image");
-        profileImage.setHeight("50px");
+        profileImage.addClassNames("profileImage");
         foto.add(profileImage);
 
         VerticalLayout chatDetails = new VerticalLayout();
         chatDetails.setSpacing(false);
         chatDetails.setAlignItems(Alignment.START);
         chatDetails.addClassName("student-details");
-        RouterLink name = new RouterLink("", UnternehmensPersonProfilView.class, person.getId_Person());
+        RouterLink name = new RouterLink("", UnternehmensPersonProfilView.class, student.getId_Person());
         name.getStyle().set("font-weight", "bold");
-        name.add(person.getVorname() + " " + person.getNachname());
+        name.addClassName("name");
+        name.add(student.getVorname() + " " + student.getNachname()+ " "+ student.getStudienfach().getFach());
 
+
+        /*
         HorizontalLayout companyNameLayout = new HorizontalLayout();
         Label company = new Label(job.getUnternehmen().getName());
         company.getStyle().set("color", "grey");
         companyNameLayout.add(company);
+
+
 
         HorizontalLayout jobtitelLayout = new HorizontalLayout();
         Label jobtitel = new Label(job.getTitel());
         jobtitel.getStyle().set("color", "grey");
         jobtitelLayout.add(jobtitel);
 
-        chatDetails.add(name, companyNameLayout, jobtitelLayout);
+
+         */
+        chatDetails.add(name);
         VerticalLayout zurueck = new VerticalLayout();
+        zurueck.addClassName("zurueck");
         Icon chevronLeft = new Icon(VaadinIcon.CHEVRON_LEFT);
         chevronLeft.getStyle().set("cursor", "pointer");
         chevronLeft.setSize("1em");
@@ -154,6 +167,7 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
         zurueck.add(chevronLeft);
 
         VerticalLayout dotsLayout = new VerticalLayout();
+        dotsLayout.addClassName("dotsLayout");
         // Drei-Punkte-Icon für das Dropdown-Menü
         Icon dots = new Icon(VaadinIcon.ELLIPSIS_DOTS_V);
         dots.getStyle().set("cursor", "pointer");
@@ -170,7 +184,8 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
         });
         dotsLayout.add(dots);
         frame.add(zurueck,foto, chatDetails, dotsLayout);
-
+        frame.addClassName("frame");
+        frame.setSpacing(false);
 
         card.add(frame);
         card.setWidthFull();

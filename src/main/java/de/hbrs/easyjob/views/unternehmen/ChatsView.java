@@ -109,6 +109,8 @@ public class ChatsView extends VerticalLayout {
 
         studienDetails.add(Jobtitel,studyFieldLayout,locationLayout);
         frame.add(foto,studienDetails);
+        frame.addClassName("frame");
+        frame.setSpacing(false);
 
         card.add(frame);
         return card;
