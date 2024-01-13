@@ -14,8 +14,13 @@ import de.hbrs.easyjob.services.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.security.RolesAllowed;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Route(value = "student/nachrichten", layout = StudentLayout.class)
 @StyleSheet("styles/MitarbeiterFindenView.css")
@@ -52,10 +57,38 @@ public class ChatsView extends VerticalLayout {
     }
 
     private Component createChatComponent(Chat chat) {
+
+
+
+        //Person und Image
         Job job = chat.getJob();
         Person person = job.getPerson();
         boolean hasProfileImage = person.getFoto() != null;
         String profileImageSource = hasProfileImage ? person.getFoto() : "images/blank-profile-picture.png";
+        //letzte Nachricht
+        List<Nachricht> nachrichten = chatService.getNachrichten(chat);
+        String nachrichtText = ""; // Default text
+        Nachricht lastNachricht = null;
+        if (nachrichten != null && !nachrichten.isEmpty()) {
+            nachrichten.sort(Comparator.comparing(Nachricht::getZeitpunkt).reversed());
+            lastNachricht = nachrichten.get(0);
+            nachrichtText = lastNachricht != null ? lastNachricht.getTextfeld() : ""; // Default if text is null
+        }
+
+        //Zeit und Zeitformat
+        if(lastNachricht == null) {
+            return new VerticalLayout();
+        }
+        Instant zeitpunkt = lastNachricht.getZeitpunkt();
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(zeitpunkt, ZoneId.systemDefault());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String time = localDateTime.format(formatter);
+        //gelesen
+        boolean isLastNachrichtVonStudent = Objects.equals(lastNachricht.getAbsender().getId_Person(), sessionController.getPerson().getId_Person());
+        boolean isLastNachrichtGelesen = isLastNachrichtVonStudent || lastNachricht.isGelesen();
+
+
         VerticalLayout card = new VerticalLayout();
         card.setPadding(false);
         card.setSpacing(false);
@@ -83,26 +116,32 @@ public class ChatsView extends VerticalLayout {
         Jobtitel.add(job.getTitel());
 
         HorizontalLayout nameLayout = new HorizontalLayout();
+        nameLayout.setWidth("100%");
         Label personInfoLabel = new Label(person.getVorname() + " " + person.getNachname());
         personInfoLabel.addClassName("detail-label");
-        nameLayout.add(personInfoLabel);
+        Label timeLabel = new Label(time);
+        timeLabel.getStyle().set("font-size","12px");
+        nameLayout.add(personInfoLabel,timeLabel);
+        nameLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
 
         HorizontalLayout nachrichtTextLayout = new HorizontalLayout();
-        List<Nachricht> nachrichten = chatService.getNachrichten(chat);
-        String nachrichtText = ""; // Default text
-        nachrichten.sort(Comparator.comparing(Nachricht::getZeitpunkt).reversed());
-        if (nachrichten != null && !nachrichten.isEmpty()) {
-            Nachricht lastNachricht = nachrichten.get(0);
-            nachrichtText = lastNachricht != null ? lastNachricht.getTextfeld() : ""; // Default if text is null
-        }
+
         Label letzeNachrichtLabel = new Label(limitText(nachrichtText, 30));
         letzeNachrichtLabel.addClassName("detail-label");
         nachrichtTextLayout.add(letzeNachrichtLabel);
 
         studienDetails.add(Jobtitel,nameLayout,nachrichtTextLayout);
+        studienDetails.getStyle().set("margin","8px 0px 0px 32px");
         frame.add(foto,studienDetails);
 
+
+
+
         card.add(frame);
+        if(!isLastNachrichtGelesen) {
+            card.getStyle().set("background-color", "rgba(254, 137, 151, 0.25)");
+        }
         return card;
     }
 

@@ -26,7 +26,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Route(value = "unternehmen/nachrichten", layout = UnternehmenLayout.class)
 @StyleSheet("styles/MitarbeiterFindenView.css")
@@ -62,9 +68,37 @@ public class ChatsView extends VerticalLayout {
     }
 
     private Component createChatComponent(Chat chat) {
+
+
+        //Person und Image
         Job job = chat.getJob();
         Person student = chat.getStudent();
-        String profileImageSource = student.getFoto() != null ? student.getFoto() : "images/blank-profile-picture.png";
+        boolean hasProfileImage = student.getFoto() != null;
+        String profileImageSource = hasProfileImage ? student.getFoto() : "images/blank-profile-picture.png";
+        //letzte Nachricht
+        List<Nachricht> nachrichten = chatService.getNachrichten(chat);
+        String nachrichtText = ""; // Default text
+        Nachricht lastNachricht = null;
+        if (nachrichten != null && !nachrichten.isEmpty()) {
+            nachrichten.sort(Comparator.comparing(Nachricht::getZeitpunkt).reversed());
+            lastNachricht = nachrichten.get(0);
+            nachrichtText = lastNachricht != null ? lastNachricht.getTextfeld() : ""; // Default if text is null
+        }
+
+        //Zeit und Zeitformat
+        if(lastNachricht == null) {
+            return new VerticalLayout();
+        }
+        Instant zeitpunkt = lastNachricht.getZeitpunkt();
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(zeitpunkt, ZoneId.systemDefault());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String time = localDateTime.format(formatter);
+        //gelesen
+        boolean isLastNachrichtVonUnternehmensperson = Objects.equals(lastNachricht.getAbsender().getId_Person(), sessionController.getPerson().getId_Person());
+        boolean isLastNachrichtGelesen = isLastNachrichtVonUnternehmensperson || lastNachricht.isGelesen();
+
+
         VerticalLayout card = new VerticalLayout();
         card.setPadding(false);
         card.setSpacing(false);
@@ -90,27 +124,29 @@ public class ChatsView extends VerticalLayout {
         Jobtitel.addClassName("name-label");
         Jobtitel.add(job.getTitel());
 
-        HorizontalLayout studyFieldLayout = new HorizontalLayout();
-        Label personInfoLabel = new Label(student.getVorname() + " " + student.getNachname());
-        personInfoLabel.addClassName("detail-label");
-        studyFieldLayout.add(personInfoLabel);
+        HorizontalLayout nameLayout = new HorizontalLayout();
+        Label personInfo = new Label(student.getVorname() + " " + student.getNachname());
+        personInfo.addClassName("detail-label");
+        Label timeLabel = new Label(time);
+        timeLabel.getStyle().set("font-size","12px");
+        nameLayout.add(personInfo,timeLabel);
+        nameLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
 
         HorizontalLayout locationLayout = new HorizontalLayout();
-        List<Nachricht> nachrichten = chatService.getNachrichten(chat);
-        String nachrichtText = ""; // Default text
 
-        if (nachrichten != null && !nachrichten.isEmpty()) {
-            Nachricht lastNachricht = nachrichten.get(nachrichten.size() - 1);
-            nachrichtText = lastNachricht != null ? lastNachricht.getTextfeld() : ""; // Default if text is null
-        }
         Label letzeNachrichtLabel = new Label(limitText(nachrichtText, 30));
         letzeNachrichtLabel.addClassName("detail-label");
         locationLayout.add(letzeNachrichtLabel);
 
-        studienDetails.add(Jobtitel,studyFieldLayout,locationLayout);
+        studienDetails.add(Jobtitel,nameLayout,locationLayout);
+        studienDetails.getStyle().set("margin","8px 0px 0px 32px");
         frame.add(foto,studienDetails);
 
         card.add(frame);
+        if(!isLastNachrichtGelesen) {
+            card.getStyle().set("background-color", "rgba(254, 137, 151, 0.25)");
+        }
         return card;
     }
 
