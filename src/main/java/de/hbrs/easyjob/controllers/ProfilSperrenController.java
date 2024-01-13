@@ -7,9 +7,10 @@ import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.repositories.UnternehmenspersonRepository;
 import de.hbrs.easyjob.services.UnternehmenspersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
-
+@Controller
 public class ProfilSperrenController {
 
     private final PersonRepository personRepository;
