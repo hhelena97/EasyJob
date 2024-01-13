@@ -45,8 +45,9 @@ public class ProfilSperrenController {
             schaue nach, ob die Person Manager ist,
             wenn ja, schaue nach, ob es noch mehr Mitarbeiter gibt und mache den nächsten zum neuen Manager
             wenn nein, sperre das Unternehmen
-
-            u = unternehmenRepository.findById(u.getId_Unternehmen());
+*/
+         /*
+            int id_u = unternehmenRepository.findById(u.getId_Unternehmen());
             Unternehmensperson manager = u.getUnternehmensperson();
             if (manager.getId_Person() == person.getId_Person()){
                 List<Person> mitarbeiter = personRepository.findAllByUnternehmenId(u.getId_Unternehmen());
@@ -59,6 +60,7 @@ public class ProfilSperrenController {
                 }
             }
             */
+
 
             // Todo: alle Jobs des Mitarbeiters sperren
         }
