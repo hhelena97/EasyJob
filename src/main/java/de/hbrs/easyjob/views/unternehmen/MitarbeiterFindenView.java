@@ -80,13 +80,8 @@ public class MitarbeiterFindenView extends VerticalLayout implements BeforeEnter
         searchField.addClassName("search-field");
         searchField.addKeyPressListener(Key.ENTER, e -> searchStudent(searchField.getValue()));
 
-        // Options-Icon als Suffix zum Suchfeld hinzufügen
-        Button optionButton = new Button(new Icon(VaadinIcon.OPTIONS));
-        optionButton.addClickListener(e -> UI.getCurrent().navigate("unternehmen/filter"));
-        optionButton.addClassName("options-button");
-
         // Layout für das Suchfeld
-        HorizontalLayout searchLayout = new HorizontalLayout(searchField, optionButton);
+        HorizontalLayout searchLayout = new HorizontalLayout(searchField);
         searchLayout.addClassName("search-layout");
 
         // Liste für Studentanzeigen
