@@ -45,17 +45,16 @@ import static de.hbrs.easyjob.controllers.ValidationController.isValidEmail;
 public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     private Unternehmensperson person;
     private final PersonService personService;
-    @Autowired
+
     private final UnternehmenService unternehmenService;
 
-private final PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
-   @Autowired
     private final PasswortService passwortService;
 
     TextField strasse = new TextField();
 
-    OrtController ortController;
+    private final OrtController ortController;
 
 
     private final transient SessionController  sessionController;
@@ -157,7 +156,7 @@ private final PersonRepository personRepository;
 
         //Password ändern
         Icon edit = new Icon(VaadinIcon.EDIT);
-        PasswortAendernDialog passwort = new PasswortAendernDialog(person,"UnternehmenRegistrieren.css", new PasswortService(personRepository));
+        PasswortAendernDialog passwort = new PasswortAendernDialog(person,"UnternehmenRegistrieren.css",passwortService);
         Button editAdmin = new Button("Password Ändern", edit,e -> passwort.open());
 
 

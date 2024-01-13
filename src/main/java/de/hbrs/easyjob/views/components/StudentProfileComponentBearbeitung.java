@@ -83,7 +83,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
     FaehigkeitRepository faehigkeitRepository;
     OrtController ortController;
 
-    private final PasswortService passwortService;
+    private PasswortService passwortService;
 
 
     Image profilBild2;
