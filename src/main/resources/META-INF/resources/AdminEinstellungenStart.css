@@ -36,10 +36,6 @@ vaadin-vertical-layout {
     vaadin-app-layout-navbar-offset-size: 0px;
 }
 
-vaadin-vertical-layout {
-    padding: 0;
-}
-
 
 /* Grüne Box oben */
 .gruene-box {
@@ -50,30 +46,50 @@ vaadin-vertical-layout {
     align-self: center;
 }
 
-/* Buttons für in die Box */
-.ausloggen{
-    color: var(--signalfarben-rot);
-    font-family: Rubik, sans-serif;
-    align: right;
+.signout {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    height: 24px;
+    width: 24px;
+}
+
+.begruessung {
+    margin-top: -10px;
+}
+
+.ausl {
+    padding-left: 300px;
+    display: flex;
+    justify-content: right;
+    margin-top: 15px;
+    padding-right: 27px;
 }
 
 .userPlus {
-    width: 30px;
+    color: var(--admin-dark);
+}
+
+.addAdmin {
+    padding-left: 27px;
+    padding-right: 27px;
+    width: 100%;
     height: 30px;
-    color: white;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
 }
 
 /* Texte in der grünen Box */
 .willkommen-text {
     color: var(--hintergrund-weiß);
     padding-left: 27px;
-    margin-top: 7px;
     margin-bottom: 0;
     width: 266px;
     height: 55px;
     padding-bottom: 20px;
-    padding-right: 82px;
-    padding-top: 75px;
+    padding-right: 0px;
+    padding-top: 0px;
+    margin-top: 10px;
 }
 
 
@@ -103,6 +119,7 @@ vaadin-vertical-layout {
     height: 30px;
     display: flex;
     justify-content: space-between;
+    margin-top: 5px;
 }
 
 .text {
@@ -117,14 +134,52 @@ vaadin-vertical-layout {
     padding-top: 3px;
 }
 
-/* Buttons der Startseite */
-.editAdmin{
-
+.icons {
+    display: flex;
+    justify-content: space-between;
+    width: 60px !important;
+    height: 30px;
 }
 
-.minus{
-
+.editAdmin {
+    margin-top: 45px;
+    color: white;
+    margin-bottom: 32px;
 }
+
+.willkommen-box {
+    background-color: var(--admin-dark);
+    height: 150px;
+    width: 100%;
+    max-width: 600px;
+    align-self: center;
+}
+
+vaadin-button.ausloggen {
+    color: var(--signalfarben-rot);
+    font-family: Rubik, sans-serif;
+}
+
+vaadin-button.ausloggen::part(label){
+    text-decoration: underline;
+    text-underline: var(--signalfarben-rot);
+}
+
+vaadin-app-layout::part(navbar) {
+    /* Zentriert die Tabs in der Navbar */
+    display: flex;
+    justify-content: center;
+
+    /* Leiste unten */
+    top: auto;
+    bottom: 0;
+}
+
+.navbar-tabs {
+    max-width: 600px;
+}
+
+
 
 
 

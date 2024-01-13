@@ -35,11 +35,14 @@ import de.hbrs.easyjob.views.components.AdminLayout;
 import de.hbrs.easyjob.views.components.DialogLayout;
 import de.hbrs.easyjob.views.components.PasswortAendernDialog;
 
+import javax.annotation.security.RolesAllowed;
+
 @Route(value = "admin", layout = AdminLayout.class)
 @PageTitle("Admin")
 @StyleSheet("Variables.css")
 @StyleSheet("AdminLayout.css")
-//@RolesAllowed("ROLE_ADMIN")
+@StyleSheet("AdminEinstellungenStart.css")
+@RolesAllowed("ROLE_ADMIN")
 public class EinstellungenStartView extends VerticalLayout implements BeforeEnterObserver {
 
     private final SessionController sessionController;
@@ -54,9 +57,8 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         if (!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_ADMIN")) {
-            //event.rerouteTo(LoginView.class);
+            event.rerouteTo(LoginView.class);
         }
-        //todo: prüfe, ob der Admin auch aktiv ist. Sonst zurück zu login.
     }
 
     public EinstellungenStartView(SessionController sessionController, PersonController personController,
@@ -67,21 +69,21 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         this.personController = personController;
         this.profilDeaktivierenController = profilDeaktivierenController;
         this.personRepository = repository;
-        this.admin = (Admin) sessionController.getPerson();
+        this.admin = (Admin) sessionController. getPerson();
 
         //grüner Kasten oben
-        HorizontalLayout willkommenBox = new HorizontalLayout();
+        VerticalLayout willkommenBox = new VerticalLayout();
         willkommenBox.addClassName("gruene-box");
 
-        //Ausloggen#
+        //Ausloggen
         Dialog dialogAusloggen = new Dialog();
         dialogAusloggen.add(new Paragraph("Wollen Sie sich wirklich ausloggen"));
 
-        Button btnAbbruch = new Button ("abbrechen");
+        Button btnAbbruch = new Button ("Abbrechen");
         btnAbbruch.addClassName("buttonAbbruch");
         btnAbbruch.addClickListener(e -> dialogAusloggen.close());
 
-        String bestaetigen = "ausloggen";
+        String bestaetigen = "Ausloggen";
         Button btnBestaetigen = new Button(bestaetigen);
         btnBestaetigen.addClassName("buttonBestaetigen");
         btnBestaetigen.addClickListener(e -> {
@@ -91,16 +93,21 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         dialogAusloggen.getFooter().add(btnAbbruch, btnBestaetigen);
 
         //der Knopf um den Ausloggen-Dialog zu öffnen
-        Button ausloggen = new Button(new Icon(VaadinIcon.SIGN_OUT));
+        Icon signout = new Icon(VaadinIcon.SIGN_OUT);
+        signout.addClassName("signout");
+        Button ausloggen = new Button(signout);
         ausloggen.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         ausloggen.addClassName("ausloggen");
         ausloggen.addClickListener(e -> dialogAusloggen.open());
 
+        HorizontalLayout ausl = new HorizontalLayout(ausloggen);
+        ausl.addClassName("ausl");
 
         //Begrüßungstext
         Div willkommenText = new Div();
         H3 titel = new H3("Hallo Admin");
 
+        ausl.add(ausloggen);
 
         //Passwort ändern für den angemeldeten Admin
         PasswortAendernDialog passwortAendernDialog = new PasswortAendernDialog(admin, "adminDialog.css", new PasswortService(personRepository));
@@ -115,7 +122,9 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
 
         //alles in den grünen Kasten
-        willkommenBox.add(ausloggen, willkommenText, editself);
+        HorizontalLayout begruessung = new HorizontalLayout(willkommenText, editself);
+        begruessung.addClassName("begruessung");
+        willkommenBox.add(ausl, begruessung);
 
 
         // der Bereich unter dem grünen Kasten: Liste aller Admins und + für neue Admins
@@ -152,7 +161,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
                 dialogPasswortAendern.add(inhalt);
 
-                Button btnAbbruch4 = new Button ("abbrechen");
+                Button btnAbbruch4 = new Button ("Abbrechen");
                 btnAbbruch4.addClassName("buttonAbbruch");
                 btnAbbruch4.addClickListener(e -> dialogPasswortAendern.close());
 
@@ -177,7 +186,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
                 String adminMail = a.getEmail();
                 dialogAdminDeaktivieren.add(new Paragraph("Wollen Sie den Admin " + adminMail + " wirklich entfernen?"));
 
-                Button btnAbbruch2 = new Button("abbrechen");
+                Button btnAbbruch2 = new Button("Abbrechen");
                 btnAbbruch2.addClassName("buttonAbbruch");
                 btnAbbruch2.addClickListener(e -> {
                     dialogAdminDeaktivieren.close();
@@ -195,6 +204,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
                 minus.addClickListener(e -> dialogAdminDeaktivieren.open());
 
                 icons.add(minus, edit);
+                icons.addClassName("icons");
 
                 einAdmin.add(mail, icons);
                 einAdmin.addClassName("admins");
@@ -203,10 +213,18 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
             }
         }
 
+        HorizontalLayout addAdmin = new HorizontalLayout();
+        addAdmin.addClassName("admins");
+
+        Paragraph mail = new Paragraph("");
+        mail.addClassName("text");
 
         //Admins hinzufügen
         Icon userPlus = new Icon(VaadinIcon.PLUS);
         userPlus.addClassName("userPlus");
+
+        addAdmin.add(mail, userPlus);
+        adminListe.add(addAdmin);
 
         Dialog dialogAdminHinzufuegen = new Dialog();
         dialogAdminHinzufuegen.setHeaderTitle("Neuen Admin anlegen");
@@ -222,7 +240,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
         dialogAdminHinzufuegen.add(zugangsdaten);
 
-        Button btnAbbruch3 = new Button ("abbrechen");
+        Button btnAbbruch3 = new Button ("Abbrechen");
         btnAbbruch3.addClassName("buttonAbbruch");
         btnAbbruch3.addClickListener(e -> dialogAdminHinzufuegen.close());
 
@@ -253,7 +271,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         userPlus.addClickListener(e -> dialogAdminHinzufuegen.open());
 
         //Admin hinzufügen zur Adminliste packen
-        adminListe.add(userPlus);
+        //adminListe.add(userPlus);
 
         //Seite besteht aus WillkommenBox und AdminListe
         add(willkommenBox, adminListe);
