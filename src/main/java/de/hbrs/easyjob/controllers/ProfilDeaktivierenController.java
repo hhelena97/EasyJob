@@ -94,19 +94,7 @@ public class ProfilDeaktivierenController {
         return success;
     }
 
-    /**
-     * Diese Methode sperrrt einen Job
-     * //neue Variable gesperrt (true wenn gesperrt)
-     * @param job   der Job der gesperrt werden soll
-     */
-    public boolean profilDeaktivierenJob(Job job) {
-        if (job == null) {
-            return false;
-        }
-        job.setAktiv(false);
-        return true;
-        // personRepository.save(job).getAktiv();
-    }
+
 
     /**
      * Diese Methode reaktiviert den Account einer Person.
@@ -120,4 +108,7 @@ public class ProfilDeaktivierenController {
         person.setAktiv(true);
         return personRepository.save(person).getAktiv();
     }
+
+
+
 }

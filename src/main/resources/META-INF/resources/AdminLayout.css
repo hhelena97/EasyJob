@@ -21,6 +21,9 @@ vaadin-app-layout::part(navbar) {
     display: flex;
     justify-content: center;
 
+    /*kein Abstand oben zum grünen Kasten */
+    vaadin-app-layout-navbar-offset-size: 0px;
+
     /* Leiste unten */
     top: auto;
     bottom: 0;
@@ -29,4 +32,309 @@ vaadin-app-layout::part(navbar) {
 
 .navbar-tabs {
     max-width: 600px;
+}
+
+/* Elemente */
+.buttons {
+    width: 289px;
+    height: 20px;
+//styleName: Body/Body 1;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0em;
+    text-align: left;
+    padding-top: 8px;
+    padding-left: 0px;
+    padding-bottom: 8px;
+    padding-right: 0px;
+    color: #6F6F6F;
+}
+
+.buttonAuswahl {
+    width: 100%;
+    height: 244px;
+    left: 26px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: 26px;
+    margin-right: 26px;
+}
+
+vaadin-vertical-layout {
+    padding: 0;
+    vaadin-app-layout-navbar-offset-size: 0px;
+}
+
+vaadin-vertical-layout {
+    padding: 0;
+}
+
+
+/* Grüne Box oben */
+.gruene-box {
+    background-color: var(--admin-dark);
+    height: 150px;
+    width: 100%;
+    max-width: 600px;
+    align-self: center;
+}
+
+/* Buttons für in die Box */
+.ausloggen{
+    color: var(--signalfarben-rot);
+    font-family: Rubik, sans-serif;
+    align-self: start;
+}
+
+.editAdmin{
+    width: 50px;
+    height: 50px;
+    color: white;
+    padding: 10px;
+    align-self: end;
+}
+
+/* Texte in der grünen Box */
+.willkommen-text {
+    color: var(--hintergrund-weiß);
+    padding-left: 27px;
+    margin-top: 7px;
+    margin-bottom: 0;
+    width: 266px;
+    height: 55px;
+    padding-bottom: 20px;
+    padding-right: 82px;
+    padding-top: 75px;
+}
+
+
+.willkommen-text > h3 {
+    color: var(--hintergrund-weiß);
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+/* Inhalt Startseite */
+.adminListe {
+    width: 100%;
+    height: 244px;
+    left: 26px;
+    max-width: 600px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: 26px;
+    margin-right: 26px;
+    align-self: center;
+}
+
+.admins {
+    padding-left: 27px;
+    padding-right: 27px;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.text {
+//styleName: Body/Body 3;
+    font-family: Rubik, sans-serif;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 3px;
+}
+
+/* Buttons der Startseite */
+.minus{
+
+}
+
+.edit{
+
+}
+
+.userPlus {
+    width: 30px;
+    height: 30px;
+    color: var(--admin-dark);
+    align-self: end;
+}
+
+.buttonAbbruch{
+    border: var(--admin-dark, #289A32);
+    color: var(--admin-dark, #289A32);
+    background: var(--hintergrund-weiß);
+}
+
+.buttonbuttonBestaetigen{
+    border: var(--admin-dark, #289A32);
+    color: var(--hintergrund-weiß);
+    background: var(--admin-dark, #289A32);
+}
+
+/* Seite: Personen verwalten */
+
+/* im grünen Block */
+.search-field {
+    width: 100%;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    position: relative;
+    align-self: center;
+}
+
+.search-layout {
+    background: white;
+    border-radius: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+    align-self: center;
+}
+
+.gruenerblock{
+    background-color: var(--admin-dark);
+    width: 100%;
+    max-width: 600px;
+    padding-bottom: 10px;
+    align-self: center;
+}
+
+.ergebnisLayout{
+    width: 90%;
+    padding-left: 15px;
+    padding-right: 15px;
+    align-self: center;
+}
+
+.profilBild{
+    width: 200px;
+    height: 200px;
+    border-radius: 155px;
+    border: 4px solid lightgray;
+    align-self: center;
+}
+
+.profilBild img{
+
+    width: 200px;
+    height: 200px;
+    border-radius: 155px;
+    background-repeat: no-repeat;
+    background-position: center;
+
+}
+
+.name{
+    color: var(--admin-dark, #289A32);
+    align-self: center;
+}
+
+.btnNeuesPasswort{
+    display: flex;
+    width: 300px;
+    height: 46px;
+    padding: 8px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+
+    border-radius: 30px;
+    border: 2.5px solid var(--admin-dark, #289A32);
+    background: var(--hintergrund-weiß, #FFF);
+    color: var(--admin-dark, #289A32);
+
+    align-self: center;
+}
+
+.btnSperren{
+    display: flex;
+    width: 300px;
+    height: 46px;
+    padding: 8px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+
+    border-radius: 30px;
+    color: var(--hintergrund-weiß);
+    background: var(--admin-dark, #289A32);
+
+    align-self: center;
+}
+
+.nicht-gefunden{
+    padding-left: 15px;
+}
+
+.name{
+    margin:0;
+    color: #000;
+    text-align: center;
+    font-family: Rubik, sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 75% */
+    letter-spacing: -0.165px;
+}
+.location{
+    width: max-content;
+    justify-content: center;
+}
+
+.iconsInUnternehmen{
+    margin:0;
+    width: 15px;
+    height: 15px;
+    color: rgba(28, 46, 69, 0.6);
+}
+.stadt {
+    color:  rgba(50, 50, 50, 1);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    margin-right: 12px;
+    margin-left: 2px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+
+.divReturn{
+    display: flex;
+    align-items: start;
+    align-content: start;
+    justify-content: start;
+    justify-items: start;
+    text-align: start;
+}
+
+.zeileDiv{
+    width: 50%;
+    height: 100%;
+    padding-right: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.badge{
+    border-radius: 25px;
+    background:  var(--hintergrund-sky);
+    padding: 3px 6px;
+    margin-right: 4px;
+
+}
+
+
+.completeZeile{
+    margin-bottom: 17px;
 }

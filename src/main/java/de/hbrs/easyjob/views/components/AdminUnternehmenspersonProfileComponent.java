@@ -14,10 +14,8 @@ import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.services.UnternehmenService;
-import de.hbrs.easyjob.views.admin.PersonenSuchenView;
-import de.hbrs.easyjob.views.allgemein.LoginView;
+import de.hbrs.easyjob.views.admin.PersonenVerwaltenView;
 import de.hbrs.easyjob.views.unternehmen.JobDetailsView;
-import de.hbrs.easyjob.views.unternehmen.UnternehmenProfilUn;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -52,7 +50,7 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
     private void initializeComponent() {
 
         if (person == null) {
-            UI.getCurrent().navigate(PersonenSuchenView.class);
+            UI.getCurrent().navigate(PersonenVerwaltenView.class);
             return;
         }
 

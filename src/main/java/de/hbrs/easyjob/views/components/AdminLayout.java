@@ -12,7 +12,7 @@ import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.views.admin.EinstellungenStartView;
 import de.hbrs.easyjob.views.admin.MeldungenListeView;
-import de.hbrs.easyjob.views.admin.PersonenSuchenView;
+import de.hbrs.easyjob.views.admin.PersonenVerwaltenView;
 
 @StyleSheet("AdminLayout.css")
 public class AdminLayout extends AppLayout {
@@ -28,7 +28,7 @@ public class AdminLayout extends AppLayout {
         Tabs tabs = new Tabs();
         tabs.add(
                 createTab(FontAwesome.Solid.USERS_COG, EinstellungenStartView.class),
-                createTab(FontAwesome.Solid.USER_EDIT, PersonenSuchenView.class),
+                createTab(FontAwesome.Solid.USER_EDIT, PersonenVerwaltenView.class),
                 createTab(FontAwesome.Solid.EXCLAMATION_CIRCLE, MeldungenListeView.class)
         );
         tabs.addThemeVariants(TabsVariant.LUMO_MINIMAL,
