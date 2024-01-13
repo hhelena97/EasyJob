@@ -63,6 +63,9 @@ public class Job {
     @Column(name = "Aktiv")
     private Boolean aktiv;
 
+    @Column(name = "Gesperrt")
+    private Boolean gesperrt;
+
 //Job sucht:
 
     @ManyToMany(fetch = FetchType.EAGER)

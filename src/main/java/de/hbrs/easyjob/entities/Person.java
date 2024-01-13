@@ -39,6 +39,9 @@ public class Person {
     @Column(name = "Aktiv")
     private Boolean aktiv;
 
+    @Column(name = "Gesperrt")
+    private Boolean gesperrt;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
