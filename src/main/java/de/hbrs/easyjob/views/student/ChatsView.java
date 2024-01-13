@@ -95,7 +95,7 @@ public class ChatsView extends VerticalLayout {
         card.setAlignItems(Alignment.STRETCH);
         card.setWidth("100%");
 
-        HorizontalLayout frame = new HorizontalLayout();
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
 
 
         VerticalLayout foto = new VerticalLayout();
@@ -133,14 +133,16 @@ public class ChatsView extends VerticalLayout {
 
         studienDetails.add(Jobtitel,nameLayout,nachrichtTextLayout);
         studienDetails.getStyle().set("margin","8px 0px 0px 32px");
-        frame.add(foto,studienDetails);
+        horizontalLayout.add(foto,studienDetails);
 
 
 
 
-        card.add(frame);
+        card.add(horizontalLayout);
         if(!isLastNachrichtGelesen) {
             card.getStyle().set("background-color", "rgba(254, 137, 151, 0.25)");
+            card.getStyle().set("border-radius","10px");
+            card.getStyle().set("padding", "5px 8px");
         }
         return card;
     }
