@@ -13,16 +13,14 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.MeldungController;
-import de.hbrs.easyjob.entities.JobKategorie;
-import de.hbrs.easyjob.entities.Meldung;
-import de.hbrs.easyjob.entities.Ort;
-import de.hbrs.easyjob.entities.Student;
+import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.services.FaehigkeitService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.student.EinstellungenUebersichtStudentView;
 import de.hbrs.easyjob.views.student.StudentProfilBearbeitungView;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,11 +51,7 @@ public class StudentProfileComponent extends VerticalLayout {
         this.faehigkeitService = faehigkeitService;
         style=styleClass;
         this.meldungController = meldungController;
-        if (style == "styles/UnternehmenStudentProfilView.css") {
-            isUnternehmensPerson = true;
-        } else {
-            isUnternehmensPerson = false;
-        }
+        isUnternehmensPerson = Objects.equals(style, "styles/UnternehmenStudentProfilView.css");
 
         initializeComponent();
     }
@@ -92,21 +86,15 @@ public class StudentProfileComponent extends VerticalLayout {
             //Einstellungen Icon
             Icon cog = new Icon(VaadinIcon.COG);
             cog.addClassName("iconsProf");
-
             RouterLink link = new RouterLink(EinstellungenUebersichtStudentView.class);
             link.add(cog);
-        //Einstellungen Icon
-        Icon cog = new Icon(VaadinIcon.COG);
-        cog.addClassName("iconsProf");
-        RouterLink link = new RouterLink(EinstellungenUebersichtStudentView.class);
-        link.add(cog);
 
-        Icon pen =new Icon(VaadinIcon.PENCIL);
-        pen.addClassName("iconsProf");
-        RouterLink linkPen = new RouterLink(StudentProfilBearbeitungView.class);
-        linkPen.add(pen);
+            Icon pen =new Icon(VaadinIcon.PENCIL);
+            pen.addClassName("iconsProf");
+            RouterLink linkPen = new RouterLink(StudentProfilBearbeitungView.class);
+            linkPen.add(pen);
 
-        iconsProf.add(link,linkPen);
+            iconsProf.add(link,linkPen);
 
         } else {
 
@@ -181,9 +169,9 @@ public class StudentProfileComponent extends VerticalLayout {
 
 
         if (!isUnternehmensPerson) {
-            studentInfo.add(iconsProf,profilBild,name,/*location,*/tabs, content);
+            studentInfo.add(iconsProf,rahmen,name,tabs, content);
         } else {
-            studentInfo.add(frame,profilBild,name,/*location,*/tabs, content);
+            studentInfo.add(frame,rahmen,name,tabs, content);
         }
 
         add(studentInfo);
