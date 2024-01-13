@@ -23,6 +23,7 @@ import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import de.hbrs.easyjob.repositories.UnternehmenspersonRepository;
 import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.services.UnternehmenService;
@@ -48,6 +49,8 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
     private final ProfilSperrenController profilSperrenController;
 
+    private final UnternehmenspersonRepository unternehmenspersonRepository;
+
     private VerticalLayout personLayout;
 
     TextField searchField;
@@ -65,12 +68,14 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
     public PersonenVerwaltenView(SessionController sessionController, JobRepository jobRepository,
                                  UnternehmenRepository unternehmenRepository, PersonRepository personRepository,
-                                 StudentService studentService, UnternehmenService unternehmenService) {
+                                 StudentService studentService, UnternehmenService unternehmenService,
+                                 UnternehmenspersonRepository unternehmenspersonRepository) {
         this.sessionController = sessionController;
         this.personRepository = personRepository;
         this.unternehmenRepository = unternehmenRepository;
+        this.unternehmenspersonRepository = unternehmenspersonRepository;
         this.jobRepository = jobRepository;
-        this.profilSperrenController = new ProfilSperrenController(personRepository, unternehmenRepository, jobRepository);
+        this.profilSperrenController = new ProfilSperrenController(personRepository, unternehmenRepository, jobRepository, unternehmenspersonRepository);
         this.studentService = studentService;
         this.unternehmenService = unternehmenService;
         initializeView();

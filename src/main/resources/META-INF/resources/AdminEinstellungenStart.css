@@ -142,9 +142,9 @@ vaadin-vertical-layout {
 }
 
 .editAdmin {
-    margin-top: 45px;
     color: white;
-    margin-bottom: 32px;
+    padding-left: 0px;
+    padding-right: 26px;
 }
 
 .willkommen-box {

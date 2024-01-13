@@ -4,6 +4,8 @@ import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import de.hbrs.easyjob.repositories.UnternehmenspersonRepository;
+import de.hbrs.easyjob.services.UnternehmenspersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -16,14 +18,17 @@ public class ProfilSperrenController {
 
     private final JobRepository jobRepository;
 
+    private final UnternehmenspersonRepository unternehmenspersonRepository;
+
     /**
      * Konstruktor
      * @param pR Repository Person
      */
-    public ProfilSperrenController(PersonRepository pR, UnternehmenRepository uR, JobRepository jR) {
+    public ProfilSperrenController(PersonRepository pR, UnternehmenRepository uR, JobRepository jR, UnternehmenspersonRepository upR) {
         this.personRepository = pR;
         this.unternehmenRepository = uR;
         this.jobRepository = jR;
+        this.unternehmenspersonRepository = upR;
     }
 
 
@@ -40,31 +45,27 @@ public class ProfilSperrenController {
         }
 
         if (person instanceof Unternehmensperson){
-            Unternehmen u = ((Unternehmensperson) person).getUnternehmen();
-            /* Todo: suche das Unternehmen heraus,
-            schaue nach, ob die Person Manager ist,
-            wenn ja, schaue nach, ob es noch mehr Mitarbeiter gibt und mache den nächsten zum neuen Manager
-            wenn nein, sperre das Unternehmen
-*/
-         /*
-            int id_u = unternehmenRepository.findById(u.getId_Unternehmen());
-            Unternehmensperson manager = u.getUnternehmensperson();
-            if (manager.getId_Person() == person.getId_Person()){
-                List<Person> mitarbeiter = personRepository.findAllByUnternehmenId(u.getId_Unternehmen());
-                if (mitarbeiter.size() > 1){
-                    //mache den nächsten Mitarbeiter zum neuen Manager
-                    Unternehmensperson neuerManager = mitarbeiter.get(1);
-                    unternehmenRepository.save(u).getUnternehmensperson(neuerManager);
-                } else {
-                    unternehmenSperren(u);
-                }
+            int u = ((Unternehmensperson) person).getUnternehmen().getId_Unternehmen();
+            Unternehmensperson manager = ((Unternehmensperson) person).getUnternehmen().getUnternehmensperson();
+
+            for (Job j: jobRepository.findAllJobs(person.getId_Person())) {
+                j.setGesperrt(true); //sperren
+                jobRepository.save(j);
             }
-            */
 
-
-            // Todo: alle Jobs des Mitarbeiters sperren
+            if(person.equals(manager)) {
+                for (Unternehmensperson p: unternehmenspersonRepository.findAllByUnternehmen(u)) {
+                    for (Job j: jobRepository.findAllJobs(p.getId_Person())) {
+                        jobSperren(j);
+                    }
+                    personRepository.save(p).setGesperrt(true);
+                }
+                unternehmenSperren(((Unternehmensperson) person).getUnternehmen());
+            }
         }
-        personRepository.save(person).setGesperrt(true);
+        if(!person.getGesperrt()) {
+            personRepository.save(person).setGesperrt(true);
+        }
         return personRepository.save(person).getGesperrt();
     }
 
