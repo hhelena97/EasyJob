@@ -1,13 +1,17 @@
 package de.hbrs.easyjob.views.admin;
 
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
@@ -19,6 +23,7 @@ import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.admin.dialog.PasswortAendernDialogView;
@@ -27,13 +32,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 
 
-@Route(value = "admin/personenSuchen", layout = AdminLayout.class)
-@PageTitle("Personen Suchen")
+@Route(value = "admin/personenVerwalten", layout = AdminLayout.class)
+@PageTitle("Personen Verwalten")
 @StyleSheet("Variables.css")
-@StyleSheet("AdminPersonenSuchen.css")
+@StyleSheet("AdminLayout.css")
 //@RolesAllowed("ROLE_ADMIN")
 
-public class PersonenSuchenView extends VerticalLayout implements BeforeEnterObserver {
+public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnterObserver {
     //private final PersonSuchenService personService;
     private final PersonRepository personRepository;
     private final UnternehmenRepository unternehmenRepository;
@@ -55,10 +60,10 @@ public class PersonenSuchenView extends VerticalLayout implements BeforeEnterObs
 
 
 
-    public PersonenSuchenView(SessionController sessionController,
-                              UnternehmenRepository unternehmenRepository, PersonRepository personRepository,
-                              ProfilDeaktivierenController profilDeaktivierenController,
-                              StudentService studentService, UnternehmenService unternehmenService) {
+    public PersonenVerwaltenView(SessionController sessionController,
+                                 UnternehmenRepository unternehmenRepository, PersonRepository personRepository,
+                                 ProfilDeaktivierenController profilDeaktivierenController,
+                                 StudentService studentService, UnternehmenService unternehmenService) {
         this.sessionController = sessionController;
         this.personRepository = personRepository;
         this.unternehmenRepository = unternehmenRepository;
@@ -89,10 +94,9 @@ public class PersonenSuchenView extends VerticalLayout implements BeforeEnterObs
 
 
     private void initializeView(){
-        addClassName("person-suchen-view");
 
-        H3 titel = new H3 ("Personen suchen");
-        titel.addClassName("titel");
+        H3 titel = new H3 ("Personen verwalten");
+        titel.addClassName("willkommen-text");
 
         // Suchfeld mit Enter-Aktivierung und Options-Icon
         searchField = new TextField();
@@ -103,7 +107,6 @@ public class PersonenSuchenView extends VerticalLayout implements BeforeEnterObs
             VaadinSession.getCurrent().setAttribute("email", searchField.getValue());
             loadPerson();
         });
-        //Todo: die Person wird erst beim Erneuern der Seite aufgerufen. Warum ist das so?
 
         // Layout für das Suchfeld
         HorizontalLayout searchLayout = new HorizontalLayout(searchField);
@@ -111,16 +114,11 @@ public class PersonenSuchenView extends VerticalLayout implements BeforeEnterObs
 
         //alles in einen grünen Block
         Div gruenerBlock = new Div(titel, searchLayout);
-        gruenerBlock.addClassName("gruenerblock");
+        gruenerBlock.addClassName("gruene-box");
 
         //Ergebnis
         personLayout = new VerticalLayout();
-        //personLayout.setWidth("90%");
-        //personLayout.setAlignItems(Alignment.STRETCH);
         personLayout.setClassName("ergebnis-layout");
-
-        // Person laden und anzeigen
-        //loadPerson();
 
         // wieder aufräumen
         VaadinSession.getCurrent().setAttribute("email", null);
@@ -154,26 +152,61 @@ public class PersonenSuchenView extends VerticalLayout implements BeforeEnterObs
 
                 //Buttons
                 Div buttons = new Div();
-                PasswortAendernDialogView passwortAendernDialog = new PasswortAendernDialogView(true);
 
-                Button btnneuesPasswort = new Button("Passwort ändern", e -> passwortAendernDialog.openDialogOverlay());
-                btnneuesPasswort.addClassName("btnNeuesPasswort");
+                //Passwort ändern
+                Dialog dialogPasswortAendern = new Dialog();
+                dialogPasswortAendern.setHeaderTitle("Passwort ändern");
+
+                PasswordField pwneu1 = new PasswordField("neues Passwort");
+                PasswordField pwrp1 = new PasswordField("Passwort wiederholen");
+
+                Paragraph p10 = new Paragraph("");
+
+                Div inhalt = new Div(pwneu1, p10, pwrp1);
+
+                dialogPasswortAendern.add(inhalt);
+
+                Button btnAbbruch4 = new Button ("abbrechen");
+                btnAbbruch4.addClassName("buttonAbbruch");
+                btnAbbruch4.addClickListener(e -> dialogPasswortAendern.close());
+
+                Button btnPasswortAendern = new Button("Passwort ändern");
+                btnPasswortAendern.setClassName("buttonBestaetigen");
+
+                btnPasswortAendern.addClickListener(e -> {
+                    if (new PasswortService(personRepository).newPassword(person, pwneu1.getValue(), pwrp1.getValue())) {
+                        Notification.show("Passwort geändert");
+                        dialogPasswortAendern.close();
+                    } else {
+                        Notification.show("Es gibt ein Problem.");
+                    }
+                });
+                dialogPasswortAendern.getFooter().add(btnAbbruch4, btnPasswortAendern);
+
+                Button btnneuesPasswort = new Button("Passwort ändern");
+                btnneuesPasswort.addClickListener(e -> dialogPasswortAendern.open());
 
 
                 //Sperr-Button mit Nachfrage
-                if (!person.getAktiv()) {
+                if(person.getAktiv()){
+                    sperrbutton = "Profil sperren";
+                } else {
                     sperrbutton = "Profil entsperren";
                 }
                 //Dialog zum Nachfragen
-                Div nachfragen = new Div();
+                Button btnSperren = new Button(sperrbutton);
+                Dialog d = new Dialog();
+
+
                 Paragraph p;
                 Button btnDialogSperren;
 
                 if (!person.getAktiv()){
-                    p = new Paragraph ("Wollen Sie " + person.getVorname() + " " + person.getNachname() + " sperren?");
-                    btnDialogSperren = new Button("sperren", e-> personSperrencController.profilDeaktivierenPerson(person));
+                    personSperrenDialog();
+
+
                 } else {
-                    p = new Paragraph ("Wollen Sie " + person.getVorname() + " " + person.getNachname() + " reaktivieren?");
+                    p = new Paragraph ("Wollen Sie " + person.getVorname() + " " + person.getNachname() + " entsperren?");
                     btnDialogSperren = new Button("entsperren", e-> personSperrencController.profilReaktivierenPerson(person));
                 }
                 nachfragen.add(p, btnDialogSperren);
@@ -208,5 +241,24 @@ public class PersonenSuchenView extends VerticalLayout implements BeforeEnterObs
             }
 
         }
+    }
+
+    private void personSperrenDialog(Person person, Dialog dialog){
+
+        dialog.add(new Paragraph("Wollen Sie " + person.getVorname() + " " + person.getNachname() + " sperren?"));
+
+        Button btnAbbruch2 = new Button("abbrechen");
+        btnAbbruch2.addClassName("buttonAbbruch");
+        btnAbbruch2.addClickListener(e -> {
+            dialog.close();
+        });
+
+        Button btnBestaetigen = new Button("Person sperren");
+        btnBestaetigen.addClassName("buttonBestaetigen");
+        btnBestaetigen.addClickListener(e -> {
+            personSperrencController.profilDeaktivierenPerson(person);
+            dialog.close();
+        });
+        dialog.getFooter().add(btnAbbruch2, btnBestaetigen);
     }
 }

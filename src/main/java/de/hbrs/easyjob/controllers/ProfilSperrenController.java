@@ -1,46 +1,44 @@
 package de.hbrs.easyjob.controllers;
 
+import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Unternehmen;
-import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
-public class ProfilDeaktivierenController {
+public class ProfilSperrenController {
 
     //TODO: immer wenn Profil aufgerufen wird muss geprüft werden, ob die Spalte Aktiv false oder true ist:
     // nur aufrufen, wenn true ist.
 
     private final PersonRepository personRepository;
-    private final UnternehmenRepository unternehmenRepository;
+@Autowired
+    private UnternehmenRepository unternehmenRepository;
+
     @Autowired
     private JobRepository jobRepository;
 
     /**
      * Konstruktor
      * @param pR Repository Person
-     * @param uR Repository Unternehmen
      */
-    public ProfilDeaktivierenController(PersonRepository pR, UnternehmenRepository uR) {
+    public ProfilSperrenController(PersonRepository pR) {
         this.personRepository = pR;
-        this.unternehmenRepository = uR;
     }
 
 
     /**
-     * Diese Methode deaktiviert den gesamten Account eines Studenten. Alle Informationen über diese Person bleiben
-     * in der Datenbank. Das Profil ist nur noch für den Admin sichtbar
-     * @param person das Profil welches deaktiviert werden soll
+     * Diese Methode sperrt eine Person.
+     * Das Profil ist nur noch für den Admin sichtbar.
+     * @param person das Profil welches gesperrt werden soll
      * @return true, wenn der Account erfolgreich deaktiviert wurde, wenn irgendein Fehler aufgetreten ist false
      */
-    public boolean profilDeaktivierenPerson(Person person) {
+    public boolean personSperren(Person person) {
 
         //Todo: prüfen, ob die Person eine Unternehmensperson ist und wenn ja, prüfen ob sie
         // Manager des Unternehmens ist. Wenn ja, weitere Person suchen,
@@ -49,8 +47,9 @@ public class ProfilDeaktivierenController {
         if (person == null) {
             return false;
         }
-        person.setAktiv(false);
-        return !personRepository.save(person).getAktiv();
+        //person.isGesperrt(true);
+        //boolean gesperrt = personRepository.save(person).isGesperrt();
+        return true;
     }
 
     /**
@@ -77,7 +76,7 @@ public class ProfilDeaktivierenController {
         boolean success = true;
         List<Person> mitarbeiter = personRepository.findAllByUnternehmenId(unternehmen.getId_Unternehmen());
         for (Person p: mitarbeiter) {
-            if (!profilDeaktivierenPerson(p)) {
+            if (personSperren(p)) {
                 // Setze success auf false, falls eine Deaktivierung fehlschlägt
                 success = false;
             }
@@ -102,4 +101,17 @@ public class ProfilDeaktivierenController {
 
 
 
+    /**
+     * Diese Methode sperrrt einen Job
+     * //neue Variable gesperrt (true wenn gesperrt)
+     * @param job   der Job der gesperrt werden soll
+     */
+    public boolean profilDeaktivierenJob(Job job) {
+        if (job == null) {
+            return false;
+        }
+        job.setAktiv(false);
+        return true;
+        // personRepository.save(job).getAktiv();
+    }
 }

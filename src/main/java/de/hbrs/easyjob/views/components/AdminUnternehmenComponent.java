@@ -7,18 +7,12 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.RouterLink;
-import de.hbrs.easyjob.controllers.JobProfilController;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
-import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.services.UnternehmenService;
-import de.hbrs.easyjob.views.allgemein.LoginView;
-import de.hbrs.easyjob.views.admin.PersonenSuchenView;
+import de.hbrs.easyjob.views.admin.PersonenVerwaltenView;
 
 
 public class AdminUnternehmenComponent extends VerticalLayout {
@@ -42,7 +36,7 @@ public class AdminUnternehmenComponent extends VerticalLayout {
     private void initializeComponent() {
 
         if (unternehmen == null) {
-            UI.getCurrent().navigate(PersonenSuchenView.class);
+            UI.getCurrent().navigate(PersonenVerwaltenView.class);
             return;
         }
 

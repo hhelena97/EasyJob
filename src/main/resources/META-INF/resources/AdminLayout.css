@@ -175,3 +175,165 @@ vaadin-vertical-layout {
     color: var(--hintergrund-weiß);
     background: var(--admin-dark, #289A32);
 }
+
+/* Seite: Personen verwalten */
+
+/* im grünen Block */
+.search-field {
+    width: 100%;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    position: relative;
+    align-self: center;
+}
+
+.search-layout {
+    background: white;
+    border-radius: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+    align-self: center;
+}
+
+.gruenerblock{
+    background-color: var(--admin-dark);
+    width: 100%;
+    max-width: 600px;
+    padding-bottom: 10px;
+    align-self: center;
+}
+
+.ergebnisLayout{
+    width: 90%;
+    padding-left: 15px;
+    padding-right: 15px;
+    align-self: center;
+}
+
+.profilBild{
+    width: 200px;
+    height: 200px;
+    border-radius: 155px;
+    border: 4px solid lightgray;
+    align-self: center;
+}
+
+.profilBild img{
+
+    width: 200px;
+    height: 200px;
+    border-radius: 155px;
+    background-repeat: no-repeat;
+    background-position: center;
+
+}
+
+.name{
+    color: var(--admin-dark, #289A32);
+    align-self: center;
+}
+
+.btnNeuesPasswort{
+    display: flex;
+    width: 300px;
+    height: 46px;
+    padding: 8px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+
+    border-radius: 30px;
+    border: 2.5px solid var(--admin-dark, #289A32);
+    background: var(--hintergrund-weiß, #FFF);
+    color: var(--admin-dark, #289A32);
+
+    align-self: center;
+}
+
+.btnSperren{
+    display: flex;
+    width: 300px;
+    height: 46px;
+    padding: 8px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+
+    border-radius: 30px;
+    color: var(--hintergrund-weiß);
+    background: var(--admin-dark, #289A32);
+
+    align-self: center;
+}
+
+.nicht-gefunden{
+    padding-left: 15px;
+}
+
+.name{
+    margin:0;
+    color: #000;
+    text-align: center;
+    font-family: Rubik, sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 75% */
+    letter-spacing: -0.165px;
+}
+.location{
+    width: max-content;
+    justify-content: center;
+}
+
+.iconsInUnternehmen{
+    margin:0;
+    width: 15px;
+    height: 15px;
+    color: rgba(28, 46, 69, 0.6);
+}
+.stadt {
+    color:  rgba(50, 50, 50, 1);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    margin-right: 12px;
+    margin-left: 2px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+
+.divReturn{
+    display: flex;
+    align-items: start;
+    align-content: start;
+    justify-content: start;
+    justify-items: start;
+    text-align: start;
+}
+
+.zeileDiv{
+    width: 50%;
+    height: 100%;
+    padding-right: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.badge{
+    border-radius: 25px;
+    background:  var(--hintergrund-sky);
+    padding: 3px 6px;
+    margin-right: 4px;
+
+}
+
+
+.completeZeile{
+    margin-bottom: 17px;
+}
