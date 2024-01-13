@@ -17,6 +17,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinSession;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.services.JobService;
 import de.hbrs.easyjob.services.JobSucheService;
@@ -43,31 +44,25 @@ public class JobsUebersichtView extends VerticalLayout implements BeforeEnterObs
     private final JobSucheService jobSucheService;
     private VerticalLayout jobListLayout;
 
+    private final transient SessionController sessionController;
+
 
     @Autowired
 
-    public JobsUebersichtView(JobService jobService, JobSucheService jobSucheService ) {
+    public JobsUebersichtView(JobService jobService, JobSucheService jobSucheService, SessionController sessionController) {
         this.jobService = jobService;
         this.jobSucheService = jobSucheService;
+        this.sessionController = sessionController;
         initializeView();
     }
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if(!sessionController.isLoggedIn()|| !sessionController.hasRole("ROLE_STUDENT")){
             event.rerouteTo(LoginView.class);
         }
     }
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
-    }
+
 
     private void initializeView() {
         addClassName("jobs-view");
