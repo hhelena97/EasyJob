@@ -1,0 +1,52 @@
+.frame{
+    background-color: #A3336F ;
+    height: 100%;
+    max-width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.name{
+    color: white;
+    font-family: Rubik;
+    font-size: 12px;
+    font-style: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+}
+.name2{
+    color: white;
+    font-family: Rubik;
+    font-size: 8px;
+    font-style: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+}
+.zurueck{
+    color: white;
+    justify-content: center;
+    width: 20%;
+
+}
+.dotsLayout{
+    color: white;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.profileImage{
+    width: 68px;
+    height: 68px;
+    border-radius: 9999px;
+    border: 2px solid #FFF;
+}
+.foto{
+    align-items: center;
+    justify-content: center;
+}
