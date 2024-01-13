@@ -142,7 +142,9 @@ public class MitarbeiterFindenView extends VerticalLayout implements BeforeEnter
 
         VerticalLayout foto = new VerticalLayout();
         foto.setWidth("63px");
-        Image profilePic = new Image("images/blank-profile-picture.png", "Profilbild");
+        boolean hasProfileImage = student.getFoto() != null;
+
+        Image profilePic = new Image( hasProfileImage ? student.getFoto() : "images/blank-profile-picture.png", "Profilbild");
         profilePic.addClassName("ellipse-profile-picture");
         foto.add(profilePic);
 
