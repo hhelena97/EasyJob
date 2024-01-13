@@ -55,8 +55,6 @@ public class StudentProfileComponent extends VerticalLayout {
         setSpacing(false);
 
 
-
-
         //die Icons zu einstellungen und Bearbeitung
         HorizontalLayout iconsProf = new HorizontalLayout();
         iconsProf.setPadding(false);
@@ -64,27 +62,20 @@ public class StudentProfileComponent extends VerticalLayout {
         iconsProf.setJustifyContentMode(JustifyContentMode.END);
 
 
-
         //Einstellungen Icon
         Icon cog = new Icon(VaadinIcon.COG);
         cog.addClassName("iconsProf");
-
         RouterLink link = new RouterLink(EinstellungenUebersichtStudentView.class);
         link.add(cog);
 
-
-
         Icon pen =new Icon(VaadinIcon.PENCIL);
         pen.addClassName("iconsProf");
-
         RouterLink linkPen = new RouterLink(StudentProfilBearbeitungView.class);
         linkPen.add(pen);
 
         iconsProf.add(link,linkPen);
 
 
-
-        //Profil Bild
         //Bildrahmen
         Div rahmen = new Div();
         rahmen.addClassName("profile-picture-frame");
@@ -92,7 +83,7 @@ public class StudentProfileComponent extends VerticalLayout {
         ellipse.addClassName("profile-picture-background");
         rahmen.add(ellipse);
 
-        //Platzhalter Bild
+        //Profilbild
         boolean hasBild = student.getFoto() != null;
         Image platzhalterBild = new Image(hasBild? student.getFoto(): "images/blank-profile-picture.png", "EasyJob");
         Div bildDiv = new Div(platzhalterBild);
@@ -108,7 +99,6 @@ public class StudentProfileComponent extends VerticalLayout {
         VerticalLayout studentInfo = new VerticalLayout();
         studentInfo.addClassName("studentInfo");
         studentInfo.setAlignItems(Alignment.CENTER);
-
         studentInfo.setAlignSelf(Alignment.END,iconsProf);
 
 
@@ -123,14 +113,11 @@ public class StudentProfileComponent extends VerticalLayout {
 
         content = new VerticalLayout();
         content.setWidth("100%");
-        content.setMaxWidth("800px");
+        content.setMaxWidth("1000px");
         content.setAlignItems(Alignment.STRETCH);
 
         setContent(tabs.getSelectedTab());
-
-
         studentInfo.add(iconsProf,rahmen,name,/*location,*/tabs, content);
-
 
         add(studentInfo);
     }
@@ -138,7 +125,7 @@ public class StudentProfileComponent extends VerticalLayout {
     private void setContent(Tab tab) {
         content.removeAll();
 
-
+        //Allgemein
         String branche = student.getBranchen().stream()
                 .map(Branche::getName)
                 .collect(Collectors.joining(", "));
@@ -151,23 +138,17 @@ public class StudentProfileComponent extends VerticalLayout {
         allgemeinDiv.addClassName("myTab");
         allgemeinDiv.add(completeZeile("Studienfach:", (student.getStudienfach().getFach()+"("+(student.getStudienfach().getAbschluss()
                         .equals("Bachelor") ? "B.Sc." : "M.Sc.") +")")),
-                //completeZeile("Hochschulsemester:", "5"),
-
-                completeZeile("Stellen, die mich interessieren:", studentService.getAllJobKategorien(student.getId_Person()).stream()
-                        .map(JobKategorie::getKategorie).collect(Collectors.joining(",")) ),
-                completeZeile("Bevorzugt in der Nähe von:", studentService.getAllOrte(student.getId_Person()).stream().map(Ort::getOrt)
-                        .collect(Collectors.joining(", "))),
-
-
-
-
-                completeZeile("Bevorzugte Branche(n):", branche),
-                completeZeile("Bevorzugte Berufsfelder:", berufsfelder)
-
+                        completeZeile("Stellen, die mich interessieren:", studentService.getAllJobKategorien(student.getId_Person()).stream()
+                                .map(JobKategorie::getKategorie).collect(Collectors.joining(",")) ),
+                        completeZeile("Bevorzugt in der Nähe von:", studentService.getAllOrte(student.getId_Person()).stream()
+                                .map(ort -> ort.getOrt() + " (" + ort.getPLZ()+ ")")
+                                .collect(Collectors.joining(", "))),
+                        completeZeile("Bevorzugte Branche(n):", branche),
+                        completeZeile("Bevorzugte Berufsfelder:", berufsfelder)
         );
 
 
-
+        //Kenntnisse
         Div kenntnisseDiv = new Div();
         kenntnisseDiv.addClassName("myTab");
 
@@ -193,6 +174,8 @@ public class StudentProfileComponent extends VerticalLayout {
             kenntnisseDiv.add(zeileKenn("EDV-Kenntnisse:", beschreibungen));
         }
 
+
+        //Über mich
         Div ueberDiv = new Div();
         ueberDiv.addClassName("myTab");
         ueberDiv.add(student.getFreitext());

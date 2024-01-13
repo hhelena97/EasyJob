@@ -89,6 +89,8 @@ body {
     margin-bottom: 20px;
     overflow-x: hidden;
     overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
 }
 .badge{
     border-radius: 25px;
@@ -96,6 +98,7 @@ body {
     background:  var(--hintergrund-peachy);
     padding: 3px 6px;
     margin-right: 4px;
+    margin-bottom: 4px;
 
 }
 

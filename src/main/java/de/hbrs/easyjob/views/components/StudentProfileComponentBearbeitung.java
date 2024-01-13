@@ -36,7 +36,8 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
 
     private final Student student;
 
-    private VerticalLayout content;
+    private final VerticalLayout studentInfo = new VerticalLayout();
+    private final VerticalLayout content = new VerticalLayout();
 
     //Tabs
     private Tab allgemein;
@@ -118,72 +119,11 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         setPadding(false);
         setSpacing(false);
 
+        //Bildupload in Methode ausgelagert
+        bildUpload();
 
-        //TODO: in Methode auslagern
-        //Bildrahmen
-        Div rahmen = new Div();
-        rahmen.addClassName("profile-picture-frame");
-        Image ellipse = new Image("images/Ellipse-Lila-Groß.png", "Bildumrandung");
-        ellipse.addClassName("profile-picture-background");
-        rahmen.add(ellipse);
-
-        //Platzhalter Bild
-        boolean hasBild = student.getFoto() != null;
-        Image platzhalterBild = new Image(hasBild? student.getFoto(): "images/blank-profile-picture.png", "EasyJob");
-        profilBild2 = platzhalterBild;
-        Div bildDiv = new Div(platzhalterBild);
-        platzhalterBild.addClassName("picture-round");
-        rahmen.add(bildDiv);
-
-        //Bild bearbeiten Button
-        Button bildBearbeiten = new Button("Bild bearbeiten(optional)", new Icon(VaadinIcon.PENCIL));
-        bildBearbeiten.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        bildBearbeiten.addClassName("cancel");
-
-        //Setup Upload
-        MemoryBuffer buffer = new MemoryBuffer();
-        Upload upload = new Upload(buffer);
-        upload.setDropAllowed(false);
-        upload.setAcceptedFileTypes("image/jpeg", "image/jpg, image/png");
-        upload.setUploadButton(bildBearbeiten);
-        Div uploadListe = new Div();
-
-        //Profilbild Upload
-        upload.addSucceededListener(event -> {
-            InputStream fileData = buffer.getInputStream();
-            String fileName = event.getFileName();
-
-            //Custom Upload Liste
-            Div fileInfo = new Div();
-            fileInfo.setText(fileName);
-            fileInfo.addClassName("file-info");
-            Button remove = new Button(new Icon(VaadinIcon.CLOSE));
-            remove.addClassName("remove-file");
-            remove.addThemeVariants(ButtonVariant.LUMO_SMALL);
-            HorizontalLayout dateiName = new HorizontalLayout(fileInfo, remove);
-            dateiName.setAlignItems(Alignment.CENTER);
-
-            //Profilbild entsprechend wechseln
-            Image neuesBild = FileUpload.squareImageUpload(fileData, fileName, 242);
-            upload.addAllFinishedListener(e ->{
-                profilBild2 = neuesBild;
-                uploadListe.add(dateiName);
-                neuesBild.addClassName("picture-round");
-                bildDiv.replace(platzhalterBild, neuesBild);});
-            bildBearbeiten.addClassName("cancel-disabled");
-            remove.addClickListener(e -> {
-                profilBild2 = platzhalterBild;
-                upload.clearFileList();
-                bildDiv.replace(neuesBild, platzhalterBild);
-                dateiName.removeAll();
-                bildBearbeiten.addClassName("cancel");
-            });
-        });
-
-        VerticalLayout studentInfo = new VerticalLayout();
         studentInfo.addClassName("studentInfo");
         studentInfo.setAlignItems(Alignment.CENTER);
-
 
         //Tabs
         allgemein = new Tab("Allgemein");
@@ -195,9 +135,8 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         tabs.addSelectedChangeListener(
                 event -> setContent(event.getSelectedTab()));
 
-        content = new VerticalLayout();
         content.setWidth("100%");
-        content.setMaxWidth("800px");
+        content.setMaxWidth("1000px");
         content.setAlignItems(Alignment.STRETCH);
         setContent(tabs.getSelectedTab());
 
@@ -225,7 +164,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         actions.setJustifyContentMode(JustifyContentMode.CENTER);
         actions.setAlignSelf(Alignment.CENTER,actions);
 
-        studentInfo.add(rahmen,upload,uploadListe, tabs, content, actions);
+        studentInfo.add(tabs, content, actions);
         add(studentInfo);
     }
 
@@ -233,7 +172,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         content.removeAll();
 
         Notification notification = Notification
-                .show("nicht gespeicherte Änderungen werden verworfen");
+                .show("Achtung: nicht gespeicherte Änderungen werden verworfen");
         notification.setPosition(Notification.Position.BOTTOM_START);
       //  notification.setDuration(1);
 
@@ -461,5 +400,70 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         studentService.saveStudent(student);
 
         UI.getCurrent().getPage().setLocation("/student");
+    }
+
+    private void bildUpload(){
+
+        //Bildrahmen
+        Div rahmen = new Div();
+        rahmen.addClassName("profile-picture-frame");
+        Image ellipse = new Image("images/Ellipse-Lila-Groß.png", "Bildumrandung");
+        ellipse.addClassName("profile-picture-background");
+        rahmen.add(ellipse);
+
+        //Platzhalter Bild
+        boolean hasBild = student.getFoto() != null;
+        Image platzhalterBild = new Image(hasBild? student.getFoto(): "images/blank-profile-picture.png", "EasyJob");
+        profilBild2 = platzhalterBild;
+        Div bildDiv = new Div(platzhalterBild);
+        platzhalterBild.addClassName("picture-round");
+        rahmen.add(bildDiv);
+
+        //Bild bearbeiten Button
+        Button bildBearbeiten = new Button("Bild bearbeiten(optional)", new Icon(VaadinIcon.PENCIL));
+        bildBearbeiten.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        bildBearbeiten.addClassName("cancel");
+
+        //Setup Upload
+        MemoryBuffer buffer = new MemoryBuffer();
+        Upload upload = new Upload(buffer);
+        upload.setDropAllowed(false);
+        upload.setAcceptedFileTypes("image/jpeg", "image/jpg, image/png");
+        upload.setUploadButton(bildBearbeiten);
+        Div uploadListe = new Div();
+
+        //Profilbild Upload
+        upload.addSucceededListener(event -> {
+            InputStream fileData = buffer.getInputStream();
+            String fileName = event.getFileName();
+
+            //Custom Upload Liste
+            Div fileInfo = new Div();
+            fileInfo.setText(fileName);
+            fileInfo.addClassName("file-info");
+            Button remove = new Button(new Icon(VaadinIcon.CLOSE));
+            remove.addClassName("remove-file");
+            remove.addThemeVariants(ButtonVariant.LUMO_SMALL);
+            HorizontalLayout dateiName = new HorizontalLayout(fileInfo, remove);
+            dateiName.setAlignItems(Alignment.CENTER);
+
+            //Profilbild entsprechend wechseln
+            Image neuesBild = FileUpload.squareImageUpload(fileData, fileName, 242);
+            upload.addAllFinishedListener(e ->{
+                profilBild2 = neuesBild;
+                uploadListe.add(dateiName);
+                neuesBild.addClassName("picture-round");
+                bildDiv.replace(platzhalterBild, neuesBild);});
+            bildBearbeiten.addClassName("cancel-disabled");
+            remove.addClickListener(e -> {
+                profilBild2 = platzhalterBild;
+                upload.clearFileList();
+                bildDiv.replace(neuesBild, platzhalterBild);
+                dateiName.removeAll();
+                bildBearbeiten.addClassName("cancel");
+            });
+        });
+
+        studentInfo.add(rahmen,upload,uploadListe);
     }
 }
