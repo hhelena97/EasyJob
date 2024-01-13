@@ -50,4 +50,7 @@ public interface JobRepository extends JpaRepository<Job, Integer>, JpaSpecifica
     Set<Job> findAllByUnternehmen(Integer unternehmenID);
     @Query("SELECT j FROM Job j WHERE j.unternehmen.id_Unternehmen = ?1")
     List<Job> findAllByUnternehmenId(int unternehmenId);
+
+    @Query("SELECT j FROM Job j WHERE j.person.id_Person = :uPersonID")
+    List<Job> findAllJobs(int uPersonID);
 }
