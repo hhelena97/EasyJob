@@ -213,7 +213,7 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
                 studienfach.getValue(),
                 homeOffice.getValue()
         );
-        UI.getCurrent().navigate("unternehmen");
+        UI.getCurrent().navigate("unternehmen/unternehmensprofil");
     }
 
     /**
@@ -221,6 +221,6 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
      * Speichert die Stellenanzeige nicht und ruft die Profilseite des Unternehmens auf.
      */
     private void zurueckHandler() {
-        // TODO: Speichern
+        UI.getCurrent().navigate("unternehmen/unternehmensprofil");
     }
 }
