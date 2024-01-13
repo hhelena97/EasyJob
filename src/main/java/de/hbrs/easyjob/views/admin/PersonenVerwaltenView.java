@@ -39,6 +39,7 @@ import javax.annotation.security.RolesAllowed;
 @PageTitle("Personen Verwalten")
 @StyleSheet("Variables.css")
 @StyleSheet("AdminLayout.css")
+@StyleSheet("PersonenVerwaltenView.css")
 @RolesAllowed("ROLE_ADMIN")
 
 public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnterObserver {
@@ -107,7 +108,7 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
     private void initializeView(){
 
         H3 titel = new H3 ("Personen verwalten");
-        titel.addClassName("willkommen-text");
+        titel.addClassName("personentext");
 
         // Suchfeld mit Enter-Aktivierung und Options-Icon
         searchField = new TextField();
@@ -147,22 +148,21 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
             if (person != null) {
                 Div infos = new Div();
+                infos.addClassName("infos");
 
                 //Profil Bild
-                VerticalLayout profilBild = new VerticalLayout();
-                profilBild.setWidth("200px");
+                VerticalLayout profilBild = new VerticalLayout(new Image(person.getFoto() != null ? person.getFoto() : "images/blank-profile-picture.png", "EasyJob"));
                 profilBild.addClassName("profilBild");
-                profilBild.add(new Image(person.getFoto() != null ? person.getFoto() : "images/blank-profile-picture.png", "EasyJob"));
 
                 //Name
-                H2 name = new H2();
-                name.addClassName("name");
-                name.add(person.getVorname() + " " + person.getNachname());
+                H2 name = new H2(person.getVorname() + " " + person.getNachname());
+                name.addClassName("nameM");
 
                 infos.add(profilBild, name);
 
                 //Buttons
                 Div buttons = new Div();
+                buttons.addClassName("buttons");
 
                 //Passwort ändern
                 Dialog dialogPasswortAendern = new Dialog();
@@ -177,7 +177,7 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
                 dialogPasswortAendern.add(inhalt);
 
-                Button btnAbbruch4 = new Button ("abbrechen");
+                Button btnAbbruch4 = new Button ("Abbrechen");
                 btnAbbruch4.addClassName("buttonAbbruch");
                 btnAbbruch4.addClickListener(e -> dialogPasswortAendern.close());
 
@@ -195,6 +195,7 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
                 dialogPasswortAendern.getFooter().add(btnAbbruch4, btnPasswortAendern);
 
                 Button btnneuesPasswort = new Button("Passwort ändern");
+                btnneuesPasswort.addClassName("btnNeuesPasswort");
                 btnneuesPasswort.addClickListener(e -> dialogPasswortAendern.open());
 
 
@@ -221,10 +222,10 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
                 if (person instanceof Student) {
                     Student student = (Student) person;
-                    personLayout.add(new AdminStudentProfileComponent(student, "AdminProfilVerwalten.css", studentService));
+                    personLayout.add(new AdminStudentProfileComponent(student, "PersonenVerwaltenView.css", studentService));
                 } else if (person instanceof Unternehmensperson) {
                     Unternehmensperson uperson = (Unternehmensperson) person;
-                    personLayout.add(new AdminUnternehmenspersonProfileComponent(uperson, "AdminProfilVerwalten.css", unternehmenService));
+                    personLayout.add(new AdminUnternehmenspersonProfileComponent(uperson, "PersonenVerwaltenView.css", unternehmenService));
                 }
             } else if (person instanceof Admin) {
                 Paragraph admininfo = new Paragraph("Das ist ein Admin.");

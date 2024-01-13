@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.views.components;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
@@ -21,6 +22,7 @@ import de.hbrs.easyjob.views.student.EinstellungenUebersichtStudentView;
 
 import java.util.stream.Collectors;
 
+@StyleSheet("PersonenVerwaltenView.css")
 public class AdminStudentProfileComponent extends VerticalLayout {
     private Student student;
 
@@ -77,8 +79,9 @@ public class AdminStudentProfileComponent extends VerticalLayout {
         content = new VerticalLayout();
         //content.setSpacing(false);
         // content.setPadding(false);
-        content.setWidth("100%");
+        content.setWidth("95%");
         content.setAlignItems(Alignment.STRETCH);
+        content.addClassName("content");
 
         setContent(tabs.getSelectedTab());
 
