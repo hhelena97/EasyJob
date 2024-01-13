@@ -3,8 +3,6 @@ package de.hbrs.easyjob.views.unternehmen;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -21,8 +19,6 @@ import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.controllers.OrtController;
 import de.hbrs.easyjob.controllers.PersonController;
 import de.hbrs.easyjob.controllers.SessionController;
-import de.hbrs.easyjob.entities.Ort;
-import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
@@ -46,8 +42,6 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     @Autowired
     private final UnternehmenService unternehmenService;
 
-    TextField strasse = new TextField();
-
     OrtController ortController;
     PersonController personControler;
 
@@ -62,12 +56,16 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     Image profilBild2;
     VerticalLayout personKontakt = new VerticalLayout();
 
-    UnternehmenspersonProfilBearbeitungView(PersonService personService, UnternehmenService unternehmenService, SessionController sessionController,OrtController ortController,PersonController personControler){
+    UnternehmenspersonProfilBearbeitungView(PersonService personService,
+                                            UnternehmenService unternehmenService,
+                                            SessionController sessionController,
+                                            OrtController ortController,
+                                            PersonController personController){
         this.personService = personService;
         this.unternehmenService = unternehmenService;
         this.sessionController = sessionController;
         this.ortController = ortController;
-        this.personControler = personControler;
+        this.personControler = personController;
         person = (Unternehmensperson) sessionController.getPerson();
         initialView();
     }
@@ -179,9 +177,6 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
         back.addClassName("back");
         back.addClickListener(e -> UI.getCurrent().getPage().setLocation("/unternehmen/unternehmenperson"));
 
-        Button cancel = new Button("Abbrechen");
-        //cancel.addClickListener(e -> abbrechenDialog.openDialogOverlay());
-        cancel.addClassName("cancel");
 
         // Buttons Container
         HorizontalLayout actions = new HorizontalLayout(back, next);
