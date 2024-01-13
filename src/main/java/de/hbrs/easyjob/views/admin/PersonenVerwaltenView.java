@@ -149,9 +149,9 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
             if (person != null) {
                 Div infos = new Div();
                 infos.addClassName("infos");
-
+                String foto = person.getFoto() != null ? person.getFoto() : "images/blank-profile-picture.png";
                 //Profil Bild
-                VerticalLayout profilBild = new VerticalLayout(new Image(person.getFoto() != null ? person.getFoto() : "images/blank-profile-picture.png", "EasyJob"));
+                VerticalLayout profilBild = new VerticalLayout(new Image(foto, "EasyJob"));
                 profilBild.addClassName("profilBild");
 
                 //Name

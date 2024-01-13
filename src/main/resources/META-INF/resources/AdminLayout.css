@@ -213,17 +213,16 @@ vaadin-vertical-layout {
 
 .profilBild{
     width: 200px;
-    height: 200px;
-    border-radius: 155px;
+    height: 230px;
+    border-radius: 230px;
     border: 4px solid lightgray;
     align-self: center;
 }
 
 .profilBild img{
-
     width: 200px;
     height: 200px;
-    border-radius: 155px;
+    border-radius: 200px;
     background-repeat: no-repeat;
     background-position: center;
 
