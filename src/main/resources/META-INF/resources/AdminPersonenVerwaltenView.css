@@ -4,6 +4,11 @@ body {
     font-family: Rubik, sans-serif; /* Rubik als Standardschriftart und fallback sans-serif */
 }
 
+.para {
+    padding: 0px 0 0 0;
+    margin: 5px 0 0 0;
+}
+
 .titel{
     color: var(--hintergrund-weiß);
     padding-left: 27px;
@@ -14,6 +19,27 @@ body {
     padding-bottom: 20px;
     padding-right: 82px;
     padding-top: 25px;
+}
+
+.all {
+    padding-left: 10px;
+    margin-bottom: 100px;
+}
+
+.job-title H1 {
+    color: var(--admin-dark) !important;
+    font-size: 18px;
+    font-family: Rubik, sans-serif;
+    font-weight: bold;
+    word-wrap: break-word;
+    margin: 19px 0 0 14px;
+}
+
+.iconsInJobIcons{
+    width: 15px;
+    height: 15px;
+    color: var(--admin-dark) !important;
+    flex-shrink: 0;
 }
 
 .search-field {
@@ -85,14 +111,14 @@ vaadin-vertical-layout {
     flex-direction: column;
     display: flex;
     align-items: center;
-    height: 130px;
+    height: 110px;
     width: 100%;
     max-width: 630px;
     padding-top: 15px;
 }
 
 .profilBild{
-    width: 200px;
+    width: 100%;
     height: 230px;
     align-self: center;
 }
@@ -230,8 +256,18 @@ vaadin-vertical-layout {
 
 }
 
+.personInfo {
+    display: block !important;
+}
 
 .completeZeile{
     margin-bottom: 17px;
+}
+
+.job-card {
+    width: 100%;
+    align-items: stretch;
+    margin-top: -0px !important;
+    margin-left: -5px !important;
 }
 

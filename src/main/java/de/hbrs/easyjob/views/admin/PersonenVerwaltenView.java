@@ -39,7 +39,7 @@ import javax.annotation.security.RolesAllowed;
 @PageTitle("Personen Verwalten")
 @StyleSheet("Variables.css")
 @StyleSheet("AdminLayout.css")
-@StyleSheet("PersonenVerwaltenView.css")
+@StyleSheet("AdminPersonenVerwaltenView.css")
 @RolesAllowed("ROLE_ADMIN")
 
 public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnterObserver {
@@ -222,10 +222,11 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
                 if (person instanceof Student) {
                     Student student = (Student) person;
-                    personLayout.add(new AdminStudentProfileComponent(student, "PersonenVerwaltenView.css", studentService));
+                    personLayout.add(new AdminStudentProfileComponent(student, "AdminPersonenVerwaltenView.css", studentService));
                 } else if (person instanceof Unternehmensperson) {
+                    System.out.println("Unternehmensperson");
                     Unternehmensperson uperson = (Unternehmensperson) person;
-                    personLayout.add(new AdminUnternehmenspersonProfileComponent(uperson, "PersonenVerwaltenView.css", unternehmenService));
+                    personLayout.add(new AdminUnternehmenspersonProfileComponent(uperson, "AdminPersonenVerwaltenView.css", unternehmenService));
                 }
             } else if (person instanceof Admin) {
                 Paragraph admininfo = new Paragraph("Das ist ein Admin.");

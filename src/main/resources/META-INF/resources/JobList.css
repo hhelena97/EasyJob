@@ -95,12 +95,14 @@ vaadin-text-field::part(input-field) {
     justify-content: center;
     align-items: center;
 }
+
 .iconsInJobIcons{
     width: 15px;
     height: 15px;
     color: #A3336F;
     flex-shrink: 0;
 }
+
 .titleIcons  {
     color:  #323232;
     font-family: Rubik, sans-serif;

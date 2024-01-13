@@ -90,4 +90,8 @@ public class UnternehmenService {
         return result;
 
     }
+
+    public List<Job> getAllJobsByUnternehmenspersonId(Integer id){
+        return jobRepository.findAllJobs(id);
+    }
 }

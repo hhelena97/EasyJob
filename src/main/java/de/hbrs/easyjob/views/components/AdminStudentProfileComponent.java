@@ -22,7 +22,7 @@ import de.hbrs.easyjob.views.student.EinstellungenUebersichtStudentView;
 
 import java.util.stream.Collectors;
 
-@StyleSheet("PersonenVerwaltenView.css")
+@StyleSheet("AdminPersonenVerwaltenView.css")
 public class AdminStudentProfileComponent extends VerticalLayout {
     private Student student;
 
@@ -56,10 +56,8 @@ public class AdminStudentProfileComponent extends VerticalLayout {
         setPadding(false);
         setSpacing(false);
 
-
-
-
         VerticalLayout studentInfo = new VerticalLayout();
+
         studentInfo.addClassName("studentInfo");
         studentInfo.setAlignItems(Alignment.CENTER);
 
