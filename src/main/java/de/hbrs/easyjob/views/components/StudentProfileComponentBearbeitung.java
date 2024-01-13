@@ -9,6 +9,7 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -24,6 +25,7 @@ import de.hbrs.easyjob.repositories.*;
 import de.hbrs.easyjob.services.FaehigkeitService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
+import de.hbrs.easyjob.views.components.FileUpload;
 
 import java.io.InputStream;
 import java.util.HashSet;
@@ -117,7 +119,9 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         setPadding(false);
         setSpacing(false);
 
-        UI.getCurrent().getPage().addStyleSheet("Registrieren.css");
+
+
+
 
 
         addClassName("all");
@@ -236,7 +240,12 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
     }
 
     private void setContent(Tab tab) {
-        if(content.getComponentCount() != 0){content.removeAll();}
+        content.removeAll();
+
+        Notification notification = Notification
+                .show("nicht gespeicherte Änderungen werden verworfen");
+        notification.setPosition(Notification.Position.BOTTOM_START);
+      //  notification.setDuration(1);
 
         //Allgemein-Tab
         if(tab.equals(allgemein)) {
