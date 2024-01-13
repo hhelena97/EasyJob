@@ -206,10 +206,10 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
                 if(person.getGesperrt()){
                     sperrbutton = "Profil entsperren";
-                    personSperrenDialog(person, d);
-                } else {
-                    sperrbutton = "Profil entsperren";
                     personEntperrenDialog(person, d);
+                } else {
+                    sperrbutton = "Profil sperren";
+                    personSperrenDialog(person, d);
                 }
 
                 Button btnSperren = new Button(sperrbutton);
@@ -226,7 +226,9 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
                 } else if (person instanceof Unternehmensperson) {
                     System.out.println("Unternehmensperson");
                     Unternehmensperson uperson = (Unternehmensperson) person;
-                    personLayout.add(new AdminUnternehmenspersonProfileComponent(uperson, "AdminPersonenVerwaltenView.css", unternehmenService));
+                    personLayout.add(new AdminUnternehmenspersonProfileComponent(
+                            personRepository, unternehmenRepository, uperson,
+                            "AdminPersonenVerwaltenView.css", unternehmenService));
                 }
             } else if (person instanceof Admin) {
                 Paragraph admininfo = new Paragraph("Das ist ein Admin.");
@@ -258,8 +260,11 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
         Button btnBestaetigen = new Button("Person sperren");
         btnBestaetigen.addClassName("buttonBestaetigen");
         btnBestaetigen.addClickListener(e -> {
-            profilSperrenController.personSperren(person);
-            dialog.close();
+            if (profilSperrenController.personSperren(person)){
+                dialog.close();
+            } else {
+                Notification.show("Die Person konnte nicht gesperrt werden");
+            }
         });
         dialog.getFooter().add(btnAbbruch2, btnBestaetigen);
     }

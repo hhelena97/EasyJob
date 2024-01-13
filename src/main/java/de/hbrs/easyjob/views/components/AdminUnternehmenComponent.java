@@ -3,21 +3,23 @@ package de.hbrs.easyjob.views.components;
 import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.IconFactory;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.JobProfilController;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
-import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.entities.Person;
-import de.hbrs.easyjob.entities.Unternehmen;
-import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.controllers.ProfilSperrenController;
+import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.services.UnternehmenService;
+import de.hbrs.easyjob.views.admin.EinstellungenStartView;
 import de.hbrs.easyjob.views.admin.PersonenVerwaltenView;
+import org.springframework.stereotype.Component;
 
 
 public class AdminUnternehmenComponent extends VerticalLayout {
@@ -29,11 +31,11 @@ public class AdminUnternehmenComponent extends VerticalLayout {
     private final ProfilDeaktivierenController deaktivierenController;
     private final UnternehmenService unternehmenService;
 
-    public AdminUnternehmenComponent(Unternehmen unternehmen, String styleClass, ProfilDeaktivierenController deaktivierenController,
+    public AdminUnternehmenComponent(Unternehmen unternehmen, String styleClass, ProfilDeaktivierenController sperrenController,
                                      UnternehmenService unternehmenService){
         this.unternehmen = unternehmen;
         this.style = styleClass;
-        this.deaktivierenController = deaktivierenController;
+        this.deaktivierenController = sperrenController;
         this.unternehmenService = unternehmenService;
         initializeComponent();
     }
@@ -60,20 +62,30 @@ public class AdminUnternehmenComponent extends VerticalLayout {
         TitelUnternehmen.add(unternehmen.getName());
 
         //Dialog zum Nachfragen beim Sperren
-        Div nachfragen = new Div();
-        Paragraph p;
-        Button btnDialogSperren;
-        Unternehmensperson manager = unternehmen.getUnternehmensperson();
+        Dialog d = new Dialog();
+        d.add(new Paragraph("Wollen Sie " + unternehmen.getName() +
+                " sperren? Damit werden auch alle Personen zu diesem Unternehmen gesperrt."));
 
-        p = new Paragraph ("Wollen Sie " + unternehmen.getName() +
-                    " sperren? Damit werden auch alle Personen zu diesem Unternehmen gesperrt.");
-        btnDialogSperren = new Button("sperren", e-> deaktivierenController.profilDeaktivierenUnternehmen(manager));
+        Button btnAbbruch2 = new Button("abbrechen");
+        btnAbbruch2.addClassName("buttonAbbruch");
+        btnAbbruch2.addClickListener(e -> {
+            d.close();
+        });
 
-        nachfragen.add(p, btnDialogSperren);
-        DialogLayout d = new DialogLayout(true);
+        Button btnBestaetigen = new Button("Unternehmen sperren");
+        btnBestaetigen.addClassName("buttonBestaetigen");
+        btnBestaetigen.addClickListener(e -> {
+            if (deaktivierenController.profilDeaktivierenUnternehmen(unternehmen.getUnternehmensperson())){
+                d.close();
+            } else {
+                Notification.show("Die Person konnte nicht gesperrt werden");
+            }
+        });
+        d.getFooter().add(btnAbbruch2, btnBestaetigen);
 
-        Button btnSperren = new Button("sperren", e-> d.insertContentDialogContent("", nachfragen, "abbrechen", "???"));
+        Button btnSperren = new Button("Unternehmen sperren");
         btnSperren.addClassName("btnSperren");
+        btnSperren.addClickListener(e -> d.open());
 
         oben.add(bildUnternehmen, TitelUnternehmen, btnSperren);
 

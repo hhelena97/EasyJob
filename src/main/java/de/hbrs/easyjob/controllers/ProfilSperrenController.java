@@ -64,9 +64,10 @@ public class ProfilSperrenController {
                 unternehmenSperren(((Unternehmensperson) person).getUnternehmen());
             }
         }
-        if(!person.getGesperrt()) {
-            personRepository.save(person).setGesperrt(true);
-        }
+        person.setGesperrt(true);
+        System.out.println(person.getGesperrt());
+        personRepository.save(person);
+
         return personRepository.save(person).getGesperrt();
     }
 

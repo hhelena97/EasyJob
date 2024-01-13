@@ -2,19 +2,25 @@ package de.hbrs.easyjob.views.components;
 
 import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.JobProfilController;
+import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.repositories.PersonRepository;
+import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.admin.PersonenVerwaltenView;
 import de.hbrs.easyjob.views.student.UnternehmenProfilView;
@@ -28,6 +34,8 @@ import java.util.List;
 @StyleSheet("JobList.css")
 public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
 
+    private final PersonRepository personRepository;
+    private final UnternehmenRepository unternehmenRepository;
     private Unternehmensperson person;
     private final String style;
 
@@ -39,7 +47,10 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
     JobProfilController jobController = new JobProfilController();
 
 
-    public AdminUnternehmenspersonProfileComponent(Unternehmensperson person, String styleClass, UnternehmenService unternehmenservice){
+    public AdminUnternehmenspersonProfileComponent(PersonRepository personRepository, UnternehmenRepository unternehmenRepository,
+            Unternehmensperson person, String styleClass, UnternehmenService unternehmenservice){
+        this.personRepository = personRepository;
+        this.unternehmenRepository = unternehmenRepository;
         this.person = person;
         this.unternehmen = person.getUnternehmen();
         this.style = styleClass;
@@ -64,8 +75,22 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         //Link zu Unternehmen
         Paragraph unternehmenProfil = new Paragraph("zum Unternehmensprofil");
         unternehmenProfil.addClassName("unternehmenProfil");
-        /*RouterLink linkUnternehmen = new RouterLink(AdminUnternehmenComponent.class);
-        linkUnternehmen.add(unternehmenProfil);*/
+        Dialog d1 = new Dialog();
+
+        Div infos = new Div();
+        infos.add(new AdminUnternehmenComponent(person.getUnternehmen() ,"AdminLayout.css",
+                new ProfilDeaktivierenController(personRepository, unternehmenRepository),unternehmenService));
+
+
+        d1.add(infos);
+
+        Button dSchliessen = new Button ("Schließen");
+        dSchliessen.addClassName("buttonAbbruch");
+        dSchliessen.addClickListener(e -> d1.close());
+
+        d1.getFooter().add(dSchliessen);
+
+        unternehmenProfil.addClickListener(e-> d1.open());
 
 
         //Person Info
@@ -82,7 +107,7 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         p.addClassName("para");
         pa.addClassName("para");
 
-        personInfo.add(kon,p,pa);
+        personInfo.add(unternehmenProfil,kon,p,pa);
 
         // Job Section
         H3 jobsTitle = new H3("Eingestellte Jobs");
@@ -123,9 +148,31 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         Icon ii =  i.create();
         ii.addClassName("iconsInJobIcons");
 
-        RouterLink titleIconsUnternehmen = new RouterLink("", UnternehmenProfilView.class, job.getUnternehmen().getId_Unternehmen());
-        titleIconsUnternehmen.addClassName("titleIcons");
-        titleIconsUnternehmen.add(job.getUnternehmen().getName());
+
+        Paragraph unternehmenProfil = new Paragraph("zum Unternehmensprofil");
+        unternehmenProfil.getStyle().set("color","#289a32");
+        Dialog d1 = new Dialog();
+
+        Div infos = new Div();
+        infos.add(new AdminUnternehmenComponent(person.getUnternehmen() ,"AdminLayout.css",
+                new ProfilDeaktivierenController(personRepository, unternehmenRepository),unternehmenService));
+
+
+        d1.add(infos);
+
+        Button dSchliessen = new Button ("Schließen");
+        dSchliessen.addClassName("buttonAbbruch");
+        dSchliessen.addClickListener(e -> d1.close());
+
+        d1.getFooter().add(dSchliessen);
+
+        unternehmenProfil.addClickListener(e-> d1.open());
+        //ende kopie
+
+        H1 zumUnternhemen = new H1 (job.getUnternehmen().getName());
+        zumUnternhemen.getStyle().set("color","#289a32");
+        zumUnternhemen.addClassName("titleIcons");
+        zumUnternhemen.addClickListener(e -> d1.open());
 
         Icon ll =  new Icon(VaadinIcon.MAP_MARKER);
         ll.addClassName("iconsInJobIcons");
@@ -139,9 +186,9 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
             H1 homeOffice = new H1();
             homeOffice.addClassName("titleIcons");
             homeOffice.add("Homeoffice");
-            companyAndLocation.add(ii,titleIconsUnternehmen,ll,titleIconsLocation,gg,homeOffice);
+            companyAndLocation.add(ii,zumUnternhemen,ll,titleIconsLocation,gg,homeOffice);
         }else {
-            companyAndLocation.add(ii,titleIconsUnternehmen,ll,titleIconsLocation);
+            companyAndLocation.add(ii,zumUnternhemen,ll,titleIconsLocation);
         }
         // Jobbeschreibung mit "...", wenn sie zu lang ist
         Paragraph jobDescription = new Paragraph(limitText(job.getFreitext(), 230));

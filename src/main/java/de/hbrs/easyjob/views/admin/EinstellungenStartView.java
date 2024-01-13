@@ -249,7 +249,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         btnAdminAnlegen.addClickListener(e -> {
             Admin adminNeu = new Admin();
             adminNeu.setAktiv(true);
-            //adminNeu.setGesperrt(false);
+            adminNeu.setGesperrt(false);
             adminNeu.setEmail(emailneu.getValue());
             PasswortService pws = new PasswortService(personRepository);
             boolean passwortPruefen = pws.newPassword(adminNeu, pwneu.getValue(), pwrp.getValue());
