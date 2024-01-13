@@ -25,7 +25,6 @@ import de.hbrs.easyjob.repositories.*;
 import de.hbrs.easyjob.services.FaehigkeitService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
-import de.hbrs.easyjob.views.components.FileUpload;
 
 import java.io.InputStream;
 import java.util.HashSet;
@@ -35,7 +34,7 @@ import java.util.Set;
 @StyleSheet("StudentProfilView.css")
 public class StudentProfileComponentBearbeitung extends VerticalLayout {
 
-    private Student student;
+    private final Student student;
 
     private VerticalLayout content;
 
@@ -113,16 +112,6 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         }
 
         UI.getCurrent().getPage().addStyleSheet(style);
-
-        addClassName("all");
-        setSizeFull();
-        setPadding(false);
-        setSpacing(false);
-
-
-
-
-
 
         addClassName("all");
         setSizeFull();
@@ -208,6 +197,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
 
         content = new VerticalLayout();
         content.setWidth("100%");
+        content.setMaxWidth("800px");
         content.setAlignItems(Alignment.STRETCH);
         setContent(tabs.getSelectedTab());
 

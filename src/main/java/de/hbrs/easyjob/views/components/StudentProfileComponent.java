@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class StudentProfileComponent extends VerticalLayout {
-    private Student student;
+    private final Student student;
 
     private  Tab allgemein;
     private  Tab kenntnisse;
@@ -123,6 +123,7 @@ public class StudentProfileComponent extends VerticalLayout {
 
         content = new VerticalLayout();
         content.setWidth("100%");
+        content.setMaxWidth("800px");
         content.setAlignItems(Alignment.STRETCH);
 
         setContent(tabs.getSelectedTab());
@@ -191,13 +192,6 @@ public class StudentProfileComponent extends VerticalLayout {
                     .toArray(String[]::new);
             kenntnisseDiv.add(zeileKenn("EDV-Kenntnisse:", beschreibungen));
         }
-        /*kenntnisseDiv.add(zeileKenn("Programmiersprachen:" , new String[]{"Java", "C#", "Python"}),
-                zeileKenn("Betriebsysteme:" , new String[]{"Windows(desktop)", "macOS"} ),
-                zeileKenn("Datenbanken:" , new String[]{"PostgreSQL"} ),
-                zeileKenn("Frameworks, Bibliotheken und Umgebungen:" , new String[]{"Eclipse", "JUnit","Pandas","NumPy"} ),
-                zeileKenn("Methoden:" , new String[]{"CI/CD", "TDD","Scrum","UML"} ),
-                zeileKenn("Rollen und Tätigkeiten:" , new String[]{"Backend Entwicklung", " Frontend Entwicklung"} )
-        );*/
 
         Div ueberDiv = new Div();
         ueberDiv.addClassName("myTab");
