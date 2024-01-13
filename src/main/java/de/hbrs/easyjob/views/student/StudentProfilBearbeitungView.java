@@ -8,6 +8,7 @@ import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.OrtController;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.repositories.*;
+import de.hbrs.easyjob.services.FaehigkeitService;
 import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
@@ -31,15 +32,17 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
     private final StudentService studentService;
     private final PersonService personService;
 
+    final FaehigkeitService faehigkeitService;
+
     @Autowired
     StudienfachRepository studienfachRepository;
-
     @Autowired
     BerufsFeldRepository berufsFeldRepository;
     @Autowired
     BrancheRepository brancheRepository;
     @Autowired
     JobKategorieRepository jobKategorieRepository;
+    final FaehigkeitRepository faehigkeitRepository;
     @Autowired
     OrtController ortController;
 
@@ -50,9 +53,10 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
                                         BerufsFeldRepository berufsFelderRepository,
                                         BrancheRepository brancheRepository,
                                         JobKategorieRepository jobKategorieRepository,
-                                        OrtController ortController
+                                        OrtController ortController,
+                                        FaehigkeitRepository faehigkeitRepository,
+                                        FaehigkeitService faehigkeitService) {
 
-    ) {
         this.studentService = studentService;
         this.personService = personService;
         this.studienfachRepository = studienfachRepository;
@@ -60,6 +64,8 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
         this.brancheRepository = brancheRepository;
         this.jobKategorieRepository = jobKategorieRepository;
         this.ortController = ortController;
+        this.faehigkeitRepository = faehigkeitRepository;
+        this.faehigkeitService = faehigkeitService;
         SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
         if(context != null) {
             Authentication auth = context.getAuthentication();
@@ -72,6 +78,8 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
         } else {
             UI.getCurrent().navigate(LoginView.class);
         }
+
+
     }
 
     private void initializeView() {
@@ -82,11 +90,13 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
         StudentProfileComponentBearbeitung studentProfile = new StudentProfileComponentBearbeitung(student,
                 "StudentProfilView.css",
                 studentService,
+                faehigkeitService,
                 studienfachRepository,
                 berufsFeldRepository,
-              brancheRepository,
+                brancheRepository,
                 jobKategorieRepository,
-                 ortController
+                faehigkeitRepository,
+                ortController
         );
         add(studentProfile);
     }

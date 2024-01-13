@@ -13,70 +13,88 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import de.hbrs.easyjob.controllers.OrtController;
 import de.hbrs.easyjob.entities.*;
-import de.hbrs.easyjob.repositories.BerufsFeldRepository;
-import de.hbrs.easyjob.repositories.BrancheRepository;
-import de.hbrs.easyjob.repositories.JobKategorieRepository;
-import de.hbrs.easyjob.repositories.StudienfachRepository;
+import de.hbrs.easyjob.repositories.*;
+import de.hbrs.easyjob.services.FaehigkeitService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
-import de.hbrs.easyjob.views.components.FileUpload;
 
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @StyleSheet("StudentProfilView.css")
 public class StudentProfileComponentBearbeitung extends VerticalLayout {
-    private Student person;
 
-    private  Tab allgemein;
-    private  Tab kenntnisse;
-    private  Tab ueberMich;
+    private Student student;
 
+    private VerticalLayout content;
+
+    //Tabs
+    private Tab allgemein;
+    private Tab kenntnisse;
+    private Tab ueberMich;
+    Div allgemeinDiv;
+    Div kenntnisseDiv;
+
+    //Allgemein
     TextField vorname;
     TextField nachname;
     ComboBox<String> abschluss = new ComboBox<>();
     ComboBox<Studienfach> studiengang  = new ComboBox<>();
-
     MultiSelectComboBox<Ort> standort = new MultiSelectComboBox<>();
     MultiSelectComboBox<JobKategorie> berufsbezeichnung= new MultiSelectComboBox<>();
     MultiSelectComboBox<Branche> branche= new MultiSelectComboBox<>();
     MultiSelectComboBox<BerufsFelder> berufsfeld= new MultiSelectComboBox<>();
-    private  VerticalLayout content;
 
-    Div allgemeinDiv;
-    private final String style;
+    //Kenntnisse
+    TextArea ausbildung = new TextArea();
+    TextArea praxisErfahrung = new TextArea();
+    MultiSelectComboBox<Faehigkeit> sprachen = new MultiSelectComboBox<>();
+    MultiSelectComboBox<Faehigkeit> edvKenntnisse = new MultiSelectComboBox<>();
 
-    private final StudentService personService;
+    //Über mich
+    TextArea freitext = new TextArea();
+
+    //Services, Controller, Repositories
+    private final StudentService studentService;
+    private final FaehigkeitService faehigkeitService;
     StudienfachRepository studienfachRepository;
     BerufsFeldRepository berufsFeldRepository;
     BrancheRepository brancheRepository;
     JobKategorieRepository jobKategorieRepository;
+    FaehigkeitRepository faehigkeitRepository;
     OrtController ortController;
 
     Image profilBild2;
-    VerticalLayout personKontakt = new VerticalLayout();
-
+    private final String style;
 
     public StudentProfileComponentBearbeitung(Student student,
                                               String styleClass,
                                               StudentService studentService,
+                                              FaehigkeitService faehigkeitService,
                                               StudienfachRepository studienfachRepository,
                                               BerufsFeldRepository berufsFelderRepository,
                                               BrancheRepository brancheRepository,
                                               JobKategorieRepository jobKategorieRepository,
+                                              FaehigkeitRepository faehigkeitRepository,
                                               OrtController ortController
-
                                     ) {
-        this.person = student;
-        this.personService = studentService;
+        this.student = student;
+        this.studentService = studentService;
+        this.faehigkeitService = faehigkeitService;
         this.studienfachRepository = studienfachRepository;
         this.berufsFeldRepository = berufsFelderRepository;
         this.brancheRepository = brancheRepository;
         this.jobKategorieRepository = jobKategorieRepository;
+        this.faehigkeitRepository = faehigkeitRepository;
         this.ortController = ortController;
         style=styleClass;
 
@@ -87,7 +105,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
 
     private void initializeComponent() {
 
-        if (person == null) {
+        if (student == null) {
             UI.getCurrent().navigate(LoginView.class);
             return;
         }
@@ -99,13 +117,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         setPadding(false);
         setSpacing(false);
 
-
-
-
-        UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilBearbeitungView.css");
-        UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilView.css");
         UI.getCurrent().getPage().addStyleSheet("Registrieren.css");
-        UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilView.css");
 
 
         addClassName("all");
@@ -114,6 +126,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         setSpacing(false);
 
 
+        //TODO: in Methode auslagern
         //Bildrahmen
         Div rahmen = new Div();
         rahmen.addClassName("profile-picture-frame");
@@ -122,8 +135,8 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         rahmen.add(ellipse);
 
         //Platzhalter Bild
-        boolean hasBild = person.getFoto() != null;
-        Image platzhalterBild = new Image(hasBild? person.getFoto(): "images/blank-profile-picture.png", "EasyJob");
+        boolean hasBild = student.getFoto() != null;
+        Image platzhalterBild = new Image(hasBild? student.getFoto(): "images/blank-profile-picture.png", "EasyJob");
         profilBild2 = platzhalterBild;
         Div bildDiv = new Div(platzhalterBild);
         platzhalterBild.addClassName("picture-round");
@@ -174,53 +187,9 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
             });
         });
 
-
-
-
-        //Person Info
-        VerticalLayout personInfo = new VerticalLayout();
-        personInfo.addClassName("personInfo");
-        personInfo.setAlignItems(Alignment.CENTER);
-
-
-
-
-
-
-
-
-
-
-
-
-        // Buttons
-        Button next = new Button("fertig", new Icon(VaadinIcon.ARROW_RIGHT));
-        next.addClassName("next");
-        next.addClickListener(e -> updateInfos());
-
-        Button back = new Button("Zurück", new Icon(VaadinIcon.ARROW_LEFT));
-        back.addClassName("back");
-        back.addClickListener(e -> UI.getCurrent().getPage().setLocation("/student"));
-
-        Button cancel = new Button("Abbrechen");
-        //cancel.addClickListener(e -> abbrechenDialog.openDialogOverlay());
-        cancel.addClassName("cancel");
-
-        // Buttons Container
-        HorizontalLayout actions = new HorizontalLayout(back, next);
-        actions.setSpacing(true);
-        actions.setJustifyContentMode(JustifyContentMode.CENTER);
-
-        personKontakt.add(actions);
-        personKontakt.setAlignSelf(Alignment.CENTER,actions);
-
-
-
         VerticalLayout studentInfo = new VerticalLayout();
         studentInfo.addClassName("studentInfo");
         studentInfo.setAlignItems(Alignment.CENTER);
-
-
 
 
         //Tabs
@@ -229,117 +198,159 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         ueberMich = new Tab("Über mich");
 
         Tabs tabs = new Tabs(allgemein, kenntnisse, ueberMich);
+
         tabs.addSelectedChangeListener(
-                event -> { setContent(event.getSelectedTab());
-                });
+                event -> setContent(event.getSelectedTab()));
 
         content = new VerticalLayout();
-        //content.setSpacing(false);
-        // content.setPadding(false);
         content.setWidth("100%");
         content.setAlignItems(Alignment.STRETCH);
-
         setContent(tabs.getSelectedTab());
 
+        // Buttons
+        Button next = new Button("Fertig", new Icon(VaadinIcon.CHECK));
+        next.addClassName("next");
+        next.addClickListener(e -> {
+            if(tabs.getSelectedTab().equals(allgemein)) updateAllgemein();
+            else if(tabs.getSelectedTab().equals(kenntnisse)) updateKenntnisse();
+            else if (tabs.getSelectedTab().equals(ueberMich)){
+                student.setFreitext(freitext.getValue());
+                studentService.saveStudent(student);
+                UI.getCurrent().getPage().setLocation("/student");
+            }
+        });
 
-        studentInfo.add(rahmen,upload,uploadListe,/*location,*/tabs, content, personKontakt);
+        Button back = new Button("Abbrechen", new Icon(VaadinIcon.CLOSE));
+        back.addClassName("back");
+        back.addClickListener(e -> UI.getCurrent().getPage().setLocation("/student"));
 
 
+        // Buttons Container
+        HorizontalLayout actions = new HorizontalLayout(back, next);
+        actions.setSpacing(true);
+        actions.setJustifyContentMode(JustifyContentMode.CENTER);
+        actions.setAlignSelf(Alignment.CENTER,actions);
+
+        studentInfo.add(rahmen,upload,uploadListe, tabs, content, actions);
         add(studentInfo);
     }
 
     private void setContent(Tab tab) {
-        content.removeAll();
+        if(content.getComponentCount() != 0){content.removeAll();}
 
+        //Allgemein-Tab
+        if(tab.equals(allgemein)) {
+            allgemeinDiv = new Div();
+            allgemeinDiv.addClassName("myTab");
 
-        allgemeinDiv = new Div();
-        allgemeinDiv.addClassName("myTab");
+            vorname = completeZeile("allgemein", "Vorname:", student.getVorname());
+            nachname = completeZeile("allgemein", "Nachname:", student.getNachname());
 
-        vorname = completeZeile("Vorname:" , person.getVorname());
-        nachname = completeZeile("Nachname:" , person.getNachname());
-
-        //Combo-Boxen
-        abschluss.setItems("Bachelor", "Master");
-        abschluss.setValue("Bachelor");
-        studiengang.setItems(studienfachRepository.findAllByAbschluss("Bachelor"));
-        studiengang.setItemLabelGenerator(Studienfach::getFach);
-        abschluss.setRequiredIndicatorVisible(true);
-        abschluss.addValueChangeListener(e ->
-        {
-            if (abschluss.getValue().equals("Bachelor")) {
-                studiengang.setItems(studienfachRepository.findAllByAbschluss("Bachelor"));
-                studiengang.setItemLabelGenerator(Studienfach::getFach);
-            } else if (abschluss.getValue().equals("Master")) {
-                studiengang.setItems(studienfachRepository.findAllByAbschluss("Master"));
-                studiengang.setItemLabelGenerator(Studienfach::getFach);
+            abschluss.setItems("Bachelor", "Master");
+            abschluss.setValue("Bachelor");
+            if (student.getStudienfach() != null) {
+                String meinAbschluss = student.getStudienfach().getAbschluss();
+                if (meinAbschluss.equals("Master")) {
+                    abschluss.setValue("Master");
+                }
+                studienfachChanger(meinAbschluss);
+                studiengang.setValue(student.getStudienfach());
             }
-        });
+            abschluss.addValueChangeListener(e -> {
+                if(!abschluss.isEmpty()) {
+                    studienfachChanger(abschluss.getValue());
+                }
+            });
 
-        studiengang.setRequired(true);
 
-        if (person.getStudienfach() != null) {
-            abschluss.setValue(person.getStudienfach().getAbschluss());
-            studiengang.setValue(person.getStudienfach());
+            completeZeile("allgemein", "Abschluss:", "abschluss");
+            completeZeile("allgemein", "Studienfach:", "studiengang");
+
+            berufsbezeichnung.getStyle().set("--lumo-contrast-60pct", "--hintergrund-weiß");
+            berufsbezeichnung.setItems(jobKategorieRepository.findAll());
+            berufsbezeichnung.setItemLabelGenerator(JobKategorie::getKategorie);
+            if(student.getJobKategorien() != null) berufsbezeichnung.setValue(student.getJobKategorien());
+
+            branche.getStyle().set("--lumo-contrast-60pct", "--hintergrund-weiß");
+            branche.setItems(brancheRepository.findAll());
+            branche.setItemLabelGenerator(Branche::getName);
+            if(student.getBranchen() != null) branche.setValue(student.getBranchen());
+
+            berufsfeld.getStyle().set("--lumo-contrast-60pct", "--hintergrund-weiß");
+            berufsfeld.setItems(berufsFeldRepository.findAll());
+            berufsfeld.setItemLabelGenerator(BerufsFelder::getName);
+            if(student.getBerufsFelder() != null) berufsfeld.setValue(student.getBerufsFelder());
+
+            standort.getStyle().set("--lumo-contrast-60pct", "--hintergrund-weiß");
+            standort.setItems(ortController.getOrtItemFilter(), ortController.getAlleOrte());
+            standort.setItemLabelGenerator(ortController.getOrtItemLabelGenerator());
+            if(student.getOrte() != null) standort.setValue(student.getOrte());
+
+            completeZeile("allgemein", "Stellen, die mich interessieren:", "berufsbezeichnung");
+            completeZeile("allgemein", "Bevorzugt in der Nähe von:", "standort");
+            completeZeile("allgemein", "Bevorzugte Branche(n):", "branche");
+            completeZeile("allgemein", "Bevorzugte Berufsfelder:", "berufsfeld");
+
+            content.add(allgemeinDiv);
         }
 
-        completeZeile("Abschluss:", "abschluss");
-        completeZeile("Studienfach:", "studiengang");
+        //Kenntnisse-Tab
+        else if (tab.equals(kenntnisse)) {
 
+            kenntnisseDiv = new Div();
+            kenntnisseDiv.addClassName("myTab");
 
+            ausbildung.setHeight("150px");
+            if(faehigkeitService.findSingleFaehigkeitByKategorieForStudent(student, "Ausbildung") != null) {
+                ausbildung.setValue(faehigkeitService.findSingleFaehigkeitByKategorieForStudent(student, "Ausbildung").getBezeichnung());
+            }
 
-        berufsbezeichnung.getStyle().set("--lumo-contrast-60pct","--hintergrund-weiß");
-        berufsbezeichnung.setItems(jobKategorieRepository.findAll());
-        berufsbezeichnung.setItemLabelGenerator(JobKategorie::getKategorie);
-        berufsbezeichnung.setValue(person.getJobKategorien());
+            praxisErfahrung.setHeight("150px");
+            if(faehigkeitService.findSingleFaehigkeitByKategorieForStudent(student, "Praxiserfahrung") != null) {
+                praxisErfahrung.setValue(faehigkeitService.findSingleFaehigkeitByKategorieForStudent(student, "Praxiserfahrung").getBezeichnung());
+            }
 
-        branche.getStyle().set("--lumo-contrast-60pct","--hintergrund-weiß");
-        branche.setItems(brancheRepository.findAll());
-        branche.setItemLabelGenerator(Branche::getName);
-        branche.setValue(person.getBranchen());
+            sprachen.getStyle().set("--lumo-contrast-60pct", "--hintergrund-weiß");
+            sprachen.setItems(faehigkeitService.findAllByKategorie("Sprache"));
+            sprachen.setItemLabelGenerator(Faehigkeit::getBezeichnung);
+            Set<Faehigkeit> meineSprachen = faehigkeitService.findFaehigkeitByKategorieForStudent(student, "Sprache");
+            if(meineSprachen != null) sprachen.setValue(meineSprachen);
 
-        berufsfeld.getStyle().set("--lumo-contrast-60pct","--hintergrund-weiß");
-        berufsfeld.setItems(berufsFeldRepository.findAll());
-        berufsfeld.setItemLabelGenerator(BerufsFelder::getName);
-        berufsfeld.setValue(person.getBerufsFelder());
+            edvKenntnisse.getStyle().set("--lumo-contrast-60pct", "--hintergrund-weiß");
+            edvKenntnisse.setItems(faehigkeitService.findAllByKategorie("EDV"));
+            edvKenntnisse.setItemLabelGenerator(Faehigkeit::getBezeichnung);
+            Set<Faehigkeit> meineEDV = faehigkeitService.findFaehigkeitByKategorieForStudent(student, "EDV");
+            if(meineEDV != null) edvKenntnisse.setValue(meineEDV);
 
-        standort.getStyle().set("--lumo-contrast-60pct","--hintergrund-weiß");
-        standort.setItems(ortController.getOrtItemFilter(), ortController.getAlleOrte());
-        standort.setItemLabelGenerator(ortController.getOrtItemLabelGenerator());
-        standort.setRequired(true);
-        standort.setValue(person.getOrte());
+            completeZeile("kenntnisse","Ausbildung:", "ausbildung");
+            completeZeile("kenntnisse","Praxiserfahrung:", "praxiserfahrung");
+            completeZeile("kenntnisse", "Sprachen:", "sprachen");
+            completeZeile("kenntnisse","EDV-Kenntnisse:", "edv");
 
-
-        completeZeile("Stellen, die mich interessieren:", "berufsbezeichnung");
-        completeZeile("Bevorzugt in der Nähe von:", "standort");
-        completeZeile("Bevorzugte Branche(n):", "branche");
-        completeZeile("Bevorzugte Berufsfelder:","berufsfeld");
-
-
-        Div kenntnisseDiv = new Div();
-        kenntnisseDiv.addClassName("myTab");
-
-
-        Div ueberDiv = new Div();
-        ueberDiv.addClassName("myTab");
-
-
-
-
-        if (tab.equals(allgemein)) {
-            content.add(allgemeinDiv);
-        } else if (tab.equals(kenntnisse)) {
             content.add(kenntnisseDiv);
-        } else if (tab.equals(ueberMich)){
+        }
+
+        //Über mich-Tab
+        else if (tab.equals(ueberMich)){
+            Div ueberDiv = new Div();
+            ueberDiv.addClassName("myTab");
+
+            if(student.getFreitext() != null) freitext.setValue(student.getFreitext());
+            freitext.setHelperText("Maximal 250 Zeichen");
+            short charLimit = 250;
+            freitext.setMaxLength(charLimit);
+            freitext.setValueChangeMode(ValueChangeMode.EAGER);
+            freitext.addValueChangeListener(e -> e.getSource()
+                    .setHelperText(e.getValue().length() + "/" + charLimit));
+
+            ueberDiv.add(freitext);
             content.add(ueberDiv);
         }
     }
 
 
 
-
-
-
-    private TextField completeZeile(String title, String wert){
+    private TextField completeZeile(String tab, String title, String wert){
 
         HorizontalLayout titleH = new HorizontalLayout();
         titleH.setSizeFull();
@@ -350,65 +361,106 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         wertH.addClassName("wert");
         TextField textField = new TextField();
 
-        if(wert == "abschluss"){
+        if(Objects.equals(wert, "abschluss")){
             wertH.add(abschluss);
-        }else if (wert == "studiengang"){
+        }else if (Objects.equals(wert, "studiengang")){
             wertH.add(studiengang);
-        }else if(wert == "standort"){
+        }else if(Objects.equals(wert, "standort")){
             wertH.add(standort);
-        }else if(wert == "berufsbezeichnung"){
+        }else if(Objects.equals(wert, "berufsbezeichnung")){
             wertH.add(berufsbezeichnung);
-        }else if(wert == "branche"){
+        }else if(Objects.equals(wert, "branche")){
             wertH.add(branche);
-        }else if(wert == "berufsfeld"){
+        }else if(Objects.equals(wert, "berufsfeld")){
             wertH.add(berufsfeld);
+        }else if(Objects.equals(wert, "ausbildung")){
+            wertH.add(ausbildung);
+        }else if(Objects.equals(wert, "praxiserfahrung")){
+            wertH.add(praxisErfahrung);
+        }else if(Objects.equals(wert, "sprachen")){
+            wertH.add(sprachen);
+        }else if(Objects.equals(wert, "edv")) {
+            wertH.add(edvKenntnisse);
         }else{
             textField.addClassName("feld");
             textField.setValue(wert);
             wertH.add(textField);
         }
 
-
-
         HorizontalLayout completeZeile = new HorizontalLayout(titleH,wertH);
         completeZeile.setAlignItems(Alignment.STRETCH);
         completeZeile.addClassName("completeZeile");
 
-        allgemeinDiv.add(completeZeile);
+        if(tab.equals("allgemein")) {
+            allgemeinDiv.add(completeZeile);
+        } else if (tab.equals("kenntnisse")) {
+            kenntnisseDiv.add(completeZeile);
+        }
 
         return textField;
-
     }
 
+    private void studienfachChanger(String selected){
+        if (selected.equals("Bachelor")) {
+            studiengang.setItems(studienfachRepository.findAllByAbschluss("Bachelor"));
+            studiengang.setItemLabelGenerator(Studienfach::getFach);
+        } else if (selected.equals("Master")) {
+            studiengang.setItems(studienfachRepository.findAllByAbschluss("Master"));
+            studiengang.setItemLabelGenerator(Studienfach::getFach);
+        }
+    }
+    private void updateAllgemein(){
 
-    private void updateInfos(){
-
-        person.setVorname(vorname.getValue());
-        person.setNachname(nachname.getValue());
-
+        student.setVorname(vorname.getValue());
+        student.setNachname(nachname.getValue());
 
         abschluss.setValue(abschluss.getValue());
         studiengang.setValue(studiengang.getValue());
 
-        if (person.getStudienfach() != null) {
-            person.setStudienfach(studiengang.getValue());
+        if (student.getStudienfach() != null) {
+            student.setStudienfach(studiengang.getValue());
         }
 
+        student.setOrte(standort.getSelectedItems());
+        student.setBranchen(branche.getSelectedItems());
+        student.setBerufsFelder(berufsfeld.getSelectedItems());
+        student.setJobKategorien(berufsbezeichnung.getSelectedItems());
 
-
-
-        person.setOrte(standort.getSelectedItems());
-        person.setBranchen(branche.getSelectedItems());
-        person.setBerufsFelder(berufsfeld.getSelectedItems());
-        person.setJobKategorien(berufsbezeichnung.getSelectedItems());
-
-
-
-        personService.saveStudent(person);
+        studentService.saveStudent(student);
 
         UI.getCurrent().getPage().setLocation("/student");
+    }
 
+    private void updateKenntnisse(){
 
+        Faehigkeit meineAusbildung = faehigkeitService.findSingleFaehigkeitByKategorieForStudent(student, "Ausbildung");
+        if(meineAusbildung != null){
+            meineAusbildung.setBezeichnung(ausbildung.getValue());
+        }else {
+            meineAusbildung = new Faehigkeit("Ausbildung", ausbildung.getValue());
+            faehigkeitRepository.save(meineAusbildung);
+        }
 
+        Faehigkeit meineErfahrung = faehigkeitService.findSingleFaehigkeitByKategorieForStudent(student, "Praxiserfahrung");
+        if(meineErfahrung != null){
+            meineErfahrung.setBezeichnung(praxisErfahrung.getValue());
+        }else  {
+            meineErfahrung = new Faehigkeit("Praxiserfahrung", praxisErfahrung.getValue());
+            faehigkeitRepository.save(meineErfahrung);
+        }
+
+        Set<Faehigkeit> meineEdvKenntnisse = edvKenntnisse.getSelectedItems();
+        Set<Faehigkeit> meineSprachen = sprachen.getSelectedItems();
+
+        Set<Faehigkeit> meineFaehigkeiten = new HashSet<>();
+        meineFaehigkeiten.add(meineAusbildung);
+        meineFaehigkeiten.add(meineErfahrung);
+        meineFaehigkeiten.addAll(meineEdvKenntnisse);
+        meineFaehigkeiten.addAll(meineSprachen);
+
+        student.setFaehigkeiten(meineFaehigkeiten);
+        studentService.saveStudent(student);
+
+        UI.getCurrent().getPage().setLocation("/student");
     }
 }

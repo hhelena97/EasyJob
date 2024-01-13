@@ -10,12 +10,13 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.entities.*;
+import de.hbrs.easyjob.services.FaehigkeitService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.student.EinstellungenUebersichtStudentView;
 import de.hbrs.easyjob.views.student.StudentProfilBearbeitungView;
-import java.util.StringJoiner;
 
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class StudentProfileComponent extends VerticalLayout {
@@ -28,11 +29,13 @@ public class StudentProfileComponent extends VerticalLayout {
     private final String style;
 
     private final StudentService studentService;
+    private final FaehigkeitService faehigkeitService;
 
 
-    public StudentProfileComponent(Student student, String styleClass, StudentService studentService) {
+    public StudentProfileComponent(Student student, String styleClass, StudentService studentService, FaehigkeitService faehigkeitService) {
         this.student = student;
         this.studentService = studentService;
+        this.faehigkeitService = faehigkeitService;
         style=styleClass;
         initializeComponent();
     }
@@ -92,7 +95,6 @@ public class StudentProfileComponent extends VerticalLayout {
         //Platzhalter Bild
         boolean hasBild = student.getFoto() != null;
         Image platzhalterBild = new Image(hasBild? student.getFoto(): "images/blank-profile-picture.png", "EasyJob");
-        Image profilBild2 = platzhalterBild;
         Div bildDiv = new Div(platzhalterBild);
         platzhalterBild.addClassName("picture-round");
         rahmen.add(bildDiv);
@@ -101,27 +103,6 @@ public class StudentProfileComponent extends VerticalLayout {
         H1 name = new H1();
         name.addClassName("name");
         name.add(student.getVorname() +" "+ student.getNachname());
-
-        //Ort
-        /*
-        HorizontalLayout location = new HorizontalLayout();
-        location.addClassName("location");
-        location.setSpacing(false);
-        location.setPadding(false);
-        location.setMargin(false);
-
-        IconFactory lo = FontAwesome.Solid.MAP_MARKED_ALT;
-        Icon loc =  lo.create();
-        loc.addClassName("iconsInUnternehmen");
-
-        H1 stadt = new H1();
-        stadt.addClassName("stadt");
-        stadt.add("Bonn");
-
-        location.add(loc, stadt);
-
-         */
-
 
 
         VerticalLayout studentInfo = new VerticalLayout();
@@ -138,12 +119,9 @@ public class StudentProfileComponent extends VerticalLayout {
 
         Tabs tabs = new Tabs(allgemein, kenntnisse, ueberMich);
         tabs.addSelectedChangeListener(
-                event -> { setContent(event.getSelectedTab());
-                });
+                event -> setContent(event.getSelectedTab()));
 
         content = new VerticalLayout();
-        //content.setSpacing(false);
-        // content.setPadding(false);
         content.setWidth("100%");
         content.setAlignItems(Alignment.STRETCH);
 
@@ -192,21 +170,38 @@ public class StudentProfileComponent extends VerticalLayout {
         Div kenntnisseDiv = new Div();
         kenntnisseDiv.addClassName("myTab");
 
+        Faehigkeit ausbildung = faehigkeitService.findSingleFaehigkeitByKategorieForStudent(student, "Ausbildung");
+        if(ausbildung != null) kenntnisseDiv.add(completeZeile("Ausbildung:", ausbildung.getBezeichnung()));
 
-        kenntnisseDiv.add(zeileKenn("Programmiersprachen:" , new String[]{"Java", "C#", "Python"}),
+        Faehigkeit erfahrung = faehigkeitService.findSingleFaehigkeitByKategorieForStudent(student, "Praxiserfahrung");
+        if(erfahrung != null) kenntnisseDiv.add(completeZeile("Praxiserfahrung:", erfahrung.getBezeichnung()));
+
+        Set<Faehigkeit> sprachen = faehigkeitService.findFaehigkeitByKategorieForStudent(student, "Sprache");
+        if(sprachen != null) {
+            String[] beschreibungen = sprachen.stream()
+                    .map(Faehigkeit::getBezeichnung)
+                    .toArray(String[]::new);
+            kenntnisseDiv.add(zeileKenn("Sprachen:", beschreibungen));
+        }
+
+        Set<Faehigkeit> edv = faehigkeitService.findFaehigkeitByKategorieForStudent(student, "EDV");
+        if(edv != null) {
+            String[] beschreibungen = edv.stream()
+                    .map(Faehigkeit::getBezeichnung)
+                    .toArray(String[]::new);
+            kenntnisseDiv.add(zeileKenn("EDV-Kenntnisse:", beschreibungen));
+        }
+        /*kenntnisseDiv.add(zeileKenn("Programmiersprachen:" , new String[]{"Java", "C#", "Python"}),
                 zeileKenn("Betriebsysteme:" , new String[]{"Windows(desktop)", "macOS"} ),
                 zeileKenn("Datenbanken:" , new String[]{"PostgreSQL"} ),
                 zeileKenn("Frameworks, Bibliotheken und Umgebungen:" , new String[]{"Eclipse", "JUnit","Pandas","NumPy"} ),
                 zeileKenn("Methoden:" , new String[]{"CI/CD", "TDD","Scrum","UML"} ),
                 zeileKenn("Rollen und Tätigkeiten:" , new String[]{"Backend Entwicklung", " Frontend Entwicklung"} )
-        );
+        );*/
 
         Div ueberDiv = new Div();
         ueberDiv.addClassName("myTab");
         ueberDiv.add(student.getFreitext());
-
-
-
 
 
         if (tab.equals(allgemein)) {
@@ -216,28 +211,6 @@ public class StudentProfileComponent extends VerticalLayout {
         } else if (tab.equals(ueberMich)){
             content.add(ueberDiv);
         }
-    }
-
-
-
-
-    public Div zeileDiv(String beschreibung, String wert ) {
-        Div divReturn = new Div();
-        divReturn.addClassName("divReturn");
-
-        Div beschreibungDiv = new Div();
-        beschreibungDiv.addClassName("zeileDiv");
-        beschreibungDiv.add(beschreibung);
-
-        Div wertDiv = new Div();
-        wertDiv.addClassName("zeileDiv");
-        wertDiv.add(wert);
-
-        divReturn.addClassName("divReturn");
-        divReturn.add(beschreibungDiv,wertDiv);
-
-        return divReturn;
-
     }
 
     public Div zeileKenn(String beschreibung, String[] wert ) {
@@ -259,14 +232,10 @@ public class StudentProfileComponent extends VerticalLayout {
             wertDiv.add(pending);
         }
 
-
-
-
         divReturn.addClassName("divReturn");
         divReturn.add(beschreibungDiv,wertDiv);
 
         return divReturn;
-
     }
 
     private HorizontalLayout completeZeile(String title, String wert){

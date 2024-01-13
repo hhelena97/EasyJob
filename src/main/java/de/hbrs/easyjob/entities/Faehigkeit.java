@@ -44,4 +44,8 @@ public class Faehigkeit {
         return Objects.hash(id_Faehigkeit, bezeichnung, kategorie);
     }
 
+    public void setBezeichnung(String bezeichnung){
+        this.bezeichnung = bezeichnung;
+    }
+
 }
