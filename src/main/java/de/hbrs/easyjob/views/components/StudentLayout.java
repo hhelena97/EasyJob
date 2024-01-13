@@ -33,18 +33,16 @@ public class StudentLayout extends AppLayout {
     private Tabs getTabs() {
 
         Tabs tabs = new Tabs();
-        tabs.add(createTab(FontAwesome.Solid.USER, "meinProfil", StudentProfilView.class),
-                createTab(FontAwesome.Solid.BRIEFCASE, "Orders", JobsUebersichtView.class),
-                createTab(FontAwesome.Solid.USERS, "Unternehmen", SwapStudentView.class),
-                createTab(FontAwesome.Solid.BELL, "BenachrichtigungenView", BenachrichtigungenView.class),
-                createTab(FontAwesome.Solid.ENVELOPE, "ChatsView", ChatsView.class));
+        tabs.add(createTab(FontAwesome.Solid.USER, StudentProfilView.class),
+                createTab(FontAwesome.Solid.BRIEFCASE, JobsUebersichtView.class),
+                createTab(FontAwesome.Solid.ENVELOPE, ChatsView.class));
         tabs.addThemeVariants(TabsVariant.LUMO_MINIMAL,
                 TabsVariant.LUMO_EQUAL_WIDTH_TABS);
 
         return tabs;
     }
 
-    private Tab createTab(IconFactory viewIcon, String viewName, Class<? extends com.vaadin.flow.component.Component> navigationTarget) {
+    private Tab createTab(IconFactory viewIcon, Class<? extends com.vaadin.flow.component.Component> navigationTarget) {
         Icon icon = viewIcon.create();
         icon.addClassName("icon");
         RouterLink link = new RouterLink();

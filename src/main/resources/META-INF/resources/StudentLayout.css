@@ -1,21 +1,6 @@
-html{
-    box-sizing: border-box;
-    margin: 0;
-
-    --lumo-primary-text-color: #A3336F;
-    --lumo-secondary-text-color: #BFBEBE ;
-
-}
-body {
-    width: 100%;
-    margin: 0;
-
+html {
+    --lumo-primary-text-color: var(--studierende-dark);
 }
 
-.icon{
-    width: 25px;
-    height: 25px;
-
-}
 
 
