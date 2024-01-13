@@ -325,8 +325,12 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
             wertH.add(textField);
         }
 
-        HorizontalLayout completeZeile = new HorizontalLayout(titleH,wertH);
-        completeZeile.setAlignItems(Alignment.STRETCH);
+        HorizontalLayout completeZeile = new HorizontalLayout();
+        completeZeile.setWidthFull();
+        completeZeile.add(titleH);
+        completeZeile.setAlignItems(Alignment.START);
+        completeZeile.add(wertH);
+        completeZeile.setAlignItems(Alignment.END);
         completeZeile.addClassName("completeZeile");
 
         if(tab.equals("allgemein")) {

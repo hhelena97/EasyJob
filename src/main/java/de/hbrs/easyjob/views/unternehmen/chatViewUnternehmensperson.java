@@ -62,41 +62,13 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
         String topic = parts[0];
         Integer Id = Integer.parseInt(parts[1]);
 
-
-
-
         if (topic.equals("Job")) {
             Job job = jobService.getJobById(Id);
             createOrGetChatForJob(job, topicId);
-        } else if (topic.equals("Student")) {
-            Student student = studentService.getStudentByID(Id);
-            createOrGetChatForStudent(student, topicId);
-        } else {
-            System.out.println("Topic is null");
-            return;
         }
 
-
     }
 
-    private void createOrGetChatForStudent(Student student, String topic) {
-        Component header = createChatHeader(jobService.getJobById(1));
-        Person person = sessionController.getPerson();
-        UserInfo currentUserInfo = new UserInfo(person.getId_Person() + "", person.getVorname() + " " + person.getNachname());
-
-        VerticalLayout messageLayout = getVerticalLayout(topic, person, currentUserInfo);
-
-        // Gesamtes Chat-Layout
-        VerticalLayout chatLayout = new VerticalLayout(header, messageLayout);
-        chatLayout.setFlexGrow(0, header);
-        chatLayout.setFlexGrow(1, messageLayout);
-        chatLayout.setSizeFull();
-        chatLayout.setAlignItems(Alignment.STRETCH);
-
-        add(chatLayout);
-        setSizeFull();
-        setPadding(false);
-    }
 
     private void createOrGetChatForJob(Job job, String topic) {
         Person person = sessionController.getPerson();
@@ -108,6 +80,7 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
         VerticalLayout messageLayout = getVerticalLayout(topic, person, currentUserInfo);
 
         // Gesamtes Chat-Layout
+
         VerticalLayout chatLayout = new VerticalLayout(header, messageLayout);
         chatLayout.setFlexGrow(0, header);
         chatLayout.setFlexGrow(1, messageLayout);
@@ -176,7 +149,7 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
         chevronLeft.setSize("1em");
         chevronLeft.addClickListener(event -> {
             // Logik um zur Chatübersicht zu navigieren
-            UI.getCurrent().navigate(ChatsView.class); // Den tatsächlichen Pfad zur Chatübersicht einsetzen
+            UI.getCurrent().navigate("unternehmen/nachrichten");
         });
         zurueck.add(chevronLeft);
 
@@ -201,6 +174,7 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
 
         card.add(frame);
         card.setWidthFull();
+        card.setJustifyContentMode(JustifyContentMode.BETWEEN);
         return card;
     }
 

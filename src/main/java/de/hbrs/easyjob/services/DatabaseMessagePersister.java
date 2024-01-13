@@ -12,6 +12,7 @@ import de.hbrs.easyjob.repositories.NachrichtRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 @SpringComponent
@@ -31,6 +32,18 @@ public class DatabaseMessagePersister implements CollaborationMessagePersister  
     public Stream<CollaborationMessage> fetchMessages(FetchQuery query) {
         Chat chat = chatService.createOrGetChat(query.getTopicId());
 
+        List<Nachricht> nachrichten = chatService.getNachrichten(chat);
+
+        nachrichten.stream()
+                .filter(nachricht -> nachricht.getAbsender() != null)
+                .forEach(nachricht -> {
+                    if(!Objects.equals(nachricht.getAbsender().getId_Person(), sessionController.getPerson().getId_Person())&&
+                            !nachricht.isGelesen()){
+                        nachricht.setGelesen(true);
+                        chatService.updateNachricht(nachricht);
+                    }
+
+                });
         return chatService.getNachrichten(chat).stream()
                 .filter(nachricht -> nachricht.getZeitpunkt().equals(query.getSince()) || nachricht.getZeitpunkt().isAfter(query.getSince()))
                 .filter(nachricht -> nachricht.getAbsender() != null)
@@ -38,7 +51,8 @@ public class DatabaseMessagePersister implements CollaborationMessagePersister  
                         new UserInfo(nachricht.getAbsender().getId_Person().toString(), nachricht.getAbsender().getVorname()+" "+nachricht.getAbsender().getNachname(),
                                 nachricht.getAbsender().getFoto()!= null ? nachricht.getAbsender().getFoto() : "images/blank-profile-picture.png"),
                         nachricht.getTextfeld(),
-                        nachricht.getZeitpunkt())
+                        nachricht.getZeitpunkt()
+                        )
                 );
     }
 

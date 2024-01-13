@@ -89,6 +89,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         validEmailField.getElement().setAttribute("name", "email");
         validEmailField.setValue("");
         validEmailField.setErrorMessage("Enter a valid email address");
+        validEmailField.setId("emailloginfeld_id");
         validEmailField.setClearButtonVisible(true);
         validEmailField.setId("emailloginfeld_id");
 
@@ -132,9 +133,14 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         logButton.addClickListener(e -> {
             String username = validEmailField.getValue();
             String password = passwordField.getValue();
+
             if (!sessionController.login(username, password)) {
                 Notification.show("Authentifizierung fehlgeschlagen.");
-            } else if (sessionController.hasRole("ROLE_ADMIN")) {
+            }else if(sessionController.getPerson().getGesperrt() && !sessionController.getPerson().getAktiv()){
+                sessionController.logout();
+                Notification.show("Profil ist inaktiv oder wurde gesperrt. Bitte melde dich an einen Admin.");
+            }
+            else if(sessionController.hasRole("ROLE_ADMIN")) {
                 UI.getCurrent().navigate("admin");
             } else if (sessionController.hasRole("ROLE_STUDENT")) {
                 UI.getCurrent().navigate("student");

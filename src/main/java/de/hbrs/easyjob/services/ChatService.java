@@ -99,4 +99,8 @@ public class ChatService {
     public void saveNachricht(Nachricht nachricht) {
         nachrichtRepository.save(nachricht);
     }
+
+    public void updateNachricht(Nachricht nachricht) {
+        nachrichtRepository.save(nachricht);
+    }
 }

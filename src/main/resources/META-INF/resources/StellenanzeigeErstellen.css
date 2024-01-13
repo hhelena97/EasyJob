@@ -41,8 +41,7 @@ vaadin-multi-select-combo-box {
 }
 
 vaadin-multi-select-combo-box::part(chip) {
-    /* TODO: Farben anpassen */
-    background-color: magenta;
+    background-color: var(--unternehmen-dark);
     color: white;
     border-radius: 10px;
 }
