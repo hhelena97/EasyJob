@@ -10,7 +10,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
-import de.hbrs.easyjob.controllers.JobProfilController;
+//import de.hbrs.easyjob.controllers.JobProfilController;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Person;
