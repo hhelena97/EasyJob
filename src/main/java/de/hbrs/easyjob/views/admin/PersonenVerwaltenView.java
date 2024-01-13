@@ -1,7 +1,6 @@
 package de.hbrs.easyjob.views.admin;
 
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -15,18 +14,18 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
-import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
+import de.hbrs.easyjob.controllers.ProfilSperrenController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Admin;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.services.UnternehmenService;
-import de.hbrs.easyjob.views.admin.dialog.PasswortAendernDialogView;
 import de.hbrs.easyjob.views.components.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -43,14 +42,18 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
     private final PersonRepository personRepository;
     private final UnternehmenRepository unternehmenRepository;
 
+    private final JobRepository jobRepository;
+
     private final SessionController sessionController;
+
+    private final ProfilSperrenController profilSperrenController;
 
     private VerticalLayout personLayout;
 
     TextField searchField;
     String email;
 
-    private final ProfilDeaktivierenController personSperrencController;
+
 
     private String sperrbutton = "Profil sperren";
 
@@ -60,14 +63,14 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
 
 
-    public PersonenVerwaltenView(SessionController sessionController,
+    public PersonenVerwaltenView(SessionController sessionController, JobRepository jobRepository,
                                  UnternehmenRepository unternehmenRepository, PersonRepository personRepository,
-                                 ProfilDeaktivierenController profilDeaktivierenController,
                                  StudentService studentService, UnternehmenService unternehmenService) {
         this.sessionController = sessionController;
         this.personRepository = personRepository;
         this.unternehmenRepository = unternehmenRepository;
-        this.personSperrencController = profilDeaktivierenController;
+        this.jobRepository = jobRepository;
+        this.profilSperrenController = new ProfilSperrenController(personRepository, unternehmenRepository, jobRepository);
         this.studentService = studentService;
         this.unternehmenService = unternehmenService;
         initializeView();
@@ -187,33 +190,22 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
                 btnneuesPasswort.addClickListener(e -> dialogPasswortAendern.open());
 
 
-                //Sperr-Button mit Nachfrage
-                if(person.getAktiv()){
-                    sperrbutton = "Profil sperren";
-                } else {
-                    sperrbutton = "Profil entsperren";
-                }
+                //Person sperren
+
                 //Dialog zum Nachfragen
-                Button btnSperren = new Button(sperrbutton);
                 Dialog d = new Dialog();
 
-
-                Paragraph p;
-                Button btnDialogSperren;
-
-                if (!person.getAktiv()){
-                    personSperrenDialog();
-
-
+                if(person.getGesperrt()){
+                    sperrbutton = "Profil entsperren";
+                    personSperrenDialog(person, d);
                 } else {
-                    p = new Paragraph ("Wollen Sie " + person.getVorname() + " " + person.getNachname() + " entsperren?");
-                    btnDialogSperren = new Button("entsperren", e-> personSperrencController.profilReaktivierenPerson(person));
+                    sperrbutton = "Profil entsperren";
+                    personEntperrenDialog(person, d);
                 }
-                nachfragen.add(p, btnDialogSperren);
-                DialogLayout d = new DialogLayout(true);
 
-                Button btnSperren = new Button(sperrbutton, e-> d.insertContentDialogContent("", nachfragen, "abbrechen", "???"));
+                Button btnSperren = new Button(sperrbutton);
                 btnSperren.addClassName("btnSperren");
+                btnSperren.addClickListener(e -> d.open());
 
                 buttons.add(btnneuesPasswort, btnSperren);
 
@@ -256,9 +248,28 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
         Button btnBestaetigen = new Button("Person sperren");
         btnBestaetigen.addClassName("buttonBestaetigen");
         btnBestaetigen.addClickListener(e -> {
-            personSperrencController.profilDeaktivierenPerson(person);
+            profilSperrenController.personSperren(person);
             dialog.close();
         });
         dialog.getFooter().add(btnAbbruch2, btnBestaetigen);
+    }
+
+    private void personEntperrenDialog(Person person, Dialog dialog){
+
+        dialog.add(new Paragraph("Wollen Sie " + person.getVorname() + " " + person.getNachname() + " entsperren?"));
+
+        Button btnAbbruch3 = new Button("abbrechen");
+        btnAbbruch3.addClassName("buttonAbbruch");
+        btnAbbruch3.addClickListener(e -> {
+            dialog.close();
+        });
+
+        Button btnBestaetigen = new Button("Person entsperren");
+        btnBestaetigen.addClassName("buttonBestaetigen");
+        btnBestaetigen.addClickListener(e -> {
+            profilSperrenController.personEntsperren(person);
+            dialog.close();
+        });
+        dialog.getFooter().add(btnAbbruch3, btnBestaetigen);
     }
 }

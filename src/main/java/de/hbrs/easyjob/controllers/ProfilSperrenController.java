@@ -1,9 +1,6 @@
 package de.hbrs.easyjob.controllers;
 
-import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.entities.Person;
-import de.hbrs.easyjob.entities.Unternehmen;
-import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
@@ -13,22 +10,20 @@ import java.util.List;
 
 public class ProfilSperrenController {
 
-    //TODO: immer wenn Profil aufgerufen wird muss geprüft werden, ob die Spalte Aktiv false oder true ist:
-    // nur aufrufen, wenn true ist.
-
     private final PersonRepository personRepository;
-@Autowired
-    private UnternehmenRepository unternehmenRepository;
 
-    @Autowired
-    private JobRepository jobRepository;
+    private final UnternehmenRepository unternehmenRepository;
+
+    private final JobRepository jobRepository;
 
     /**
      * Konstruktor
      * @param pR Repository Person
      */
-    public ProfilSperrenController(PersonRepository pR) {
+    public ProfilSperrenController(PersonRepository pR, UnternehmenRepository uR, JobRepository jR) {
         this.personRepository = pR;
+        this.unternehmenRepository = uR;
+        this.jobRepository = jR;
     }
 
 
@@ -40,78 +35,87 @@ public class ProfilSperrenController {
      */
     public boolean personSperren(Person person) {
 
-        //Todo: prüfen, ob die Person eine Unternehmensperson ist und wenn ja, prüfen ob sie
-        // Manager des Unternehmens ist. Wenn ja, weitere Person suchen,
-        //die dadurch Manager wird, ansonsten Unternehmen mit deaktivieren.
-
-        if (person == null) {
+        if (person == null){
             return false;
         }
-        //person.isGesperrt(true);
-        //boolean gesperrt = personRepository.save(person).isGesperrt();
-        return true;
+
+        if (person instanceof Unternehmensperson){
+            Unternehmen u = ((Unternehmensperson) person).getUnternehmen();
+            /* Todo: suche das Unternehmen heraus,
+            schaue nach, ob die Person Manager ist,
+            wenn ja, schaue nach, ob es noch mehr Mitarbeiter gibt und mache den nächsten zum neuen Manager
+            wenn nein, sperre das Unternehmen
+
+            u = unternehmenRepository.findById(u.getId_Unternehmen());
+            Unternehmensperson manager = u.getUnternehmensperson();
+            if (manager.getId_Person() == person.getId_Person()){
+                List<Person> mitarbeiter = personRepository.findAllByUnternehmenId(u.getId_Unternehmen());
+                if (mitarbeiter.size() > 1){
+                    //mache den nächsten Mitarbeiter zum neuen Manager
+                    Unternehmensperson neuerManager = mitarbeiter.get(1);
+                    unternehmenRepository.save(u).getUnternehmensperson(neuerManager);
+                } else {
+                    unternehmenSperren(u);
+                }
+            }
+            */
+
+            // Todo: alle Jobs des Mitarbeiters sperren
+        }
+        personRepository.save(person).setGesperrt(true);
+        return personRepository.save(person).getGesperrt();
     }
 
     /**
-     * Der Manager kann das Profil des unternehmens deaktivieren. Sein Account, sowie der Account aller zugehörigen
-     * Unternehmenspersonen wird ebenfalls deaktiviert.
-     * @param manager Manager des Unternehmens
+     * Ein Unternehmen sperren, sperrt alle Mitarbeiter und Jobs des Unternehmens
+     * @param unternehmen, das Unternehmen, dass gesperrt werden soll.
      * @return true, wenn alles fertig ist und geklappt hat
      */
-    public boolean profilDeaktivierenUnternehmen(Unternehmensperson manager) {
-        if(manager == null) {
+    public boolean unternehmenSperren(Unternehmen unternehmen) {
+        if(unternehmen == null) {
             return false;
         }
-
-        Unternehmen unternehmen = manager.getUnternehmen();
 
         // Unternehmensprofil deaktivieren
-        unternehmen.setAktiv(false);
-        if (unternehmenRepository.save(unternehmen).isAktiv()) {
-            // Gebe false zurück, falls Unternehmen noch aktiv ist
-            return false;
-        }
-
-        // alle unternehmenspersonen rausfiltern und über andere Methode deaktivieren
+        //finde alle Mitarbeiter des Unternehmens und sperre sie
         boolean success = true;
         List<Person> mitarbeiter = personRepository.findAllByUnternehmenId(unternehmen.getId_Unternehmen());
         for (Person p: mitarbeiter) {
-            if (personSperren(p)) {
-                // Setze success auf false, falls eine Deaktivierung fehlschlägt
+            if (! personSperren(p)) {
+                // Setze success auf false, falls eine Sperrung fehlschlägt
                 success = false;
             }
         }
+        unternehmen.setGesperrt(true);
         return success;
     }
 
-
-
-    /**
-     * Diese Methode reaktiviert den Account einer Person.
-     * @param person das Profil welches reaktiviert werden soll
-     * @return true, wenn der Account erfolgreich reaktiviert wurde, wenn irgendein Fehler aufgetreten ist false
-     */
-    public boolean profilReaktivierenPerson(Person person) {
-        if (person == null) {
-            return false;
-        }
-        person.setAktiv(true);
-        return personRepository.save(person).getAktiv();
-    }
-
-
-
     /**
      * Diese Methode sperrrt einen Job
-     * //neue Variable gesperrt (true wenn gesperrt)
      * @param job   der Job der gesperrt werden soll
+     * @return true, wenn der Job gesperrt ist
      */
-    public boolean profilDeaktivierenJob(Job job) {
+    public boolean jobSperren(Job job) {
         if (job == null) {
             return false;
         }
-        job.setAktiv(false);
-        return true;
-        // personRepository.save(job).getAktiv();
+        job.setGesperrt(true);
+        return jobRepository.save(job).getGesperrt();
     }
+
+
+
+    /**
+     * Diese Methode entsperrt eine Person
+     * @param person die Person, die entsperrt werden soll
+     * @return true, wenn der Account erfolgreich entsperrt wurde
+     */
+    public boolean personEntsperren(Person person) {
+        if (person == null) {
+            return false;
+        }
+        person.setGesperrt(false);
+        return personRepository.save(person).getGesperrt();
+    }
+
 }
