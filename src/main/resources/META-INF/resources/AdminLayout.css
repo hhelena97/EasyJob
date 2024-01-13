@@ -27,6 +27,7 @@ vaadin-app-layout::part(navbar) {
     /* Leiste unten */
     top: auto;
     bottom: 0;
+    --vaadin-app-layout-navbar-offset-size: 0px;
 }
 
 .navbar-tabs {

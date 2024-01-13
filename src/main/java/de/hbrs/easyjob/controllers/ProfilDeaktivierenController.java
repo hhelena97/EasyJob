@@ -49,8 +49,17 @@ public class ProfilDeaktivierenController {
         if (person == null) {
             return false;
         }
-        person.setAktiv(false);
-        return !personRepository.save(person).getAktiv();
+
+        if(person instanceof Unternehmensperson) {
+            for (Job j: jobRepository.findAllJobs(person.getId_Person())) {
+                j.setAktiv(false); //deaktivieren
+                jobRepository.save(j);
+            }
+            return true;
+        } else {
+            person.setAktiv(false);
+            return !personRepository.save(person).getAktiv();
+        }
     }
 
     /**
