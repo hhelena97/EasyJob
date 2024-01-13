@@ -1,6 +1,5 @@
 package de.hbrs.easyjob.entities;
 import lombok.*;
-import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -63,6 +62,9 @@ public class Job {
 
     @Column(name = "Aktiv")
     private Boolean aktiv;
+
+    @Column(name = "Gesperrt")
+    private Boolean gesperrt;
 
 //Job sucht:
 
