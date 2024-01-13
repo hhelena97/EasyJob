@@ -60,6 +60,9 @@ public class Unternehmen {
     @Column(name = "Aktiv")
     private boolean aktiv;
 
+    @Column(name = "Gesperrt")
+    private Boolean gesperrt;
+
 
     @Override
     public boolean equals(Object o) {

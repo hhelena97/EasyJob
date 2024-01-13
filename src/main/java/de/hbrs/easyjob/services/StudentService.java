@@ -19,13 +19,18 @@ import java.util.Set;
 
 @Service
 public class StudentService {
-
+    // Repositories
     private final StudentRepository studentRepository;
     private final StudienfachRepository studienfachRepository;
     private final JobKategorieRepository jobKategorieRepository;
     private final OrtRepository ortRepository;
+
+    // Entity
     @PersistenceContext
     private EntityManager entityManager;
+
+    // Konstante
+    private static final String ID_PERSON = "id_Person";
 
     @Autowired
     public StudentService(StudentRepository studentRepository,
@@ -79,6 +84,7 @@ public class StudentService {
     public List<Student> getAllStudent(){
         return studentRepository.findAllStudents();
     }
+
     public Student getStudentByID(Integer id){
         Optional<Student> student = studentRepository.findById(id);
         return student.orElse(null);
@@ -87,7 +93,7 @@ public class StudentService {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Student> cq = cb.createQuery(Student.class);
         Root<Student> student = cq.from(Student.class);
-        cq.select(student).where(student.get("id_Person").in(ids));
+        cq.select(student).where(student.get(ID_PERSON).in(ids));
         return entityManager.createQuery(cq).getResultList();
     }
 
@@ -97,7 +103,7 @@ public class StudentService {
         Root<Student> studentRoot = cq.from(Student.class);
         // Join zwischen Student und Ort
         Join<Student, Ort> studentOrtJoin = studentRoot.join("orte", JoinType.INNER);
-        Predicate studentIdPredicate = cb.equal(studentRoot.get("id_Person"), id);
+        Predicate studentIdPredicate = cb.equal(studentRoot.get(ID_PERSON), id);
         cq.select(studentOrtJoin).where(studentIdPredicate);
         return entityManager.createQuery(cq).getResultList();
     }
@@ -107,7 +113,7 @@ public class StudentService {
         CriteriaQuery<JobKategorie> cq = cb.createQuery(JobKategorie.class);
         Root<Student> studentRoot = cq.from(Student.class);
         Join<Student, JobKategorie> studentJobKategorieJoin = studentRoot.join("jobKategorien", JoinType.INNER);
-        Predicate studentIdPredicate = cb.equal(studentRoot.get("id_Person"), id);
+        Predicate studentIdPredicate = cb.equal(studentRoot.get(ID_PERSON), id);
         cq.select(studentJobKategorieJoin).where(studentIdPredicate);
         TypedQuery<JobKategorie> query = entityManager.createQuery(cq);
         return query.getResultList();

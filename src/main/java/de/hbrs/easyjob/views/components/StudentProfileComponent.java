@@ -1,15 +1,22 @@
 package de.hbrs.easyjob.views.components;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.contextmenu.ContextMenu;
+import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
-import de.hbrs.easyjob.entities.*;
+import de.hbrs.easyjob.controllers.MeldungController;
+import de.hbrs.easyjob.entities.JobKategorie;
+import de.hbrs.easyjob.entities.Meldung;
+import de.hbrs.easyjob.entities.Ort;
+import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.services.FaehigkeitService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
@@ -31,12 +38,27 @@ public class StudentProfileComponent extends VerticalLayout {
     private final StudentService studentService;
     private final FaehigkeitService faehigkeitService;
 
+    private final MeldungController meldungController;
 
-    public StudentProfileComponent(Student student, String styleClass, StudentService studentService, FaehigkeitService faehigkeitService) {
+    boolean isUnternehmensPerson;
+
+
+    public StudentProfileComponent(Student student,
+                                   String styleClass,
+                                   StudentService studentService,
+                                   MeldungController meldungController,
+                                   FaehigkeitService faehigkeitService) {
         this.student = student;
         this.studentService = studentService;
         this.faehigkeitService = faehigkeitService;
         style=styleClass;
+        this.meldungController = meldungController;
+        if (style == "styles/UnternehmenStudentProfilView.css") {
+            isUnternehmensPerson = true;
+        } else {
+            isUnternehmensPerson = false;
+        }
+
         initializeComponent();
     }
 
@@ -54,14 +76,25 @@ public class StudentProfileComponent extends VerticalLayout {
         setPadding(false);
         setSpacing(false);
 
-
-        //die Icons zu einstellungen und Bearbeitung
         HorizontalLayout iconsProf = new HorizontalLayout();
-        iconsProf.setPadding(false);
-        iconsProf.setMargin(false);
-        iconsProf.setJustifyContentMode(JustifyContentMode.END);
+        HorizontalLayout frame = new HorizontalLayout();
 
 
+        if (!isUnternehmensPerson) {
+
+            //die Icons zu einstellungen und Bearbeitung
+
+            iconsProf.setPadding(false);
+            iconsProf.setMargin(false);
+            iconsProf.setJustifyContentMode(JustifyContentMode.END);
+
+
+            //Einstellungen Icon
+            Icon cog = new Icon(VaadinIcon.COG);
+            cog.addClassName("iconsProf");
+
+            RouterLink link = new RouterLink(EinstellungenUebersichtStudentView.class);
+            link.add(cog);
         //Einstellungen Icon
         Icon cog = new Icon(VaadinIcon.COG);
         cog.addClassName("iconsProf");
@@ -75,6 +108,29 @@ public class StudentProfileComponent extends VerticalLayout {
 
         iconsProf.add(link,linkPen);
 
+        } else {
+
+            VerticalLayout dotsLayout = new VerticalLayout();
+            // Drei-Punkte-Icon für das Dropdown-Menü
+            Icon dots = new Icon(VaadinIcon.ELLIPSIS_DOTS_V);
+            dots.getStyle().set("cursor", "pointer");
+            dots.setSize("1em");
+
+            // Dropdown-Menü erstellen
+            ContextMenu contextMenu = new ContextMenu();
+            contextMenu.setTarget(dots);
+            contextMenu.setOpenOnClick(true);
+            MenuItem item = contextMenu.addItem("Melden", e -> {
+                Meldung meldung = new Meldung();
+                meldungController.saveMeldung(meldung, student);
+                Notification.show("Gemeldet", 3000, Notification.Position.TOP_STRETCH);
+            });
+
+            item.getElement().getStyle().set("color", "red");
+
+            dotsLayout.add(dots);
+            frame.add(dotsLayout);
+        }
 
         //Bildrahmen
         Div rahmen = new Div();
@@ -99,7 +155,12 @@ public class StudentProfileComponent extends VerticalLayout {
         VerticalLayout studentInfo = new VerticalLayout();
         studentInfo.addClassName("studentInfo");
         studentInfo.setAlignItems(Alignment.CENTER);
-        studentInfo.setAlignSelf(Alignment.END,iconsProf);
+
+        if(!isUnternehmensPerson) {
+            studentInfo.setAlignSelf(Alignment.END,iconsProf);
+        } else {
+            studentInfo.setAlignSelf(Alignment.END,frame);
+        }
 
 
         //Tabs
@@ -117,7 +178,13 @@ public class StudentProfileComponent extends VerticalLayout {
         content.setAlignItems(Alignment.STRETCH);
 
         setContent(tabs.getSelectedTab());
-        studentInfo.add(iconsProf,rahmen,name,/*location,*/tabs, content);
+
+
+        if (!isUnternehmensPerson) {
+            studentInfo.add(iconsProf,profilBild,name,/*location,*/tabs, content);
+        } else {
+            studentInfo.add(frame,profilBild,name,/*location,*/tabs, content);
+        }
 
         add(studentInfo);
     }

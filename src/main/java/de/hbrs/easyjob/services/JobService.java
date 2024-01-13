@@ -3,26 +3,22 @@ package de.hbrs.easyjob.services;
 import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Transient;
 import org.springframework.stereotype.Service;
-import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.entities.Ort;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
 @Service
 public class JobService {
-
     private final JobRepository jobRepository;
     private final StudienfachRepository studienfachRepository;
     private final JobKategorieRepository jobKategorieRepository;
@@ -77,7 +73,6 @@ public class JobService {
         return jobRepository.save(job);
     }
 
-
     public List<Job> getAllJobs() {
         return jobRepository.findAllJobs();
     }
@@ -100,7 +95,7 @@ public class JobService {
         Root<Job> job = cq.from(Job.class);
         cq.select(job.get("ort")).distinct(true);
         List<Ort> orte = entityManager.createQuery(cq).getResultList();
-        return orte.stream().distinct().collect(Collectors.toList());
+        return orte.stream().distinct().toList();
     }
 
     public List<JobKategorie> getAllJobKategorien() {
@@ -109,7 +104,7 @@ public class JobService {
         Root<Job> job = cq.from(Job.class);
         cq.select(job.get("jobKategorie")).distinct(true);
         List<JobKategorie> jobKategorien = entityManager.createQuery(cq).getResultList();
-        return jobKategorien.stream().distinct().collect(Collectors.toList());
+        return jobKategorien.stream().distinct().toList();
     }
     public List<Studienfach> getAllStudienfacher() {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();

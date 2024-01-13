@@ -24,8 +24,8 @@ public class PersonController {
         Person person = personRepository.findByEmail(email);
         if (
                 person == null ||
-                !ValidationController.isValidPassword(newPassword) ||
-                !getPasswordEncoder().matches(oldPassword, person.getPasswort())
+                        !ValidationController.isValidPassword(newPassword) ||
+                        !getPasswordEncoder().matches(oldPassword, person.getPasswort())
         ) {
             return false;
         }
@@ -44,7 +44,7 @@ public class PersonController {
         Person person = personRepository.findByEmail(email);
         if (
                 person == null ||
-                !ValidationController.isValidPassword(newPassword)
+                        !ValidationController.isValidPassword(newPassword)
         ) {
             return false;
         }

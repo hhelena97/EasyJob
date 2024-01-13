@@ -73,7 +73,14 @@ public class Schritt1View extends RegistrierenSchritt {
                 }
                 return false;
             } else {
-                if(unternehmensperson.getUnternehmen() != null) unternehmensperson.removeUnternehmen();
+                /*
+                 TODO: Funktioniert nicht, da removeUnternehmen entfernt wurde,
+                  da dies zu Problemen mit der Datenbank geführt hat.
+                  Theoretisch müsste es reichen das Unternehmen der Unternehmensperson wieder auf null zu setzen,
+                  da keine weitere Referenz existiert und der Garbage Collector das Unternehmen löschen sollte.
+                 */
+                // if(unternehmensperson.getUnternehmen() != null) unternehmensperson.removeUnternehmen();
+
                 return true;
             }
         }
