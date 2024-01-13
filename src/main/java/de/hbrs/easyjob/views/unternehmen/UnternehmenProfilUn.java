@@ -139,7 +139,7 @@ public class UnternehmenProfilUn extends VerticalLayout implements BeforeEnterOb
         H1 neuStellen = new H1("Stellenangebote hinzufügen");
 
         // hier muss Link angepasst werden
-        RouterLink linkneuStellen = new RouterLink(JobDetailsView.class);
+        RouterLink linkneuStellen = new RouterLink(StellenanzeigeErstellenView.class);
         linkneuStellen.add(neuStellen);
         linkneuStellen.getStyle().set("text-decoration", "none");
         neuStellen.addClassName("neuStellen");
@@ -265,7 +265,7 @@ public class UnternehmenProfilUn extends VerticalLayout implements BeforeEnterOb
 
         job.add(jobBeschreibung, jobIcons, jobBText, jobDatum);
 
-        RouterLink linkJobDetails = new RouterLink(JobDetailsView.class);
+        RouterLink linkJobDetails = new RouterLink(JobDetailsView.class,jobSet.getId_Job());
         linkJobDetails.add(job);
         jobs.add(linkJobDetails);
     }

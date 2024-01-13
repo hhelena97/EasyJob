@@ -5,6 +5,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -16,57 +17,89 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.OrtController;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.controllers.StellenanzeigeController;
-import de.hbrs.easyjob.entities.*;
+import de.hbrs.easyjob.entities.JobKategorie;
+import de.hbrs.easyjob.entities.Ort;
+import de.hbrs.easyjob.entities.Studienfach;
+import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.JobKategorieRepository;
+import de.hbrs.easyjob.repositories.StudienfachRepository;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.PrefixUtil;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
+import de.hbrs.easyjob.views.components.StyledDialog;
 
 import javax.annotation.security.RolesAllowed;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Set;
 
+// TODO: Weiterleitung von Unternehmensprofil fixen (siehe Testklasse)
 @Route("unternehmen/stellenanzeige/erstellen")
 @PageTitle("Stellenanzeige erstellen")
 @StyleSheet("Variables.css")
 @StyleSheet("StellenanzeigeErstellen.css")
-@RolesAllowed("ROLE_UNTERNEHMENSPERSON")
+@RolesAllowed({"ROLE_UNTERNEHMENSPERSON"})
 public class StellenanzeigeErstellenView extends VerticalLayout implements BeforeEnterObserver {
 
     private final DatePicker eintrittsdatum;
     private final ComboBox<JobKategorie> berufsbezeichnung;
     private final ComboBox<Ort> standort;
+    private final MultiSelectComboBox<Studienfach> studienfach;
     private final TextField titel;
     private final TextArea stellenbeschreibung;
     private final Checkbox homeOffice;
+    private final transient StellenanzeigeController stellenanzeigeController;
+    private final transient SessionController sessionController;
+    private final transient Unternehmensperson unternehmensperson;
 
-    private final StellenanzeigeController stellenanzeigeController;
-
+    /**
+     * Prüft, ob der Nutzer eingeloggt ist und die Rolle ROLE_UNTERNEHMENSPERSON hat.
+     * Wenn nicht, wird er auf die Login-Seite weitergeleitet.
+     *
+     * @param event Event, das vor dem Aufruf der View ausgelöst wird
+     */
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if (!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_UNTERNEHMENSPERSON")) {
             event.rerouteTo(LoginView.class);
         }
     }
 
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_UNTERNEHMENSPERSON"));
-    }
-
-    public StellenanzeigeErstellenView(JobKategorieRepository jobKategorieRepository, OrtController ortController, StellenanzeigeController stellenanzeigeController) {
+    /**
+     * Erstellt die View zum Erstellen einer Stellenanzeige.
+     *
+     * @param jobKategorieRepository   Repository für JobKategorien
+     * @param studienfachRepository    Repository für Studienfächer
+     * @param ortController            Controller für Orte
+     * @param sessionController        Controller für die Session
+     * @param stellenanzeigeController Controller für Stellenanzeigen
+     */
+    public StellenanzeigeErstellenView(
+            JobKategorieRepository jobKategorieRepository,
+            StudienfachRepository studienfachRepository,
+            OrtController ortController,
+            SessionController sessionController,
+            StellenanzeigeController stellenanzeigeController
+    ) {
+        this.sessionController = sessionController;
         this.stellenanzeigeController = stellenanzeigeController;
+
+        unternehmensperson = (Unternehmensperson) sessionController.getPerson();
+
+        // Abbrechen-Dialog
+        Button abbrechenClose = new Button("Nein");
+        abbrechenClose.addClassName("close-unternehmen");
+
+        Button abbrechenConfirm = new Button("Ja", e -> UI.getCurrent().getPage().getHistory().back());
+        abbrechenConfirm.setClassName("confirm");
+
+        StyledDialog abbrechenDialog = new StyledDialog(
+                "Wollen Sie wirklich abbrechen?",
+                "Ihre Änderungen werden nicht gespeichert und die Stellenanzeige wird nicht erstellt.",
+                abbrechenClose,
+                abbrechenConfirm
+        );
 
         // Container
         VerticalLayout frame = new VerticalLayout();
@@ -81,6 +114,7 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
         // Zurück Button
         Button zurueckButton = new Button("zurück", FontAwesome.Solid.CHEVRON_LEFT.create());
         zurueckButton.setClassName("zurueck-button");
+
         // TODO: Einträge speichern
         zurueckButton.addClickListener(e -> zurueckHandler());
 
@@ -98,6 +132,16 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
         berufsbezeichnung.setItemLabelGenerator(JobKategorie::getKategorie);
         berufsbezeichnung.setPlaceholder("Berufsbezeichnung(en) auswählen");
         frame.add(berufsbezeichnung);
+
+        // Studienfach
+        studienfach = new MultiSelectComboBox<>("Studienfach");
+        studienfach.getStyle().set("--lumo-contrast-60pct", "--hintergrund-weiß");
+        studienfach.setItems(studienfachRepository.findAll());
+        studienfach.setItemLabelGenerator(fach -> fach.getFach() + " (" + fach.getAbschluss() + ")");
+        studienfach.setPlaceholder("Studienfach auswählen");
+
+        frame.add(studienfach);
+
 
         // Standort
         standort = new ComboBox<>("Standort");
@@ -138,12 +182,10 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
 
         Button abbrechenButton = new Button("Abbrechen", FontAwesome.Solid.TIMES.create());
         abbrechenButton.setClassName("abbrechen-button");
-        // TODO: Dialog, ob wirklich abbrechen
-        abbrechenButton.addClickListener(e -> abbrechenHandler());
+        abbrechenButton.addClickListener(e -> abbrechenDialog.open());
 
         Button fertigButton = new Button("Fertig", FontAwesome.Solid.CHECK.create());
         fertigButton.setClassName("fertig-button");
-        // TODO: Stellenanzeige speichern
         fertigButton.addClickListener(e -> fertigHandler());
 
         actionButtons.add(abbrechenButton, fertigButton);
@@ -152,34 +194,33 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
         add(frame);
     }
 
-    private void abbrechenHandler() {
-        // TODO: Dialog, ob wirklich abbrechen
-        UI.getCurrent().getPage().getHistory().back();
-    }
-
+    /**
+     * Handler für den Fertig-Button.
+     * Speichert die Stellenanzeige und ruft die Profilseite des Unternehmens auf.
+     */
     private void fertigHandler() {
-        // TODO: Stellenanzeige speichern
-
         // Convert LocalDate to Date
         Date eintrittsdatumDate = Date.from(eintrittsdatum.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        // TODO: Unternehmen und Unternehmensperson aus Session holen
-        // TODO: Studienfach input in Mock-Up anlegen
+
         stellenanzeigeController.stellenanzeigeErstellen(
                 titel.getValue(),
                 stellenbeschreibung.getValue(),
                 eintrittsdatumDate,
-                new Unternehmen(),
-                new Unternehmensperson(),
+                unternehmensperson.getUnternehmen(),
+                unternehmensperson,
                 standort.getValue(),
                 berufsbezeichnung.getValue(),
-                Set.of(new Studienfach()),
+                studienfach.getValue(),
                 homeOffice.getValue()
         );
-        UI.getCurrent().getPage().getHistory().back();
+        UI.getCurrent().navigate("unternehmen/unternehmensprofil");
     }
 
+    /**
+     * Handler für den Zurück-Button.
+     * Speichert die Stellenanzeige nicht und ruft die Profilseite des Unternehmens auf.
+     */
     private void zurueckHandler() {
-        // TODO: Speichern
-        abbrechenHandler();
+        UI.getCurrent().navigate("unternehmen/unternehmensprofil");
     }
 }

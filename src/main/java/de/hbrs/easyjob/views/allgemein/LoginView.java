@@ -89,6 +89,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         validEmailField.getElement().setAttribute("name", "email");
         validEmailField.setValue("");
         validEmailField.setErrorMessage("Enter a valid email address");
+        validEmailField.setId("emailloginfeld_id");
         validEmailField.setClearButtonVisible(true);
         validEmailField.setId("emailloginfeld_id");
 
