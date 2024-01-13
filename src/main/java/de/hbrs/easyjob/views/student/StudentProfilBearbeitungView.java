@@ -6,6 +6,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.OrtController;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.repositories.*;
 import de.hbrs.easyjob.services.FaehigkeitService;
@@ -30,7 +31,7 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
 
     private Student student;
     private final StudentService studentService;
-    private final PersonService personService;
+    private final SessionController sessionController;
 
     final FaehigkeitService faehigkeitService;
 
@@ -48,7 +49,7 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
 
     @Autowired
     public StudentProfilBearbeitungView(StudentService studentService,
-                                        PersonService personService,
+                                        SessionController sessionController,
                                         StudienfachRepository studienfachRepository,
                                         BerufsFeldRepository berufsFelderRepository,
                                         BrancheRepository brancheRepository,
@@ -58,7 +59,7 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
                                         FaehigkeitService faehigkeitService) {
 
         this.studentService = studentService;
-        this.personService = personService;
+        this.sessionController = sessionController;
         this.studienfachRepository = studienfachRepository;
         this.berufsFeldRepository = berufsFelderRepository;
         this.brancheRepository = brancheRepository;
@@ -66,18 +67,8 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
         this.ortController = ortController;
         this.faehigkeitRepository = faehigkeitRepository;
         this.faehigkeitService = faehigkeitService;
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth != null && auth.isAuthenticated() && hasRole(auth)) {
-                student = (Student) personService.getCurrentPerson();
-                initializeView();
-            } else {
-                UI.getCurrent().navigate(LoginView.class);
-            }
-        } else {
-            UI.getCurrent().navigate(LoginView.class);
-        }
+        student = (Student) sessionController.getPerson();
+        initializeView();
 
 
     }
@@ -103,21 +94,9 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if(!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_STUDENT")){
             event.rerouteTo(LoginView.class);
         }
-    }
-
-
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
     }
 
 }
