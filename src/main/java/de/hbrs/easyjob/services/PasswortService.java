@@ -51,13 +51,13 @@ public class PasswortService {
     }
 
     /** Ändert das Passwort einer Person, ohne das alte Passwort zu kennen
-     * @param email E-Mail der Person
+     * @param person die ein neues Passwort bekommen soll
      * @param newPassword neues Passwort
      * @param repeatPassword das wiederholte neue Passwort
      * @return true, wenn das Passwort geändert wurde, sonst false
      */
-    public boolean newPassword(String email, String newPassword, String repeatPassword) {
-        Person person = repository.findByEmail(email);
+    public boolean newPassword(Person person, String newPassword, String repeatPassword) {
+
         //existiert die Person, ist ihr Acount aktiv und nicht gesperrt
         if (person == null || ! person.getAktiv() /*|| person.isGesperrt()*/){
             Notification.show("Die Person konnte nicht gefunden werden");

@@ -56,14 +56,6 @@ public class AdminController {
         return ok;
     }
 
-    /** von Helena kopiert
-    @PostMapping
-    public ResponseEntity<Admin> createOrUpdateAdmin(@RequestBody Admin admin) {
-        //Account aktivieren
-        admin.setAktiv(true);
-        return new ResponseEntity<>(admin, HttpStatus.CREATED);
-    }
-     */
 
     /** Deaktiviert einen Admin
      *

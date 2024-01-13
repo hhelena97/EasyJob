@@ -11,8 +11,10 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -21,9 +23,11 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.AdminController;
 import de.hbrs.easyjob.controllers.PersonController;
+import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Admin;
 import de.hbrs.easyjob.repositories.PersonRepository;
+import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.views.admin.dialog.*;
 import de.hbrs.easyjob.views.allgemein.LoginView;
@@ -41,9 +45,10 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
     private final SessionController sessionController;
 
     private PersonRepository personRepository;
-
     private final AdminController adminController;
     private final PersonController personController;
+
+    private final ProfilDeaktivierenController profilDeaktivierenController;
     private Admin admin;
 
     @Override
@@ -55,14 +60,16 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
     }
 
     public EinstellungenStartView(SessionController sessionController, PersonController personController,
-                                  AdminController adminController, PersonRepository repository) {
+                                  AdminController adminController, ProfilDeaktivierenController profilDeaktivierenController,
+                                  PersonRepository repository) {
         this.sessionController = sessionController;
         this.adminController = adminController;
         this.personController = personController;
+        this.profilDeaktivierenController = profilDeaktivierenController;
         this.personRepository = repository;
         this.admin = (Admin) sessionController.getPerson();
 
-                //grüner Kasten oben
+        //grüner Kasten oben
         HorizontalLayout willkommenBox = new HorizontalLayout();
         willkommenBox.addClassName("gruene-box");
 
@@ -91,74 +98,164 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
 
         //Begrüßungstext
-        Div willkommenText = new Div(
-                ausloggen,
-                new H3("Hallo,"),
-                new Paragraph(admin.getEmail())
-        );
+        Div willkommenText = new Div();
+        H3 titel = new H3("Hallo Admin");
+
+
+        //Passwort ändern für den angemeldeten Admin
+        PasswortAendernDialog passwortAendernDialog = new PasswortAendernDialog(admin, "adminDialog.css", new PasswortService(personRepository));
+        Icon editself = new Icon(VaadinIcon.EDIT);
+        editself.addClassName("editAdmin");
+        editself.addClickListener(e-> passwortAendernDialog.open());
+
+        Paragraph eigenemail = new Paragraph(admin.getEmail());
+
+        willkommenText.add(titel, eigenemail);
         willkommenText.addClassName("willkommen-text");
+
+
+        //alles in den grünen Kasten
+        willkommenBox.add(ausloggen, willkommenText, editself);
+
+
+        // der Bereich unter dem grünen Kasten: Liste aller Admins und + für neue Admins
+        Div adminListe = new Div();
+        adminListe.addClassName("adminListe");
+
+        for (Admin a: personRepository.findAllAdmins()) {
+
+            if(a.getAktiv()) {
+                HorizontalLayout einAdmin = new HorizontalLayout();
+
+                //Zeige die E-Mail-Adresse:
+                Paragraph mail = new Paragraph("" + a.getEmail());
+                mail.addClassName("text");
+
+                Div icons = new Div();
+
+
+                //Passwort ändern für den entsprechenden Admin
+                Icon edit = new Icon(VaadinIcon.EDIT);
+                edit.addClassName("edit");
+                Dialog dialogPasswortAendern = new Dialog();
+                dialogPasswortAendern.setHeaderTitle("Passwort ändern");
+
+                Paragraph info = new Paragraph("von " + a.getEmail());
+
+                PasswordField pwneu1 = new PasswordField("neues Passwort");
+                PasswordField pwrp1 = new PasswordField("Passwort wiederholen");
+
+                Paragraph p10 = new Paragraph("");
+                Paragraph p11 = new Paragraph("");
+
+                Div inhalt = new Div(info, p10, pwneu1, p11, pwrp1);
+
+                dialogPasswortAendern.add(inhalt);
+
+                Button btnAbbruch4 = new Button ("abbrechen");
+                btnAbbruch4.addClassName("buttonAbbruch");
+                btnAbbruch4.addClickListener(e -> dialogPasswortAendern.close());
+
+                Button btnPasswortAendern = new Button("Passwort ändern");
+                btnPasswortAendern.setClassName("buttonBestaetigen");
+                btnPasswortAendern.addClickListener(e -> {
+                    if (new PasswortService(personRepository).newPassword(a, pwneu1.getValue(), pwrp1.getValue())) {
+                        Notification.show("Passwort geändert");
+                        dialogPasswortAendern.close();
+                    } else {
+                        Notification.show("Es gibt ein Problem.");
+                    }
+                });
+                dialogPasswortAendern.getFooter().add(btnAbbruch4, btnPasswortAendern);
+                edit.addClickListener(e -> dialogPasswortAendern.open());
+
+                //Admin entfernen
+                Icon minus = new Icon(VaadinIcon.MINUS);
+                minus.addClassName("minus");
+
+                Dialog dialogAdminDeaktivieren = new Dialog();
+                String adminMail = a.getEmail();
+                dialogAdminDeaktivieren.add(new Paragraph("Wollen Sie den Admin " + adminMail + " wirklich entfernen?"));
+
+                Button btnAbbruch2 = new Button("abbrechen");
+                btnAbbruch2.addClassName("buttonAbbruch");
+                btnAbbruch2.addClickListener(e -> {
+                    dialogAdminDeaktivieren.close();
+                });
+
+                Button btnBestaetigen2 = new Button("Admin löschen");
+                btnBestaetigen2.addClassName("buttonBestaetigen");
+                btnBestaetigen2.addClickListener(e -> {
+                    profilDeaktivierenController.profilDeaktivierenPerson(a);
+                    dialogAdminDeaktivieren.close();
+                    UI.getCurrent().getPage().setLocation("/admin");
+                });
+                dialogAdminDeaktivieren.getFooter().add(btnAbbruch2, btnBestaetigen2);
+
+                minus.addClickListener(e -> dialogAdminDeaktivieren.open());
+
+                icons.add(minus, edit);
+
+                einAdmin.add(mail, icons);
+                einAdmin.addClassName("admins");
+
+                adminListe.add(einAdmin);
+            }
+        }
+
 
         //Admins hinzufügen
         Icon userPlus = new Icon(VaadinIcon.PLUS);
         userPlus.addClassName("userPlus");
 
-        ZugangAnlegenDialogView zugangAnlegen = new ZugangAnlegenDialogView(true, adminController);
-        Button neuerAdmin = new Button(userPlus, e -> zugangAnlegen.openDialogOverlay());
-        //Todo: Admin-anlegen-Dialog Funktionen
+        Dialog dialogAdminHinzufuegen = new Dialog();
+        dialogAdminHinzufuegen.setHeaderTitle("Neuen Admin anlegen");
 
-        //alles in den grünen Kasten
-        willkommenBox.add(ausloggen, willkommenText, neuerAdmin);
+        EmailField emailneu = new EmailField("E-Mail");
+        PasswordField pwneu = new PasswordField("Passwort");
+        PasswordField pwrp = new PasswordField("Passwort wiederholen");
 
+        Paragraph p4 = new Paragraph("");
+        Paragraph p5 = new Paragraph("");
 
-        // der Bereich unter dem grünen Kasten
-        Div adminListe = new Div();
-        adminListe.addClassName("adminListe");
+        Div zugangsdaten = new Div(emailneu, p4, pwneu, p5, pwrp);
 
+        dialogAdminHinzufuegen.add(zugangsdaten);
 
-        Paragraph mailAdmin = new Paragraph(sessionController.getPerson().getEmail());
-        mailAdmin.addClassName("text");
+        Button btnAbbruch3 = new Button ("abbrechen");
+        btnAbbruch3.addClassName("buttonAbbruch");
+        btnAbbruch3.addClickListener(e -> dialogAdminHinzufuegen.close());
 
+        Button btnAdminAnlegen = new Button("Admin anlegen");
+        btnAdminAnlegen.setClassName("buttonBestaetigen");
+        btnAdminAnlegen.addClickListener(e -> {
+            Admin adminNeu = new Admin();
+            adminNeu.setAktiv(true);
+            //adminNeu.setGesperrt(false);
+            adminNeu.setEmail(emailneu.getValue());
+            PasswortService pws = new PasswortService(personRepository);
+            boolean passwortPruefen = pws.newPassword(adminNeu, pwneu.getValue(), pwrp.getValue());
+            if (passwortPruefen){
+                adminNeu.setPasswort(pwneu.getValue());
+                if(adminController.createAdmin(admin)){
+                    dialogAdminHinzufuegen.close();
+                } else {
+                    Notification.show("Der Admin konnte nicht gespeichert werden.");
+                }
+            } else {
+                Notification.show("Der Admin konnte nicht gespeichert werden.");
+            }
+            UI.getCurrent().getPage().setLocation("/admin");
+        });
 
-        Icon edit = new Icon(VaadinIcon.EDIT);
-        edit.addClassName("editAdmin");
+        dialogAdminHinzufuegen.getFooter().add(btnAbbruch3, btnAdminAnlegen);
 
-        PasswortAendernDialog passwortAendernDialog = new PasswortAendernDialog(admin, "adminDialog.css", new PasswortService(personRepository));
-        Button editAdmin = new Button(edit, e-> passwortAendernDialog.open());
+        userPlus.addClickListener(e -> dialogAdminHinzufuegen.open());
 
+        //Admin hinzufügen zur Adminliste packen
+        adminListe.add(userPlus);
 
-        HorizontalLayout aktuellerAdmin = new HorizontalLayout(
-                mailAdmin,
-                editAdmin
-        );
-        aktuellerAdmin.addClassName("admins");
-        adminListe.add(aktuellerAdmin);
-
-        for (Admin a: personRepository.findAllAdmins()) {
-            HorizontalLayout einAdmin = new HorizontalLayout();
-
-            Paragraph mail = new Paragraph("" + a.getEmail());
-            mail.addClassName("text");
-
-            Div icons = new Div();
-
-            Icon minus = new Icon(VaadinIcon.MINUS);
-            minus.addClassName("minus");
-
-            ZugangEntfernenDialogView adminLoeschen = new ZugangEntfernenDialogView(true);
-            Button btnMinus = new Button(minus, e -> adminLoeschen.openDialogOverlay());
-            //Todo: Admin löschen Dialog Funktionen
-
-            PasswortAendernDialogView passwortAendern = new PasswortAendernDialogView(true);
-            Button btnAdmin = new Button(edit, e-> passwortAendern.openDialogOverlay());
-            //Todo: Passwort-Dialog Funktionen
-
-            icons.add(btnMinus, btnAdmin);
-
-            einAdmin.add(mail, icons);
-            einAdmin.addClassName("admins");
-
-            adminListe.add(einAdmin);
-        }
+        //Seite besteht aus WillkommenBox und AdminListe
         add(willkommenBox, adminListe);
     }
 

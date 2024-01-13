@@ -83,13 +83,15 @@ vaadin-vertical-layout {
 .ausloggen{
     color: var(--signalfarben-rot);
     font-family: Rubik, sans-serif;
-    align: right;
+    align-self: start;
 }
 
-.userPlus {
-    width: 30px;
-    height: 30px;
+.editAdmin{
+    width: 50px;
+    height: 50px;
     color: white;
+    padding: 10px;
+    align-self: end;
 }
 
 /* Texte in der grünen Box */
@@ -147,10 +149,29 @@ vaadin-vertical-layout {
 }
 
 /* Buttons der Startseite */
-.editAdmin{
+.minus{
 
 }
 
-.minus{
+.edit{
 
+}
+
+.userPlus {
+    width: 30px;
+    height: 30px;
+    color: var(--admin-dark);
+    align-self: end;
+}
+
+.buttonAbbruch{
+    border: var(--admin-dark, #289A32);
+    color: var(--admin-dark, #289A32);
+    background: var(--hintergrund-weiß);
+}
+
+.buttonbuttonBestaetigen{
+    border: var(--admin-dark, #289A32);
+    color: var(--hintergrund-weiß);
+    background: var(--admin-dark, #289A32);
 }
