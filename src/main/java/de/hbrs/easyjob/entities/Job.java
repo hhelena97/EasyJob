@@ -1,6 +1,5 @@
 package de.hbrs.easyjob.entities;
 import lombok.*;
-import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.util.Date;

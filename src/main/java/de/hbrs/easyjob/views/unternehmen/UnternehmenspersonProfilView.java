@@ -13,17 +13,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.services.PersonService;
-import de.hbrs.easyjob.services.UnternehmenService;
-import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -35,16 +28,11 @@ import javax.annotation.security.RolesAllowed;
 @StyleSheet("UnternehmenRegistrieren.css")
 public class UnternehmenspersonProfilView extends VerticalLayout {
 
-    private Unternehmensperson person;
-    private final transient SessionController sessionController;
-    @Autowired
-    private final UnternehmenService unternehmenService;
-    VerticalLayout personKontakt = new VerticalLayout();
+    private final transient Unternehmensperson person;
+    private final transient VerticalLayout personKontakt = new VerticalLayout();
 
 
-    public UnternehmenspersonProfilView(SessionController sessionController, UnternehmenService unternehmenService) {
-        this.sessionController = sessionController;
-        this.unternehmenService = unternehmenService;
+    public UnternehmenspersonProfilView(SessionController sessionController) {
         person = (Unternehmensperson) sessionController.getPerson();
         initializeView();
     }
@@ -89,14 +77,13 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
         //Bildrahmen
         Div rahmen = new Div();
         rahmen.addClassName("profile-picture-frame");
-        Image ellipse = new Image("images/Ellipse-Lila-Groß.png", "Bildumrandung");
+        Image ellipse = new Image("images/Ellipse-Blau-Groß.png", "Bildumrandung");
         ellipse.addClassName("profile-picture-background");
         rahmen.add(ellipse);
 
         //Platzhalter Bild
         boolean hasBild = person.getFoto() != null;
         Image platzhalterBild = new Image(hasBild? person.getFoto(): "images/blank-profile-picture.png", "EasyJob");
-        Image profilBild2 = platzhalterBild;
         Div bildDiv = new Div(platzhalterBild);
         platzhalterBild.addClassName("picture-round");
         rahmen.add(bildDiv);
@@ -105,10 +92,9 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
 
 
 
-        //Name
+        // Name
         H1 name = new H1();
         name.addClassName("name");
-        //name.add("Max Mustermann");
         name.add(person.getVorname()+" "+ person.getNachname());
 
 
@@ -116,7 +102,7 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
         H2 unternehmenProfil = new H2("zum Unternehmensprofil");
         unternehmenProfil.addClassName("unternehmenProfil");
         unternehmenProfil.getStyle().set("color", "#323232");
-        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfil_Un.class);
+        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfilUn.class);
         linkUnternehmen.add(unternehmenProfil);
 
 

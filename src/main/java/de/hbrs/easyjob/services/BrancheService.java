@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BrancheService {
 
-    private final de.hbrs.easyjob.repositories.BrancheRepository brancheRepository;
+    private final BrancheRepository brancheRepository;
     @Autowired
     public BrancheService(BrancheRepository brancheRepository) {
         this.brancheRepository = brancheRepository;

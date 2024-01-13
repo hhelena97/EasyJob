@@ -90,12 +90,14 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         validEmailField.setValue("");
         validEmailField.setErrorMessage("Enter a valid email address");
         validEmailField.setClearButtonVisible(true);
+        validEmailField.setId("emailloginfeld_id");
 
         //Pass
         PasswordField passwordField = new PasswordField();
         passwordField.addClassName("btn");
         passwordField.setLabel("Password");
         passwordField.setValue("");
+        passwordField.setId("passwordloginfeld_id");
 
 
         //Buttons
@@ -105,6 +107,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         logButton.addClassName("btn");
         logButton.addClassName("logButton");
         logButton.addClassName("log");
+        logButton.setId("loginbutton_id_loginpage");
 
         logButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
@@ -116,6 +119,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         regButton.addClassName("btn");
         regButton.addClassName("regButton");
         regButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        regButton.setId("registrierenbutton_id");
 
         VerticalLayout fenster = new VerticalLayout(log, validEmailField, passwordField, verButton, logButton, regButton);
         fenster.setAlignItems(Alignment.CENTER);
@@ -146,8 +150,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
             // Ruft die UI-Instanz ab
             UI ui = UI.getCurrent();
             // Leitet zur gewünschten Seite
-            //ui.navigate("passwortVergessen");
-            System.out.println("Passwort vergessen gedrückt");
+            ui.navigate("passwortVergessen");
         });
 
         regButton.addClickListener(event -> {

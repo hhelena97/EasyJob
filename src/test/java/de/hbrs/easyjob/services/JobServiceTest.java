@@ -17,23 +17,23 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 class JobServiceTest {
     // Repositories
-    private final static OrtRepository ortRepo = mock(OrtRepository.class);
-    private final static JobKategorieRepository joKaRepo = mock(JobKategorieRepository.class);
-    private final static StudienfachRepository stuFaRepo = mock(StudienfachRepository.class);
-    private final static PersonRepository persRepo = mock(PersonRepository.class);
-    private final static UnternehmenRepository unterRepo = mock(UnternehmenRepository.class);
-    private final static JobRepository jobRepo = mock(JobRepository.class);
+    private final static OrtRepository ortRepository = mock(OrtRepository.class);
+    private final static JobKategorieRepository jobKategorieRepository = mock(JobKategorieRepository.class);
+    private final static StudienfachRepository studienfachRepository = mock(StudienfachRepository.class);
+    private final static PersonRepository personRepository = mock(PersonRepository.class);
+    private final static UnternehmenRepository unternehmenRepository = mock(UnternehmenRepository.class);
+    private final static JobRepository jobRepository = mock(JobRepository.class);
 
     // Services
-    private JobService joSe;
+    private JobService jobService;
 
     // Entities
     private static Job job1;
-    private final static Studienfach stuFa1 = new Studienfach();
-    private final static JobKategorie joKa1 = new JobKategorie();
+    private final static Studienfach studienfach1 = new Studienfach();
+    private final static JobKategorie jobKategorie1 = new JobKategorie();
     private final static Ort ort1 = new Ort();
-    private final static Unternehmen u1 = new Unternehmen();
-    private final static Unternehmensperson p1 = new Unternehmensperson();
+    private final static Unternehmen unternehmen1 = new Unternehmen();
+    private final static Unternehmensperson unternehmensperson1 = new Unternehmensperson();
 
     /**
      * setzt die Daten für das Job-Objekt auf
@@ -41,23 +41,23 @@ class JobServiceTest {
     @BeforeAll
     static void setUp() {
         // Daten für Job aufsetzen
-        p1.setVorname("Max");
-        p1.setNachname("Mustermann");
-        p1.setEmail("max.mustermann@example.de");
+        unternehmensperson1.setVorname("Max");
+        unternehmensperson1.setNachname("Mustermann");
+        unternehmensperson1.setEmail("max.mustermann@example.de");
         ort1.setPLZ("53111");
         ort1.setOrt("Bonn");
-        u1.setUnternehmensperson(p1);
-        u1.setName("EasyQube");
-        joKa1.setKategorie("Masterarbeit");
+        unternehmen1.setUnternehmensperson(unternehmensperson1);
+        unternehmen1.setName("EasyQube");
+        jobKategorie1.setKategorie("Masterarbeit");
         Set<Studienfach> tmp = new HashSet<>();
-        tmp.add(stuFa1);
+        tmp.add(studienfach1);
 
         // Daten in Job einsetzen
         job1 = new Job();
-        job1.setUnternehmen(u1);
-        job1.setPerson(p1);
+        job1.setUnternehmen(unternehmen1);
+        job1.setPerson(unternehmensperson1);
         job1.setOrt(ort1);
-        job1.setJobKategorie(joKa1);
+        job1.setJobKategorie(jobKategorie1);
         job1.setStudienfacher(tmp);
     }
 
@@ -66,7 +66,7 @@ class JobServiceTest {
      */
     @BeforeEach
     void setUpEach() {
-        joSe = new JobService(jobRepo, stuFaRepo, joKaRepo, persRepo, unterRepo, ortRepo);
+        jobService = new JobService(jobRepository, studienfachRepository, jobKategorieRepository, personRepository, unternehmenRepository, ortRepository);
     }
 
     /**
@@ -74,41 +74,39 @@ class JobServiceTest {
      */
     @AfterEach
     void tearDown() {
-        Mockito.reset(jobRepo);
-        Mockito.reset(stuFaRepo);
-        Mockito.reset(joKaRepo);
-        Mockito.reset(persRepo);
-        Mockito.reset(unterRepo);
-        Mockito.reset(ortRepo);
+        Mockito.reset(jobRepository);
+        Mockito.reset(studienfachRepository);
+        Mockito.reset(jobKategorieRepository);
+        Mockito.reset(personRepository);
+        Mockito.reset(unternehmenRepository);
+        Mockito.reset(ortRepository);
     }
 
     /**
      * testet saveJob() mit einem korrekten Job-Objekt
      */
     @Test
-    @DisplayName("Testet, ob JobsUebersichtView gespeichert werden")
+    @DisplayName("Testet, ob Jobs gespeichert werden")
     void saveJob() {
         // ********* Arrange *********
         Job expected = job1;
-        when(ortRepo.findByPLZAndOrt(anyString(),anyString())).thenReturn(ort1);
-        when(unterRepo.findByName(anyString())).thenReturn(u1);
-        when(persRepo.findByEmail(anyString())).thenReturn(p1);
-        when(joKaRepo.findByKategorie(anyString())).thenReturn(joKa1);
-        when(jobRepo.save(any(Job.class))).thenReturn(job1);
+        when(ortRepository.findByPLZAndOrt(anyString(),anyString())).thenReturn(ort1);
+        when(unternehmenRepository.findByName(anyString())).thenReturn(unternehmen1);
+        when(personRepository.findByEmail(anyString())).thenReturn(unternehmensperson1);
+        when(jobKategorieRepository.findByKategorie(anyString())).thenReturn(jobKategorie1);
+        when(jobRepository.save(any(Job.class))).thenReturn(job1);
 
         // *********** Act ***********
-        Job actual = joSe.saveJob(job1);
+        Job actual = jobService.saveJob(job1);
 
         // ********* Assert **********
         assertEquals(expected, actual);
 
         // ********* Verify **********
-        verify(ortRepo, times(1)).findByPLZAndOrt(anyString(),anyString());
-        verify(unterRepo, times(1)).findByName(anyString());
-        verify(persRepo, times(1)).findByEmail(anyString());
-        verify(joKaRepo, times(1)).findByKategorie(anyString());
-        verify(jobRepo, times(1)).save(any(Job.class));
+        verify(ortRepository, times(1)).findByPLZAndOrt(anyString(),anyString());
+        verify(unternehmenRepository, times(1)).findByName(anyString());
+        verify(personRepository, times(1)).findByEmail(anyString());
+        verify(jobKategorieRepository, times(1)).findByKategorie(anyString());
+        verify(jobRepository, times(1)).save(any(Job.class));
     }
-
-    // TODO: andere Methoden aus JobService testen
 }

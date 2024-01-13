@@ -1,6 +1,9 @@
 package de.hbrs.easyjob.controllers;
 
-import de.hbrs.easyjob.entities.*;
+import de.hbrs.easyjob.entities.Branche;
+import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.entities.Unternehmen;
+import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
