@@ -1,16 +1,13 @@
 package de.hbrs.easyjob.views.components;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.textfield.PasswordField;
-import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.services.PasswortService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Eine Klasse für ein Dialog-Fenster das nach dem alten Passwort fragt und ein neues Passwort
@@ -21,19 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
  *      - den Abbrechen-Button mit .close
  */
 
+@StyleSheet("DialogLayout.css")
 public class PasswortAendernDialog extends Dialog {
 
 
-    private final String style;
+    public PasswortAendernDialog(Person person, String user, PasswortService passwortService){
 
-
-
-    public PasswortAendernDialog(Person person, String styleClass, PasswortService passwortService){
-        this.style = styleClass;
-
-
-
-        addClassName(style);
 
         setHeaderTitle("Passwort ändern");
 
@@ -51,7 +41,7 @@ public class PasswortAendernDialog extends Dialog {
 
         add(passwortFelder);
 
-        Button btnPasswortAendern = new Button("Passwort ändern");
+        Button btnPasswortAendern = new Button("Passwort speichern");
         btnPasswortAendern.addClassName("confirm");
 
         btnPasswortAendern.addClickListener(e -> {
@@ -60,11 +50,12 @@ public class PasswortAendernDialog extends Dialog {
             close();
         });
 
-        Button cancelButton = new Button("abbrechen");
+        Button cancelButton = new Button("Abbrechen");
         cancelButton.addClickListener((e) -> close());
-        cancelButton.addClassName("close");
+        if(user.equals("Student")) cancelButton.addClassName("close-student");
+        else cancelButton.addClassName("close-unternehmen");
 
-        getFooter().add(cancelButton, btnPasswortAendern);
+        getFooter().add(btnPasswortAendern, cancelButton);
     }
 
 }

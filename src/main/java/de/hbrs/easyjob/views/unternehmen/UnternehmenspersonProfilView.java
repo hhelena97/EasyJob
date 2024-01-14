@@ -14,7 +14,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.SessionController;
-import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
 
@@ -110,33 +109,31 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
         VerticalLayout personInfo = new VerticalLayout();
         personInfo.addClassName("personInfo");
         personInfo.setAlignItems(Alignment.CENTER);
-
         personInfo.setAlignSelf(Alignment.END,iconsProf);
+        personInfo.add(iconsProf,rahmen,name,linkUnternehmen);
 
-
-
-        //personKontakt
-        personKontakt.setAlignItems(Alignment.STRETCH);
-
+        //Kontaktinfo
+        personKontakt.setAlignSelf(Alignment.CENTER);
+        personKontakt.setMaxWidth("100em");
 
         H2 kon = new H2("Kontakt:");
         kon.addClassName("kon");
-        completeZeile("Email:" , person.getEmail());
-        completeZeile("Telefon:", person.getTelefon());
+        HorizontalLayout konLayout = new HorizontalLayout(kon);
+        konLayout.setAlignItems(Alignment.START);
+        konLayout.setSizeFull();
+        VerticalLayout infoLayout = new VerticalLayout(
+                completeZeile("Email:" , person.getEmail()),
+                completeZeile("Telefon:", person.getTelefon()),
+                //Änderung bitte lassen! Hier nicht die Adresse vom Unternehmen sondern die Adresse von der Person!
+                completeZeile("Büroanschrift:" , person.getAnschrift()));
+        infoLayout.setAlignItems(Alignment.STRETCH);
+        personKontakt.add(konLayout,infoLayout);
+        personKontakt.setAlignItems(Alignment.START);
 
-        Unternehmen u = person.getUnternehmen();
-
-
-        completeZeile("Büroanschrift:" , u.getKontaktdaten());
-
-
-
-        personInfo.add(iconsProf,rahmen,name,linkUnternehmen);
-
-        add(personInfo,kon,personKontakt);
+        add(personInfo,personKontakt);
 
     }
-    private void completeZeile(String title, String wert){
+    private HorizontalLayout completeZeile(String title, String wert){
 
         HorizontalLayout titleH = new HorizontalLayout();
         titleH.setSizeFull();
@@ -150,7 +147,6 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
         completeZeile.setAlignItems(Alignment.STRETCH);
         completeZeile.addClassName("completeZeile");
 
-        personKontakt.add(completeZeile);
-
+        return completeZeile;
     }
 }

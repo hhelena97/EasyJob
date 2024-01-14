@@ -6,27 +6,27 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.details.Details;
-import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.views.allgemein.LoginView;
+import de.hbrs.easyjob.views.components.ZurueckButtonRundLayout;
 
 import javax.annotation.security.RolesAllowed;
 
 
 @Route("student/einstellungen")
 @StyleSheet("DialogLayout.css")
+@StyleSheet("Registrieren.css")
 @RolesAllowed("ROLE_STUDENT")
 @PageTitle("Einstellungen")
-public class EinstellungenUebersichtStudentView extends Div implements BeforeEnterObserver {
+public class EinstellungenUebersichtStudentView extends VerticalLayout implements BeforeEnterObserver {
 
     private final SessionController sessionController;
 
@@ -42,40 +42,28 @@ public class EinstellungenUebersichtStudentView extends Div implements BeforeEnt
 
         UI.getCurrent().getPage().addStyleSheet("Einstellungen.css");
 
-        VerticalLayout v = new VerticalLayout();
-        v.addClassName("v");
-        v.setAlignItems(FlexComponent.Alignment.STRETCH);
+        VerticalLayout frame = new VerticalLayout();
 
-        //Zurück Icon-----------------------------------------------------
-        Icon zuruck = new Icon(VaadinIcon.CHEVRON_CIRCLE_LEFT);
-        zuruck.addClassName("zuruckStudent");
-        zuruck.getStyle().set("color", "#A3336F");
-
-
-
+        //Zurück Button-----------------------------------------------------
+        Button zuruck = new ZurueckButtonRundLayout("Student");
         RouterLink linkzuruck = new RouterLink(StudentProfilView.class);
         linkzuruck.add(zuruck);
 
-
-
-
-
-
-
         //Einstellungen--------------------------------------------------------
 
+        Label ueber = new Label("Einstellungen");
+        ueber.addClassName("accounteinstellungen");
 
-        Details accounts = new Details("Account");
+        Button accounts = new Button("Account");
+        accounts.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        accounts.addClassName("menu-button");
         RouterLink linkDea = new RouterLink(EinstellungenAccountStudentView.class);
         linkDea.add(accounts);
         linkDea.getStyle().set("text-decoration","none");
-        accounts.addThemeVariants(DetailsVariant.REVERSE);
 
-
-        Details impressum = createDetails("Impressum");
-        impressum.addThemeVariants(DetailsVariant.REVERSE);
-
-
+        Button impressum = new Button("Impressum");
+        impressum.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        impressum.addClassName("menu-button");
 
         //Dialog beim Ausloggen klicken
         Dialog dialog = new Dialog();
@@ -106,14 +94,11 @@ public class EinstellungenUebersichtStudentView extends Div implements BeforeEnt
         ausloggen.getStyle().set("padding-left", "16px");
         ausloggen.addClassName("ausloggen");
 
+        VerticalLayout buttons = new VerticalLayout(linkDea, impressum, ausloggen);
+        buttons.setSpacing(false);
 
-
-
-
-
-
-        v.add(linkzuruck,linkDea,impressum);
-        add(v,ausloggen,dialog);
+        frame.add(linkzuruck,ueber, buttons);
+        add(frame,dialog);
     }
 
     private Details createDetails(String summary, Anchor... anchors) {

@@ -6,13 +6,11 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.details.Details;
-import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -20,6 +18,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.views.allgemein.LoginView;
+import de.hbrs.easyjob.views.components.ZurueckButtonRundLayout;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -27,7 +26,7 @@ import javax.annotation.security.RolesAllowed;
 @Route("unternehmen/einstellungen")
 @StyleSheet("DialogLayout.css")
 @RolesAllowed("ROLE_UNTERNEHMENSPERSON")
-public class EinstellungenUebersichtUnternehmenView extends Div implements BeforeEnterObserver {
+public class EinstellungenUebersichtUnternehmenView extends VerticalLayout implements BeforeEnterObserver {
 
     private final SessionController sessionController;
 
@@ -42,36 +41,29 @@ public class EinstellungenUebersichtUnternehmenView extends Div implements Befor
         this.sessionController = sessionController;
         UI.getCurrent().getPage().addStyleSheet("Einstellungen.css");
 
-        VerticalLayout v = new VerticalLayout();
-        v.addClassName("v");
-        v.setAlignItems(FlexComponent.Alignment.STRETCH);
+        VerticalLayout frame = new VerticalLayout();
 
-
-
-        //Zurück Icon-----------------------------------------------------
-        Icon zuruck = new Icon(VaadinIcon.CHEVRON_CIRCLE_LEFT);
-        zuruck.addClassName("zuruckUnternehmen");
-        zuruck.getStyle().set("color", "#2D34A0");
-
-
-
+        //Zurück Button-----------------------------------------------------
+        Button zuruck = new ZurueckButtonRundLayout("Unternehmen");
         RouterLink linkzuruck = new RouterLink(UnternehmenspersonProfilView.class);
         linkzuruck.add(zuruck);
 
 
-
-
-
         //Einstellungen--------------------------------------------------------
 
-        Details accounts = new Details("Account");
+        Label ueber = new Label("Einstellungen");
+        ueber.addClassName("accounteinstellungen");
+
+        Button accounts = new Button("Account");
+        accounts.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        accounts.addClassName("menu-button");
         RouterLink linkDea = new RouterLink(EinstellungenAccountUnternehmenView.class);
         linkDea.getStyle().set("text-decoration","none");
         linkDea.add(accounts);
-        accounts.addThemeVariants(DetailsVariant.REVERSE);
 
-        Details impressum = createDetails("Impressum");
-        impressum.addThemeVariants(DetailsVariant.REVERSE);
+        Button impressum = new Button("Impressum");
+        impressum.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        impressum.addClassName("menu-button");
 
 
 
@@ -103,11 +95,11 @@ public class EinstellungenUebersichtUnternehmenView extends Div implements Befor
         ausloggen.getStyle().set("padding-left", "16px");
         ausloggen.addClassName("ausloggen");
 
+        VerticalLayout buttons = new VerticalLayout(linkDea, impressum, ausloggen);
+        buttons.setSpacing(false);
 
-
-
-        v.add(linkzuruck,linkDea,impressum);
-        add(v,ausloggen,dialog);
+        frame.add(linkzuruck,ueber, buttons);
+        add(frame, dialog);
 
     }
 

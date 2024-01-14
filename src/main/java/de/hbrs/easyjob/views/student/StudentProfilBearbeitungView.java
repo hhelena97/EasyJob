@@ -4,22 +4,17 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.OrtController;
-import de.hbrs.easyjob.controllers.PersonController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.repositories.*;
 import de.hbrs.easyjob.services.FaehigkeitService;
-import de.hbrs.easyjob.services.PasswortService;
-import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.StudentLayout;
 import de.hbrs.easyjob.views.components.StudentProfileComponentBearbeitung;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
+
 
 import javax.annotation.security.RolesAllowed;
 
@@ -31,7 +26,7 @@ import javax.annotation.security.RolesAllowed;
 @StyleSheet("StudentProfilView.css")
 public class StudentProfilBearbeitungView extends VerticalLayout implements BeforeEnterObserver  {
 
-    private Student student;
+    private final Student student;
     private final StudentService studentService;
     private final SessionController sessionController;
 
@@ -50,9 +45,6 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
     OrtController ortController;
 
     @Autowired
-    PasswortService passwortService;
-
-    @Autowired
     public StudentProfilBearbeitungView(StudentService studentService,
                                         SessionController sessionController,
                                         StudienfachRepository studienfachRepository,
@@ -61,8 +53,7 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
                                         JobKategorieRepository jobKategorieRepository,
                                         OrtController ortController,
                                         FaehigkeitRepository faehigkeitRepository,
-                                        FaehigkeitService faehigkeitService,
-                                        PasswortService passwortService) {
+                                        FaehigkeitService faehigkeitService) {
 
         this.studentService = studentService;
         this.sessionController = sessionController;
@@ -73,7 +64,6 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
         this.ortController = ortController;
         this.faehigkeitRepository = faehigkeitRepository;
         this.faehigkeitService = faehigkeitService;
-        this.passwortService = passwortService;
         student = (Student) sessionController.getPerson();
         initializeView();
 
@@ -94,8 +84,7 @@ public class StudentProfilBearbeitungView extends VerticalLayout implements Befo
                 brancheRepository,
                 jobKategorieRepository,
                 faehigkeitRepository,
-                ortController,
-                passwortService
+                ortController
         );
         add(studentProfile);
     }
