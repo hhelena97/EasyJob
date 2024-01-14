@@ -37,7 +37,7 @@ public class EinstellungenAccountUnternehmenView extends VerticalLayout implemen
     @Autowired
     private UnternehmenRepository unternehmenRepository;
 
-    private final ProfilDeaktivierenController profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository);
+    private final ProfilDeaktivierenController profilDeaktivieren;
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
@@ -53,7 +53,7 @@ public class EinstellungenAccountUnternehmenView extends VerticalLayout implemen
         this.sessionController = sessionController;
         this.personRepository = personRepository;
         Unternehmensperson person = (Unternehmensperson)  sessionController.getPerson();
-
+        profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository);
         VerticalLayout frame = new VerticalLayout();
         DeaktivierenConfirmDialog deaktivierenDialog = new DeaktivierenConfirmDialog(true, "Unternehmen",
                 "Ihr Profil wird unsichtbar und Sie können keine ChatsView mehr erhalten. " +

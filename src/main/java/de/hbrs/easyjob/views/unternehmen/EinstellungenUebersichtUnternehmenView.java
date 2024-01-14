@@ -19,7 +19,6 @@ import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.ZurueckButtonRundLayout;
-import de.hbrs.easyjob.views.student.StudentProfilView;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -46,7 +45,7 @@ public class EinstellungenUebersichtUnternehmenView extends VerticalLayout imple
 
         //Zurück Button-----------------------------------------------------
         Button zuruck = new ZurueckButtonRundLayout("Unternehmen");
-        RouterLink linkzuruck = new RouterLink(StudentProfilView.class);
+        RouterLink linkzuruck = new RouterLink(UnternehmenspersonProfilView.class);
         linkzuruck.add(zuruck);
 
 
