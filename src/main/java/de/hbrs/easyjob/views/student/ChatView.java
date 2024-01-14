@@ -73,7 +73,7 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
 
     private void setupChatForstudent(Integer id, Person person, String topic) {
         String foto = person.getFoto()!=null ? person.getFoto() : "images/blank-profile-picture.png";
-        UserInfo currentUserInfo = new UserInfo(person.getId_Person() + "", person.getVorname() + " " + person.getNachname(), foto);
+        UserInfo currentUserInfo = new UserInfo(person.getId_Person().toString(), person.getVorname() + " " + person.getNachname(), foto);
 
         Component header = createChatHeader(jobService.getJobById(id));
         // Erstellen der Collaboration Engine-Komponenten
@@ -102,7 +102,7 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
 
     private void setupChatForJob(Integer id, Person person, String topicId) {
         String foto = person.getFoto()!=null ? person.getFoto() : "images/blank-profile-picture.png";
-        UserInfo currentUserInfo = new UserInfo(person.getId_Person() + "", person.getVorname() + " " + person.getNachname(), foto);
+        UserInfo currentUserInfo = new UserInfo(person.getId_Person().toString(), person.getVorname() + " " + person.getNachname(), foto);
         Component header = createChatHeader(jobService.getJobById(id));
         // Erstellen der Collaboration Engine-Komponenten
         CollaborationMessageList messageList = new CollaborationMessageList(currentUserInfo, topicId,databaseMessagePersister);
@@ -122,6 +122,7 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         chatLayout.setPadding(false);
         chatLayout.setSizeFull();
         chatLayout.setAlignItems(Alignment.STRETCH);
+        chatLayout.setJustifyContentMode(JustifyContentMode.END);
 
         add(chatLayout);
         setSizeFull();
@@ -143,7 +144,6 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         boolean hasProfileImage = person.getFoto() != null;
         String profileImageSource = hasProfileImage ? person.getFoto() : "images/blank-profile-picture.png";
         Image profileImage = new Image(profileImageSource, "Profile Image");
-        profileImage.setHeight("50px");
         profileImage.addClassNames("profileImage");
         foto.add(profileImage);
 
