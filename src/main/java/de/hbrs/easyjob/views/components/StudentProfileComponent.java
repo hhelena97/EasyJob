@@ -274,7 +274,7 @@ public class StudentProfileComponent extends VerticalLayout {
 
         HorizontalLayout titleH = new HorizontalLayout();
         titleH.setSizeFull();
-        titleH.addClassName("title");
+        titleH.addClassName("wert");
         titleH.add(title);
         HorizontalLayout wertH = new HorizontalLayout();
         wertH.setSizeFull();

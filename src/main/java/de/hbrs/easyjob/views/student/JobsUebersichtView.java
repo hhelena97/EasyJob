@@ -24,8 +24,7 @@ import de.hbrs.easyjob.services.JobSucheService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import org.springframework.beans.factory.annotation.Autowired;
 import de.hbrs.easyjob.views.components.StudentLayout;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
+
 
 import javax.annotation.security.RolesAllowed;
 import java.time.LocalDate;
@@ -191,7 +190,7 @@ public class JobsUebersichtView extends VerticalLayout implements BeforeEnterObs
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
         long daysBetween = ChronoUnit.DAYS.between(jobDate, LocalDate.now());
-        String daysAgoText = daysBetween == 0 ? "Heute" : daysBetween + (daysBetween == 1 ? " Tag" : " Tage");
+        String daysAgoText = daysBetween == 0 ? "Heute" : daysBetween + (daysBetween == 1 ? " Tag" : " Tagen");
 
         Span postedTime = new Span("Vor " + daysAgoText);
         postedTime.addClassName("posted-time");
