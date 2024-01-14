@@ -5,7 +5,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -35,16 +34,14 @@ import static de.hbrs.easyjob.controllers.ValidationController.isValidEmail;
 @StyleSheet("UnternehmenRegistrieren.css")
 @Route(value = "unternehmen/unternehmenpersonbearbeitung", layout = UnternehmenLayout.class)
 public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
+
     private final Unternehmensperson person;
     private final PersonService personService;
-
     private final UnternehmenService unternehmenService;
 
     private final PersonRepository personRepository;
 
-    TextField strasse = new TextField();
-
-    private final OrtController ortController;
+    private VerticalLayout personInfo;
 
 
     TextField vorname;
@@ -58,11 +55,9 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     UnternehmenspersonProfilBearbeitungView(PersonService personService,
                                             UnternehmenService unternehmenService,
                                             SessionController sessionController,
-                                            OrtController ortController,
                                             PersonRepository personRepository){
         this.personService = personService;
         this.unternehmenService = unternehmenService;
-        this.ortController = ortController;
         this.personRepository = personRepository;
         person = (Unternehmensperson) sessionController.getPerson();
         initialView();
@@ -80,11 +75,103 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
         setPadding(false);
         setSpacing(false);
 
+        //Person Info
+        personInfo = new VerticalLayout();
+        personInfo.addClassName("personInfo");
+        personInfo.setAlignItems(Alignment.CENTER);
+
+        //Bildupload in Methode ausgelagert
+        bildUpload();
+
+        //Kontaktinfo Felder
+        personKontakt.setAlignSelf(Alignment.CENTER);
+        personKontakt.setAlignItems(Alignment.STRETCH);
+        personKontakt.setMaxWidth("100em");
+
+        if(person.getVorname() != null) vorname = completeZeile("Vorname:" , person.getVorname());
+        if(person.getNachname() != null) nachname = completeZeile("Nachname:" , person.getNachname());
+        if(person.getEmail() != null) email = completeZeile("Email:", person.getEmail());
+        if(person.getTelefon() != null) telefon = completeZeile("Telefon:" , person.getTelefon());
+        if(person.getAnschrift() != null) adresse = completeZeile("Adresse:" , person.getAnschrift());
+
+        // Buttons
+        Button next = new Button("Fertig", new Icon(VaadinIcon.CHECK));
+        next.addClassName("next");
+        next.addClickListener(e -> updateInfos());
+
+        Button back = new Button("Abbrechen", new Icon(VaadinIcon.CLOSE));
+        back.addClassName("back");
+        back.addClickListener(e -> UI.getCurrent().getPage().setLocation("/unternehmen/unternehmenperson"));
+
+        // Buttons Container
+        HorizontalLayout actions = new HorizontalLayout(back, next);
+        actions.setSpacing(true);
+        actions.setJustifyContentMode(JustifyContentMode.CENTER);
+
+        personKontakt.add(actions);
+        personKontakt.setAlignSelf(Alignment.CENTER,actions);
+
+
+        add(personInfo,personKontakt);
+    }
+
+    private TextField completeZeile(String title, String wert){
+
+        HorizontalLayout titleH = new HorizontalLayout();
+        titleH.setSizeFull();
+        titleH.addClassName("title");
+        titleH.add(title);
+        HorizontalLayout wertH = new HorizontalLayout();
+        wertH.setSizeFull();
+        wertH.addClassName("wert");
+
+
+        TextField textField = new TextField();
+        textField.addClassName("feld");
+        textField.setValue(wert);
+
+        wertH.add(textField);
+
+        HorizontalLayout completeZeile = new HorizontalLayout();
+        completeZeile.setWidthFull();
+        completeZeile.add(titleH);
+        completeZeile.setAlignItems(Alignment.START);
+        completeZeile.add(wertH);
+        completeZeile.setAlignItems(Alignment.END);
+        completeZeile.addClassName("completeZeile");
+
+        personKontakt.add(completeZeile);
+
+        return textField;
+    }
+
+    private void updateInfos(){
+        person.setVorname(vorname.getValue());
+
+        person.setNachname(nachname.getValue());
+
+        if(isValidEmail(email.getValue())){
+            person.setEmail(email.getValue());
+            UI.getCurrent().getPage().setLocation("/unternehmen/unternehmenperson");
+        }else {
+
+            Notification.show("falscheEingabe");
+        }
+
+        person.setTelefon(telefon.getValue());
+        person.setFoto(profilBild2.getSrc());
+        person.getUnternehmen().setKontaktdaten(adresse.getValue());
+
+        unternehmenService.saveUnternehmen(person.getUnternehmen());
+        personService.savePerson(person);
+    }
+
+    private void bildUpload(){
 
         //Bildrahmen
         Div rahmen = new Div();
         rahmen.addClassName("profile-picture-frame");
-        Image ellipse = new Image("images/Ellipse-Lila-Groß.png", "Bildumrandung");
+        Image ellipse = new Image("images/Ellipse-Blau-Groß.png", "Bildumrandung");
         ellipse.addClassName("profile-picture-background");
         rahmen.add(ellipse);
 
@@ -141,117 +228,7 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
             });
         });
 
-
-
-        //Person Info
-        VerticalLayout personInfo = new VerticalLayout();
-        personInfo.addClassName("personInfo");
-        personInfo.setAlignItems(Alignment.CENTER);
-
-
-        //personKontakt
-        H2 kon = new H2("Kontakt:");
-        kon.addClassName("kon");
-
-        personKontakt.setAlignItems(Alignment.STRETCH);
-
-
-
-        vorname = completeZeile("Vorname:" , person.getVorname());
-        nachname = completeZeile("Nachname:" , person.getNachname());
-        email = completeZeile("Email:", person.getEmail());
-        telefon = completeZeile("Telefon:" , person.getTelefon());
-        adresse = completeZeile("Adresse:" , person.getUnternehmen().getKontaktdaten());
-
-
-
-        // Buttons
-        Button next = new Button("fertig", new Icon(VaadinIcon.ARROW_RIGHT));
-        next.addClassName("next");
-        next.addClickListener(e -> updateInfos());
-
-        Button back = new Button("Zurück", new Icon(VaadinIcon.ARROW_LEFT));
-        back.addClassName("back");
-        back.addClickListener(e -> UI.getCurrent().getPage().setLocation("/unternehmen/unternehmenperson"));
-
-        Button cancel = new Button("Abbrechen");
-        //cancel.addClickListener(e -> abbrechenDialog.openDialogOverlay());
-        cancel.addClassName("cancel");
-
-        // Buttons Container
-        HorizontalLayout actions = new HorizontalLayout(back, next);
-        actions.setSpacing(true);
-        actions.setJustifyContentMode(JustifyContentMode.CENTER);
-
-        personKontakt.add(actions);
-        personKontakt.setAlignSelf(Alignment.CENTER,actions);
-
-
-
-        // personInfo.add(profilBild,bildBearbeiten);
-        personInfo.add(rahmen, upload, uploadListe);
-
-
-        add(personInfo,kon,personKontakt);
+        personInfo.add(rahmen,upload,uploadListe);
     }
-
-    private TextField completeZeile(String title, String wert){
-
-        HorizontalLayout titleH = new HorizontalLayout();
-        titleH.setSizeFull();
-        titleH.addClassName("title");
-        titleH.add(title);
-        HorizontalLayout wertH = new HorizontalLayout();
-        wertH.setSizeFull();
-        wertH.addClassName("wert");
-
-
-        TextField textField = new TextField();
-        textField.addClassName("feld");
-        textField.setValue(wert);
-        //textField.setClearButtonVisible(true);
-
-
-        wertH.add(textField);
-        HorizontalLayout completeZeile = new HorizontalLayout(titleH,wertH);
-        completeZeile.setAlignItems(Alignment.STRETCH);
-        completeZeile.addClassName("completeZeile");
-
-        personKontakt.add(completeZeile);
-
-        return textField;
-
-
-    }
-
-    private void updateInfos(){
-        person.setVorname(vorname.getValue());
-
-        person.setNachname(nachname.getValue());
-
-        if(isValidEmail(email.getValue())){
-            person.setEmail(email.getValue());
-            UI.getCurrent().getPage().setLocation("/unternehmen/unternehmenperson");
-        }else {
-
-            Notification.show("falscheEingabe");
-        }
-
-
-
-        person.setTelefon(telefon.getValue());
-        person.setFoto(profilBild2.getSrc());
-
-
-        person.getUnternehmen().setKontaktdaten(adresse.getValue());
-        unternehmenService.saveUnternehmen(person.getUnternehmen());
-
-
-
-
-        personService.savePerson(person);
-
-    }
-
 
 }

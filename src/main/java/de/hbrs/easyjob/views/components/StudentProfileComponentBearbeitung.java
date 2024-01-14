@@ -177,15 +177,18 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         Notification notification = Notification
                 .show("Achtung: nicht gespeicherte Änderungen werden verworfen");
         notification.setPosition(Notification.Position.BOTTOM_START);
-      //  notification.setDuration(1);
 
         //Allgemein-Tab
         if(tab.equals(allgemein)) {
             allgemeinDiv = new Div();
             allgemeinDiv.addClassName("myTab");
 
-            vorname = completeZeile("allgemein", "Vorname:", student.getVorname());
-            nachname = completeZeile("allgemein", "Nachname:", student.getNachname());
+            if(student.getVorname() != null) {
+                vorname = completeZeile("allgemein", "Vorname:", student.getVorname());
+            }
+            if(student.getNachname() != null) {
+                nachname = completeZeile("allgemein", "Nachname:", student.getNachname());
+            }
 
             abschluss.setItems("Bachelor", "Master");
             abschluss.setValue("Bachelor");
