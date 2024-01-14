@@ -3,8 +3,6 @@ package de.hbrs.easyjob.views.unternehmen;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -19,19 +17,13 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.controllers.OrtController;
-import de.hbrs.easyjob.controllers.PersonController;
 import de.hbrs.easyjob.controllers.SessionController;
-import de.hbrs.easyjob.entities.Ort;
-import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.PersonRepository;
-import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.components.FileUpload;
-import de.hbrs.easyjob.views.components.PasswortAendernDialog;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.InputStream;
 
@@ -43,21 +35,17 @@ import static de.hbrs.easyjob.controllers.ValidationController.isValidEmail;
 @StyleSheet("UnternehmenRegistrieren.css")
 @Route(value = "unternehmen/unternehmenpersonbearbeitung", layout = UnternehmenLayout.class)
 public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
-    private Unternehmensperson person;
+    private final Unternehmensperson person;
     private final PersonService personService;
 
     private final UnternehmenService unternehmenService;
 
     private final PersonRepository personRepository;
 
-    private final PasswortService passwortService;
-
     TextField strasse = new TextField();
 
     private final OrtController ortController;
 
-
-    private final transient SessionController  sessionController;
 
     TextField vorname;
     TextField nachname;
@@ -67,12 +55,14 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
     Image profilBild2;
     VerticalLayout personKontakt = new VerticalLayout();
 
-    UnternehmenspersonProfilBearbeitungView(PersonService personService, UnternehmenService unternehmenService, SessionController sessionController,OrtController ortController, PasswortService passwortService,PersonRepository personRepository){
+    UnternehmenspersonProfilBearbeitungView(PersonService personService,
+                                            UnternehmenService unternehmenService,
+                                            SessionController sessionController,
+                                            OrtController ortController,
+                                            PersonRepository personRepository){
         this.personService = personService;
         this.unternehmenService = unternehmenService;
-        this.sessionController = sessionController;
         this.ortController = ortController;
-        this.passwortService = passwortService;
         this.personRepository = personRepository;
         person = (Unternehmensperson) sessionController.getPerson();
         initialView();
@@ -153,25 +143,6 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
 
 
 
-
-        //Password ändern
-        Icon edit = new Icon(VaadinIcon.EDIT);
-        PasswortAendernDialog passwort = new PasswortAendernDialog(person,"UnternehmenRegistrieren.css",passwortService);
-        Button editAdmin = new Button("Password Ändern", edit,e -> passwort.open());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         //Person Info
         VerticalLayout personInfo = new VerticalLayout();
         personInfo.addClassName("personInfo");
@@ -221,7 +192,7 @@ public class UnternehmenspersonProfilBearbeitungView extends VerticalLayout {
         personInfo.add(rahmen, upload, uploadListe);
 
 
-        add(personInfo,editAdmin,kon,personKontakt);
+        add(personInfo,kon,personKontakt);
     }
 
     private TextField completeZeile(String title, String wert){

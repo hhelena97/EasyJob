@@ -1,23 +1,24 @@
 package de.hbrs.easyjob.views.unternehmen;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.VaadinSession;
+import de.hbrs.easyjob.controllers.SessionController;
+import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.DeaktivierenConfirmDialog;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
+import de.hbrs.easyjob.views.components.PasswortAendernDialog;
+import de.hbrs.easyjob.views.components.ZurueckButtonRundLayout;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
+
 
 import javax.annotation.security.RolesAllowed;
 
@@ -31,51 +32,64 @@ public class EinstellungenAccountUnternehmenView extends VerticalLayout implemen
     @Autowired
     private PersonRepository personRepository;
 
+    private final SessionController sessionController;
+
     @Autowired
     private UnternehmenRepository unternehmenRepository;
 
-    private ProfilDeaktivierenController profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository);
+    private final ProfilDeaktivierenController profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository);
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if (!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_UNTERNEHMENSPERSON")) {
             event.rerouteTo(LoginView.class);
         }
     }
 
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_UNTERNEHMENSPERSON"));
-    }
+    public EinstellungenAccountUnternehmenView(SessionController sessionController,
+                                               PersonRepository personRepository,
+                                               PasswortService passwortService) {
 
-    public EinstellungenAccountUnternehmenView() {
+        this.sessionController = sessionController;
+        this.personRepository = personRepository;
+        Unternehmensperson person = (Unternehmensperson)  sessionController.getPerson();
+
         VerticalLayout frame = new VerticalLayout();
-        DeaktivierenConfirmDialog deaktivierenDialog = new DeaktivierenConfirmDialog(true, "Unternehmen", "Ihr Profil wird unsichtbar und Sie können keine ChatsView mehr erhalten. Das Unternehmensprofil bleibt sichbar, solange mindestens ein verbundenes Profil aktiv ist. Sie können Ihren Account jederzeit reaktivieren.");
+        DeaktivierenConfirmDialog deaktivierenDialog = new DeaktivierenConfirmDialog(true, "Unternehmen",
+                "Ihr Profil wird unsichtbar und Sie können keine ChatsView mehr erhalten. " +
+                        "Das Unternehmensprofil bleibt sichtbar, solange mindestens ein verbundenes Profil aktiv ist." +
+                        " Sie können Ihren Account jederzeit reaktivieren.");
 
-        frame.setClassName("Container");
-        Button back = new Button("", new Icon(VaadinIcon.ARROW_LEFT));
+
+        Button back = new ZurueckButtonRundLayout("Unternehmen");
+        RouterLink linkzuruck = new RouterLink(EinstellungenUebersichtUnternehmenView.class);
+        linkzuruck.add(back);
 
         Label ueber = new Label("Accounteinstellungen");
+        ueber.addClassName("accounteinstellungen");
+
+        PasswortAendernDialog passwort = new PasswortAendernDialog(person,"UnternehmenRegistrieren.css", passwortService);
+        Button passwortaendern = new Button("Passwort ändern",e -> passwort.open());
+        passwortaendern.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        passwortaendern.addClassName("menu-button");
 
         Button deaktivieren = new Button("Account deaktivieren", e -> deaktivierenDialog.openDialogOverlay());
+        deaktivieren.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        deaktivieren.addClassName("deaktivieren");
 
+        VerticalLayout buttons = new VerticalLayout(passwortaendern, deaktivieren);
+        buttons.setSpacing(false);
 
-        frame.add(back, ueber, deaktivieren);
+        frame.add(linkzuruck, ueber, buttons);
         add(frame);
     }
 
     @Override
     public void beforeLeave(BeforeLeaveEvent event) {
         // Deaktiviere Unternehmen-Account
-        Unternehmensperson person = (Unternehmensperson) UI.getCurrent().getSession().getAttribute("current_User");
-        if (profilDeaktivieren.profilDeaktivierenUnternehmen(person)) {
-            System.out.printf("Unternehmen '%s' deaktiviert.\n", person.getUnternehmen().getName());
+        Person person = sessionController.getPerson();
+        if (profilDeaktivieren.profilDeaktivierenPerson(person)) {
+            System.out.printf("Profil '%s' deaktiviert.\n", person.getEmail());
         }
     }
 }

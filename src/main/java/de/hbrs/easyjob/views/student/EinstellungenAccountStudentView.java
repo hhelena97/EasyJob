@@ -49,7 +49,8 @@ public class EinstellungenAccountStudentView extends VerticalLayout implements B
         VerticalLayout frame = new VerticalLayout();
         //TODO:dialog anpassen
         DeaktivierenConfirmDialog deaktivierenDialog = new DeaktivierenConfirmDialog(true, "Student",
-                "Dein Profil wird unsichtbar und du kannst keine Nachrichten mehr erhalten. Du kannst deinen Account jederzeit reaktivieren.") ;
+                "Dein Profil wird unsichtbar und du kannst keine Nachrichten mehr erhalten. " +
+                        "Du kannst deinen Account jederzeit reaktivieren.") ;
 
         Button back = new ZurueckButtonRundLayout("Student");
         RouterLink linkzuruck = new RouterLink(EinstellungenUebersichtStudentView.class);
