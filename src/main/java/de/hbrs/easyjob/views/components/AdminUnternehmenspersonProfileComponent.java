@@ -16,6 +16,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.JobProfilController;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
+import de.hbrs.easyjob.controllers.ProfilSperrenController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
@@ -44,17 +45,18 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
     private Unternehmen unternehmen;
 
     private final UnternehmenService unternehmenService;
-    JobProfilController jobController = new JobProfilController();
+    private final ProfilSperrenController profilSperrenController;
 
 
     public AdminUnternehmenspersonProfileComponent(PersonRepository personRepository, UnternehmenRepository unternehmenRepository,
-            Unternehmensperson person, String styleClass, UnternehmenService unternehmenservice){
+            Unternehmensperson person, String styleClass, UnternehmenService unternehmenservice, ProfilSperrenController profilSperrenController){
         this.personRepository = personRepository;
         this.unternehmenRepository = unternehmenRepository;
         this.person = person;
         this.unternehmen = person.getUnternehmen();
         this.style = styleClass;
         this.unternehmenService = unternehmenservice;
+        this.profilSperrenController = profilSperrenController;
         initializeComponent();
     }
 
@@ -73,7 +75,8 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         setSpacing(false);
 
         //Link zu Unternehmen
-        Paragraph unternehmenProfil = new Paragraph("zum Unternehmensprofil");
+        Paragraph unternehmenProfil = new Paragraph("zum Unternehmensprofil " + person.getUnternehmen());
+        unternehmenProfil.getStyle().set("color","#289a32");
         unternehmenProfil.addClassName("unternehmenProfil");
         Dialog d1 = new Dialog();
 
@@ -110,7 +113,7 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         personInfo.add(unternehmenProfil,kon,p,pa);
 
         // Job Section
-        H3 jobsTitle = new H3("Eingestellte Jobs");
+        H3 jobsTitle = new H3("Eingestellte Jobs:");
         jobsTitle.addClassName("Untertitel");
 
         //hier
@@ -134,9 +137,8 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
 
 
         // Jobtitel mit Begrenzung der Länge und RouterLink für die Details
-        RouterLink linkJobTitle = new RouterLink("", de.hbrs.easyjob.views.student.JobDetailsView.class, job.getId_Job());
-        linkJobTitle.add(new H1(job.getTitel()));
-        linkJobTitle.addClassName("job-title");
+        H1 jobTitle = new H1(job.getTitel());
+        jobTitle.addClassName("job-title");
 
         // Jobdetails wie Unternehmen und Ort und Homeoffice
         HorizontalLayout companyAndLocation = new HorizontalLayout();
@@ -160,14 +162,14 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
 
         d1.add(infos);
 
-        Button dSchliessen = new Button ("Schließen");
-        dSchliessen.addClassName("buttonAbbruch");
-        dSchliessen.addClickListener(e -> d1.close());
+        Button dSchliessenU = new Button ("Schließen");
+        dSchliessenU.addClassName("buttonAbbruch");
+        dSchliessenU.addClickListener(e -> d1.close());
 
-        d1.getFooter().add(dSchliessen);
+        d1.getFooter().add(dSchliessenU);
 
         unternehmenProfil.addClickListener(e-> d1.open());
-        //ende kopie
+
 
         H1 zumUnternhemen = new H1 (job.getUnternehmen().getName());
         zumUnternhemen.getStyle().set("color","#289a32");
@@ -204,8 +206,25 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         Span postedTime = new Span("Vor " + daysAgoText);
         postedTime.addClassName("posted-time");
 
+        Button mehrInfos = new Button("Job-Detail-Ansicht");
+        mehrInfos.addClassName("mehrInfos");
 
-        jobCardLayout.add(linkJobTitle, companyAndLocation, jobDescription, postedTime);
+            Dialog jobDialog = new Dialog();
+            Div infosJ = new Div();
+            infosJ.add(new AdminJobComponent(job ,"AdminLayout.css", profilSperrenController));
+
+            jobDialog.add(infosJ);
+
+            Button dSchliessenJ = new Button ("Schließen");
+            dSchliessenJ.addClassName("buttonAbbruch");
+            dSchliessenJ.addClickListener(e -> jobDialog.close());
+
+            jobDialog.getFooter().add(dSchliessenJ);
+
+        mehrInfos.addClickListener(e -> jobDialog.open());
+
+
+        jobCardLayout.add(jobTitle, companyAndLocation, jobDescription, postedTime, mehrInfos);
 
 
         jobListLayout.add(jobCardLayout);

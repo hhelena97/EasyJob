@@ -1,7 +1,9 @@
 package de.hbrs.easyjob.views.admin;
 
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
@@ -107,6 +109,36 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
     private void initializeView(){
 
+        //Ausloggen
+        Dialog dialogAusloggen = new Dialog();
+        dialogAusloggen.add(new Paragraph("Wollen Sie sich wirklich ausloggen"));
+
+        Button btnAbbruch = new Button ("Abbrechen");
+        btnAbbruch.addClassName("buttonAbbruch");
+        btnAbbruch.addClickListener(e -> dialogAusloggen.close());
+
+        String bestaetigen = "Ausloggen";
+        Button btnBestaetigen = new Button(bestaetigen);
+        btnBestaetigen.addClassName("buttonBestaetigen");
+        btnBestaetigen.addClickListener(e -> {
+            sessionController.logout();
+            UI.getCurrent().getPage().setLocation("/login");
+        });
+        dialogAusloggen.getFooter().add(btnAbbruch, btnBestaetigen);
+
+        //der Knopf um den Ausloggen-Dialog zu öffnen
+        Icon signout = new Icon(VaadinIcon.SIGN_OUT);
+        signout.addClassName("signout");
+        Button ausloggen = new Button(signout);
+        ausloggen.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        ausloggen.addClassName("ausloggen");
+        ausloggen.addClickListener(e -> dialogAusloggen.open());
+
+        HorizontalLayout ausl = new HorizontalLayout(ausloggen);
+        ausl.addClassName("ausl");
+        ausl.add(ausloggen);
+
+        // Titel der Seite
         H3 titel = new H3 ("Personen verwalten");
         titel.addClassName("personentext");
 
@@ -125,7 +157,7 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
         searchLayout.addClassName("search-layout");
 
         //alles in einen grünen Block
-        Div gruenerBlock = new Div(titel, searchLayout);
+        Div gruenerBlock = new Div(ausl,titel, searchLayout);
         gruenerBlock.addClassName("gruene-box");
 
         //Ergebnis
@@ -142,106 +174,84 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
     private void loadPerson() {
         personLayout.removeAll();
 
+
+
         email = (String) VaadinSession.getCurrent().getAttribute("email");
         if (email != null) {
             Person person = personRepository.findByEmail(email);
 
             if (person != null) {
-                Div infos = new Div();
-                infos.addClassName("infos");
-                String foto = person.getFoto() != null ? person.getFoto() : "images/blank-profile-picture.png";
-                //Profil Bild
-                VerticalLayout profilBild = new VerticalLayout(new Image(foto, "EasyJob"));
-                profilBild.addClassName("profilBild");
 
-                //Name
-                H2 name = new H2(person.getVorname() + " " + person.getNachname());
-                name.addClassName("nameM");
+                //Wenn Admin zu Admin Verwalten verlinken
+                if (person instanceof Admin) {
+                    Paragraph admininfo = new Paragraph("Das ist ein Admin.");
+                    Paragraph adminlink = new Paragraph("Zur Administration");
+                    RouterLink linkAdmin = new RouterLink(EinstellungenStartView.class);
+                    linkAdmin.add(adminlink);
+                    personLayout.add(admininfo, linkAdmin);
 
-                infos.add(profilBild, name);
-
-                //Buttons
-                Div buttons = new Div();
-                buttons.addClassName("buttons");
-
-                //Passwort ändern
-                Dialog dialogPasswortAendern = new Dialog();
-                dialogPasswortAendern.setHeaderTitle("Passwort ändern");
-
-                PasswordField pwneu1 = new PasswordField("neues Passwort");
-                PasswordField pwrp1 = new PasswordField("Passwort wiederholen");
-
-                Paragraph p10 = new Paragraph("");
-
-                Div inhalt = new Div(pwneu1, p10, pwrp1);
-
-                dialogPasswortAendern.add(inhalt);
-
-                Button btnAbbruch4 = new Button ("Abbrechen");
-                btnAbbruch4.addClassName("buttonAbbruch");
-                btnAbbruch4.addClickListener(e -> dialogPasswortAendern.close());
-
-                Button btnPasswortAendern = new Button("Passwort ändern");
-                btnPasswortAendern.setClassName("buttonBestaetigen");
-
-                btnPasswortAendern.addClickListener(e -> {
-                    if (new PasswortService(personRepository).newPassword(person, pwneu1.getValue(), pwrp1.getValue())) {
-                        Notification.show("Passwort geändert");
-                        dialogPasswortAendern.close();
-                    } else {
-                        Notification.show("Es gibt ein Problem.");
-                    }
-                });
-                dialogPasswortAendern.getFooter().add(btnAbbruch4, btnPasswortAendern);
-
-                Button btnneuesPasswort = new Button("Passwort ändern");
-                btnneuesPasswort.addClassName("btnNeuesPasswort");
-                btnneuesPasswort.addClickListener(e -> dialogPasswortAendern.open());
-
-
-                //Person sperren
-
-                //Dialog zum Nachfragen
-                Dialog d = new Dialog();
-
-                if(person.getGesperrt()){
-                    sperrbutton = "Profil entsperren";
-                    personEntperrenDialog(person, d);
+                // Wenn nicht, Person mit Buttons anzeigen
                 } else {
-                    sperrbutton = "Profil sperren";
-                    personSperrenDialog(person, d);
+                    Div infos = new Div();
+                    infos.addClassName("infos");
+                    String foto = person.getFoto() != null ? person.getFoto() : "images/blank-profile-picture.png";
+                    //Profil Bild
+                    VerticalLayout profilBild = new VerticalLayout(new Image(foto, "EasyJob"));
+                    profilBild.addClassName("profilBild");
+
+                    //Name
+                    H2 name = new H2(person.getVorname() + " " + person.getNachname());
+                    name.addClassName("nameM");
+
+                    infos.add(profilBild, name);
+
+                    //Buttons
+                    Div buttons = new Div();
+                    buttons.addClassName("buttons");
+
+                    //Passwort ändern
+                    PasswortNeuDialog passwortNeuDialog = new PasswortNeuDialog(person, "AdminLayout.css", new PasswortService(personRepository));
+                    Button btnneuesPasswort = new Button("Passwort ändern");
+                    btnneuesPasswort.addClassName("btnNeuesPasswort");
+                    btnneuesPasswort.addClickListener(e-> passwortNeuDialog.open());
+
+
+                    //Person sperren
+
+                    //Dialog zum Nachfragen
+                    Dialog d = new Dialog();
+
+                    if (person.getGesperrt()) {
+                        sperrbutton = "Profil entsperren";
+                        personEntperrenDialog(person, d);
+                    } else {
+                        sperrbutton = "Profil sperren";
+                        personSperrenDialog(person, d);
+                    }
+
+                    Button btnSperren = new Button(sperrbutton);
+                    btnSperren.addClassName("btnSperren");
+                    btnSperren.addClickListener(e -> d.open());
+
+                    buttons.add(btnneuesPasswort, btnSperren);
+
+                    personLayout.add(infos, buttons);
+
+                    if (person instanceof Student) {
+                        Student student = (Student) person;
+                        personLayout.add(new AdminStudentProfileComponent(student, "AdminPersonenVerwaltenView.css", studentService));
+                    } else if (person instanceof Unternehmensperson) {
+                        System.out.println("Unternehmensperson");
+                        Unternehmensperson uperson = (Unternehmensperson) person;
+                        personLayout.add(new AdminUnternehmenspersonProfileComponent(
+                                personRepository, unternehmenRepository, uperson,
+                                "AdminPersonenVerwaltenView.css", unternehmenService, profilSperrenController));
+                    } else {
+                        Paragraph p = new Paragraph("Die Person wurde nicht gefunden");
+                        p.addClassName("nicht-gefunden");
+                        personLayout.add(p);
+                    }
                 }
-
-                Button btnSperren = new Button(sperrbutton);
-                btnSperren.addClassName("btnSperren");
-                btnSperren.addClickListener(e -> d.open());
-
-                buttons.add(btnneuesPasswort, btnSperren);
-
-                personLayout.add(infos, buttons);
-
-                if (person instanceof Student) {
-                    Student student = (Student) person;
-                    personLayout.add(new AdminStudentProfileComponent(student, "AdminPersonenVerwaltenView.css", studentService));
-                } else if (person instanceof Unternehmensperson) {
-                    System.out.println("Unternehmensperson");
-                    Unternehmensperson uperson = (Unternehmensperson) person;
-                    personLayout.add(new AdminUnternehmenspersonProfileComponent(
-                            personRepository, unternehmenRepository, uperson,
-                            "AdminPersonenVerwaltenView.css", unternehmenService));
-                }
-            } else if (person instanceof Admin) {
-                Paragraph admininfo = new Paragraph("Das ist ein Admin.");
-                Paragraph adminlink = new Paragraph("Zur Administration");
-                RouterLink linkAdmin = new RouterLink(EinstellungenStartView.class);
-                linkAdmin.add(adminlink);
-                personLayout.add(admininfo, linkAdmin);
-
-            } else {
-                Paragraph p = new Paragraph("Die Person wurde nicht gefunden");
-                p.addClassName("nicht-gefunden");
-
-                personLayout.add(p);
             }
 
         }
@@ -251,7 +261,7 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
         dialog.add(new Paragraph("Wollen Sie " + person.getVorname() + " " + person.getNachname() + " sperren?"));
 
-        Button btnAbbruch2 = new Button("abbrechen");
+        Button btnAbbruch2 = new Button("Abbrechen");
         btnAbbruch2.addClassName("buttonAbbruch");
         btnAbbruch2.addClickListener(e -> {
             dialog.close();

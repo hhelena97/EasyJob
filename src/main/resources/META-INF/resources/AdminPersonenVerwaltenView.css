@@ -28,7 +28,7 @@ body {
 
 .job-title H1 {
     color: var(--admin-dark) !important;
-    font-size: 18px;
+    font-size: 14px;
     font-family: Rubik, sans-serif;
     font-weight: bold;
     word-wrap: break-word;
@@ -81,7 +81,7 @@ vaadin-vertical-layout {
     padding-bottom: 0px;
     padding-right: 0px;
     padding-top: 0px;
-    margin-top: 55px;
+    margin-top: 0px;
 }
 
 .ergebnisLayout{
@@ -269,5 +269,17 @@ vaadin-vertical-layout {
     align-items: stretch;
     margin-top: -0px !important;
     margin-left: -5px !important;
+}
+
+.job-title{
+    margin-top: 25px;
+    margin-bottom: 15px;
+    color: var(--admin-dark);
+    font-size: var(--lumo-font-size-l);
+    padding: 5px;
+
+}
+.mehrInfos{
+    margin-bottom: 0px;
 }
 

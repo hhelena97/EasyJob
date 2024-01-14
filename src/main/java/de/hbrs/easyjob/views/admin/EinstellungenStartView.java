@@ -34,6 +34,7 @@ import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.AdminLayout;
 import de.hbrs.easyjob.views.components.DialogLayout;
 import de.hbrs.easyjob.views.components.PasswortAendernDialog;
+import de.hbrs.easyjob.views.components.PasswortNeuDialog;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -110,7 +111,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         ausl.add(ausloggen);
 
         //Passwort ändern für den angemeldeten Admin
-        PasswortAendernDialog passwortAendernDialog = new PasswortAendernDialog(admin, "adminDialog.css", new PasswortService(personRepository));
+        PasswortAendernDialog passwortAendernDialog = new PasswortAendernDialog(admin, "AdminLayout.css", new PasswortService(personRepository));
         Icon editself = new Icon(VaadinIcon.EDIT);
         editself.addClassName("editAdmin");
         editself.addClickListener(e-> passwortAendernDialog.open());
@@ -133,7 +134,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
         for (Admin a: personRepository.findAllAdmins()) {
 
-            if(a.getAktiv()) {
+            if(a.getAktiv() && !a.equals(admin) ) {
                 HorizontalLayout einAdmin = new HorizontalLayout();
 
                 //Zeige die E-Mail-Adresse:
@@ -142,41 +143,11 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
                 Div icons = new Div();
 
-
                 //Passwort ändern für den entsprechenden Admin
+                PasswortNeuDialog passwortNeuDialog = new PasswortNeuDialog(a, "AdminLayout.css", new PasswortService(personRepository));
                 Icon edit = new Icon(VaadinIcon.EDIT);
                 edit.addClassName("edit");
-                Dialog dialogPasswortAendern = new Dialog();
-                dialogPasswortAendern.setHeaderTitle("Passwort ändern");
-
-                Paragraph info = new Paragraph("von " + a.getEmail());
-
-                PasswordField pwneu1 = new PasswordField("neues Passwort");
-                PasswordField pwrp1 = new PasswordField("Passwort wiederholen");
-
-                Paragraph p10 = new Paragraph("");
-                Paragraph p11 = new Paragraph("");
-
-                Div inhalt = new Div(info, p10, pwneu1, p11, pwrp1);
-
-                dialogPasswortAendern.add(inhalt);
-
-                Button btnAbbruch4 = new Button ("Abbrechen");
-                btnAbbruch4.addClassName("buttonAbbruch");
-                btnAbbruch4.addClickListener(e -> dialogPasswortAendern.close());
-
-                Button btnPasswortAendern = new Button("Passwort ändern");
-                btnPasswortAendern.setClassName("buttonBestaetigen");
-                btnPasswortAendern.addClickListener(e -> {
-                    if (new PasswortService(personRepository).newPassword(a, pwneu1.getValue(), pwrp1.getValue())) {
-                        Notification.show("Passwort geändert");
-                        dialogPasswortAendern.close();
-                    } else {
-                        Notification.show("Es gibt ein Problem.");
-                    }
-                });
-                dialogPasswortAendern.getFooter().add(btnAbbruch4, btnPasswortAendern);
-                edit.addClickListener(e -> dialogPasswortAendern.open());
+                edit.addClickListener(e-> passwortNeuDialog.open());
 
                 //Admin entfernen
                 Icon minus = new Icon(VaadinIcon.MINUS);
@@ -270,8 +241,6 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
         userPlus.addClickListener(e -> dialogAdminHinzufuegen.open());
 
-        //Admin hinzufügen zur Adminliste packen
-        //adminListe.add(userPlus);
 
         //Seite besteht aus WillkommenBox und AdminListe
         add(willkommenBox, adminListe);
