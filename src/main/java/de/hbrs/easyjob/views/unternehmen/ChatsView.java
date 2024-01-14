@@ -7,23 +7,16 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Chat;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Nachricht;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.services.ChatService;
-import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
-import de.hbrs.easyjob.views.student.ChatView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
 import java.time.Instant;
@@ -120,7 +113,7 @@ public class ChatsView extends VerticalLayout {
         studienDetails.addClassName("student-details");
 
 
-        RouterLink Jobtitel = new RouterLink("", chatViewUnternehmensperson.class, chat.getTopicId());
+        RouterLink Jobtitel = new RouterLink("", ChatViewUnternehmensperson.class, chat.getTopicId());
         Jobtitel.addClassName("name-label");
         Jobtitel.add(job.getTitel());
 

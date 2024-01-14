@@ -9,7 +9,6 @@ import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -23,9 +22,7 @@ import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.services.DatabaseMessagePersister;
 import de.hbrs.easyjob.services.JobService;
 import de.hbrs.easyjob.services.StudentService;
-import de.hbrs.easyjob.views.components.StudentLayout;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
-import de.hbrs.easyjob.views.student.ChatsView;
 import de.hbrs.easyjob.views.student.UnternehmensPersonProfilView;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,7 +30,7 @@ import javax.annotation.security.RolesAllowed;
 @Route(value = "chat-unternehmensperson", layout = UnternehmenLayout.class)
 @StyleSheet("Chat.css")
 @RolesAllowed("ROLE_UNTERNEHMENSPERSON")
-public class chatViewUnternehmensperson extends VerticalLayout implements HasUrlParameter<String> {
+public class ChatViewUnternehmensperson extends VerticalLayout implements HasUrlParameter<String> {
 
     private final DatabaseMessagePersister databaseMessagePersister;
 
@@ -42,7 +39,7 @@ public class chatViewUnternehmensperson extends VerticalLayout implements HasUrl
     private final JobService jobService;
     private Student student;
     @Autowired
-    public chatViewUnternehmensperson(DatabaseMessagePersister databaseMessagePersister, StudentService studentService, SessionController sessionController, JobService jobService) {
+    public ChatViewUnternehmensperson(DatabaseMessagePersister databaseMessagePersister, StudentService studentService, SessionController sessionController, JobService jobService) {
         this.databaseMessagePersister = databaseMessagePersister;
         this.studentService = studentService;
         this.sessionController = sessionController;

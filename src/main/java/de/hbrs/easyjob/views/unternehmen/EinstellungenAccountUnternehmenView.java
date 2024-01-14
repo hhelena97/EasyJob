@@ -54,12 +54,8 @@ public class EinstellungenAccountUnternehmenView extends VerticalLayout implemen
         this.personRepository = personRepository;
         Unternehmensperson person = (Unternehmensperson)  sessionController.getPerson();
         profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository);
-        VerticalLayout frame = new VerticalLayout();
-        DeaktivierenConfirmDialog deaktivierenDialog = new DeaktivierenConfirmDialog(true, "Unternehmen",
-                "Ihr Profil wird unsichtbar und Sie können keine ChatsView mehr erhalten. " +
-                        "Das Unternehmensprofil bleibt sichtbar, solange mindestens ein verbundenes Profil aktiv ist." +
-                        " Sie können Ihren Account jederzeit reaktivieren.");
 
+        VerticalLayout frame = new VerticalLayout();
 
         Button back = new ZurueckButtonRundLayout("Unternehmen");
         RouterLink linkzuruck = new RouterLink(EinstellungenUebersichtUnternehmenView.class);
@@ -68,10 +64,17 @@ public class EinstellungenAccountUnternehmenView extends VerticalLayout implemen
         Label ueber = new Label("Accounteinstellungen");
         ueber.addClassName("accounteinstellungen");
 
-        PasswortAendernDialog passwort = new PasswortAendernDialog(person,"UnternehmenRegistrieren.css", passwortService);
+        //Passwort ändern
+        PasswortAendernDialog passwort = new PasswortAendernDialog(person,"Unternehmen", passwortService);
         Button passwortaendern = new Button("Passwort ändern",e -> passwort.open());
         passwortaendern.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         passwortaendern.addClassName("menu-button");
+
+        //Deaktivieren
+        DeaktivierenConfirmDialog deaktivierenDialog = new DeaktivierenConfirmDialog("Unternehmen",
+                "Ihr Profil wird unsichtbar und Sie können keine ChatsView mehr erhalten. " +
+                        "Das Unternehmensprofil bleibt sichtbar, solange mindestens ein verbundenes Profil aktiv ist." +
+                        " Sie können Ihren Account jederzeit reaktivieren.");
 
         Button deaktivieren = new Button("Account deaktivieren", e -> deaktivierenDialog.openDialogOverlay());
         deaktivieren.addThemeVariants(ButtonVariant.LUMO_TERTIARY);

@@ -47,25 +47,26 @@ public class EinstellungenAccountStudentView extends VerticalLayout implements B
         this.profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository);
 
         VerticalLayout frame = new VerticalLayout();
-        //TODO:dialog anpassen
-        DeaktivierenConfirmDialog deaktivierenDialog = new DeaktivierenConfirmDialog(true, "Student",
-                "Dein Profil wird unsichtbar und du kannst keine Nachrichten mehr erhalten. " +
-                        "Du kannst deinen Account jederzeit reaktivieren.") ;
 
+        //Zurück
         Button back = new ZurueckButtonRundLayout("Student");
         RouterLink linkzuruck = new RouterLink(EinstellungenUebersichtStudentView.class);
         linkzuruck.add(back);
 
+        //Überschrift
         Label ueber = new Label("Accounteinstellungen");
         ueber.addClassName("accounteinstellungen");
 
-
-        //TODO: dialog anpassen
-        PasswortAendernDialog passwort = new PasswortAendernDialog(student,"StudentProfilView.css", passwortService);
+        //Passwort ändern
+        PasswortAendernDialog passwort = new PasswortAendernDialog(student,"Student", passwortService);
         Button passwortaendern = new Button("Passwort ändern",e -> passwort.open());
         passwortaendern.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         passwortaendern.addClassName("menu-button");
 
+        //Account deaktivieren
+        DeaktivierenConfirmDialog deaktivierenDialog = new DeaktivierenConfirmDialog("Student",
+                "Dein Profil wird unsichtbar und du kannst keine Nachrichten mehr erhalten. " +
+                        "Du kannst deinen Account jederzeit reaktivieren.") ;
         Button deaktivieren = new Button("Account deaktivieren", e -> deaktivierenDialog.openDialogOverlay());
         deaktivieren.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         deaktivieren.addClassName("deaktivieren");
