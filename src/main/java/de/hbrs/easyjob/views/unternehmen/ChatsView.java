@@ -143,12 +143,14 @@ public class ChatsView extends VerticalLayout {
         studienDetails.add(Jobtitel,nameLayout,locationLayout);
         studienDetails.getStyle().set("margin","8px 0px 0px 47px");
         frameHorizontal.add(foto,studienDetails);
-        //frameHorizontal.addClassName("frame");
-        frameHorizontal.setSpacing(false);
 
         card.add(frameHorizontal);
+        card.getStyle().set("padding", "5px 8px");
+        card.setSpacing(false);
+        card.setSpacing(false);
         if(!isLastNachrichtGelesen) {
             card.getStyle().set("background-color", "rgba(254, 137, 151, 0.25)");
+            card.getStyle().set("border-radius","10px");
         }
         return card;
     }

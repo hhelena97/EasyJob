@@ -34,12 +34,14 @@ public class DatabaseMessagePersister implements CollaborationMessagePersister  
         Chat chat = chatService.createOrGetChat(query.getTopicId());
 
         List<Nachricht> nachrichten = chatService.getNachrichten(chat);
-        nachrichten.sort(Comparator.comparing(Nachricht::getZeitpunkt).reversed());
-        Nachricht lastNachricht = nachrichten.get(0);
-        if(lastNachricht.getAbsender() != null && !Objects.equals(lastNachricht.getAbsender().getId_Person(), sessionController.getPerson().getId_Person())&&
-                !lastNachricht.isGelesen()){
-            lastNachricht.setGelesen(true);
-            chatService.updateNachricht(lastNachricht);
+        if(!nachrichten.isEmpty()) {
+            nachrichten.sort(Comparator.comparing(Nachricht::getZeitpunkt).reversed());
+            Nachricht lastNachricht = nachrichten.get(0);
+            if(lastNachricht.getAbsender() != null && !Objects.equals(lastNachricht.getAbsender().getId_Person(), sessionController.getPerson().getId_Person())&&
+                    !lastNachricht.isGelesen()){
+                lastNachricht.setGelesen(true);
+                chatService.updateNachricht(lastNachricht);
+            }
         }
         return chatService.getNachrichten(chat).stream()
                 .filter(nachricht -> nachricht.getZeitpunkt().equals(query.getSince()) || nachricht.getZeitpunkt().isAfter(query.getSince()))
