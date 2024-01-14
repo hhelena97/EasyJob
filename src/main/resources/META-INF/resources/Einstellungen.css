@@ -4,6 +4,15 @@
     --lumo-secondary-text-color: #6F6F6F;
 }
 
+.menu-button{
+    color: var(--text-grau);
+    font-family: Rubik, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
 .accounteinstellungen{
     color: var(--text-grau);
     font-family: Rubik, sans-serif;
