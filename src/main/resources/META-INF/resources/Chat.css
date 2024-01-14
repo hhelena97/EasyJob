@@ -1,0 +1,44 @@
+.body{
+    padding: 0;
+}
+.frame{
+    background-color: #2D34A0 ;
+    height: 100%;
+    max-width: 100%;
+    justify-content: center;
+}
+
+.name{
+    color: white;
+    font-family: Rubik;
+    font-size: 12px;
+    font-style: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+}
+.zurueck{
+    color: white;
+    justify-content: center;
+
+}
+.dotsLayout{
+    color: white;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.profileImage{
+    width: 68px;
+    height: 68px;
+    border-radius: 9999px;
+    border: 2px solid #2D34A0;
+}
+.student-details2{
+    gap: 0;
+    align-items: flex-start;
+    display: flex;
+    min-width: 60%;
+}

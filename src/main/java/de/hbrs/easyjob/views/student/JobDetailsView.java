@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.views.student;
 
 import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Anchor;
@@ -37,10 +38,10 @@ public class JobDetailsView extends AbstractJobDetails {
         VerticalLayout actionButtons = new VerticalLayout();
         actionButtons.addClassName("job-details-action-buttons");
 
-        Button applyButton = new Button("Jetzt Bewerben");
+        Button applyButton = new Button("Jetzt Bewerben",e -> UI.getCurrent().navigate("chat/" + "Job"+ "/"+job.getId_Job()));
         applyButton.addClassName("job-details-apply-button");
 
-        Button moreJobsButton = new Button("mehr Jobs entdecken", FontAwesome.Solid.CHEVRON_RIGHT.create());
+        Button moreJobsButton = new Button("mehr Jobs entdecken", FontAwesome.Solid.CHEVRON_RIGHT.create(), e -> UI.getCurrent().navigate("student/jobs-finden"));
         moreJobsButton.addClassName("job-details-more-jobs-button");
         moreJobsButton.setIconAfterText(true);
 

@@ -105,7 +105,7 @@ public class ChatsView extends VerticalLayout {
         card.setAlignItems(Alignment.STRETCH);
         card.setWidth("100%");
 
-        HorizontalLayout frame = new HorizontalLayout();
+        HorizontalLayout frameHorizontal = new HorizontalLayout();
 
 
         VerticalLayout foto = new VerticalLayout();
@@ -130,6 +130,7 @@ public class ChatsView extends VerticalLayout {
         Label timeLabel = new Label(time);
         timeLabel.getStyle().set("font-size","12px");
         nameLayout.add(personInfo,timeLabel);
+        nameLayout.setWidth("100%");
         nameLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
 
@@ -140,12 +141,16 @@ public class ChatsView extends VerticalLayout {
         locationLayout.add(letzeNachrichtLabel);
 
         studienDetails.add(Jobtitel,nameLayout,locationLayout);
-        studienDetails.getStyle().set("margin","8px 0px 0px 32px");
-        frame.add(foto,studienDetails);
+        studienDetails.getStyle().set("margin","8px 0px 0px 47px");
+        frameHorizontal.add(foto,studienDetails);
 
-        card.add(frame);
+        card.add(frameHorizontal);
+        card.getStyle().set("padding", "5px 8px");
+        card.setSpacing(false);
+        card.setSpacing(false);
         if(!isLastNachrichtGelesen) {
             card.getStyle().set("background-color", "rgba(254, 137, 151, 0.25)");
+            card.getStyle().set("border-radius","10px");
         }
         return card;
     }
