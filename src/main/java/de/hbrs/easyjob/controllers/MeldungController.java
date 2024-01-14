@@ -48,8 +48,9 @@ public class MeldungController {
         return !t.isBearbeitet();
     }
 
-    public boolean saveMeldung(Meldung meldung, Chat chat) {
+    public boolean saveMeldung(Meldung meldung, Chat chat, Person person) {
         meldung.setChat(chat);
+        meldung.setPerson(person);
         meldung.setBearbeitet(false);
         meldungRepository.save(meldung);
         Meldung t = meldungRepository.findById(meldung.getId_Meldung()).get();
@@ -111,6 +112,7 @@ public class MeldungController {
     // sollte man wirklich eine null-Meldung zuweisen können? -> Vorschlag: Grund als Pflichtfeld - Grund wird nicht umgesetzt Es gibt nur "leere" Meldungen.
 
     // so kann man einer Meldung sowohl eine Person, einen Chat und einen Job zu weisen (soll das so)? Ja, genau. Man gibt der Meldung das mit, was gemeldet wird.
+    //Beim Chat muss eine Person mitgegeben werden, weil nicht der gemeldete Chat, sondern die gemeldete Person dem Admin zum möglichen Sperren angezeigt wird.
 
     //TODO: JavaDocs anpassen bei getAlleGemeldetenXXX
     // Die getAlleGemeldetenPersonen/Jobs/etc.-Methoden sind verwirrend. Sollen die Jobs/Personen/etc. oder die Meldungen dazu gefunden werden?
