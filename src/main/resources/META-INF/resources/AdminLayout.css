@@ -2,8 +2,8 @@ html{
     box-sizing: border-box;
     margin: 0;
     --lumo-primary-text-color: #289A32;
-
 }
+
 body {
     width: 100%;
     margin: 0;
@@ -72,10 +72,23 @@ vaadin-vertical-layout {
 
 .willkommen-box {
     background-color: var(--admin-dark);
-    height: 150px;
+    height: 160px;
     width: 100%;
     max-width: 600px;
     align-self: center;
+}
+
+.ausloggenFenster{
+    justify-content: right;
+    margin-top: 15px;
+    padding-right: 27px;
+}
+
+.signout {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    height: 24px;
+    width: 24px;
 }
 
 

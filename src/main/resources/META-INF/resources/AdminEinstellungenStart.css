@@ -53,6 +53,8 @@ vaadin-vertical-layout {
     width: 24px;
 }
 
+
+
 .begruessung {
     margin-top: -10px;
 }
@@ -64,6 +66,8 @@ vaadin-vertical-layout {
     margin-top: 15px;
     padding-right: 27px;
 }
+
+
 
 .userPlus {
     color: var(--admin-dark);

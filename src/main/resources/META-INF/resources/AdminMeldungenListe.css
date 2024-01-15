@@ -6,7 +6,7 @@ body {
 
 .titelbox {
     background-color: var(--admin-dark);
-    height: 150px;
+    height: 116px;
     width: 100%;
     max-width: 600px;
     align-self: center;
@@ -15,23 +15,21 @@ body {
 .titeltext{
     color: var(--hintergrund-weiß);
     padding-left: 27px;
-    margin-top: 7px;
-    margin-bottom: 0;
+    margin-top: 0px;
+    margin-bottom: 0px;
     width: 266px;
     height: 55px;
-    padding-bottom: 20px;
+    padding-bottom: 0px;
     padding-right: 82px;
-    padding-top: 25px;
+    padding-top: 0px;
 }
 
 .titeltext > h3{
     color: var(--hintergrund-weiß);
-    margin-bottom: 0;
-    margin-top: 0;
+    margin-bottom: 0px;
+    margin-top: 0px;
 }
 
-.tableiste{
-}
 
 .meldungTab {
     color: var(--hintergrund-weiß);
@@ -47,4 +45,32 @@ body {
     padding-top: 0px;
     padding-left: 0px;
     padding-right: 0px;
+}
+
+.infos {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    height: 260px;
+    justify-content: center;
+}
+.profilBild{
+    width: 100%;
+    height: 230px;
+    align-self: center;
+}
+
+.profilBild img{
+    width: 200px;
+    height: 200px;
+    border-radius: 155px;
+    background-repeat: no-repeat;
+    background-position: center;
+
+}
+
+.nameM {
+    color: var(--admin-dark, #289A32);
+    align-self: center;
+    margin: 20px 0 0 0;
 }

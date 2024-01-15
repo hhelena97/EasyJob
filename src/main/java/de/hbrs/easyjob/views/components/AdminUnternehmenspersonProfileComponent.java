@@ -37,7 +37,7 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
 
     private final PersonRepository personRepository;
     private final UnternehmenRepository unternehmenRepository;
-    private Unternehmensperson person;
+    private final Unternehmensperson person;
     private final String style;
 
     VerticalLayout jobListLayout = new VerticalLayout();

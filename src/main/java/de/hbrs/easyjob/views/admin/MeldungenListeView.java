@@ -12,6 +12,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.*;
 import de.hbrs.easyjob.controllers.MeldungController;
@@ -32,7 +33,7 @@ import java.util.List;
 @Route(value = "admin/meldungenListe", layout = AdminLayout.class)
 @PageTitle("Meldungen")
 @StyleSheet("Variables.css")
-@StyleSheet("MeldungenListe.css")
+@StyleSheet("AdminMeldungenListe.css")
 @RolesAllowed("ROLE_ADMIN")
 public class MeldungenListeView extends VerticalLayout implements BeforeEnterObserver {
 
@@ -58,7 +59,8 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
     private Tab chats;
 
     //die CSS für die einzelnen Komponenten
-    String style = "AdminPersonenVerwalten.css";
+    String style = "AdminPersonenVerwaltenView.css";
+    Paragraph keineMeldung = new Paragraph("Keine Meldungen");
 
     private VerticalLayout content = new VerticalLayout();
 
@@ -86,119 +88,81 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         this.studentService = studentenService;
         this.unternehmenService = unternehmenService;
 
-        //Ausloggen
-        Dialog dialogAusloggen = new Dialog();
-        dialogAusloggen.add(new Paragraph("Wollen Sie sich wirklich ausloggen"));
 
-        Button btnAbbruch = new Button ("Abbrechen");
-        btnAbbruch.addClassName("buttonAbbruch");
-        btnAbbruch.addClickListener(e -> dialogAusloggen.close());
+        Div btnAusloggen = new AdminAusloggen(sessionController);
+        HorizontalLayout ausloggen = new HorizontalLayout(btnAusloggen);
+        ausloggen.addClassName("ausloggenFenster");
 
-        String bestaetigen = "Ausloggen";
-        Button btnBestaetigen = new Button(bestaetigen);
-        btnBestaetigen.addClassName("buttonBestaetigen");
-        btnBestaetigen.addClickListener(e -> {
-            sessionController.logout();
-            UI.getCurrent().getPage().setLocation("/login");
-        });
-        dialogAusloggen.getFooter().add(btnAbbruch, btnBestaetigen);
-
-        //der Knopf um den Ausloggen-Dialog zu öffnen
-        Icon signout = new Icon(VaadinIcon.SIGN_OUT);
-        signout.addClassName("signout");
-        Button ausloggen = new Button(signout);
-        ausloggen.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        ausloggen.addClassName("ausloggen");
-        ausloggen.addClickListener(e -> dialogAusloggen.open());
-
-        HorizontalLayout ausl = new HorizontalLayout(ausloggen);
-        ausl.addClassName("ausl");
-        ausl.add(ausloggen);
 
         Div titeltext = new Div(new H3 ("Meldungen"));
         titeltext.addClassName("titeltext");
 
 
+        TabSheet tabs = new TabSheet();
+        tabs.add("Personen", personenDiv());
+        tabs.add("Unternehmen", unternehmenDiv());
+        tabs.add("Jobs", jobsDiv());
+        tabs.add("Chats", chatsDiv());
 
-        personen = new Tab("Personen");
-        unternehmen = new Tab("Unternehmen");
-        jobs = new Tab("Jobs");
-        chats = new Tab ("Chats");
-
-        Tabs tabs = new Tabs(personen, unternehmen, jobs, chats);
-        tabs.addSelectedChangeListener(
-                event -> { setContent(event.getSelectedTab());
-                });
         tabs.addClassName("tableiste");
 
-        Div titelbox = new Div(ausl, titeltext);
+        Div titelbox = new Div(ausloggen, titeltext);
         titelbox.addClassName("titelbox");
 
-        add(titelbox, tabs, content);
+        add(titelbox, tabs);
     }
 
-//Liste der Meldungen
-    private void setContent(Tab tab) {
-        content.removeAll();
-        Paragraph keineMeldung = new Paragraph("Keine Meldungen");
+    private Div personenDiv(){
+        Div inhalt = new Div();
 
-        Div personenDiv = new Div();
-        personenDiv.addClassName("meldungTab");
         List<Meldung> mp1 = meldungController.getAllGemeldetePersonen();
-        if (!mp1.isEmpty()) {
+        if (mp1 == null || mp1.isEmpty()){
+            inhalt.add(keineMeldung);
+        } else {
             for (Meldung m : mp1) {
-                personenDiv.add(addPersonComponentToLayout(m));
+                inhalt.add(addPersonComponentToLayout(m));
             }
-        } else{
-            personenDiv.add(keineMeldung);
         }
+        return inhalt;
+    }
+    private Div unternehmenDiv(){
+        Div inhalt = new Div();
 
-        Div unternehmenDiv = new Div();
-        unternehmenDiv.addClassName("meldungTab");
-        List<Meldung> mp2 = meldungController.getAllGemeldeteUnternehmen();
-        if (!mp2.isEmpty()) {
-            for (Meldung m : mp2) {
-                unternehmenDiv.add(addUnternehmenComponentToLayout(m));
+        List<Meldung> mp = meldungController.getAllGemeldeteUnternehmen();
+        if (mp == null || mp.isEmpty()){
+            inhalt.add(keineMeldung);
+        } else {
+            for (Meldung m : mp) {
+                inhalt.add(addUnternehmenComponentToLayout(m));
             }
-        } else {
-            unternehmenDiv.add(keineMeldung);
         }
+        return inhalt;
+    }
+    private Div jobsDiv(){
+        Div inhalt = new Div();
 
-        Div jobsDiv = new Div();
-        jobsDiv.addClassName("meldungTab");
-        List<Meldung> mp3 = meldungController.getAllGemeldeteJobs();
-        if (!mp3.isEmpty()) {
-            for (Meldung m : mp3) {
-                jobsDiv.add(addJobComponentToLayout(m));
+        List<Meldung> mp = meldungController.getAllGemeldeteJobs();
+        if (mp == null || mp.isEmpty()){
+            inhalt.add(keineMeldung);
+        } else {
+            for (Meldung m : mp) {
+                inhalt.add(addJobComponentToLayout(m));
             }
-        } else {
-            jobsDiv.add(keineMeldung);
         }
+        return inhalt;
+    }
+    private Div chatsDiv(){
+        Div inhalt = new Div();
 
-        Div chatsDiv = new Div();
-        chatsDiv.addClassName("meldungTab");
-        List<Meldung> mp4 = meldungController.getAllGemeldeteChats();
-        if (!mp4.isEmpty()) {
-            for (Meldung m : mp4) {
-                chatsDiv.add(addPersonComponentToLayout(m));
+        List<Meldung> mp = meldungController.getAllGemeldeteChats();
+        if (mp == null || mp.isEmpty()){
+            inhalt.add(keineMeldung);
+        } else {
+            for (Meldung m : mp) {
+                inhalt.add(addPersonComponentToLayout(m));
             }
-        } else {
-            chatsDiv.add(keineMeldung);
         }
-
-        /*
-        if (tab.equals(personen)) {
-            content.add(personenDiv);
-        } else */
-            if (tab.equals(unternehmen)) {
-            content.add(unternehmenDiv);
-        } else if (tab.equals(jobs)) {
-            content.add(jobsDiv);
-        } else if (tab.equals(chats)) {
-            content.add(chatsDiv);
-        } else {
-            content.add(personenDiv);
-        }
+        return inhalt;
     }
 
     private Div addPersonComponentToLayout(Meldung meldung){
@@ -211,14 +175,14 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         d1.setHeaderTitle("Meldung bearbeiten");
 
             Div infos = new Div();
+                infos.addClassName("infos");
 
+                String foto = p.getFoto() != null ? p.getFoto() : "images/blank-profile-picture.png";
                 //Profil Bild
-                VerticalLayout profilBild = new VerticalLayout();
-                profilBild.setWidth("200px");
-                profilBild.addClassName("profilBild");
-                profilBild.add(new Image(p.getFoto() != null ? p.getFoto() : "images/blank-profile-picture.png", "EasyJob"));
+                VerticalLayout profilBild = new VerticalLayout(new Image(foto, "EasyJob"));
+                 profilBild.addClassName("profilBild");
 
-                //Name
+                 //Name
                 H2 nametitel = new H2();
                 nametitel.addClassName("name");
                 nametitel.add(p.getVorname() + " " + p.getNachname());
@@ -243,8 +207,10 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
                 Student student = (Student) p;
                 personLayout.add(new AdminStudentProfileComponent(student, style, studentService));
             } else if (p instanceof Unternehmensperson) {
-                //Unternehmensperson uperson = (Unternehmensperson) p;
-                //personLayout.add(new AdminUnternehmenspersonProfileComponent(uperson, "AdminPersonenVerwalten.css", unternehmenService));
+                Unternehmensperson uperson = (Unternehmensperson) p;
+                personLayout.add(new AdminUnternehmenspersonProfileComponent(personRepository, unternehmenRepository,
+                        uperson, style, unternehmenService,
+                        new ProfilSperrenController(personRepository, unternehmenRepository, jobRepository, unternehmenspersonRepository)));
             } else if (p instanceof Admin) {
                 Paragraph admininfo = new Paragraph("Das ist ein Admin.");
                 Paragraph adminlink = new Paragraph("Zur Administration");
@@ -258,7 +224,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
             }
 
         Button meldungBearbeitet = new Button("Meldung bearbeitet");
-        meldungBearbeitet.addClassName("MeldungBearbeitet");
+        //meldungBearbeitet.addClassName("MeldungBearbeitet");
         meldungBearbeitet.addClickListener(e -> {
             meldung.setBearbeitet(true);
             meldungRepository.save(meldung);
@@ -266,8 +232,8 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
             d1.close();
         });
 
-        Button meldungSchliessen = new Button ("Meldung schließen");
-        meldungSchliessen.addClassName("MeldungSchliessen");
+        Button meldungSchliessen = new Button ("Abbrechen");
+        //meldungSchliessen.addClassName("MeldungSchliessen");
         meldungSchliessen.addClickListener(e -> d1.close());
 
         d1.add(infos,buttons,personLayout);
@@ -332,7 +298,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         d1.add(infos);
 
         Button meldungBearbeitet = new Button("Meldung bearbeitet");
-        meldungBearbeitet.addClassName("MeldungBearbeitet");
+        //meldungBearbeitet.addClassName("MeldungBearbeitet");
         meldungBearbeitet.addClickListener(e -> {
             meldung.setBearbeitet(true);
             meldungRepository.save(meldung);
@@ -340,8 +306,8 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
             d1.close();
         });
 
-        Button meldungSchliessen = new Button ("Meldung schließen");
-        meldungSchliessen.addClassName("MeldungSchliessen");
+        Button meldungSchliessen = new Button ("abbrechen");
+        //meldungSchliessen.addClassName("MeldungSchliessen");
         meldungSchliessen.addClickListener(e -> d1.close());
 
 

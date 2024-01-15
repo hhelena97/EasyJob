@@ -45,6 +45,9 @@ public class AdminLayout extends AppLayout {
         RouterLink link = new RouterLink(viewRoute);
         Icon icon = viewIcon.create();
         link.add(icon);
+
+        link.setTabIndex(-1);
+
         Tab tab = new Tab(link);
         return tab;
     }

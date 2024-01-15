@@ -3,7 +3,6 @@ package de.hbrs.easyjob.views.admin;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
@@ -20,19 +19,16 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.AdminController;
 import de.hbrs.easyjob.controllers.PersonController;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Admin;
 import de.hbrs.easyjob.repositories.PersonRepository;
-import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.PasswortService;
-import de.hbrs.easyjob.views.admin.dialog.*;
 import de.hbrs.easyjob.views.allgemein.LoginView;
+import de.hbrs.easyjob.views.components.AdminAusloggen;
 import de.hbrs.easyjob.views.components.AdminLayout;
-import de.hbrs.easyjob.views.components.DialogLayout;
 import de.hbrs.easyjob.views.components.PasswortAendernDialog;
 import de.hbrs.easyjob.views.components.PasswortNeuDialog;
 
@@ -77,6 +73,10 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         willkommenBox.addClassName("gruene-box");
 
         //Ausloggen
+        Div btnAusloggen = new AdminAusloggen(sessionController);
+        HorizontalLayout ausloggen = new HorizontalLayout(btnAusloggen);
+        ausloggen.addClassName("ausloggenFenster");
+        /*
         Dialog dialogAusloggen = new Dialog();
         dialogAusloggen.add(new Paragraph("Wollen Sie sich wirklich ausloggen"));
 
@@ -104,11 +104,13 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         HorizontalLayout ausl = new HorizontalLayout(ausloggen);
         ausl.addClassName("ausl");
 
+
+         */
+
+
         //Begrüßungstext
         Div willkommenText = new Div();
         H3 titel = new H3("Hallo Admin");
-
-        ausl.add(ausloggen);
 
         //Passwort ändern für den angemeldeten Admin
         PasswortAendernDialog passwortAendernDialog = new PasswortAendernDialog(admin, "AdminLayout.css", new PasswortService(personRepository));
@@ -118,14 +120,14 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
         Paragraph eigenemail = new Paragraph(admin.getEmail());
 
-        willkommenText.add(titel, eigenemail);
+        willkommenText.add(ausloggen, titel, eigenemail);
         willkommenText.addClassName("willkommen-text");
 
 
         //alles in den grünen Kasten
         HorizontalLayout begruessung = new HorizontalLayout(willkommenText, editself);
         begruessung.addClassName("begruessung");
-        willkommenBox.add(ausl, begruessung);
+        willkommenBox.add(ausloggen, begruessung);
 
 
         // der Bereich unter dem grünen Kasten: Liste aller Admins und + für neue Admins
