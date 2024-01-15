@@ -1,5 +1,5 @@
 .frame{
-    background-color: #A3336F ;
+    background-color: var(--studierende-dark) ;
     height: 100%;
     max-width: 100%;
     justify-content: center;
@@ -7,9 +7,10 @@
 }
 
 .name{
-    color: white;
-    font-family: Rubik;
-    font-size: 12px;
+    color: var(--hintergrund-weiß);
+    font-family: Rubik, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
     font-style: normal;
     display: flex;
     align-items: center;
@@ -18,9 +19,9 @@
 
 }
 .name2{
-    color: white;
-    font-family: Rubik;
-    font-size: 8px;
+    color: var(--hintergrund-weiß);
+    font-family: Rubik, sans-serif;
+    font-size: 12px;
     font-style: normal;
     display: flex;
     align-items: center;
@@ -31,10 +32,11 @@
 .zurueck{
     color: white;
     justify-content: center;
-    width: 20%;
+    width: fit-content !important;
 
 }
 .dotsLayout{
+    width: fit-content !important;
     color: white;
     justify-content: center;
     align-items: flex-end;

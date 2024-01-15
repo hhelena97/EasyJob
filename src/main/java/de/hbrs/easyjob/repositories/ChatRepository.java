@@ -13,8 +13,8 @@ public interface ChatRepository extends JpaRepository<Chat, Integer> {
     @Query("SELECT c FROM Chat c WHERE c.job.id_Job = :jobId AND c.student.id_Person = :studentId")
     Chat findByJobIdAndStudentId(@Param("jobId") Integer jobId, @Param("studentId") Integer studentId);
     @Query("SELECT c FROM Chat c WHERE c.student.id_Person = :studentId")
-    List<Chat> findAllByStudentId(Integer studentId);
+    List<Chat> findAllByStudentId(@Param("studentId") Integer studentId);
 
     @Query("SELECT c FROM Chat c WHERE c.unternehmensperson.id_Person = :unternehmenspersonId")
-    List <Chat> findAllByUnternehmenspersonId(Integer unternehmenspersonId);
+    List <Chat> findAllByUnternehmenspersonId(@Param("unternehmenspersonId") Integer unternehmenspersonId);
 }

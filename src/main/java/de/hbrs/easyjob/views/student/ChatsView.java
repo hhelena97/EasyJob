@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.views.student;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -23,42 +24,62 @@ import java.util.List;
 import java.util.Objects;
 
 @Route(value = "student/nachrichten", layout = StudentLayout.class)
-@StyleSheet("styles/MitarbeiterFindenView.css")
+@StyleSheet("ChatList.css")
 @RolesAllowed("ROLE_STUDENT")
 public class ChatsView extends VerticalLayout {
     private final ChatService chatService;
     private final SessionController sessionController;
-    private VerticalLayout chatListLayout;
+    private final VerticalLayout chatListLayout;
+    private int colorIndex;
+    private int lineCount;
     @Autowired
     public ChatsView(ChatService chatService, SessionController sessionController) {
         this.chatService = chatService;
         this.sessionController = sessionController;
+        chatListLayout = new VerticalLayout();
+        chatListLayout.getStyle().set("gap", "5px");
         initLayout();
     }
 
     private void initLayout() {
         removeAll();
         List<Chat> chatList = chatService.getChatsByStudent(sessionController.getPerson());
+        Label header = new Label("Nachrichten");
+        header.addClassName("header");
+        add(header);
 
         if (chatList.isEmpty()) {
-            add(createNoChatsLayout());
+            chatListLayout.add(createNoChatsLayout());
+            add(chatListLayout);
         } else {
-            chatList.forEach(chat -> add(createChatComponent(chat)));
+            colorIndex = 0;
+            lineCount = chatList.size() -1;
+            chatList.forEach(chat -> {
+                chatListLayout.add(createChatComponent(chat));
+                if (lineCount > 0) {
+                    Div line = new Div();
+                    line.addClassName("line");
+                    chatListLayout.add(line);
+                    lineCount--;
+                }
+            });
+            add(chatListLayout);
         }
     }
 
     private Component createNoChatsLayout() {
-        Image backgroundImage = new Image("images/filter.png", "Keine Chats");
+        Label empty = new Label("Du hast noch keine Nachrichten.");
+        empty.addClassName("empty");
+        add(empty);
+        Image backgroundImage = new Image("images/student-messages.png", "Keine Chats");
         backgroundImage.setSizeFull();
-        Div backgroundDiv = new Div(backgroundImage);
-        backgroundDiv.addClassName("no-chats-background"); // CSS-Klasse für Styling
+        HorizontalLayout backgroundDiv = new HorizontalLayout(backgroundImage);
+        backgroundDiv.addClassName("grafik");
 
         return backgroundDiv;
     }
 
     private Component createChatComponent(Chat chat) {
-
-
 
         //Person und Image
         Job job = chat.getJob();
@@ -97,55 +118,54 @@ public class ChatsView extends VerticalLayout {
 
         HorizontalLayout horizontalLayout = new HorizontalLayout();
 
+        //Avatar
+        Avatar avatar = new Avatar();
+        avatar.setImage(profileImageSource);
+        avatar.setColorIndex(colorIndex++);
 
-        VerticalLayout foto = new VerticalLayout();
-        foto.setWidth("42px");
-        Image profilePic = new Image(profileImageSource, "Profilbild");
-        profilePic.addClassName("ellipse-profile-picture");
-        foto.add(profilePic);
 
+        //Nachrichten Details
         VerticalLayout studienDetails = new VerticalLayout();
         studienDetails.setSpacing(false);
         studienDetails.setAlignItems(Alignment.START);
-        studienDetails.addClassName("student-details");
+        studienDetails.addClassName("message-details");
+
+        //Jobtitel
         String[] split = chat.getTopicId().split("-");
         String topicId = split[0]+"/"+split[1];
-
         RouterLink Jobtitel = new RouterLink("", ChatView.class, topicId);
-        Jobtitel.addClassName("name-label");
+        Jobtitel.addClassName("title");
         Jobtitel.add(job.getTitel());
 
+        //Username und Zeitstempel
         HorizontalLayout nameLayout = new HorizontalLayout();
         nameLayout.setWidth("100%");
         Label personInfoLabel = new Label(person.getVorname() + " " + person.getNachname());
-        personInfoLabel.addClassName("detail-label");
+        personInfoLabel.addClassName("user-name");
         Label timeLabel = new Label(time);
-        timeLabel.getStyle().set("font-size","12px");
+        timeLabel.getStyle().set("font-size","14px");
         nameLayout.add(personInfoLabel,timeLabel);
         nameLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
-
+        //Nachricht Vorschau
         HorizontalLayout nachrichtTextLayout = new HorizontalLayout();
-
         Label letzeNachrichtLabel = new Label(limitText(nachrichtText, 30));
-        letzeNachrichtLabel.addClassName("detail-label");
+        letzeNachrichtLabel.addClassName("details");
         nachrichtTextLayout.add(letzeNachrichtLabel);
 
         studienDetails.add(Jobtitel,nameLayout,nachrichtTextLayout);
-        studienDetails.getStyle().set("margin","8px 0px 0px 32px");
-        horizontalLayout.add(foto,studienDetails);
-
-
-
+        horizontalLayout.add(avatar,studienDetails);
 
         card.add(horizontalLayout);
         if(!isLastNachrichtGelesen) {
-            card.getStyle().set("background-color", "rgba(254, 137, 151, 0.25)");
+            card.getStyle().set("background-color", "var(--hintergrund-peachy");
             card.getStyle().set("border-radius","10px");
             card.getStyle().set("padding", "5px 8px");
         }
+
         return card;
     }
+
 
     private String limitText(String text, int maxLength) {
         return text.length() > maxLength ? text.substring(0, maxLength - 3) + "..." : text;

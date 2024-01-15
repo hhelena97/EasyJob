@@ -1,0 +1,73 @@
+.title{
+    color: var(--text-almostblack);
+    font-size: 18px;
+    font-family: Rubik, sans-serif;
+    font-weight: 500;
+    line-height: 24px;
+    align-self: start;
+    word-wrap: break-word;
+    text-decoration-line: underline;
+}
+
+.header {
+    color: var(--text-grau);
+    font-family: Rubik, sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.empty {
+    color: var(--text-grau);
+    font-family: Rubik, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+}
+
+.user-name {
+    color: var(--text-almostblack);
+    font-family: Rubik, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.details {
+    color: var(--text-almostblack);
+    font-family: Rubik, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+}
+
+.message-details {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 5px;
+    padding-bottom: 8px;
+    padding-top: 8px;
+}
+
+vaadin-avatar {
+    height: 4em;
+    width: 4em;
+    align-self: center;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: var(--icon-hellgrau);
+}
+
+.grafik {
+    align-self: center;
+    max-width: 35em;
+    width: 90%;
+}
