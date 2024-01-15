@@ -76,7 +76,7 @@ public class ChatViewUnternehmensperson extends VerticalLayout implements HasUrl
         String foto = person.getFoto()!=null ? person.getFoto() : "images/blank-profile-picture.png";
         Component header = createChatHeader(job);
 
-        UserInfo currentUserInfo = new UserInfo(person.getId_Person() + "", person.getVorname() + " " + person.getNachname(), foto);
+        UserInfo currentUserInfo = new UserInfo(person.getId_Person().toString(), person.getVorname() + " " + person.getNachname(), foto);
 
         VerticalLayout messageLayout = getVerticalLayout(topic, person, currentUserInfo);
 
