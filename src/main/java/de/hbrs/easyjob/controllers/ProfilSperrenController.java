@@ -120,7 +120,20 @@ public class ProfilSperrenController {
             return false;
         }
         person.setGesperrt(false);
-        return personRepository.save(person).getGesperrt();
+        return !personRepository.save(person).getGesperrt();
+    }
+
+    /**
+     * Diese Methode entsperrrt einen Job
+     * @param job   der Job der gesperrt werden soll
+     * @return true, wenn der Job gesperrt ist
+     */
+    public boolean jobEntsperren(Job job) {
+        if (job == null) {
+            return false;
+        }
+        job.setGesperrt(false);
+        return !jobRepository.save(job).getGesperrt();
     }
 
 }

@@ -141,9 +141,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
             inhalt.add(keineMeldung);
         } else {
             for (Meldung m : mp) {
-                if (!(m.getJob().getGesperrt() == null)) {
-                    inhalt.add(addJobComponentToLayout(m));
-                }
+                inhalt.add(addJobComponentToLayout(m));
             }
         }
         return inhalt;

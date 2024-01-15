@@ -104,15 +104,15 @@ public class AdminJobComponent extends VerticalLayout {
     }
 
     private void jobEntsperrenDialog(Job job, Dialog d){
-        d.add(new Paragraph("Wollen Sie diesen Job wirklich sperren?"));
+        d.add(new Paragraph("Wollen Sie diesen Job wirklich entsperren?"));
 
-        Button btnBestaetigen = new Button("Job sperren");
+        Button btnBestaetigen = new Button("Job entsperren");
         btnBestaetigen.addClassName("buttonBestaetigen");
         btnBestaetigen.addClickListener(e -> {
-            if (profilSperrenController.jobSperren(job)){
+            if (profilSperrenController.jobEntsperren(job)){
                 d.close();
             } else {
-                Notification.show("Der Job konnte nicht gesperrt werden");
+                Notification.show("Der Job konnte nicht entsperrt werden");
             }
         });
         Button btnAbbruch2 = new Button("Abbrechen");
