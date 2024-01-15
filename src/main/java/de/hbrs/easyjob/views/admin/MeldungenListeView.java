@@ -2,18 +2,14 @@ package de.hbrs.easyjob.views.admin;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
-import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.*;
 import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
@@ -25,7 +21,6 @@ import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
@@ -146,7 +141,9 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
             inhalt.add(keineMeldung);
         } else {
             for (Meldung m : mp) {
-                inhalt.add(addJobComponentToLayout(m));
+                if (!(m.getJob().getGesperrt() == null)) {
+                    inhalt.add(addJobComponentToLayout(m));
+                }
             }
         }
         return inhalt;

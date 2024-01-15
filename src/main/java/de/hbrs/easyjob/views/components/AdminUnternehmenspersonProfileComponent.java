@@ -75,7 +75,7 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         setSpacing(false);
 
         //Link zu Unternehmen
-        Paragraph unternehmenProfil = new Paragraph("zum Unternehmensprofil " + person.getUnternehmen());
+        Paragraph unternehmenProfil = new Paragraph("zum Unternehmensprofil: " + person.getUnternehmen().getName());
         unternehmenProfil.getStyle().set("color","#289a32");
         unternehmenProfil.addClassName("unternehmenProfil");
         Dialog d1 = new Dialog();
@@ -139,6 +139,15 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         // Jobtitel mit Begrenzung der Länge und RouterLink für die Details
         H1 jobTitle = new H1(job.getTitel());
         jobTitle.addClassName("job-title");
+
+        HorizontalLayout sperrung = new HorizontalLayout();
+
+        if (job.getGesperrt()|| job.getGesperrt() == null){
+            Paragraph p = new Paragraph("Der Job ist gesperrt.");
+            p.addClassName("alarm");
+            sperrung.add(p);
+        }
+
 
         // Jobdetails wie Unternehmen und Ort und Homeoffice
         HorizontalLayout companyAndLocation = new HorizontalLayout();
@@ -224,7 +233,7 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         mehrInfos.addClickListener(e -> jobDialog.open());
 
 
-        jobCardLayout.add(jobTitle, companyAndLocation, jobDescription, postedTime, mehrInfos);
+        jobCardLayout.add(jobTitle, sperrung, companyAndLocation, jobDescription, postedTime, mehrInfos);
 
 
         jobListLayout.add(jobCardLayout);
