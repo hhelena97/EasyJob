@@ -73,7 +73,7 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
 
     private void setupChatForstudent(Integer id, Person person, String topic) {
         String foto = person.getFoto()!=null ? person.getFoto() : "images/blank-profile-picture.png";
-        UserInfo currentUserInfo = new UserInfo(person.getId_Person() + "", person.getVorname() + " " + person.getNachname(), foto);
+        UserInfo currentUserInfo = new UserInfo(person.getId_Person().toString(), person.getVorname() + " " + person.getNachname(), foto);
 
         Component header = createChatHeader(jobService.getJobById(id));
         // Erstellen der Collaboration Engine-Komponenten
@@ -87,6 +87,7 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         messageLayout.setFlexGrow(0, messageList);
         messageLayout.setFlexGrow(0, messageInput);
         messageLayout.setAlignItems(Alignment.STRETCH);
+        messageLayout.setJustifyContentMode(JustifyContentMode.END);
 
         // Gesamtes Chat-Layout
         VerticalLayout chatLayout = new VerticalLayout(header, messageLayout);
@@ -102,7 +103,7 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
 
     private void setupChatForJob(Integer id, Person person, String topicId) {
         String foto = person.getFoto()!=null ? person.getFoto() : "images/blank-profile-picture.png";
-        UserInfo currentUserInfo = new UserInfo(person.getId_Person() + "", person.getVorname() + " " + person.getNachname(), foto);
+        UserInfo currentUserInfo = new UserInfo(person.getId_Person().toString(), person.getVorname() + " " + person.getNachname(), foto);
         Component header = createChatHeader(jobService.getJobById(id));
         // Erstellen der Collaboration Engine-Komponenten
         CollaborationMessageList messageList = new CollaborationMessageList(currentUserInfo, topicId,databaseMessagePersister);
@@ -114,6 +115,7 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         messageLayout.setFlexGrow(0, messageList);
         messageLayout.setFlexGrow(0, messageInput);
         messageLayout.setAlignItems(Alignment.STRETCH);
+        messageLayout.setJustifyContentMode(JustifyContentMode.END);
 
         // Gesamtes Chat-Layout
         VerticalLayout chatLayout = new VerticalLayout(header, messageLayout);
@@ -143,7 +145,6 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         boolean hasProfileImage = person.getFoto() != null;
         String profileImageSource = hasProfileImage ? person.getFoto() : "images/blank-profile-picture.png";
         Image profileImage = new Image(profileImageSource, "Profile Image");
-        profileImage.setHeight("50px");
         profileImage.addClassNames("profileImage");
         foto.add(profileImage);
 
@@ -152,7 +153,6 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         chatDetails.setAlignItems(Alignment.START);
         chatDetails.addClassName("student-details2");
         RouterLink name = new RouterLink("", UnternehmensPersonProfilView.class, person.getId_Person());
-        name.getStyle().set("font-weight", "bold");
         name.add(person.getVorname() + " " + person.getNachname());
         name.addClassName("name");
 
@@ -161,7 +161,7 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         companyNameLayout.setMargin(false);
         Label company = new Label(job.getUnternehmen().getName());
         company.getStyle().set("color", "white");
-        company.getStyle().set("font-size", "8px");
+        company.getStyle().set("font-size", "12px");
         companyNameLayout.addClassName("name2");
         companyNameLayout.add(company);
 
@@ -171,7 +171,6 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         jobtitelLayout.addClassName("name2");
         Label jobtitel = new Label(job.getTitel());
         jobtitel.getStyle().set("color", "white");
-        jobtitel.getStyle().set("font-size", "8px");
         jobtitelLayout.add(jobtitel);
 
         chatDetails.add(name, company, jobtitelLayout);
@@ -179,7 +178,6 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         Icon chevronLeft = new Icon(VaadinIcon.CHEVRON_LEFT);
         zurueck.addClassName("zurueck");
         chevronLeft.getStyle().set("cursor", "pointer");
-        //chevronLeft.setSize("1em");
         chevronLeft.addClickListener(event -> {
             // Logik um zur Chatübersicht zu navigieren
             UI.getCurrent().navigate(ChatsView.class); // Den tatsächlichen Pfad zur Chatübersicht einsetzen
