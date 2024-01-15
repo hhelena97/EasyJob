@@ -2,7 +2,6 @@ package de.hbrs.easyjob.views.admin;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
@@ -76,36 +75,6 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         Div btnAusloggen = new AdminAusloggen(sessionController);
         HorizontalLayout ausloggen = new HorizontalLayout(btnAusloggen);
         ausloggen.addClassName("ausloggenFenster");
-        /*
-        Dialog dialogAusloggen = new Dialog();
-        dialogAusloggen.add(new Paragraph("Wollen Sie sich wirklich ausloggen"));
-
-        Button btnAbbruch = new Button ("Abbrechen");
-        btnAbbruch.addClassName("buttonAbbruch");
-        btnAbbruch.addClickListener(e -> dialogAusloggen.close());
-
-        String bestaetigen = "Ausloggen";
-        Button btnBestaetigen = new Button(bestaetigen);
-        btnBestaetigen.addClassName("buttonBestaetigen");
-        btnBestaetigen.addClickListener(e -> {
-            sessionController.logout();
-            UI.getCurrent().getPage().setLocation("/login");
-        });
-        dialogAusloggen.getFooter().add(btnAbbruch, btnBestaetigen);
-
-        //der Knopf um den Ausloggen-Dialog zu öffnen
-        Icon signout = new Icon(VaadinIcon.SIGN_OUT);
-        signout.addClassName("signout");
-        Button ausloggen = new Button(signout);
-        ausloggen.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        ausloggen.addClassName("ausloggen");
-        ausloggen.addClickListener(e -> dialogAusloggen.open());
-
-        HorizontalLayout ausl = new HorizontalLayout(ausloggen);
-        ausl.addClassName("ausl");
-
-
-         */
 
 
         //Begrüßungstext

@@ -82,6 +82,7 @@ vaadin-vertical-layout {
     justify-content: right;
     margin-top: 15px;
     padding-right: 27px;
+    width:100%;
 }
 
 .signout {
