@@ -79,7 +79,7 @@ public class Schritt1View extends RegistrierenSchritt {
                   Theoretisch müsste es reichen das Unternehmen der Unternehmensperson wieder auf null zu setzen,
                   da keine weitere Referenz existiert und der Garbage Collector das Unternehmen löschen sollte.
                  */
-                // if(unternehmensperson.getUnternehmen() != null) unternehmensperson.removeUnternehmen();
+                if(unternehmensperson.getUnternehmen() != null) unternehmensperson.setUnternehmen(null);
 
                 return true;
             }
