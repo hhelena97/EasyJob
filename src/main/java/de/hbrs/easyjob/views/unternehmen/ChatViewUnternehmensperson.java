@@ -106,6 +106,7 @@ public class ChatViewUnternehmensperson extends VerticalLayout implements HasUrl
         messageLayout.setFlexGrow(0, messageList);
         messageLayout.setFlexGrow(0, messageInput);
         messageLayout.setAlignItems(Alignment.STRETCH);
+        messageLayout.setJustifyContentMode(JustifyContentMode.END);
         return messageLayout;
     }
 
@@ -131,26 +132,10 @@ public class ChatViewUnternehmensperson extends VerticalLayout implements HasUrl
         chatDetails.setAlignItems(Alignment.START);
         chatDetails.addClassName("student-details");
         RouterLink name = new RouterLink("", UnternehmensPersonProfilView.class, student.getId_Person());
-        name.getStyle().set("font-weight", "bold");
         name.addClassName("name");
         name.add(student.getVorname() + " " + student.getNachname()+ " "+ student.getStudienfach().getFach());
 
 
-        /*
-        HorizontalLayout companyNameLayout = new HorizontalLayout();
-        Label company = new Label(job.getUnternehmen().getName());
-        company.getStyle().set("color", "grey");
-        companyNameLayout.add(company);
-
-
-
-        HorizontalLayout jobtitelLayout = new HorizontalLayout();
-        Label jobtitel = new Label(job.getTitel());
-        jobtitel.getStyle().set("color", "grey");
-        jobtitelLayout.add(jobtitel);
-
-
-         */
         chatDetails.add(name);
         VerticalLayout zurueck = new VerticalLayout();
         zurueck.addClassName("zurueck");
