@@ -137,7 +137,7 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         card.setAlignItems(Alignment.STRETCH);
         card.setWidth("100%");
 
-
+        //Banner oben
         HorizontalLayout frame = new HorizontalLayout();
         VerticalLayout foto = new VerticalLayout();
         foto.addClassName("foto");
@@ -145,47 +145,44 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         boolean hasProfileImage = person.getFoto() != null;
         String profileImageSource = hasProfileImage ? person.getFoto() : "images/blank-profile-picture.png";
         Image profileImage = new Image(profileImageSource, "Profile Image");
-        profileImage.addClassNames("profileImage");
+        profileImage.addClassName("profileImage");
         foto.add(profileImage);
 
+        //Chat Infos in Banner
         VerticalLayout chatDetails = new VerticalLayout();
         chatDetails.setSpacing(false);
         chatDetails.setAlignItems(Alignment.START);
-        chatDetails.addClassName("student-details2");
+        chatDetails.addClassName("student-details");
         RouterLink name = new RouterLink("", UnternehmensPersonProfilView.class, person.getId_Person());
         name.add(person.getVorname() + " " + person.getNachname());
         name.addClassName("name");
 
-        HorizontalLayout companyNameLayout = new HorizontalLayout();
-        companyNameLayout.setPadding(false);
-        companyNameLayout.setMargin(false);
+        //TODO: Firma verlinken
         Label company = new Label(job.getUnternehmen().getName());
         company.getStyle().set("color", "white");
         company.getStyle().set("font-size", "12px");
-        companyNameLayout.addClassName("name2");
-        companyNameLayout.add(company);
 
-        HorizontalLayout jobtitelLayout = new HorizontalLayout();
-        jobtitelLayout.setPadding(false);
-        jobtitelLayout.setMargin(false);
-        jobtitelLayout.addClassName("name2");
+        //Jobtitel
         Label jobtitel = new Label(job.getTitel());
         jobtitel.getStyle().set("color", "white");
-        jobtitelLayout.add(jobtitel);
+        jobtitel.addClassName("name2");
 
-        chatDetails.add(name, company, jobtitelLayout);
+        chatDetails.add(name, company, jobtitel);
+
+        //Zurück
         VerticalLayout zurueck = new VerticalLayout();
         Icon chevronLeft = new Icon(VaadinIcon.CHEVRON_LEFT);
         zurueck.addClassName("zurueck");
         chevronLeft.getStyle().set("cursor", "pointer");
+        chevronLeft.setSize("1em");
         chevronLeft.addClickListener(event -> {
             // Logik um zur Chatübersicht zu navigieren
             UI.getCurrent().navigate(ChatsView.class); // Den tatsächlichen Pfad zur Chatübersicht einsetzen
         });
         zurueck.add(chevronLeft);
 
-        VerticalLayout dotsLayout = new VerticalLayout();
         // Drei-Punkte-Icon für das Dropdown-Menü
+        VerticalLayout dotsLayout = new VerticalLayout();
         Icon dots = new Icon(VaadinIcon.ELLIPSIS_DOTS_V);
         dots.getStyle().set("cursor", "pointer");
         dots.setSize("1em");
@@ -203,11 +200,10 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         });
         melden.getElement().getStyle().set("color", "red");
         dotsLayout.add(dots);
+
         frame.add(zurueck,profileImage, chatDetails, dotsLayout);
-        frame.addClassName("frame");
+        frame.addClassName("frame-student");
         frame.setSpacing(false);
-
-
 
         card.add(frame);
         card.setWidthFull();
