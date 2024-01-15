@@ -10,7 +10,6 @@ import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.services.FaehigkeitService;
-import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.StudentLayout;
@@ -21,15 +20,13 @@ import javax.annotation.security.RolesAllowed;
 
 @Route(value = "student" , layout = StudentLayout.class)
 @RolesAllowed("ROLE_STUDENT")
-@StyleSheet("Registrieren.css")
 @StyleSheet("DialogLayout.css")
-@StyleSheet("StudentRegistrieren.css")
 @StyleSheet("StudentProfilView.css")
 public class StudentProfilView extends VerticalLayout implements BeforeEnterObserver  {
 
 
     private final transient SessionController sessionController;
-    private Student student;
+    private final Student student;
     private final transient StudentService studentService;
     private final MeldungController meldungController;
     private final FaehigkeitService faehigkeitService;

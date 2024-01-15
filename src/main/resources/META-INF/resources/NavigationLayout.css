@@ -14,7 +14,9 @@ body {
     width: 25px;
     height: 25px;
 }
-
+vaadin-app-layout{
+    --vaadin-app-layout-navbar-offset-top: 0;
+}
 vaadin-app-layout::part(navbar) {
     /* Zentriert die Tabs in der Navbar */
     display: flex;

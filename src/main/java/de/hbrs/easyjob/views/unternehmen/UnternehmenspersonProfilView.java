@@ -1,6 +1,5 @@
 package de.hbrs.easyjob.views.unternehmen;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -22,9 +21,9 @@ import javax.annotation.security.RolesAllowed;
 
 @Route(value = "unternehmen/unternehmenperson", layout = UnternehmenLayout.class)
 @RolesAllowed("ROLE_UNTERNEHMENSPERSON")
-@StyleSheet("Registrieren.css")
+@StyleSheet("UnternehmenspersonProfilView.css")
 @StyleSheet("DialogLayout.css")
-@StyleSheet("UnternehmenRegistrieren.css")
+
 public class UnternehmenspersonProfilView extends VerticalLayout {
 
     private final transient Unternehmensperson person;
@@ -37,8 +36,6 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
     }
 
     private void initializeView(){
-        UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilView.css");
-
 
 
         addClassName("all");
@@ -119,6 +116,7 @@ public class UnternehmenspersonProfilView extends VerticalLayout {
         H2 kon = new H2("Kontakt:");
         kon.addClassName("kon");
         HorizontalLayout konLayout = new HorizontalLayout(kon);
+        konLayout.setPadding(false);
         konLayout.setAlignItems(Alignment.START);
         konLayout.setSizeFull();
         VerticalLayout infoLayout = new VerticalLayout(

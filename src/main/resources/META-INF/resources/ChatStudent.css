@@ -1,4 +1,6 @@
-.frame{
+@import "Chat.css";
+
+.frame-student{
     background-color: var(--studierende-dark) ;
     height: 100%;
     max-width: 100%;
@@ -6,18 +8,6 @@
     align-items: center;
 }
 
-.name{
-    color: var(--hintergrund-weiß);
-    font-family: Rubik, sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    font-style: normal;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-
-}
 .name2{
     color: var(--hintergrund-weiß);
     font-family: Rubik, sans-serif;
@@ -26,29 +16,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
-
-}
-.zurueck{
-    color: white;
-    justify-content: center;
-    width: fit-content !important;
-
-}
-.dotsLayout{
-    width: fit-content !important;
-    color: white;
-    justify-content: center;
-    align-items: flex-end;
 }
 
-.profileImage{
-    width: 68px;
-    height: 68px;
-    border-radius: 9999px;
-    border: 2px solid #FFF;
-}
-.foto{
-    align-items: center;
-    justify-content: center;
+vaadin-message-input {
+    --lumo-primary-color: var(--studierende-dark);
 }

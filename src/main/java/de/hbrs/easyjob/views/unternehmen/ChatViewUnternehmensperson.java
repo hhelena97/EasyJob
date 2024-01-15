@@ -9,6 +9,7 @@ import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -23,7 +24,6 @@ import de.hbrs.easyjob.services.DatabaseMessagePersister;
 import de.hbrs.easyjob.services.JobService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
-import de.hbrs.easyjob.views.student.UnternehmensPersonProfilView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.security.RolesAllowed;
@@ -100,6 +100,7 @@ public class ChatViewUnternehmensperson extends VerticalLayout implements HasUrl
         CollaborationMessageList messageList = new CollaborationMessageList(currentUserInfo, topicId,databaseMessagePersister);
 
         CollaborationMessageInput messageInput = new CollaborationMessageInput(messageList);
+        messageInput.addClassName("message-input");
         // Layout für den Nachrichtenbereich
         VerticalLayout messageLayout = new VerticalLayout(messageList, messageInput);
         messageLayout.setSizeFull();
@@ -120,23 +121,27 @@ public class ChatViewUnternehmensperson extends VerticalLayout implements HasUrl
 
         HorizontalLayout frame = new HorizontalLayout();
         VerticalLayout foto = new VerticalLayout();
-       // Person person = job.getPerson();
+        foto.addClassName("foto");
         boolean hasProfileImage = student.getFoto() != null;
         String profileImageSource = hasProfileImage ? student.getFoto() : "images/blank-profile-picture.png";
         Image profileImage = new Image(profileImageSource, "Profile Image");
-        profileImage.addClassNames("profileImage");
+        profileImage.addClassName("profileImage");
         foto.add(profileImage);
 
         VerticalLayout chatDetails = new VerticalLayout();
         chatDetails.setSpacing(false);
         chatDetails.setAlignItems(Alignment.START);
         chatDetails.addClassName("student-details");
-        RouterLink name = new RouterLink("", UnternehmensPersonProfilView.class, student.getId_Person());
+        RouterLink name = new RouterLink("", StudentProfilView.class, student.getId_Person());
         name.addClassName("name");
-        name.add(student.getVorname() + " " + student.getNachname()+ " "+ student.getStudienfach().getFach());
-
-
+        name.add(student.getVorname() + " " + student.getNachname());
         chatDetails.add(name);
+
+        Label fach = new Label(student.getStudienfach().getFach());
+        fach.getStyle().set("color", "white");
+        fach.getStyle().set("font-size", "12px");
+        chatDetails.add(fach);
+
         VerticalLayout zurueck = new VerticalLayout();
         zurueck.addClassName("zurueck");
         Icon chevronLeft = new Icon(VaadinIcon.CHEVRON_LEFT);

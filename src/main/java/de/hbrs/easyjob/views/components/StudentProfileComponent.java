@@ -73,9 +73,10 @@ public class StudentProfileComponent extends VerticalLayout {
         HorizontalLayout iconsProf = new HorizontalLayout();
         HorizontalLayout frame = new HorizontalLayout();
 
-
+        Image ellipse;
         if (!isUnternehmensPerson) {
 
+            ellipse = new Image("images/Ellipse-Lila-Groß.png", "Bildumrandung");
             //die Icons zu einstellungen und Bearbeitung
 
             iconsProf.setPadding(false);
@@ -98,6 +99,7 @@ public class StudentProfileComponent extends VerticalLayout {
 
         } else {
 
+            ellipse = new Image("images/Ellipse-Blau-Groß.png", "Bildumrandung");
             VerticalLayout dotsLayout = new VerticalLayout();
             // Drei-Punkte-Icon für das Dropdown-Menü
             Icon dots = new Icon(VaadinIcon.ELLIPSIS_DOTS_V);
@@ -123,7 +125,6 @@ public class StudentProfileComponent extends VerticalLayout {
         //Bildrahmen
         Div rahmen = new Div();
         rahmen.addClassName("profile-picture-frame");
-        Image ellipse = new Image("images/Ellipse-Lila-Groß.png", "Bildumrandung");
         ellipse.addClassName("profile-picture-background");
         rahmen.add(ellipse);
 
@@ -214,7 +215,7 @@ public class StudentProfileComponent extends VerticalLayout {
         if(erfahrung != null) kenntnisseDiv.add(completeZeile("Praxiserfahrung:", erfahrung.getBezeichnung()));
 
         Set<Faehigkeit> sprachen = faehigkeitService.findFaehigkeitByKategorieForStudent(student, "Sprache");
-        if(sprachen != null) {
+        if(!sprachen.isEmpty()) {
             String[] beschreibungen = sprachen.stream()
                     .map(Faehigkeit::getBezeichnung)
                     .toArray(String[]::new);
@@ -222,7 +223,7 @@ public class StudentProfileComponent extends VerticalLayout {
         }
 
         Set<Faehigkeit> edv = faehigkeitService.findFaehigkeitByKategorieForStudent(student, "EDV");
-        if(edv != null) {
+        if(!edv.isEmpty()) {
             String[] beschreibungen = edv.stream()
                     .map(Faehigkeit::getBezeichnung)
                     .toArray(String[]::new);
