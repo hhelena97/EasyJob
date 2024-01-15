@@ -69,7 +69,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         VerticalLayout v = new VerticalLayout(div);
         v.addClassName("v");
         v.setSizeFull();
-        v.setHeight("30%");
+        v.setHeight("40%");
         v.setPadding(false);
         v.setMargin(false);
         v.setAlignItems(CENTER);
@@ -85,7 +85,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         //Email Feld
         EmailField validEmailField = new EmailField();
         validEmailField.addClassName("btn");
-        validEmailField.setLabel("Email");
+        validEmailField.setLabel("E-mail");
         validEmailField.getElement().setAttribute("name", "email");
         validEmailField.setValue("");
         validEmailField.setErrorMessage("Enter a valid email address");
@@ -96,7 +96,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         //Pass
         PasswordField passwordField = new PasswordField();
         passwordField.addClassName("btn");
-        passwordField.setLabel("Password");
+        passwordField.setLabel("Passwort");
         passwordField.setValue("");
         passwordField.setId("passwordloginfeld_id");
 
