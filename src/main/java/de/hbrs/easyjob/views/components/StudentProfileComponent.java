@@ -100,7 +100,17 @@ public class StudentProfileComponent extends VerticalLayout {
         } else {
 
             ellipse = new Image("images/Ellipse-Blau-Groß.png", "Bildumrandung");
+            //Zurück Button
+            ZurueckButtonRundLayout zurueck = new ZurueckButtonRundLayout("Unternehmen");
+            zurueck.addClickListener(e -> UI.getCurrent().getPage().getHistory().back());
+
+            frame.setPadding(false);
+            frame.setMargin(false);
+            frame.setWidthFull();
+            frame.setAlignItems(Alignment.CENTER);
+            frame.setJustifyContentMode(JustifyContentMode.BETWEEN);
             VerticalLayout dotsLayout = new VerticalLayout();
+            dotsLayout.setWidth("fit-content");
             // Drei-Punkte-Icon für das Dropdown-Menü
             Icon dots = new Icon(VaadinIcon.ELLIPSIS_DOTS_V);
             dots.getStyle().set("cursor", "pointer");
@@ -119,7 +129,7 @@ public class StudentProfileComponent extends VerticalLayout {
             item.getElement().getStyle().set("color", "red");
 
             dotsLayout.add(dots);
-            frame.add(dotsLayout);
+            frame.add(zurueck, dotsLayout);
         }
 
         //Bildrahmen

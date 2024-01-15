@@ -133,7 +133,7 @@ public class ChatViewUnternehmensperson extends VerticalLayout implements HasUrl
         chatDetails.setAlignItems(Alignment.START);
         chatDetails.addClassName("student-details");
         RouterLink name = new RouterLink("", StudentProfilView.class, student.getId_Person());
-        name.addClassName("name");
+        name.addClassName("name-chat");
         name.add(student.getVorname() + " " + student.getNachname());
         chatDetails.add(name);
 
