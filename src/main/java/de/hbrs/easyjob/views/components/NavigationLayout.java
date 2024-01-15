@@ -19,6 +19,7 @@ public abstract class NavigationLayout extends AppLayout {
         this.routes = routes;
         Tabs tabs = getTabs();
         addToNavbar(true, tabs);
+
     }
 
     private Tabs getTabs() {

@@ -1,56 +1,22 @@
 package de.hbrs.easyjob.views.components;
-
-
 import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.icon.IconFactory;
-import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.component.tabs.TabsVariant;
-import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.views.student.*;
 
-
-public class StudentLayout extends AppLayout {
+@StyleSheet("StudentLayout.css")
+public class StudentLayout extends NavigationLayout {
 
     public StudentLayout() {
+        super(new IconFactory[]{
+            FontAwesome.Solid.USER, FontAwesome.Solid.BRIEFCASE, FontAwesome.Solid.ENVELOPE
+        },
+        new Class[]{
+                StudentProfilView.class,
+                JobsUebersichtView.class,
+                ChatsView.class
+        });
 
-
-        UI.getCurrent().getPage().addStyleSheet("StudentLayout.css");
-
-
-        Tabs tabs = getTabs();
-
-        //addToDrawer(tabs);
-        addToNavbar(true, tabs);
-
-
-    }
-
-
-    private Tabs getTabs() {
-
-        Tabs tabs = new Tabs();
-        tabs.add(createTab(FontAwesome.Solid.USER, StudentProfilView.class),
-                createTab(FontAwesome.Solid.BRIEFCASE, JobsUebersichtView.class),
-                createTab(FontAwesome.Solid.ENVELOPE, ChatsView.class));
-        tabs.addThemeVariants(TabsVariant.LUMO_MINIMAL,
-                TabsVariant.LUMO_EQUAL_WIDTH_TABS);
-
-        return tabs;
-    }
-
-    private Tab createTab(IconFactory viewIcon, Class<? extends com.vaadin.flow.component.Component> navigationTarget) {
-        Icon icon = viewIcon.create();
-        icon.addClassName("icon");
-        RouterLink link = new RouterLink();
-        link.add(icon);
-        link.setRoute(navigationTarget);
-        link.setTabIndex(-1);
-
-        return new Tab(link);
     }
 
 

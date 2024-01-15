@@ -24,7 +24,6 @@ import de.hbrs.easyjob.services.DatabaseMessagePersister;
 import de.hbrs.easyjob.services.JobService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
-import de.hbrs.easyjob.views.student.UnternehmensPersonProfilView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.security.RolesAllowed;
@@ -132,7 +131,7 @@ public class ChatViewUnternehmensperson extends VerticalLayout implements HasUrl
         chatDetails.setSpacing(false);
         chatDetails.setAlignItems(Alignment.START);
         chatDetails.addClassName("student-details");
-        RouterLink name = new RouterLink("", UnternehmensPersonProfilView.class, student.getId_Person());
+        RouterLink name = new RouterLink("", StudentProfilView.class, student.getId_Person());
         name.addClassName("name");
         name.add(student.getVorname() + " " + student.getNachname());
         chatDetails.add(name);

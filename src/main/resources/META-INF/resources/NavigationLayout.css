@@ -23,6 +23,11 @@ vaadin-app-layout::part(navbar) {
     /* Leiste unten */
     top: auto;
     bottom: 0;
+    padding-top: 0;
+}
+
+vaadin-app-layout::part(navbar bottom){
+    padding-top: 0;
 }
 
 .navbar-tabs {
