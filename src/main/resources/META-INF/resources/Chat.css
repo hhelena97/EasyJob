@@ -53,3 +53,7 @@
     align-items: center;
     justify-content: center;
 }
+
+.message-input {
+    --lumo-primary-color: var(--unternehmen-dark);
+}

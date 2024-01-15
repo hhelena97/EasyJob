@@ -17,3 +17,7 @@
     align-items: center;
     justify-content: center;
 }
+
+vaadin-message-input {
+    --lumo-primary-color: var(--studierende-dark);
+}

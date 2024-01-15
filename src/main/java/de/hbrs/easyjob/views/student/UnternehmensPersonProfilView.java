@@ -1,10 +1,12 @@
 package de.hbrs.easyjob.views.student;
 
+import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -24,9 +26,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.security.RolesAllowed;
 
 @Route(value = "student-unternehmensprofilview" , layout = StudentLayout.class)
-@StyleSheet("Registrieren.css")
+@StyleSheet("StudentProfilView.css")
+@StyleSheet("UnternehmenspersonProfilView.css")
+@StyleSheet("JobList.css")
 @StyleSheet("DialogLayout.css")
-@StyleSheet("UnternehmenRegistrieren.css")
 @RolesAllowed("ROLE_STUDENT")
 public class UnternehmensPersonProfilView extends VerticalLayout implements HasUrlParameter<Integer> {
 
@@ -69,7 +72,7 @@ public class UnternehmensPersonProfilView extends VerticalLayout implements HasU
         //Bildrahmen
         Div rahmen = new Div();
         rahmen.addClassName("profile-picture-frame");
-        Image ellipse = new Image("images/Ellipse-Blau-Groß.png", "Bildumrandung");
+        Image ellipse = new Image("images/Ellipse-Lila-Groß.png", "Bildumrandung");
         ellipse.addClassName("profile-picture-background");
         rahmen.add(ellipse);
 
@@ -119,12 +122,16 @@ public class UnternehmensPersonProfilView extends VerticalLayout implements HasU
 
 
         //Link zu Unternehmen
-        H2 unternehmenProfil = new H2("zum Unternehmensprofil");
-        unternehmenProfil.addClassName("unternehmenProfil");
-        unternehmenProfil.getStyle().set("color", "#323232");
+        HorizontalLayout unternehmenProfil = new HorizontalLayout();
+        unternehmenProfil.setSpacing(false);
+        unternehmenProfil.setAlignItems(Alignment.CENTER);
+        IconFactory i = FontAwesome.Solid.BRIEFCASE;
+        Icon briefcase =  i.create();
+        briefcase.addClassName("iconsInJobIcons");
+        //TODO: Link fixen
         RouterLink linkUnternehmen = new RouterLink(UnternehmenProfilUn.class);
-        linkUnternehmen.add(unternehmenProfil);
-
+        linkUnternehmen.add(person.getUnternehmen().getName());
+        unternehmenProfil.add(briefcase, linkUnternehmen);
 
         //Person Info
         VerticalLayout personInfo = new VerticalLayout();
@@ -146,7 +153,7 @@ public class UnternehmensPersonProfilView extends VerticalLayout implements HasU
 
         completeZeile("Büroanschrift:" , u.getKontaktdaten());
 
-        personInfo.add(frame,rahmen,name,linkUnternehmen);
+        personInfo.add(frame,rahmen,name,unternehmenProfil);
 
         add(personInfo,kon,personKontakt);
     }

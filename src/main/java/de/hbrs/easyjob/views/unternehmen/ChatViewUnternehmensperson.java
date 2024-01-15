@@ -100,6 +100,7 @@ public class ChatViewUnternehmensperson extends VerticalLayout implements HasUrl
         CollaborationMessageList messageList = new CollaborationMessageList(currentUserInfo, topicId,databaseMessagePersister);
 
         CollaborationMessageInput messageInput = new CollaborationMessageInput(messageList);
+        messageInput.addClassName("message-input");
         // Layout für den Nachrichtenbereich
         VerticalLayout messageLayout = new VerticalLayout(messageList, messageInput);
         messageLayout.setSizeFull();
