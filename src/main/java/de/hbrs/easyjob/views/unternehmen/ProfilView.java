@@ -14,6 +14,8 @@ import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.StellenanzeigeController;
 import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.views.allgemein.AccountIstInaktivView;
+import de.hbrs.easyjob.views.allgemein.GesperrtePersonView;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
 import org.springframework.security.core.Authentication;

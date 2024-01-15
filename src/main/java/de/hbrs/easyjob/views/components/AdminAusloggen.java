@@ -9,17 +9,19 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import de.hbrs.easyjob.controllers.SessionController;
 
 
 @StyleSheet("AdminLayout.css")
 public class AdminAusloggen extends Div {
     private final SessionController sessionController;
+    private String style;
 
-    public AdminAusloggen(SessionController sessionController) {
+    public AdminAusloggen(SessionController sessionController, String styleDatei) {
         this.sessionController = sessionController;
+        this.style = styleDatei;
+
+        addClassName(style);
 
 
         Dialog dialogAusloggen = new Dialog();

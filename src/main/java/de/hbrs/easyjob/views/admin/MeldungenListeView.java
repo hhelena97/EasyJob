@@ -89,7 +89,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         this.unternehmenService = unternehmenService;
 
 
-        Div btnAusloggen = new AdminAusloggen(sessionController);
+        Div btnAusloggen = new AdminAusloggen(sessionController, "AdminLayout.css");
         HorizontalLayout ausloggen = new HorizontalLayout(btnAusloggen);
         ausloggen.addClassName("ausloggenFenster");
 
@@ -208,7 +208,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
                 personLayout.add(new AdminStudentProfileComponent(student, style, studentService));
             } else if (p instanceof Unternehmensperson) {
                 Unternehmensperson uperson = (Unternehmensperson) p;
-                personLayout.add(new AdminUnternehmenspersonProfileComponent(personRepository, unternehmenRepository,
+                personLayout.add(new AdminUnternehmenspersonProfileComponent(personRepository, unternehmenRepository, jobRepository,
                         uperson, style, unternehmenService,
                         new ProfilSperrenController(personRepository, unternehmenRepository, jobRepository, unternehmenspersonRepository)));
             } else if (p instanceof Admin) {
@@ -256,7 +256,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
 
         Div infos = new Div();
             infos.add(new AdminUnternehmenComponent(meldung.getUnternehmen(), style,
-                    new ProfilDeaktivierenController(personRepository, unternehmenRepository),unternehmenService));
+                    new ProfilDeaktivierenController(personRepository, unternehmenRepository, jobRepository),unternehmenService));
 
 
         d1.add(infos);

@@ -20,6 +20,7 @@ import de.hbrs.easyjob.controllers.ProfilSperrenController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.UnternehmenService;
@@ -37,6 +38,7 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
 
     private final PersonRepository personRepository;
     private final UnternehmenRepository unternehmenRepository;
+    private final JobRepository jobRepository;
     private final Unternehmensperson person;
     private final String style;
 
@@ -49,9 +51,10 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
 
 
     public AdminUnternehmenspersonProfileComponent(PersonRepository personRepository, UnternehmenRepository unternehmenRepository,
-            Unternehmensperson person, String styleClass, UnternehmenService unternehmenservice, ProfilSperrenController profilSperrenController){
+            JobRepository jobRepository, Unternehmensperson person, String styleClass, UnternehmenService unternehmenservice, ProfilSperrenController profilSperrenController){
         this.personRepository = personRepository;
         this.unternehmenRepository = unternehmenRepository;
+        this.jobRepository = jobRepository;
         this.person = person;
         this.unternehmen = person.getUnternehmen();
         this.style = styleClass;
@@ -82,7 +85,7 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
 
         Div infos = new Div();
         infos.add(new AdminUnternehmenComponent(person.getUnternehmen() ,"AdminLayout.css",
-                new ProfilDeaktivierenController(personRepository, unternehmenRepository),unternehmenService));
+                new ProfilDeaktivierenController(personRepository, unternehmenRepository, jobRepository),unternehmenService));
 
 
         d1.add(infos);
@@ -151,13 +154,13 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         ii.addClassName("iconsInJobIcons");
 
 
-        Paragraph unternehmenProfil = new Paragraph("zum Unternehmensprofil");
+        Paragraph unternehmenProfil = new Paragraph("zum Unternehmensprofil: ");
         unternehmenProfil.getStyle().set("color","#289a32");
         Dialog d1 = new Dialog();
 
         Div infos = new Div();
-        infos.add(new AdminUnternehmenComponent(person.getUnternehmen() ,"AdminLayout.css",
-                new ProfilDeaktivierenController(personRepository, unternehmenRepository),unternehmenService));
+        infos.add(new AdminUnternehmenComponent(person.getUnternehmen(),"AdminLayout.css",
+                new ProfilDeaktivierenController(personRepository, unternehmenRepository, jobRepository),unternehmenService));
 
 
         d1.add(infos);

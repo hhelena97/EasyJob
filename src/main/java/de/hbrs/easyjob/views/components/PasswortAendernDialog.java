@@ -12,10 +12,6 @@ import de.hbrs.easyjob.services.PasswortService;
 /**
  * Eine Klasse für ein Dialog-Fenster das nach dem alten Passwort fragt und ein neues Passwort
  * zur mitgegebenen Person speichert.
- * im mitgegebenen Stylesheet kann man
- *      - die Passwort-Felder mit .passwortFeld definieren
- *      - den confirm-Button mit .confirm definieren
- *      - den Abbrechen-Button mit .close
  */
 
 @StyleSheet("DialogLayout.css")

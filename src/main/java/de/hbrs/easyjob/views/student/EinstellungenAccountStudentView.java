@@ -10,6 +10,7 @@ import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
+import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.PasswortService;
@@ -41,10 +42,11 @@ public class EinstellungenAccountStudentView extends VerticalLayout implements B
     public EinstellungenAccountStudentView(SessionController sessionController,
                                            PersonRepository personRepository,
                                            UnternehmenRepository unternehmenRepository,
+                                           JobRepository jobRepository,
                                            PasswortService passwortService) {
         this.sessionController = sessionController;
         Student student = (Student) sessionController.getPerson();
-        this.profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository);
+        this.profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository, jobRepository);
 
         VerticalLayout frame = new VerticalLayout();
 

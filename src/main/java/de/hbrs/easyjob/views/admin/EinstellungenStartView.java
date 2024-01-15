@@ -18,13 +18,12 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import de.hbrs.easyjob.controllers.AdminController;
-import de.hbrs.easyjob.controllers.PersonController;
-import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
-import de.hbrs.easyjob.controllers.SessionController;
+import de.hbrs.easyjob.controllers.*;
 import de.hbrs.easyjob.entities.Admin;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.services.PasswortService;
+import de.hbrs.easyjob.views.allgemein.AccountIstInaktivView;
+import de.hbrs.easyjob.views.allgemein.GesperrtePersonView;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.AdminAusloggen;
 import de.hbrs.easyjob.views.components.AdminLayout;
@@ -47,7 +46,8 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
     private final AdminController adminController;
     private final PersonController personController;
 
-    private final ProfilDeaktivierenController profilDeaktivierenController;
+    //private final ProfilDeaktivierenController profilDeaktivierenController;
+    private final ProfilSperrenController profilDeaktivierenController;
     private Admin admin;
 
     @Override
@@ -55,10 +55,16 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         if (!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_ADMIN")) {
             event.rerouteTo(LoginView.class);
         }
+        if(! sessionController.getPerson().getAktiv()){
+            event.rerouteTo(AccountIstInaktivView.class);
+        }
+        if(sessionController.getPerson().getGesperrt()){
+            event.rerouteTo(GesperrtePersonView.class);
+        }
     }
 
     public EinstellungenStartView(SessionController sessionController, PersonController personController,
-                                  AdminController adminController, ProfilDeaktivierenController profilDeaktivierenController,
+                                  AdminController adminController, ProfilSperrenController profilDeaktivierenController,
                                   PersonRepository repository) {
         this.sessionController = sessionController;
         this.adminController = adminController;
@@ -72,7 +78,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
         willkommenBox.addClassName("gruene-box");
 
         //Ausloggen
-        Div btnAusloggen = new AdminAusloggen(sessionController);
+        Div btnAusloggen = new AdminAusloggen(sessionController, "AdminLayout.css");
         HorizontalLayout ausloggen = new HorizontalLayout(btnAusloggen);
         ausloggen.addClassName("ausloggenFenster");
 
@@ -105,7 +111,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
         for (Admin a: personRepository.findAllAdmins()) {
 
-            if(a.getAktiv() && !a.equals(admin) ) {
+            if(a.getAktiv() && !a.getGesperrt() && !a.equals(admin) ) {
                 HorizontalLayout einAdmin = new HorizontalLayout();
 
                 //Zeige die E-Mail-Adresse:
@@ -137,7 +143,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
                 Button btnBestaetigen2 = new Button("Admin löschen");
                 btnBestaetigen2.addClassName("buttonBestaetigen");
                 btnBestaetigen2.addClickListener(e -> {
-                    profilDeaktivierenController.profilDeaktivierenPerson(a);
+                    profilDeaktivierenController.personSperren(a);
                     dialogAdminDeaktivieren.close();
                     UI.getCurrent().getPage().setLocation("/admin");
                 });

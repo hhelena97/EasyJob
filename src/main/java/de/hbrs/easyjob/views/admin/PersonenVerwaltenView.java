@@ -1,9 +1,7 @@
 package de.hbrs.easyjob.views.admin;
 
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
@@ -12,7 +10,6 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
@@ -45,24 +42,20 @@ import javax.annotation.security.RolesAllowed;
 @RolesAllowed("ROLE_ADMIN")
 
 public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnterObserver {
-    //private final PersonSuchenService personService;
+
     private final PersonRepository personRepository;
     private final UnternehmenRepository unternehmenRepository;
-
     private final JobRepository jobRepository;
+    private final UnternehmenspersonRepository unternehmenspersonRepository;
 
     private final SessionController sessionController;
 
     private final ProfilSperrenController profilSperrenController;
 
-    private final UnternehmenspersonRepository unternehmenspersonRepository;
-
     private VerticalLayout personLayout;
 
     TextField searchField;
     String email;
-
-
 
     private String sperrbutton = "Profil sperren";
 
@@ -109,7 +102,7 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
     private void initializeView(){
 
-        Div btnAusloggen = new AdminAusloggen(sessionController);
+        Div btnAusloggen = new AdminAusloggen(sessionController, "AdminLayout.css");
         HorizontalLayout ausloggen = new HorizontalLayout(btnAusloggen);
         ausloggen.addClassName("ausloggenFenster");
 
@@ -161,10 +154,21 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
                 //Wenn Admin zu Admin Verwalten verlinken
                 if (person instanceof Admin) {
                     Paragraph admininfo = new Paragraph("Das ist ein Admin.");
-                    Paragraph adminlink = new Paragraph("Zur Administration");
-                    RouterLink linkAdmin = new RouterLink(EinstellungenStartView.class);
-                    linkAdmin.add(adminlink);
-                    personLayout.add(admininfo, linkAdmin);
+                    Dialog d = new Dialog();
+
+                    if (person.getGesperrt()) {
+                        sperrbutton = "Profil entsperren";
+                        personEntperrenDialog(person, d);
+                    } else {
+                        sperrbutton = "Profil sperren";
+                        personSperrenDialog(person, d);
+                    }
+
+                    Button btnSperren = new Button(sperrbutton);
+                    btnSperren.addClassName("btnSperren");
+                    btnSperren.addClickListener(e -> d.open());
+
+                    personLayout.add(admininfo, btnSperren);
 
                 // Wenn nicht, Person mit Buttons anzeigen
                 } else {
@@ -220,7 +224,7 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
                         System.out.println("Unternehmensperson");
                         Unternehmensperson uperson = (Unternehmensperson) person;
                         personLayout.add(new AdminUnternehmenspersonProfileComponent(
-                                personRepository, unternehmenRepository, uperson,
+                                personRepository, unternehmenRepository, jobRepository, uperson,
                                 "AdminPersonenVerwaltenView.css", unternehmenService, profilSperrenController));
                     } else {
                         Paragraph p = new Paragraph("Die Person wurde nicht gefunden");

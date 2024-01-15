@@ -9,6 +9,7 @@ import com.vaadin.flow.router.*;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.PasswortService;
@@ -36,6 +37,8 @@ public class EinstellungenAccountUnternehmenView extends VerticalLayout implemen
 
     @Autowired
     private UnternehmenRepository unternehmenRepository;
+    @Autowired
+    private JobRepository jobRepository;
 
     private final ProfilDeaktivierenController profilDeaktivieren;
 
@@ -53,7 +56,7 @@ public class EinstellungenAccountUnternehmenView extends VerticalLayout implemen
         this.sessionController = sessionController;
         this.personRepository = personRepository;
         Unternehmensperson person = (Unternehmensperson)  sessionController.getPerson();
-        profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository);
+        profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository, jobRepository);
 
         VerticalLayout frame = new VerticalLayout();
 

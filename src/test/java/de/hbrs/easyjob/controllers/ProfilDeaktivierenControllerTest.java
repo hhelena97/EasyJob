@@ -5,6 +5,7 @@ import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.UnternehmenspersonRepository;
 
 import org.junit.jupiter.api.*;
@@ -22,10 +23,11 @@ public class ProfilDeaktivierenControllerTest {
     private static final PersonRepository personRepository = Mockito.mock(PersonRepository.class);
     private static final UnternehmenRepository unternehmenRepository = Mockito.mock(UnternehmenRepository.class);
     private static final UnternehmenspersonRepository unternehmenspersonRepository = Mockito.mock(UnternehmenspersonRepository.class);
+    private static final JobRepository jobRepository = Mockito.mock(JobRepository.class);
 
     // Controllers
     @InjectMocks
-    private final ProfilDeaktivierenController profilDeaktivierenController = new ProfilDeaktivierenController(personRepository, unternehmenRepository);
+    private final ProfilDeaktivierenController profilDeaktivierenController = new ProfilDeaktivierenController(personRepository, unternehmenRepository, jobRepository);
 
     // Entites
     private static final Person person = new Person();                  // Person Erika Mustermann (nicht in Unternehmen)

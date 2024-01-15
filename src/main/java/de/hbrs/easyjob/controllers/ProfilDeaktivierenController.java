@@ -20,17 +20,18 @@ public class ProfilDeaktivierenController {
 
     private final PersonRepository personRepository;
     private final UnternehmenRepository unternehmenRepository;
-    @Autowired
-    private JobRepository jobRepository;
+
+    private final JobRepository jobRepository;
 
     /**
      * Konstruktor
      * @param pR Repository Person
      * @param uR Repository Unternehmen
      */
-    public ProfilDeaktivierenController(PersonRepository pR, UnternehmenRepository uR) {
+    public ProfilDeaktivierenController(PersonRepository pR, UnternehmenRepository uR, JobRepository jR) {
         this.personRepository = pR;
         this.unternehmenRepository = uR;
+        this.jobRepository = jR;
     }
 
 
