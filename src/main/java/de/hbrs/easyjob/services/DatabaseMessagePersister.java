@@ -28,7 +28,12 @@ public class DatabaseMessagePersister implements CollaborationMessagePersister  
     public DatabaseMessagePersister(SessionController sessionController) {
         this.sessionController = sessionController;
     }
-
+    /**
+     * Fetches messages from the database. The query contains the topic id and the time of the last message received.
+     *
+     * @param query the query to use for fetching messages
+     * @return a stream of messages
+     */
     @Override
     public Stream<CollaborationMessage> fetchMessages(FetchQuery query) {
         Chat chat = chatService.createOrGetChat(query.getTopicId());
@@ -55,6 +60,11 @@ public class DatabaseMessagePersister implements CollaborationMessagePersister  
                 );
     }
 
+    /**
+     * Persists a message to the database.
+     *
+     * @param request the request containing the message to persist
+     */
     @Override
     public void persistMessage(PersistRequest request) {
         Chat chat = chatService.createOrGetChat(request.getTopicId());
