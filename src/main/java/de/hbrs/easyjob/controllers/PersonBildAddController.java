@@ -2,6 +2,8 @@ package de.hbrs.easyjob.controllers;
 
 import com.vaadin.flow.component.UI;
 import de.hbrs.easyjob.entities.Person;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.imageio.ImageIO;
@@ -12,6 +14,7 @@ import java.io.IOException;
 
 @RestController
 public class PersonBildAddController {
+    private static final Logger logger = LoggerFactory.getLogger(PersonBildAddController.class);
     private void setPersonPfad(Person person, String pfad){
         //speichert pfad in Datenbank
         person.setFoto(pfad);
@@ -33,7 +36,7 @@ public class PersonBildAddController {
             if (verzeichnis.createNewFile()){
                 ImageIO.write(image, type,verzeichnis);}
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Fehler beim Speichern des Bildes", e);
         }
         Person person;
         person = (Person) UI.getCurrent().getSession().getAttribute("current_User");

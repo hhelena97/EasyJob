@@ -181,8 +181,7 @@ public interface ValidationController {
      */
     static boolean isValidTelefonnummer(String telefonnummer) {
         // Erkennung von korrekten deutschen Telefonnummern mit oder ohne Ländervorwahl und mit oder ohne Leerzeichen oder Bindestriche
-        String telefonnummerRegex = "^(\\+49(?!0)\\s?|0)(\\d{2,}([\\s-]?\\d{2,}([\\s-]?\\d{5,})?)?)$";
-
+        String telefonnummerRegex = "^(\\+49(?!0)\\s?|0)(\\d{2,4}([\\s-]?\\d{2,15}))$";
 
         // Erzeuge ein Pattern-Objekt
         Pattern pattern = Pattern.compile(telefonnummerRegex);

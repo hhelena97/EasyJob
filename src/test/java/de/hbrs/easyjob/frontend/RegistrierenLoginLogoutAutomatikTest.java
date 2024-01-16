@@ -7,7 +7,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import javax.transaction.Transactional;
 import java.time.Duration;
@@ -17,14 +19,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
 @SpringBootTest
+@TestPropertySource(locations = "classpath:application-test.properties")
 class RegistrierenLoginLogoutAutomatikTest {
     // WebDriver
     private final WebDriver[] drivers = new WebDriver[3];
-
-//    private final WebDriverManager wdmChrome = WebDriverManager.chromedriver().browserInDocker()
-//            .enableVnc().dockerDefaultArgs("--disable-gpu,--no-sandbox");
     private final WebDriverManager wdmFirefox = WebDriverManager.firefoxdriver().browserInDocker().enableVnc();
     private final WebDriverManager wdmSafari = WebDriverManager.safaridriver().browserInDocker().enableVnc();
+
+    @Value("${selenium.password}")
+    private String signUpPassword;
 
     @BeforeAll
     static void setUp() {
@@ -54,14 +57,13 @@ class RegistrierenLoginLogoutAutomatikTest {
     @Transactional
     void SeleniumTest() {
         int i = 0;
-        String password = "piratesOfTheC4rib34N!#";
         for(WebDriver driver : drivers) {
             String email = "jack" + i++ + ".sparrow@black.pearl"; // damit man die Datenbank nicht verwirrt
             driver.manage().window().maximize();
             automatisierteRegistrierungUndLogin(driver,
                     new WebDriverWait(driver, ofSeconds(30), ofSeconds(1)),
                     email,
-                    password,
+                    signUpPassword,
                     i != 0
             );
             //personRepository.delete(personRepository.findByEmail(email)); <- klappt noch nicht
