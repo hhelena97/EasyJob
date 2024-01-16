@@ -45,7 +45,7 @@ import javax.annotation.security.RolesAllowed;
 @RolesAllowed("ROLE_ADMIN")
 
 public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnterObserver {
-    //private final PersonSuchenService personService;
+
     private final PersonRepository personRepository;
     private final UnternehmenRepository unternehmenRepository;
 
@@ -89,22 +89,10 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if (!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_ADMIN")) {
             event.rerouteTo(LoginView.class);
         }
     }
-
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-    }
-
 
 
     private void initializeView(){

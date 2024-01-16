@@ -9,17 +9,11 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.RouterLink;
-import de.hbrs.easyjob.controllers.JobProfilController;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
-import de.hbrs.easyjob.controllers.ProfilSperrenController;
 import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.services.UnternehmenService;
-import de.hbrs.easyjob.views.admin.EinstellungenStartView;
 import de.hbrs.easyjob.views.admin.PersonenVerwaltenView;
-import org.springframework.stereotype.Component;
 
 
 public class AdminUnternehmenComponent extends VerticalLayout {

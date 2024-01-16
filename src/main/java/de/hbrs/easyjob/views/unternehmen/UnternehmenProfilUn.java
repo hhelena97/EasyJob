@@ -168,7 +168,10 @@ public class UnternehmenProfilUn extends VerticalLayout implements BeforeEnterOb
         jobsTitle.addClassName("title");
 
         List<Job> jobsUn = unternehmenService.getAllJobs(unternehmen.getId_Unternehmen());
-        jobsUn.forEach(this::jobMeth);
+        jobsUn.forEach(job -> {
+            if(!job.getGesperrt() && job.getAktiv())
+                jobMeth(job);
+        });
 
         sec.setMaxWidth("100%");
         sec.setWidth("100%");
