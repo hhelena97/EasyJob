@@ -107,17 +107,14 @@ public interface ValidationController {
 
     /**
      * Prüft, ob Name gültig ist.
-     * Name muss mindestens 1 Zeichen und maximal 32 Zeichen lang sein
+     * Name muss mindestens 2 Zeichen und maximal 32 Zeichen lang sein
      * Name darf nur Buchstaben und Bindestriche enthalten
      *
      * @param name Vorname, der geprüft werden soll
      * @return true, wenn Vorname gültig ist & false, wenn nicht
      */
     static boolean isValidName(String name) {
-        String nameRegex = "^(?=.{2,32}$)"
-                            + "^[A-Za-zäöüÄÖÜßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ]"
-                            + "+([ -][A-Za-zäöüÄÖÜßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ]+)"
-                            + "*( [A-Za-zäöüÄÖÜßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ]+\\.)?$";
+        String nameRegex = "^[\\p{L} .'-]{2,32}$";
 
         Pattern pattern = Pattern.compile(nameRegex);
         Matcher matcher = pattern.matcher(name);
