@@ -200,16 +200,4 @@ class UnternehmenServiceTest {
         unternehmenRepository.delete(unternehmenRepository.getReferenceById(expected.getId_Unternehmen()));
         personRepository.delete(personRepository.getReferenceById(unternehmensperson.getId_Person()));
     }
-
-    @Test
-    @DisplayName("Gibt alle Branchen aus")
-    void getAllBranchen() {
-        //TODO: Test schreiben
-    }
-
-    @Test
-    @DisplayName("Gibt alle Jobs eines Unternehmens aus")
-    void getAllJobs() {
-        //TODO: Test schreiben
-    }
 }
