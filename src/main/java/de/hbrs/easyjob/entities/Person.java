@@ -3,7 +3,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -39,6 +38,9 @@ public class Person {
 
     @Column(name = "Aktiv")
     private Boolean aktiv;
+
+    @Column(name = "Gesperrt")
+    private Boolean gesperrt;
 
     @Override
     public boolean equals(Object o) {

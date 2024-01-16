@@ -14,4 +14,5 @@ public class CustomNotFoundView extends Div implements HasErrorParameter<NotFoun
         add(message);
         return HttpServletResponse.SC_NOT_FOUND;
     }
+
 }

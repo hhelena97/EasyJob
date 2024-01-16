@@ -17,14 +17,14 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinSession;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.services.JobService;
 import de.hbrs.easyjob.services.JobSucheService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import org.springframework.beans.factory.annotation.Autowired;
 import de.hbrs.easyjob.views.components.StudentLayout;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
+
 
 import javax.annotation.security.RolesAllowed;
 import java.time.LocalDate;
@@ -43,31 +43,25 @@ public class JobsUebersichtView extends VerticalLayout implements BeforeEnterObs
     private final JobSucheService jobSucheService;
     private VerticalLayout jobListLayout;
 
+    private final transient SessionController sessionController;
+
 
     @Autowired
 
-    public JobsUebersichtView(JobService jobService, JobSucheService jobSucheService ) {
+    public JobsUebersichtView(JobService jobService, JobSucheService jobSucheService, SessionController sessionController) {
         this.jobService = jobService;
         this.jobSucheService = jobSucheService;
+        this.sessionController = sessionController;
         initializeView();
     }
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if(!sessionController.isLoggedIn()|| !sessionController.hasRole("ROLE_STUDENT")){
             event.rerouteTo(LoginView.class);
         }
     }
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
-    }
+
 
     private void initializeView() {
         addClassName("jobs-view");
@@ -112,14 +106,20 @@ public class JobsUebersichtView extends VerticalLayout implements BeforeEnterObs
             List<Integer> jobIds = (List<Integer>) sessionAttribute;
             if (!jobIds.isEmpty()) {
                 List<Job> jobs = jobService.getJobsByIds(jobIds);
-                jobs.forEach(this::addJobComponentToLayout);
+                jobs.forEach(job -> {
+                    if(!job.getGesperrt() && job.getAktiv())
+                        addJobComponentToLayout(job);
+                });
 
                 // Entfernen der IDs aus der Sitzung, um zukünftige Konflikte zu vermeiden
                 VaadinSession.getCurrent().setAttribute("filteredJobIds", null);
             }
         }else {
             List<Job> jobs = jobService.getAllJobs();
-            jobs.forEach(this::addJobComponentToLayout);
+            jobs.forEach(job -> {
+                if(!job.getGesperrt() && job.getAktiv())
+                    addJobComponentToLayout(job);
+            });
             VaadinSession.getCurrent().setAttribute("searchedJobs", jobs);
         }
     }
@@ -196,7 +196,7 @@ public class JobsUebersichtView extends VerticalLayout implements BeforeEnterObs
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
         long daysBetween = ChronoUnit.DAYS.between(jobDate, LocalDate.now());
-        String daysAgoText = daysBetween == 0 ? "Heute" : daysBetween + (daysBetween == 1 ? " Tag" : " Tage");
+        String daysAgoText = daysBetween == 0 ? "Heute" : daysBetween + (daysBetween == 1 ? " Tag" : " Tagen");
 
         Span postedTime = new Span("Vor " + daysAgoText);
         postedTime.addClassName("posted-time");

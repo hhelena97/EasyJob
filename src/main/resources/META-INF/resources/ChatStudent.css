@@ -1,0 +1,23 @@
+@import "Chat.css";
+
+.frame-student{
+    background-color: var(--studierende-dark) ;
+    height: 100%;
+    max-width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.name2{
+    color: var(--hintergrund-weiß);
+    font-family: Rubik, sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+vaadin-message-input {
+    --lumo-primary-color: var(--studierende-dark);
+}

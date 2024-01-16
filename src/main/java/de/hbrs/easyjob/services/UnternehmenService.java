@@ -81,13 +81,8 @@ public class UnternehmenService {
         return entityManager.createQuery(cq).getResultList();
     }
 
-    public String getUnternehmensOrte(Unternehmen unternehmen){
 
-        String result = "";
-
-        Ort s = unternehmen.getStandorte().stream().findFirst().orElse(null);
-        result = s.getOrt() + " " + s.getPLZ();
-        return result;
-
+    public List<Job> getAllJobsByUnternehmenspersonId(Integer id){
+        return jobRepository.findAllJobs(id);
     }
 }

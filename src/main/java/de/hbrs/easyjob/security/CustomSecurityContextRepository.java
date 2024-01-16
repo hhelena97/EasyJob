@@ -2,13 +2,17 @@ package de.hbrs.easyjob.security;
 
 
 import com.vaadin.flow.server.VaadinSession;
-import org.springframework.security.web.context.HttpRequestResponseHolder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.core.context.SecurityContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.stereotype.Repository;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.function.Supplier;
+
+@Repository
 public class CustomSecurityContextRepository extends HttpSessionSecurityContextRepository {
     private static final Logger logger = LoggerFactory.getLogger(CustomSecurityContextRepository.class);
 
@@ -21,12 +25,15 @@ public class CustomSecurityContextRepository extends HttpSessionSecurityContextR
     }
 
     @Override
-    public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
+    public Supplier<SecurityContext> loadContext(HttpServletRequest requestResponseHolder) {
         logger.debug("Lade SecurityContext für die Anfrage");
-        SecurityContext context = super.loadContext(requestResponseHolder);
+        return super.loadContext(requestResponseHolder);
+    }
 
-
-        SecurityContext vaadinContext = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        return vaadinContext != null ? vaadinContext : context;
+    public void clearContext() {
+        VaadinSession session = VaadinSession.getCurrent();
+        if (session != null) {
+            session.setAttribute(SecurityContext.class, null);
+        }
     }
 }

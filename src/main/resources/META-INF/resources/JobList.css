@@ -27,7 +27,7 @@
 }
 
 .search-layout {
-    width: 100%;
+    width: 98%;
     background: white;
     border-radius: 15px;
     position: relative;
@@ -44,7 +44,7 @@ vaadin-text-field::part(input-field) {
     background: white;
     border-radius: 15px;
     border: 1px solid #BFBEBE;
-    margin: -16px 0px 15px 0px;
+    margin: -16px 0 15px 0;
 }
 
 /* Stil für den Jobtitel */
@@ -84,7 +84,7 @@ vaadin-text-field::part(input-field) {
     font-weight: 300;
     line-height: 16.5px;
     word-wrap: break-word;
-    margin: 6px 0px 8px 17px;
+    margin: 6px 0 8px 17px;
 }
 
 
@@ -95,12 +95,14 @@ vaadin-text-field::part(input-field) {
     justify-content: center;
     align-items: center;
 }
+
 .iconsInJobIcons{
     width: 15px;
     height: 15px;
     color: #A3336F;
     flex-shrink: 0;
 }
+
 .titleIcons  {
     color:  #323232;
     font-family: Rubik, sans-serif;

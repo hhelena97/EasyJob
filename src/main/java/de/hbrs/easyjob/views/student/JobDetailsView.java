@@ -1,107 +1,51 @@
 package de.hbrs.easyjob.views.student;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.VaadinSession;
-import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.services.JobService;
-import de.hbrs.easyjob.views.allgemein.LoginView;
-import de.hbrs.easyjob.views.components.StudentLayout;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H5;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import de.hbrs.easyjob.controllers.SessionController;
+import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.repositories.JobRepository;
+import de.hbrs.easyjob.views.allgemein.AbstractJobDetails;
+import de.hbrs.easyjob.views.components.StudentLayout;
 
-import com.vaadin.flow.router.PageTitle;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-
-import javax.annotation.security.RolesAllowed;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-@Route(value = "job-details",layout = StudentLayout.class)
-@PageTitle("Job Details")
-@RolesAllowed("ROLE_STUDENT")
-public class JobDetailsView extends VerticalLayout implements HasUrlParameter<Integer>, BeforeEnterObserver{
-    @Autowired
-    private final JobService jobService;
-
-    public JobDetailsView( JobService jobService) {
-        this.jobService = jobService;
+@Route(value = "student/job", layout = StudentLayout.class)
+@StyleSheet("JobDetailsStudent.css")
+public class JobDetailsView extends AbstractJobDetails {
+    public JobDetailsView(SessionController sessionController, JobRepository jobRepository) {
+        super(sessionController, jobRepository);
     }
 
     @Override
-    public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
-            event.rerouteTo(LoginView.class);
-        }
-    }
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
-    }
-    @Override
-    public void setParameter(BeforeEvent event, @OptionalParameter Integer jobID) {
-        if (jobID != null) {
-            Job job = jobService.getJobById(jobID);
-            add(createJobDetailLayout(job));
-        } else {
-            add(new H3("Job-Details konnten nicht geladen werden."));
-        }
-    }
+    public void displayJob(Job job) {
+        super.displayJob(job);
 
-    private Component createJobDetailLayout(Job job) {
-        // Layout für das Jobfoto
-        Image jobImage = new Image("path/to/job/image.jpg", "Job Image");
-        jobImage.setWidth(getMaxWidth());
-        jobImage.setHeight("auto");
+        // Contact info
+        Div contactContainer = new Div(
+                new H5("Ansprechperson:"),
+                new Anchor("mailto:" + job.getPerson().getEmail(),
+                        job.getPerson().getVorname() + " " + job.getPerson().getNachname()));
+        contactContainer.addClassName("job-details-contact");
+        descriptionContainer.add(contactContainer);
 
-        // Titel des JobsUebersichtView
-        H1 jobTitle = new H1(job.getTitel());
-        jobTitle.addClassName("job-title");
+        // Action buttons
+        VerticalLayout actionButtons = new VerticalLayout();
+        actionButtons.addClassName("job-details-action-buttons");
 
-        // Unternehmen und Standort
-        H2 companyAndLocation = new H2(job.getUnternehmen().getName() + " - " + job.getOrt().getOrt());
-        companyAndLocation.addClassName("company-location");
+        Button applyButton = new Button("Jetzt Bewerben",e -> UI.getCurrent().navigate("chat/" + "Job"+ "/"+job.getId_Job()));
+        applyButton.addClassName("job-details-apply-button");
 
-        // Freitext des JobsUebersichtView
-        Paragraph jobDescription = new Paragraph(job.getFreitext());
-        jobDescription.addClassName("job-description");
+        Button moreJobsButton = new Button("mehr Jobs entdecken", FontAwesome.Solid.CHEVRON_RIGHT.create(), e -> UI.getCurrent().navigate("student/jobs-finden"));
+        moreJobsButton.addClassName("job-details-more-jobs-button");
+        moreJobsButton.setIconAfterText(true);
 
-        // Erstellungsdatum
-        Paragraph jobDate = new Paragraph("Veröffentlicht am: " + formatDate(job.getErstellt_am()));
-        jobDate.addClassName("job-date");
-
-        // Weitere Details wie Anforderungen und was geboten wird, können als Paragraphen hinzugefügt werden
-
-        // Button zur Bewerbung
-        Button applyButton = new Button("Jetzt bewerben", e -> { /* Logik für Bewerbung */ });
-        applyButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-        // Button, um mehr JobsUebersichtView zu entdecken
-        Button discoverMoreButton = new Button("mehr JobsUebersichtView entdecken", e -> { /* Logik für weitere JobsUebersichtView */ });
-
-        // Layout zusammenbauen
-        VerticalLayout layout = new VerticalLayout(jobImage, jobTitle, companyAndLocation, jobDescription, jobDate, applyButton, discoverMoreButton);
-        layout.addClassName("job-detail-layout");
-        layout.setSizeFull();
-        layout.setAlignItems(Alignment.CENTER);
-
-        return layout;
-    }
-
-    private String formatDate(Date date) {
-        // Formatieren Sie das Datum nach Ihren Wünschen
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-        return formatter.format(date);
+        actionButtons.add(applyButton, moreJobsButton);
+        frame.add(actionButtons);
     }
 }

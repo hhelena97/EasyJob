@@ -41,7 +41,7 @@ vaadin-text-field::part(input-field) {
     background: white;
     border-radius: 15px;
     border: 1px solid #BFBEBE;
-    margin: -16px 0px 15px 0px;
+    margin: -16px 0 15px 0;
 }
 
 
@@ -54,7 +54,7 @@ vaadin-text-field::part(input-field) {
 }
 
 .name-label {
-    color: black;
+    color: var(--text-almostblack);
     font-size: 20px;
     font-family: Rubik, sans-serif;
     font-weight: 400;

@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.controllers.StellenanzeigeController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.views.allgemein.LoginView;
@@ -31,25 +32,19 @@ import java.util.List;
 @StyleSheet("ProfilView.css")
 @RolesAllowed("ROLE_UNTERNEHMENSPERSON")
 public class ProfilView extends VerticalLayout implements HasUrlParameter<Integer>, BeforeEnterObserver {
-    private final StellenanzeigeController stellenanzeigeController;
+    private final transient StellenanzeigeController stellenanzeigeController;
+    private static final String STELLENANZEIGE_TAG = "stellenanzeige-tag";
+
+    private final transient SessionController sessionController;
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if(!sessionController.isLoggedIn()|| !sessionController.hasRole("ROLE_UNTERNEHMENSPERSON")){
             event.rerouteTo(LoginView.class);
         }
     }
 
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_UNTERNEHMENSPERSON"));
-    }
+
 
     @Override
     public void setParameter(BeforeEvent event, Integer parameter) {
@@ -80,8 +75,9 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
         frame.add(jobsFrame);
         add(frame);
     }
-    public ProfilView(StellenanzeigeController stellenanzeigeController) {
+    public ProfilView(StellenanzeigeController stellenanzeigeController, SessionController sessionController) {
         this.stellenanzeigeController = stellenanzeigeController;
+        this.sessionController = sessionController;
     }
 
     private Component createStellenanzeigenVorschau(Job job) {
@@ -98,19 +94,19 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
 
         // Tag: Unternehmen
         Div tagUnternehmen = new Div();
-        tagUnternehmen.addClassName("stellenanzeige-tag");
+        tagUnternehmen.addClassName(STELLENANZEIGE_TAG);
         Span unternehmensName = new Span(job.getUnternehmen().getName());
         tagUnternehmen.add(FontAwesome.Solid.BRIEFCASE.create(), unternehmensName);
 
         // Tag: Ort
         Div tagOrt = new Div();
-        tagOrt.addClassName("stellenanzeige-tag");
+        tagOrt.addClassName(STELLENANZEIGE_TAG);
         Span ort = new Span(job.getOrt().getOrt());
         tagOrt.add(FontAwesome.Solid.MAP_MARKER_ALT.create(), ort);
 
         // Tag: Kategorie
         Div tagKategorie = new Div();
-        tagKategorie.addClassName("stellenanzeige-tag");
+        tagKategorie.addClassName(STELLENANZEIGE_TAG);
         Span kategorie = new Span(job.getJobKategorie().getKategorie());
         tagKategorie.add(FontAwesome.Solid.GRADUATION_CAP.create(), kategorie);
 

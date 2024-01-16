@@ -5,9 +5,6 @@ html{
     box-sizing: border-box;
     margin: 0;
 
-    --lumo-primary-text-color: rgba(163, 51, 111, 1);
-    --lumo-primary-color:  rgba(163, 51, 111, 1);
-
 }
 body {
     width: 100%;
@@ -19,27 +16,42 @@ body {
     width: 24px;
     height: 24px;
 }
-.profilBild{
 
-    width: 200px;
-    height: 200px;
-    border-radius: 155px;
-    border: 4px solid lightgray;
-
+/* Profilbild */
+.profile-picture-frame {
+    position: relative;
+    width: 163px;
+    height: 163px;
+    border-radius: 50%;
 }
-.profilBild img{
 
-    width: 200px;
-    height: 200px;
-    border-radius: 155px;
-    background-repeat: no-repeat;
-    background-position: center;
+.profile-picture-background {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
+.picture-round {
+    width: 145px;
+    height: 145px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--hintergrund-weiß);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+}
+
+.picture-round img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .name{
     margin:0;
-    color: #000;
+    color: var(--text-almostblack);
     text-align: center;
     font-family: Rubik, sans-serif;
     font-size: 24px;
@@ -89,12 +101,16 @@ body {
     margin-bottom: 20px;
     overflow-x: hidden;
     overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
 }
 .badge{
     border-radius: 25px;
-    background:  rgba(254, 137, 151, 0.25);
+    color: var(--studierende-dark);
+    background:  var(--hintergrund-peachy);
     padding: 3px 6px;
     margin-right: 4px;
+    margin-bottom: 4px;
 
 }
 
@@ -103,11 +119,8 @@ body {
     margin-bottom: 17px;
 }
 
-
-.imgTest{
-    background-image: url("images/my.png");
-    width: 74px;
-    height: 74px;
+vaadin-tab::before{
+    background-color: var(--studierende-dark);
 }
 
 
