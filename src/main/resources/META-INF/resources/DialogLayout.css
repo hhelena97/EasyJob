@@ -57,3 +57,15 @@ vaadin-dialog-overlay::part(footer) {
     font-weight: 500;
     line-height: normal;
 }
+
+.close-admin {
+    border-radius: var(--corner-radius);
+    background: var(--admin-dark);
+    color: var(--hintergrund-weiß);
+    text-align: center;
+    font-family: Rubik, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
