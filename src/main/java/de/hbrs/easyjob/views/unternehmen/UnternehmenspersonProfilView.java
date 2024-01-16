@@ -1,6 +1,6 @@
 package de.hbrs.easyjob.views.unternehmen;
 
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
@@ -10,75 +10,32 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.VaadinSession;
-import de.hbrs.easyjob.controllers.UnternehmenProfilController;
-import de.hbrs.easyjob.controllers.UnternehmensperonProfilController;
-import de.hbrs.easyjob.entities.Student;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.services.PersonService;
-import de.hbrs.easyjob.services.UnternehmenService;
-import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
 
 
 @Route(value = "unternehmen/unternehmenperson", layout = UnternehmenLayout.class)
 @RolesAllowed("ROLE_UNTERNEHMENSPERSON")
-public class UnternehmenspersonProfilView extends VerticalLayout implements BeforeEnterObserver {
+@StyleSheet("UnternehmenspersonProfilView.css")
+@StyleSheet("DialogLayout.css")
 
-    private Unternehmensperson person;
-    @Autowired
-    private final PersonService personService;
-    @Autowired
-    private final UnternehmenService unternehmenService;
-    VerticalLayout personKontakt = new VerticalLayout();
+public class UnternehmenspersonProfilView extends VerticalLayout {
 
-    @Override
-    public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
-            event.rerouteTo(LoginView.class);
-        }
-    }
+    private final transient Unternehmensperson person;
+    private final transient VerticalLayout personKontakt = new VerticalLayout();
 
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_UNTERNEHMENSPERSON"));
-    }
 
-    public UnternehmenspersonProfilView(PersonService personService, UnternehmenService unternehmenService) {
-        this.personService = personService;
-        this.unternehmenService = unternehmenService;
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth != null && auth.isAuthenticated() && hasRole(auth)) {
-                person = (Unternehmensperson) personService.getCurrentPerson();
-                initializeView();
-            } else {
-                UI.getCurrent().navigate(LoginView.class);
-            }
-        } else {
-            UI.getCurrent().navigate(LoginView.class);
-        }
+    public UnternehmenspersonProfilView(SessionController sessionController) {
+        person = (Unternehmensperson) sessionController.getPerson();
+        initializeView();
     }
 
     private void initializeView(){
-        UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilView.css");
-
 
 
         addClassName("all");
@@ -106,24 +63,34 @@ public class UnternehmenspersonProfilView extends VerticalLayout implements Befo
         Icon pen =new Icon(VaadinIcon.PENCIL);
         pen.addClassName("iconsProf");
 
-        iconsProf.add(link,pen);
+        RouterLink link2 = new RouterLink(UnternehmenspersonProfilBearbeitungView.class);
+        link2.add(pen);
+
+        iconsProf.add(link,link2);
 
 
         //Profil Bild
-        Div profilBild = new Div();
-        profilBild.addClassName("profilBild");
-        if(person.getFoto() != null){
-            profilBild.add(new Image(person.getFoto(), "EasyJob"));
-        }
+        //Bildrahmen
+        Div rahmen = new Div();
+        rahmen.addClassName("profile-picture-frame");
+        Image ellipse = new Image("images/Ellipse-Blau-Groß.png", "Bildumrandung");
+        ellipse.addClassName("profile-picture-background");
+        rahmen.add(ellipse);
+
+        //Platzhalter Bild
+        boolean hasBild = person.getFoto() != null;
+        Image platzhalterBild = new Image(hasBild? person.getFoto(): "images/blank-profile-picture.png", "EasyJob");
+        Div bildDiv = new Div(platzhalterBild);
+        platzhalterBild.addClassName("picture-round");
+        rahmen.add(bildDiv);
 
 
 
 
 
-        //Name
+        // Name
         H1 name = new H1();
         name.addClassName("name");
-        //name.add("Max Mustermann");
         name.add(person.getVorname()+" "+ person.getNachname());
 
 
@@ -131,7 +98,7 @@ public class UnternehmenspersonProfilView extends VerticalLayout implements Befo
         H2 unternehmenProfil = new H2("zum Unternehmensprofil");
         unternehmenProfil.addClassName("unternehmenProfil");
         unternehmenProfil.getStyle().set("color", "#323232");
-        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfil_Un.class);
+        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfilUn.class);
         linkUnternehmen.add(unternehmenProfil);
 
 
@@ -139,31 +106,32 @@ public class UnternehmenspersonProfilView extends VerticalLayout implements Befo
         VerticalLayout personInfo = new VerticalLayout();
         personInfo.addClassName("personInfo");
         personInfo.setAlignItems(Alignment.CENTER);
-
         personInfo.setAlignSelf(Alignment.END,iconsProf);
+        personInfo.add(iconsProf,rahmen,name,linkUnternehmen);
 
-
-
-        //personKontakt
-        personKontakt.setAlignItems(Alignment.STRETCH);
-
+        //Kontaktinfo
+        personKontakt.setAlignSelf(Alignment.CENTER);
+        personKontakt.setMaxWidth("100em");
 
         H2 kon = new H2("Kontakt:");
         kon.addClassName("kon");
-        completeZeile("Email:" , person.getEmail());
-        completeZeile("Telefon:", person.getTelefon());
+        HorizontalLayout konLayout = new HorizontalLayout(kon);
+        konLayout.setPadding(false);
+        konLayout.setAlignItems(Alignment.START);
+        konLayout.setSizeFull();
+        VerticalLayout infoLayout = new VerticalLayout(
+                completeZeile("Email:" , person.getEmail()),
+                completeZeile("Telefon:", person.getTelefon()),
+                //Änderung bitte lassen! Hier nicht die Adresse vom Unternehmen sondern die Adresse von der Person!
+                completeZeile("Büroanschrift:" , person.getAnschrift()));
+        infoLayout.setAlignItems(Alignment.STRETCH);
+        personKontakt.add(konLayout,infoLayout);
+        personKontakt.setAlignItems(Alignment.START);
 
-        completeZeile("Büroanschrift:" , unternehmenService.getUnternehmensOrte(person.getUnternehmen()));
-
-
-
-
-        personInfo.add(iconsProf,profilBild,name,linkUnternehmen);
-
-        add(personInfo,kon,personKontakt);
+        add(personInfo,personKontakt);
 
     }
-    private void completeZeile(String title, String wert){
+    private HorizontalLayout completeZeile(String title, String wert){
 
         HorizontalLayout titleH = new HorizontalLayout();
         titleH.setSizeFull();
@@ -177,7 +145,6 @@ public class UnternehmenspersonProfilView extends VerticalLayout implements Befo
         completeZeile.setAlignItems(Alignment.STRETCH);
         completeZeile.addClassName("completeZeile");
 
-        personKontakt.add(completeZeile);
-
+        return completeZeile;
     }
 }

@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.repositories;
 
 import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.entities.Unternehmen;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +14,9 @@ import java.util.Set;
 
 @Component
 public interface JobRepository extends JpaRepository<Job, Integer>, JpaSpecificationExecutor<Job> {
+
+   Job findByTitel(String titel);
+
     // Volltextsuche
     @Query(value = "SELECT * FROM easy_job.job j\n" +
             "JOIN easy_job.unternehmen u on u.id_unternehmen = j.fk_unternehmen\n" +
@@ -46,4 +50,7 @@ public interface JobRepository extends JpaRepository<Job, Integer>, JpaSpecifica
     Set<Job> findAllByUnternehmen(Integer unternehmenID);
     @Query("SELECT j FROM Job j WHERE j.unternehmen.id_Unternehmen = ?1")
     List<Job> findAllByUnternehmenId(int unternehmenId);
+
+    @Query("SELECT j FROM Job j WHERE j.person.id_Person = :uPersonID")
+    List<Job> findAllJobs(int uPersonID);
 }

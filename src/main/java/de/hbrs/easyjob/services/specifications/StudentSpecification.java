@@ -16,7 +16,7 @@ public class StudentSpecification {
      * @return Eine Spezifikation Instanz, die als Filterkriterium für die Jobsuche verwendet wird.
      */
     public static Specification<Student> inOrt(Ort ort) {
-        return (root, query, criteriaBuilder) -> ort == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get("ort"), ort);
+        return (root, query, criteriaBuilder) -> ort == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get("orte"), ort);
     }
 
     /**
@@ -34,7 +34,7 @@ public class StudentSpecification {
 
             List<Predicate> predicates = new ArrayList<>();
             for (Studienfach fach : studienfacher) {
-                predicates.add(criteriaBuilder.isMember(fach, root.get("studienfacher")));
+                predicates.add(criteriaBuilder.isMember(fach, root.get("studienfach")));
             }
 
             return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
@@ -55,7 +55,7 @@ public class StudentSpecification {
 
             List<Predicate> predicates = new ArrayList<>();
             for (JobKategorie jobKategorie : kategorie) {
-                predicates.add(criteriaBuilder.isMember(jobKategorie, root.get("jobKategorie")));
+                predicates.add(criteriaBuilder.isMember(jobKategorie, root.get("jobKategorien")));
             }
 
             return criteriaBuilder.or(predicates.toArray(new Predicate[0]));

@@ -1,44 +1,52 @@
 package de.hbrs.easyjob.views.student;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.Route;
+import de.hbrs.easyjob.controllers.MeldungController;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Student;
-import de.hbrs.easyjob.services.PersonService;
+import de.hbrs.easyjob.services.FaehigkeitService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.StudentLayout;
 import de.hbrs.easyjob.views.components.StudentProfileComponent;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
 
 @Route(value = "student" , layout = StudentLayout.class)
 @RolesAllowed("ROLE_STUDENT")
+@StyleSheet("DialogLayout.css")
+@StyleSheet("StudentProfilView.css")
 public class StudentProfilView extends VerticalLayout implements BeforeEnterObserver  {
 
-    private Student student;
-    private final StudentService studentService;
-    private final PersonService personService;
+
+    private final transient SessionController sessionController;
+    private final Student student;
+    private final transient StudentService studentService;
+    private final MeldungController meldungController;
+    private final FaehigkeitService faehigkeitService;
+
     @Autowired
-    public StudentProfilView(StudentService studentService, PersonService personService) {
+    public StudentProfilView(SessionController sessionController,
+                             StudentService studentService,
+                             MeldungController meldungController,
+                             FaehigkeitService faehigkeitService) {
+        this.sessionController = sessionController;
         this.studentService = studentService;
-        this.personService = personService;
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth != null && auth.isAuthenticated() && hasRole(auth)) {
-                    student = (Student) personService.getCurrentPerson();
-                    initializeView();
-            } else {
-                UI.getCurrent().navigate(LoginView.class);
-            }
-        } else {
+        this.faehigkeitService = faehigkeitService;
+        student = (Student) sessionController.getPerson();
+        this.meldungController = meldungController;
+        if(student == null) {
             UI.getCurrent().navigate(LoginView.class);
+            return;
         }
+        initializeView();
+
     }
 
     private void initializeView() {
@@ -46,27 +54,15 @@ public class StudentProfilView extends VerticalLayout implements BeforeEnterObse
             UI.getCurrent().navigate(LoginView.class);
             return;
         }
-        StudentProfileComponent studentProfile = new StudentProfileComponent(student, "StudentProfilView.css",studentService);
+        StudentProfileComponent studentProfile = new StudentProfileComponent(student, "StudentProfilView.css",studentService,meldungController,faehigkeitService);
         add(studentProfile);
     }
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if(!sessionController.isLoggedIn()|| !sessionController.hasRole("ROLE_STUDENT")){
             event.rerouteTo(LoginView.class);
         }
-    }
-
-
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
     }
 
 }

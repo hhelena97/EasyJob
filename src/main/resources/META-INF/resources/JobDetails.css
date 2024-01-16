@@ -1,0 +1,102 @@
+@import "Variables.css";
+
+:root {
+    --lumo-primary-text-color: var(--primary);
+}
+
+/* Allgemeine Styles */
+body {
+    width: 100%;
+    background: var(--hintergrund-weiß);
+    font-family: Rubik, sans-serif; /* Rubik als Standardschriftart und fallback sans-serif */
+}
+
+.container {
+    align-self: center;
+    max-width: 600px;
+    margin-bottom: 50px;
+}
+
+.job-details-image {
+    max-height: 600px;
+    width: 100%;
+}
+
+.job-details-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.job-details-edit-button {
+    background: var(--hintergrund-weiß);
+    border: 1.5px solid var(--primary);
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    --lumo-button-size: 0;
+}
+
+.job-details-back-button {
+    background: transparent;
+    color: var(--text-schwarz);
+    padding: 0;
+    text-decoration: underline;
+}
+
+.job-details-company {
+    color: var(--primary);
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+.job-details-title {
+    color: var(--text-schwarz);
+    font-size: 28px;
+    font-weight: 400;
+    margin-top: 0;
+}
+
+.job-details-tags {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.job-details-tag {
+    color: var(--text-almostblack);
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.job-details-tag > vaadin-icon {
+    color: var(--primary);
+    height: 22px;
+    width: 22px;
+}
+
+.job-details-action-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+}
+
+.job-details-apply-button {
+    background: var(--primary);
+    color: var(--hintergrund-weiß);
+    border-radius: 30px;
+    font-weight: 600;
+    height: 48px;
+    width: 256px;
+}
+
+.job-details-more-jobs-button {
+    background: transparent;
+    color: var(--text-schwarz);
+    left: 12px;
+    padding: 0;
+    text-decoration: underline;
+}

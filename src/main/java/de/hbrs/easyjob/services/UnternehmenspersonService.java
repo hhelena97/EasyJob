@@ -25,6 +25,7 @@ public class UnternehmenspersonService {
         Unternehmen bestehendesUnternehmen = unternehmenService.findByName(unternehmensperson.getUnternehmen().getName());
         //Account aktivieren
         unternehmensperson.setAktiv(true);
+        unternehmensperson.setGesperrt(false);
         if (bestehendesUnternehmen != null) {
             // Unternehmen existiert, Unternehmensperson dem Unternehmen zuordnen
             unternehmensperson.setUnternehmen(bestehendesUnternehmen);

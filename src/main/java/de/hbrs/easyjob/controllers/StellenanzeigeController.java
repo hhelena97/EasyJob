@@ -10,7 +10,6 @@ import java.util.Set;
 
 /**
  * Controller für die Stellenanzeigen
- * TODO: Möglicherweise mit JobSucheService zusammenführen
  */
 @Component
 public class StellenanzeigeController {
@@ -36,7 +35,7 @@ public class StellenanzeigeController {
      * @param studienfaecher Studienfächer, die für die Stelle relevant sind
      * @return Die erstellte Stellenanzeige
      */
-    public Job stellenanzeigeErstellen(
+    public Job stellenanzeigeErstellen( // TODO: Aktiv als parameter einführen
             String titel,
             String freitext,
             Date eintrittsdatum,
@@ -64,7 +63,8 @@ public class StellenanzeigeController {
         job.setJobKategorie(jobKategorie);
         job.setStudienfacher(studienfaecher);
         job.setHomeOffice(homeOffice);
-
+        job.setAktiv(true);
+        job.setGesperrt(false);
         System.out.printf("Job '%s' von '%s' erstellt\n", job.getTitel(), job.getUnternehmen().getName());
 
         return jobService.saveJob(job);

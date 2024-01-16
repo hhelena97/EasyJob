@@ -5,13 +5,14 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import de.hbrs.easyjob.controllers.SessionController;
 
 @Route("deaktiviert")
 public class DeaktiviertesProfil extends VerticalLayout {
+   protected final transient SessionController sessionController;
 
-    //private ProfilDeaktiviertControl pdControl;
-
-    public DeaktiviertesProfil() {
+    public DeaktiviertesProfil(SessionController sessionController) {
+        this.sessionController = sessionController;
         UI.getCurrent().getPage().addStyleSheet("DeaktiviertesProfil.css");
 
         //Hintergrund vom Profilbild

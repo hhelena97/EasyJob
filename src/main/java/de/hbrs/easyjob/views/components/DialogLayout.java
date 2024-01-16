@@ -3,7 +3,9 @@ package de.hbrs.easyjob.views.components;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
 
 @StyleSheet("DialogLayout.css")
 public class DialogLayout {
@@ -34,6 +36,21 @@ public class DialogLayout {
         } else if (user.equals("Unternehmen")) {
             close.addClassName("close-unternehmen");
         }
+    }
+
+    /**
+     * Katharina braucht das für den Admin. Da gibt es Dialoge, in denen man ein Passwort eintragen muss usw.
+     */
+    public void insertContentDialogContent(String header, Div content, String closeTitel, String confirmTitel) {
+        Button close = new Button(closeTitel, e -> dialog.close());
+        Button confirm = new Button(confirmTitel);
+        confirm.addClassName("confirm");
+        confirm.addClickListener(e -> {
+            dialog.close();}); //TODO: noch Info anzeigen dass es gespeichert wurde
+        dialog.setHeaderTitle(header);
+        dialog.add(content);
+        dialog.getFooter().add(confirm);
+        dialog.getFooter().add(close);
     }
 
     public void simpleDialog(String header, Button button, String actionRoute){

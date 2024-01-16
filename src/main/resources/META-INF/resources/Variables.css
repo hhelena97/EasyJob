@@ -6,9 +6,11 @@
     --hintergrund-peachy: rgba(254, 137, 151, 0.25); /* RGBA */
     --hintergrund-sky: rgba(139, 206, 255, 0.25); /*RGBA*/
 
+    --admin-dark: #289A32;
     --studierende-dark: #A3336F;
     --unternehmen-dark: #2D34A0;
 
+    --text-schwarz: #000;
     --text-almostblack: #323232;
     --text-grau: #6F6F6F;
 

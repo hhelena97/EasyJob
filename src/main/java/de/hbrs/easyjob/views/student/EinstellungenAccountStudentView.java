@@ -1,75 +1,91 @@
 package de.hbrs.easyjob.views.student;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Person;
+import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.DeaktivierenConfirmDialog;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
+import de.hbrs.easyjob.views.components.PasswortAendernDialog;
+import de.hbrs.easyjob.views.components.ZurueckButtonRundLayout;
 
 import javax.annotation.security.RolesAllowed;
 
 @Route("student/einstellungen/account")
 @PageTitle("Accounteinstellungen")
 @StyleSheet("Registrieren.css")
+@StyleSheet("Einstellungen.css")
 @StyleSheet("DialogLayout.css")
 @RolesAllowed("ROLE_STUDENT")
 public class EinstellungenAccountStudentView extends VerticalLayout implements BeforeLeaveObserver, BeforeEnterObserver {
 
-    private final ProfilDeaktivierenController profilDeaktivieren;
+    private final transient SessionController sessionController;
+    private final transient ProfilDeaktivierenController profilDeaktivieren;
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if (!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_STUDENT")) {
             event.rerouteTo(LoginView.class);
         }
     }
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
-    }
 
-    public EinstellungenAccountStudentView(PersonRepository personRepository, UnternehmenRepository unternehmenRepository) {
+    public EinstellungenAccountStudentView(SessionController sessionController,
+                                           PersonRepository personRepository,
+                                           UnternehmenRepository unternehmenRepository,
+                                           PasswortService passwortService) {
+        this.sessionController = sessionController;
+        Student student = (Student) sessionController.getPerson();
         this.profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository);
 
         VerticalLayout frame = new VerticalLayout();
-        DeaktivierenConfirmDialog deaktivierenDialog = new DeaktivierenConfirmDialog(true, "Student", "Dein Profil wird unsichtbar und du kannst keine ChatsView mehr erhalten. Du kannst deinen Account jederzeit reaktivieren.") ;
 
-        frame.setClassName("Container");
-        Button back = new Button("", new Icon(VaadinIcon.ARROW_LEFT));
+        //Zurück
+        Button back = new ZurueckButtonRundLayout("Student");
+        RouterLink linkzuruck = new RouterLink(EinstellungenUebersichtStudentView.class);
+        linkzuruck.add(back);
 
+        //Überschrift
         Label ueber = new Label("Accounteinstellungen");
+        ueber.addClassName("accounteinstellungen");
 
+        //Passwort ändern
+        PasswortAendernDialog passwort = new PasswortAendernDialog(student,"Student", passwortService);
+        Button passwortaendern = new Button("Passwort ändern",e -> passwort.open());
+        passwortaendern.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        passwortaendern.addClassName("menu-button");
+
+        //Account deaktivieren
+        DeaktivierenConfirmDialog deaktivierenDialog = new DeaktivierenConfirmDialog("Student",
+                "Dein Profil wird unsichtbar und du kannst keine Nachrichten mehr erhalten. " +
+                        "Du kannst deinen Account jederzeit reaktivieren.") ;
         Button deaktivieren = new Button("Account deaktivieren", e -> deaktivierenDialog.openDialogOverlay());
+        deaktivieren.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        deaktivieren.addClassName("deaktivieren");
 
+        VerticalLayout buttons = new VerticalLayout(passwortaendern, deaktivieren);
+        buttons.setSpacing(false);
 
-        frame.add(back, ueber, deaktivieren);
+        frame.add(linkzuruck, ueber, buttons);
         add(frame);
     }
 
     @Override
     public void beforeLeave(BeforeLeaveEvent event) {
         // Deaktiviere Studenten-Account
-        Person person = (Person) UI.getCurrent().getSession().getAttribute("current_User");
+        Person person = sessionController.getPerson();
         if (profilDeaktivieren.profilDeaktivierenPerson(person)) {
             System.out.printf("Profil '%s' deaktiviert.\n", person.getEmail());
         }
     }
+
+    //TODO: aus irgendeinem Grund landet man nicht auf http://localhost:8080/login beim Ausloggen (siehe Seleniumtest)
 }

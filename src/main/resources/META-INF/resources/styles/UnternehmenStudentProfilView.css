@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
+
+html{
+    box-sizing: border-box;
+    margin: 0;
+
+
+}
+
+body {
+    width: 100%;
+    margin: 0;
+    font-family: Rubik, sans-serif;
+}
+
+.iconsProf{
+    width: 24px;
+    height: 24px;
+}
+
+
+.name{
+    margin:0;
+    color: var(--text-almostblack);
+    text-align: center;
+    font-family: Rubik, sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 75% */
+    letter-spacing: -0.165px;
+}
+.location{
+    width: max-content;
+    justify-content: center;
+}
+
+.iconsInUnternehmen{
+    margin:0;
+    width: 15px;
+    height: 15px;
+    color: rgba(28, 46, 69, 0.6);
+}
+.stadt {
+    color:  rgba(50, 50, 50, 1);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    margin-right: 12px;
+    margin-left: 2px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+
+.divReturn{
+    display: flex;
+    align-items: start;
+    align-content: start;
+    justify-content: start;
+    justify-items: start;
+    text-align: start;
+}
+
+.zeileDiv{
+    width: 50%;
+    height: 100%;
+    padding-right: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+.badge{
+    border-radius: 25px;
+    color: var(--unternehmen-dark);
+    background:  var(--hintergrund-sky);
+    padding: 3px 6px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+
+}
+.completeZeile{
+    margin-bottom: 17px;
+}
+
+vaadin-tab::before{
+    background-color: var(--unternehmen-dark);
+}
+
+
