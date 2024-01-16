@@ -105,7 +105,7 @@ class MeldungControllerTest {
         meldung.setGrund("Unangemessene Kraftausdrücke");
 
         /* ************************************************** ACT *************************************************** */
-        boolean actual = meldungController.saveMeldung(meldung, chat);
+        boolean actual = meldungController.saveMeldung(meldung, chat, person);
 
         /* ************************************************* ASSERT ************************************************* */
         assertTrue(actual);
@@ -232,15 +232,15 @@ class MeldungControllerTest {
         Chat chat2 = new Chat();
 
         meldung.setGrund("unhöfliches Nutzerverhalten");
-        meldungController.saveMeldung(meldung, chat2);
+        meldungController.saveMeldung(meldung, chat2, person);
 
         Meldung meldung2 = new Meldung();
         meldung2.setGrund("Ein ganz toller Grund");
-        meldungController.saveMeldung(meldung2, chat2);
+        meldungController.saveMeldung(meldung2, chat2, person);
 
         Meldung meldung3 = new Meldung();
         meldung3.setGrund("Ein noch viel besserer Grund");
-        meldungController.saveMeldung(meldung2, chat);
+        meldungController.saveMeldung(meldung2, chat, person);
 
         List<Meldung> expected = List.of(meldung, meldung2, meldung3);
 
