@@ -63,7 +63,8 @@ public class StellenanzeigeController {
         job.setJobKategorie(jobKategorie);
         job.setStudienfacher(studienfaecher);
         job.setHomeOffice(homeOffice);
-
+        job.setAktiv(true);
+        job.setGesperrt(false);
         System.out.printf("Job '%s' von '%s' erstellt\n", job.getTitel(), job.getUnternehmen().getName());
 
         return jobService.saveJob(job);

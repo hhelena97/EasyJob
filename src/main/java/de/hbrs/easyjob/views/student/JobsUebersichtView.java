@@ -106,14 +106,20 @@ public class JobsUebersichtView extends VerticalLayout implements BeforeEnterObs
             List<Integer> jobIds = (List<Integer>) sessionAttribute;
             if (!jobIds.isEmpty()) {
                 List<Job> jobs = jobService.getJobsByIds(jobIds);
-                jobs.forEach(this::addJobComponentToLayout);
+                jobs.forEach(job -> {
+                    if(!job.getGesperrt() && job.getAktiv())
+                        addJobComponentToLayout(job);
+                });
 
                 // Entfernen der IDs aus der Sitzung, um zukünftige Konflikte zu vermeiden
                 VaadinSession.getCurrent().setAttribute("filteredJobIds", null);
             }
         }else {
             List<Job> jobs = jobService.getAllJobs();
-            jobs.forEach(this::addJobComponentToLayout);
+            jobs.forEach(job -> {
+                if(!job.getGesperrt() && job.getAktiv())
+                    addJobComponentToLayout(job);
+            });
             VaadinSession.getCurrent().setAttribute("searchedJobs", jobs);
         }
     }

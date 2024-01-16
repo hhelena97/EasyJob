@@ -216,12 +216,11 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
 
 
        List<Job> jobsUn= unetrnehmenService.getAllJobs(unternehmen.getId_Unternehmen());
-        for (Job jobSet:jobsUn
-        ) {
+        jobsUn.forEach(job -> {
+            if(!job.getGesperrt() && job.getAktiv())
+                jobMeth(job, unternehmen);
+        });
 
-            jobMeth(jobSet, unternehmen);
-
-        }
 
         sec.setMaxWidth("100%");
         sec.setWidth("100%");
