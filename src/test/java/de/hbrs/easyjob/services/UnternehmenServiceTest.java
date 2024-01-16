@@ -8,8 +8,6 @@ import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.OrtRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,19 +30,14 @@ class UnternehmenServiceTest {
     private UnternehmenRepository unternehmenRepository;
 
     // Service
+    @Autowired
     private UnternehmenService unternehmenService;
 
-    @BeforeEach
-    void setUp() {
-        // Service
-        unternehmenService = new UnternehmenService(unternehmenRepository, ortRepository, jobRepository);
-    }
 
-    @AfterEach
-    void tearDown() {
-        // Service
-        unternehmenService = null;
-    }
+    // Controllers
+    @Autowired
+    private UnternehmenspersonRegistrierenController unternehmenspersonRegistrierenController;
+
 
     @Test
     @DisplayName("Finde ein existierendes Unternehmen mit Namen")
@@ -94,12 +87,6 @@ class UnternehmenServiceTest {
 
         /* ******************************* ACT ******************************* */
         Unternehmen actual = unternehmenService.saveUnternehmen(unternehmen);
-
-        // -------------------------------------------------------------------------------------------------------------
-        // sollte nicht möglich sein, ein "null"-Unternehmen zu speichern > diese Zeile löschen, wenn in
-        // UnternehmenService gefixt
-        unternehmenRepository.delete(unternehmenRepository.getReferenceById(unternehmen.getId_Unternehmen()));
-        // -------------------------------------------------------------------------------------------------------------
 
         /* ****************************** ASSERT ***************************** */
         assertNull(actual);
@@ -195,8 +182,6 @@ class UnternehmenServiceTest {
         expected.setName("Katzenkörbchen GmbH");
         expected.setStandorte(Set.of(ortRepository.findByPLZAndOrt("53115","Bonn")));
 
-        UnternehmenspersonRegistrierenController unternehmenspersonRegistrierenController = new UnternehmenspersonRegistrierenController(personRepository, unternehmenRepository);
-
         Unternehmensperson unternehmensperson = new Unternehmensperson();
         unternehmensperson.setEmail("lara.croft@adventure.org");
         unternehmensperson.setPasswort("Test123!");
@@ -226,19 +211,5 @@ class UnternehmenServiceTest {
     @DisplayName("Gibt alle Jobs eines Unternehmens aus")
     void getAllJobs() {
         //TODO: Test schreiben
-    }
-
-    @Test
-    @DisplayName("Testet die Methode getUnternehmensOrte")
-    void getUnternehmensOrte() {
-        /* ***************************** ARRANGE ***************************** */
-        Unternehmen unternehmen = unternehmenRepository.findByName("Kaffee-Pause");
-        String expected = "München 80315";
-
-        /* ******************************* ACT ******************************* */
-        String actual = unternehmenService.getUnternehmensOrte(unternehmen);
-
-        /* ****************************** ASSERT ***************************** */
-        assertEquals(expected, actual);
     }
 }

@@ -1,13 +1,11 @@
 package de.hbrs.easyjob.controllers.registrieren;
 
-import de.hbrs.easyjob.controllers.UnternehmenController;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.OrtRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
-import de.hbrs.easyjob.services.UnternehmenService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +29,6 @@ class UnternehmenspersonRegistrierenControllerTest {
     private UnternehmenRepository unternehmenRepository;
 
     // Controllers
-    private UnternehmenController unternehmenController;
     private UnternehmenspersonRegistrierenController unternehmenspersonRegistrierenController;
 
     // Entities
@@ -40,11 +37,7 @@ class UnternehmenspersonRegistrierenControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Service
-        UnternehmenService unternehmenService = new UnternehmenService(unternehmenRepository, ortRepository, jobRepository);
-
         // Controllers
-        unternehmenController = new UnternehmenController(unternehmenService);
         unternehmenspersonRegistrierenController = new UnternehmenspersonRegistrierenController(personRepository, unternehmenRepository);
 
         // Entities
@@ -55,7 +48,6 @@ class UnternehmenspersonRegistrierenControllerTest {
     @AfterEach
     void tearDown() {
         // Controllers
-        unternehmenController = null;
         unternehmenspersonRegistrierenController = null;
 
         // Entities
@@ -144,9 +136,7 @@ class UnternehmenspersonRegistrierenControllerTest {
         Unternehmen unternehmen3 = new Unternehmen();
         unternehmen3.setName("Katzenkörbchen GmbH");
 
-        Unternehmen unternehmen4 = new Unternehmen();
-        unternehmen4.setName("Dreamland GmbH");
-        unternehmenController.createUnternehmen(unternehmen4);
+        Unternehmen unternehmen4 = unternehmenRepository.findById(12).orElseThrow(NullPointerException::new);
 
         /* ******************** ACT ******************** */
         boolean actual = unternehmenspersonRegistrierenController.isValidUnternehmen(unternehmen);
@@ -159,8 +149,5 @@ class UnternehmenspersonRegistrierenControllerTest {
         assertFalse(actual2);  // nicht gespeichert
         assertFalse(actual3);  // zwar mit Namen, aber nicht in unternehmenRepository gespeichert
         assertTrue(actual4);  // in unternehmenRepository gespeichert und deshalb gültig
-
-        /* ***************** TEAR DOWN ***************** */
-        unternehmenRepository.delete(unternehmenRepository.getReferenceById(unternehmen4.getId_Unternehmen()));
     }
 }
