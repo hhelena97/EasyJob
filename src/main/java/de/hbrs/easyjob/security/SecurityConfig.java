@@ -29,6 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .securityContextRepository(customSecurityContextRepository)
                 .and()
                 .authorizeRequests()
+                .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
                 .antMatchers("/login", "/registrieren", "/passwortVergessen").permitAll()
                 .antMatchers("/student/**").hasRole("STUDENT")
                 .antMatchers("/unternehmen/**").hasRole("UNTERNEHMENSPERSON")
@@ -64,6 +65,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static Argon2PasswordEncoder getPasswordEncoder() {
         return new Argon2PasswordEncoder(16, 32, 2, 60000, 10);
     }
-
 
 }
