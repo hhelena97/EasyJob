@@ -38,9 +38,9 @@ class RegistrierenLoginLogoutAutomatikTest {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
 
-        drivers[0] = wdmFirefox.create();
+        drivers[2] = wdmFirefox.create();
         drivers[1] = new ChromeDriver(options);
-        drivers[2] = wdmSafari.create();
+        drivers[0] = wdmSafari.create();
     }
 
     @AfterEach
@@ -104,7 +104,8 @@ class RegistrierenLoginLogoutAutomatikTest {
         // Registrieren-Seite laden
         driver.findElement(By.id("registrierenbutton_id")).click();
         wait.until(titleIs("Registrieren"));
-        assertEquals(local + ":8080/registrieren", driver.getCurrentUrl());
+        warteWebDriver(driver, 5);
+        assertEquals(local + ":8080/registrieren", driver.getCurrentUrl(), "Da hat die Registrieren Seite nicht geladen bei " + driver);
 
         // "Ich studiere." auswählen
         driver.findElement(By.id("label-vaadin-radio-button-11")).click();

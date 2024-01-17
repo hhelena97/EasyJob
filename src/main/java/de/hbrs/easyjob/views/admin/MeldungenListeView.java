@@ -12,11 +12,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.router.*;
 import de.hbrs.easyjob.controllers.MeldungController;
-import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.controllers.ProfilSperrenController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.repositories.*;
+import de.hbrs.easyjob.services.FaehigkeitService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
@@ -31,23 +31,18 @@ import java.util.List;
 @StyleSheet("AdminMeldungenListe.css")
 @RolesAllowed("ROLE_ADMIN")
 public class MeldungenListeView extends VerticalLayout implements BeforeEnterObserver {
+    // Repositories
+    private final transient MeldungRepository meldungRepository;
 
-    private final MeldungRepository meldungRepository;
-    private final PersonRepository personRepository;
-    private final UnternehmenRepository unternehmenRepository;
+    // Services
+    private final transient FaehigkeitService faehigkeitService;
+    private final transient StudentService studentService;
+    private final transient UnternehmenService unternehmenService;
 
-    private final UnternehmenspersonRepository unternehmenspersonRepository;
-    private final JobRepository jobRepository;
-    private final FaehigkeitRepository faehigkeitRepository;
-
-    private final SessionController sessionController;
-    private final MeldungController meldungController;
-
-    private final StudentService studentService;
-    private final UnternehmenService unternehmenService;
-
-    //die CSS für die einzelnen Komponenten
-    String style = "AdminPersonenVerwaltenView.css";
+    // Controller
+    private final transient MeldungController meldungController;
+    private final transient ProfilSperrenController profilSperrenController;
+    private final transient SessionController sessionController;
     Paragraph keineMeldung = new Paragraph("Keine Meldungen");
 
 
@@ -58,21 +53,22 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         }
     }
 
-    //@Autowired
-    public MeldungenListeView(SessionController sessionController, MeldungRepository meldungRepository,
-                              PersonRepository personRepository, UnternehmenRepository unternehmenRepository, JobRepository jobRepository,
-                              UnternehmenspersonRepository unternehmenspersonRepository,
-                              FaehigkeitRepository faehigkeitRepository, MeldungController meldungController, StudentService studentenService, UnternehmenService unternehmenService) {
+    public MeldungenListeView(
+            MeldungRepository meldungRepository,
+            FaehigkeitService faehigkeitService,
+            StudentService studentService,
+            UnternehmenService unternehmenService,
+            MeldungController meldungController,
+            ProfilSperrenController profilSperrenController,
+            SessionController sessionController
+    ) {
         this.meldungRepository = meldungRepository;
-        this.personRepository = personRepository;
-        this.unternehmenRepository = unternehmenRepository;
-        this.jobRepository = jobRepository;
-        this.unternehmenspersonRepository = unternehmenspersonRepository;
-        this.sessionController = sessionController;
-        this.faehigkeitRepository = faehigkeitRepository;
-        this.meldungController = meldungController;
-        this.studentService = studentenService;
+        this.faehigkeitService = faehigkeitService;
+        this.studentService = studentService;
         this.unternehmenService = unternehmenService;
+        this.meldungController = meldungController;
+        this.profilSperrenController = profilSperrenController;
+        this.sessionController = sessionController;
 
 
         Div btnAusloggen = new AdminAusloggen(sessionController);
@@ -80,7 +76,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         ausloggen.addClassName("ausloggenFenster");
 
 
-        Div titeltext = new Div(new H3 ("Meldungen"));
+        Div titeltext = new Div(new H3("Meldungen"));
         titeltext.addClassName("titeltext");
 
 
@@ -98,11 +94,11 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         add(titelbox, tabs);
     }
 
-    private Div personenDiv(){
+    private Div personenDiv() {
         Div inhalt = new Div();
 
         List<Meldung> mp1 = meldungController.getAllGemeldetePersonen();
-        if (mp1 == null || mp1.isEmpty()){
+        if (mp1 == null || mp1.isEmpty()) {
             inhalt.add(keineMeldung);
         } else {
             for (Meldung m : mp1) {
@@ -111,11 +107,12 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         }
         return inhalt;
     }
-    private Div unternehmenDiv(){
+
+    private Div unternehmenDiv() {
         Div inhalt = new Div();
 
         List<Meldung> mp = meldungController.getAllGemeldeteUnternehmen();
-        if (mp == null || mp.isEmpty()){
+        if (mp == null || mp.isEmpty()) {
             inhalt.add(keineMeldung);
         } else {
             for (Meldung m : mp) {
@@ -124,11 +121,12 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         }
         return inhalt;
     }
-    private Div jobsDiv(){
+
+    private Div jobsDiv() {
         Div inhalt = new Div();
 
         List<Meldung> mp = meldungController.getAllGemeldeteJobs();
-        if (mp.isEmpty()){
+        if (mp.isEmpty()) {
             inhalt.add(keineMeldung);
         } else {
             for (Meldung m : mp) {
@@ -137,11 +135,12 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         }
         return inhalt;
     }
-    private Div chatsDiv(){
+
+    private Div chatsDiv() {
         Div inhalt = new Div();
 
         List<Meldung> mp = meldungController.getAllGemeldeteChats();
-        if (mp == null || mp.isEmpty()){
+        if (mp == null || mp.isEmpty()) {
             inhalt.add(keineMeldung);
         } else {
             for (Meldung m : mp) {
@@ -151,7 +150,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         return inhalt;
     }
 
-    private Div addPersonComponentToLayout(Meldung meldung){
+    private Div addPersonComponentToLayout(Meldung meldung) {
 
         Person p = meldung.getPerson();
 
@@ -161,52 +160,58 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         Dialog d1 = new Dialog();
         d1.setHeaderTitle("Meldung bearbeiten");
 
-            Div infos = new Div();
-                infos.addClassName("infos");
+        Div infos = new Div();
+        infos.addClassName("infos");
 
-                String foto = p.getFoto() != null ? p.getFoto() : "images/blank-profile-picture.png";
-                //Profil Bild
-                VerticalLayout profilBild = new VerticalLayout(new Image(foto, "EasyJob"));
-                 profilBild.addClassName("profilBild");
+        String foto = p.getFoto() != null ? p.getFoto() : "images/blank-profile-picture.png";
+        //Profil Bild
+        VerticalLayout profilBild = new VerticalLayout(new Image(foto, "EasyJob"));
+        profilBild.addClassName("profilBild");
 
-                 //Name
-                H2 nametitel = new H2();
-                nametitel.addClassName("name");
-                nametitel.add(p.getVorname() + " " + p.getNachname());
+        //Name
+        H2 nametitel = new H2();
+        nametitel.addClassName("name");
+        nametitel.add(p.getVorname() + " " + p.getNachname());
 
-            infos.add(profilBild, nametitel);
+        infos.add(profilBild, nametitel);
 
 
-            Div buttons = new Div();
-                //Person sperren
-                //Dialog zum Nachfragen
-                Dialog wirklichSperren = new Dialog();
-                personSperrenDialog(p,wirklichSperren);
+        Div buttons = new Div();
+        //Person sperren
+        //Dialog zum Nachfragen
+        Dialog wirklichSperren = new Dialog();
+        personSperrenDialog(p, wirklichSperren);
 
-                Button btnSperren = new Button("Sperren");
-                btnSperren.addClassName("btnSperren");
-                btnSperren.addClickListener(e -> wirklichSperren.open());
-            buttons.add(btnSperren);
+        Button btnSperren = new Button("Sperren");
+        btnSperren.addClassName("btnSperren");
+        btnSperren.addClickListener(e -> wirklichSperren.open());
+        buttons.add(btnSperren);
 
-            VerticalLayout personLayout = new VerticalLayout();
+        VerticalLayout personLayout = new VerticalLayout();
 
-            if (p instanceof Student student) {
-                personLayout.add(new AdminStudentProfileComponent(student, style, studentService, faehigkeitRepository));
-            } else if (p instanceof Unternehmensperson uperson) {
-                personLayout.add(new AdminUnternehmenspersonProfileComponent(personRepository, unternehmenRepository,
-                        uperson, style, unternehmenService,
-                        new ProfilSperrenController(personRepository, unternehmenRepository, jobRepository, unternehmenspersonRepository)));
-            } else if (p instanceof Admin) {
-                Paragraph admininfo = new Paragraph("Das ist ein Admin.");
-                Paragraph adminlink = new Paragraph("Zur Administration");
-                RouterLink linkAdmin = new RouterLink(EinstellungenStartView.class);
-                linkAdmin.add(adminlink);
-                personLayout.add(admininfo, linkAdmin);
-            } else {
-                Paragraph paragraph = new Paragraph("Die Person wurde nicht gefunden");
-                paragraph.addClassName("nicht-gefunden");
-                personLayout.add(paragraph);
-            }
+        if (p instanceof Student student) {
+            personLayout.add(new AdminStudentProfileComponent(
+                    student,
+                    studentService,
+                    faehigkeitService
+            ));
+        } else if (p instanceof Unternehmensperson uperson) {
+            personLayout.add(new AdminUnternehmenspersonProfileComponent(
+                    uperson,
+                    unternehmenService,
+                    profilSperrenController
+            ));
+        } else if (p instanceof Admin) {
+            Paragraph admininfo = new Paragraph("Das ist ein Admin.");
+            Paragraph adminlink = new Paragraph("Zur Administration");
+            RouterLink linkAdmin = new RouterLink(EinstellungenStartView.class);
+            linkAdmin.add(adminlink);
+            personLayout.add(admininfo, linkAdmin);
+        } else {
+            Paragraph paragraph = new Paragraph("Die Person wurde nicht gefunden");
+            paragraph.addClassName("nicht-gefunden");
+            personLayout.add(paragraph);
+        }
 
         Button meldungBearbeitet = new Button("Meldung bearbeitet");
         meldungBearbeitet.addClickListener(e -> {
@@ -216,10 +221,10 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
             d1.close();
         });
 
-        Button meldungSchliessen = new Button ("Abbrechen");
+        Button meldungSchliessen = new Button("Abbrechen");
         meldungSchliessen.addClickListener(e -> d1.close());
 
-        d1.add(infos,buttons,personLayout);
+        d1.add(infos, buttons, personLayout);
         d1.getFooter().add(meldungSchliessen, meldungBearbeitet);
 
         Button btnPerson = new Button(name);
@@ -230,7 +235,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
     }
 
 
-    private Div addUnternehmenComponentToLayout(Meldung meldung){
+    private Div addUnternehmenComponentToLayout(Meldung meldung) {
 
         String uname = meldung.getUnternehmen().getName();
 
@@ -238,24 +243,27 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         d1.setHeaderTitle("Meldung bearbeiten");
 
         Div infos = new Div();
-            infos.add(new AdminUnternehmenComponent(meldung.getUnternehmen(), style,
-                    new ProfilDeaktivierenController(personRepository, unternehmenRepository),unternehmenService));
+        infos.add(new AdminUnternehmenManageComponent(
+                meldung.getUnternehmen(),
+                profilSperrenController,
+                unternehmenService
+        ));
 
 
         d1.add(infos);
 
         Button meldungBearbeitet = new Button("Meldung bearbeitet");
-            meldungBearbeitet.addClassName("MeldungBearbeitet");
-            meldungBearbeitet.addClickListener(e -> {
-                meldung.setBearbeitet(true);
-                meldungRepository.save(meldung);
-                Notification.show("Die Meldung wurde bearbeitet");
-                d1.close();
-            });
+        meldungBearbeitet.addClassName("MeldungBearbeitet");
+        meldungBearbeitet.addClickListener(e -> {
+            meldung.setBearbeitet(true);
+            meldungRepository.save(meldung);
+            Notification.show("Die Meldung wurde bearbeitet");
+            d1.close();
+        });
 
-        Button meldungSchliessen = new Button ("Meldung schließen");
-            meldungSchliessen.addClassName("MeldungSchliessen");
-            meldungSchliessen.addClickListener(e -> d1.close());
+        Button meldungSchliessen = new Button("Meldung schließen");
+        meldungSchliessen.addClassName("MeldungSchliessen");
+        meldungSchliessen.addClickListener(e -> d1.close());
 
 
         d1.getFooter().add(meldungSchliessen, meldungBearbeitet);
@@ -267,7 +275,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         return new Div(btnUnternehmen);
     }
 
-    private Div addJobComponentToLayout(Meldung meldung){
+    private Div addJobComponentToLayout(Meldung meldung) {
 
         String jname = meldung.getJob().getTitel();
 
@@ -275,8 +283,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         d1.setHeaderTitle("Meldung bearbeiten");
 
         Div infos = new Div();
-        infos.add(new AdminJobComponent(meldung.getJob(),
-                new ProfilSperrenController(personRepository, unternehmenRepository, jobRepository, unternehmenspersonRepository)));
+        infos.add(new AdminJobComponent(meldung.getJob(), profilSperrenController));
 
         d1.add(infos);
 
@@ -289,7 +296,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
             d1.close();
         });
 
-        Button meldungSchliessen = new Button ("abbrechen");
+        Button meldungSchliessen = new Button("abbrechen");
         //meldungSchliessen.addClassName("MeldungSchliessen");
         meldungSchliessen.addClickListener(e -> d1.close());
 
@@ -304,7 +311,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
     }
 
 
-    private void personSperrenDialog(Person person, Dialog dialog){
+    private void personSperrenDialog(Person person, Dialog dialog) {
 
         dialog.add(new Paragraph("Möchten Sie " + person.getVorname() + " " + person.getNachname() + " sperren?"));
 
@@ -315,7 +322,6 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         Button btnBestaetigen = new Button("Person sperren");
         btnBestaetigen.addClassName("buttonBestaetigen");
         btnBestaetigen.addClickListener(e -> {
-            ProfilSperrenController profilSperrenController = new ProfilSperrenController(personRepository,unternehmenRepository,jobRepository,unternehmenspersonRepository);
             profilSperrenController.personSperren(person);
             Notification.show("Die Person wurde gesperrt");
             UI.getCurrent().getPage().setLocation("/admin/meldungenListe");

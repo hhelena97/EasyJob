@@ -115,21 +115,28 @@ public interface ValidationController {
      */
     static boolean isValidName(String name) {
         String nameRegex = "^[\\p{L} .'-]{2,32}$";
+        if (name == null) {
+            return false;
+        }
 
         Pattern pattern = Pattern.compile(nameRegex);
         Matcher matcher = pattern.matcher(name);
         return matcher.matches();
     }
 
-    /** Prüft, ob der Name eines Unternehmens gültig ist.
+    /**
+     * Prüft, ob der Name eines Unternehmens gültig ist.
      * Name muss mindestens 2 Zeichen und maximal 64 Zeichen lang sein
      * Name darf keine Leerzeichen am Anfang oder Ende enthalten
+     *
      * @param companyName Name, der geprüft werden soll
      * @return true, wenn Name gültig ist & false, wenn nicht
      */
     static boolean isValidCompanyName(String companyName) {
         String nameRegex = "^\\S.{0,62}\\S$";
-
+        if (companyName == null) {
+            return false;
+        }
         Pattern pattern = Pattern.compile(nameRegex);
         Matcher matcher = pattern.matcher(companyName);
         return matcher.matches();
@@ -143,6 +150,10 @@ public interface ValidationController {
      * @return true, wenn Branchen gültig sind & false, wenn nicht
      */
     static boolean isValidBranche(Set<Branche> branchen, BrancheRepository brancheRepository) {
+        if (branchen == null) {
+            return false;
+        }
+
         for (Branche branche : branchen) {
             Branche gefundenBranche = brancheRepository.findByName(branche.getName());
             if (gefundenBranche == null) {
@@ -160,6 +171,10 @@ public interface ValidationController {
      * @return true, wenn BerufsFelder gültig sind & false, wenn nicht
      */
     static boolean isValidBerufsFeld(Set<BerufsFelder> berufsFelder, BerufsFeldRepository berufsFeldRepository) {
+        if (berufsFelder == null) {
+            return false;
+        }
+
         for (BerufsFelder berufsFeld : berufsFelder) {
             BerufsFelder gefundeneBerufsFelder = berufsFeldRepository.findByName(berufsFeld.getName());
             if (gefundeneBerufsFelder == null) {
@@ -180,6 +195,10 @@ public interface ValidationController {
         // Erkennung von korrekten deutschen Telefonnummern mit oder ohne Ländervorwahl und mit oder ohne Leerzeichen oder Bindestriche
         String telefonnummerRegex = "^(\\+49(?!0)\\s?|0)(\\d{2,4}([\\s-]?\\d{2,15}))$";
 
+        if (telefonnummer == null) {
+            return false;
+        }
+
         // Erzeuge ein Pattern-Objekt
         Pattern pattern = Pattern.compile(telefonnummerRegex);
         // Erzeuge ein Matcher-Objekt
@@ -195,6 +214,10 @@ public interface ValidationController {
      * @return ob die JobKategorien gültig sind
      */
     static boolean isValidJobKategorie(Set<JobKategorie> jobKategorien, JobKategorieRepository jobKategorieRepository) {
+        if (jobKategorien == null) {
+            return false;
+        }
+
         for (JobKategorie jobKategorie : jobKategorien) {
             JobKategorie gefundenJobKategorie = jobKategorieRepository.findByKategorie(jobKategorie.getKategorie());
             if (gefundenJobKategorie == null) {
@@ -211,6 +234,10 @@ public interface ValidationController {
      * @return ob die Orte gültig sind
      */
     static boolean isValidOrt(Set<Ort> orte, OrtRepository ortRepository) {
+        if (orte == null) {
+            return false;
+        }
+
         for (Ort ort : orte) {
             Ort gefundenOrte = ortRepository.findByPLZAndOrt(ort.getPLZ(), ort.getOrt());
             if (gefundenOrte == null) {
@@ -238,5 +265,18 @@ public interface ValidationController {
      */
     static boolean isValidUnternehmensbeschreibung(String beschreibung) {
         return beschreibung != null && beschreibung.length() <= 400;
+    }
+
+    /**
+     * Überpüft, ob ein Unternehmen an sich gültig ist.
+     *
+     * @param unternehmen zu prüfendes Unternehmen
+     * @return true, wenn Unternehmen gültig ist
+     */
+    static boolean isValidUnternehmen(Unternehmen unternehmen, OrtRepository ortRepository, BrancheRepository brancheRepository) {
+        return isValidBranche(unternehmen.getBranchen(), brancheRepository) &&
+                isValidOrt(unternehmen.getStandorte(), ortRepository) &&
+                isValidUnternehmensbeschreibung(unternehmen.getBeschreibung()) &&
+                isValidCompanyName(unternehmen.getName());
     }
 }
