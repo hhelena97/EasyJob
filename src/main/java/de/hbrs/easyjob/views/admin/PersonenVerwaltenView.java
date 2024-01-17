@@ -1,18 +1,17 @@
 package de.hbrs.easyjob.views.admin;
 
+import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
@@ -22,23 +21,18 @@ import de.hbrs.easyjob.entities.Admin;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.repositories.JobRepository;
-import de.hbrs.easyjob.repositories.PersonRepository;
-import de.hbrs.easyjob.repositories.UnternehmenRepository;
-import de.hbrs.easyjob.repositories.UnternehmenspersonRepository;
+import de.hbrs.easyjob.repositories.*;
 import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
 
 
 @Route(value = "admin/personenVerwalten", layout = AdminLayout.class)
-@PageTitle("Personen Verwalten")
+@PageTitle("Accounts Verwalten")
 @StyleSheet("Variables.css")
 @StyleSheet("AdminLayout.css")
 @StyleSheet("AdminPersonenVerwaltenView.css")
@@ -56,15 +50,13 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
     private final ProfilSperrenController profilSperrenController;
 
     private final UnternehmenspersonRepository unternehmenspersonRepository;
+    private final FaehigkeitRepository faehigkeitRepository;
 
     private VerticalLayout personLayout;
 
     TextField searchField;
     String email;
 
-
-
-    private String sperrbutton = "Profil sperren";
 
     private final StudentService studentService;
 
@@ -75,12 +67,13 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
     public PersonenVerwaltenView(SessionController sessionController, JobRepository jobRepository,
                                  UnternehmenRepository unternehmenRepository, PersonRepository personRepository,
                                  StudentService studentService, UnternehmenService unternehmenService,
-                                 UnternehmenspersonRepository unternehmenspersonRepository) {
+                                 UnternehmenspersonRepository unternehmenspersonRepository, FaehigkeitRepository faehigkeitRepository) {
         this.sessionController = sessionController;
         this.personRepository = personRepository;
         this.unternehmenRepository = unternehmenRepository;
         this.unternehmenspersonRepository = unternehmenspersonRepository;
         this.jobRepository = jobRepository;
+        this.faehigkeitRepository = faehigkeitRepository;
         this.profilSperrenController = new ProfilSperrenController(personRepository, unternehmenRepository, jobRepository, unternehmenspersonRepository);
         this.studentService = studentService;
         this.unternehmenService = unternehmenService;
@@ -103,14 +96,13 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
 
         // Titel der Seite
-        H3 titel = new H3 ("Personen verwalten");
+        H3 titel = new H3 ("Accounts verwalten");
         titel.addClassName("personentext");
 
         // Suchfeld mit Enter-Aktivierung und Options-Icon
         searchField = new TextField();
-        searchField.setPlaceholder("E-Mail der gesuchten Person");
+        searchField.setPlaceholder("E-Mail Adresse");
         searchField.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
-        searchField.addClassName("search-field");
         searchField.addKeyPressListener(Key.ENTER, e -> {
             VaadinSession.getCurrent().setAttribute("email", searchField.getValue());
             loadPerson();
@@ -148,17 +140,23 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
                 //Wenn Admin zu Admin Verwalten verlinken
                 if (person instanceof Admin) {
-                    Paragraph admininfo = new Paragraph("Das ist ein Admin.");
-                    Paragraph adminlink = new Paragraph("Zur Administration");
+
+                    Label admininfo = new Label("Der gesuchte Account gehört zur Administration.");
+                    Label adminlink = new Label("← Hier verwalten");
                     RouterLink linkAdmin = new RouterLink(EinstellungenStartView.class);
                     linkAdmin.add(adminlink);
-                    personLayout.add(admininfo, linkAdmin);
+                    VerticalLayout info = new VerticalLayout(admininfo, linkAdmin);
+                    info.setAlignItems(Alignment.CENTER);
+                    info.setAlignSelf(Alignment.CENTER);
+                    personLayout.add(info);
 
                 // Wenn nicht, Person mit Buttons anzeigen
                 } else {
-                    Div infos = new Div();
+                    VerticalLayout infos = new VerticalLayout();
+                    infos.setAlignItems(Alignment.CENTER);
                     infos.addClassName("infos");
                     String foto = person.getFoto() != null ? person.getFoto() : "images/blank-profile-picture.png";
+
                     //Profil Bild
                     VerticalLayout profilBild = new VerticalLayout(new Image(foto, "EasyJob"));
                     profilBild.addClassName("profilBild");
@@ -173,27 +171,32 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
                     Div buttons = new Div();
                     buttons.addClassName("buttons");
 
+                    IconFactory[] iconFactory = new IconFactory[]{FontAwesome.Solid.USER_EDIT,
+                            FontAwesome.Solid.LOCK, FontAwesome.Solid.LOCK_OPEN};
+
                     //Passwort ändern
-                    PasswortNeuDialog passwortNeuDialog = new PasswortNeuDialog(person, "AdminLayout.css", new PasswortService(personRepository));
-                    Button btnneuesPasswort = new Button("Passwort ändern");
+                    PasswortNeuDialog passwortNeuDialog = new PasswortNeuDialog(person, new PasswortService(personRepository));
+                    Button btnneuesPasswort = new Button("Passwort ändern", iconFactory[0].create());
                     btnneuesPasswort.addClassName("btnNeuesPasswort");
                     btnneuesPasswort.addClickListener(e-> passwortNeuDialog.open());
 
-
                     //Person sperren
-
                     //Dialog zum Nachfragen
                     Dialog d = new Dialog();
 
+                    Icon lock;
+                    String sperrbutton;
                     if (person.getGesperrt()) {
                         sperrbutton = "Profil entsperren";
+                        lock = iconFactory[2].create();
                         personEntperrenDialog(person, d);
                     } else {
                         sperrbutton = "Profil sperren";
+                        lock = iconFactory[1].create();
                         personSperrenDialog(person, d);
                     }
 
-                    Button btnSperren = new Button(sperrbutton);
+                    Button btnSperren = new Button(sperrbutton, lock);
                     btnSperren.addClassName("btnSperren");
                     btnSperren.addClickListener(e -> d.open());
 
@@ -201,64 +204,61 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
                     personLayout.add(infos, buttons);
 
-                    if (person instanceof Student) {
-                        Student student = (Student) person;
-                        personLayout.add(new AdminStudentProfileComponent(student, "AdminPersonenVerwaltenView.css", studentService));
-                    } else if (person instanceof Unternehmensperson) {
+                    if (person instanceof Student student) {
+                        personLayout.add(new AdminStudentProfileComponent(student, "AdminPersonenVerwaltenView.css", studentService, faehigkeitRepository));
+                    } else if (person instanceof Unternehmensperson uperson) {
                         System.out.println("Unternehmensperson");
-                        Unternehmensperson uperson = (Unternehmensperson) person;
                         personLayout.add(new AdminUnternehmenspersonProfileComponent(
                                 personRepository, unternehmenRepository, uperson,
                                 "AdminPersonenVerwaltenView.css", unternehmenService, profilSperrenController));
-                    } else {
-                        Paragraph p = new Paragraph("Die Person wurde nicht gefunden");
-                        p.addClassName("nicht-gefunden");
-                        personLayout.add(p);
                     }
                 }
+            }else {
+                Paragraph p = new Paragraph("Account nicht gefunden");
+                p.addClassName("nicht-gefunden");
+                personLayout.add(p);
             }
-
         }
     }
 
     private void personSperrenDialog(Person person, Dialog dialog){
 
-        dialog.add(new Paragraph("Wollen Sie " + person.getVorname() + " " + person.getNachname() + " sperren?"));
+        dialog.add(new Paragraph("Möchten Sie " + person.getVorname() + " " + person.getNachname() + " sperren?"));
 
         Button btnAbbruch2 = new Button("Abbrechen");
-        btnAbbruch2.addClassName("buttonAbbruch");
+        btnAbbruch2.addClassName("close-admin");
         btnAbbruch2.addClickListener(e -> {
             dialog.close();
         });
 
-        Button btnBestaetigen = new Button("Person sperren");
-        btnBestaetigen.addClassName("buttonBestaetigen");
+        Button btnBestaetigen = new Button("Account sperren");
+        btnBestaetigen.addClassName("confirm");
         btnBestaetigen.addClickListener(e -> {
             if (profilSperrenController.personSperren(person)){
                 dialog.close();
             } else {
-                Notification.show("Die Person konnte nicht gesperrt werden");
+                Notification.show("Der Account konnte nicht gesperrt werden");
             }
         });
-        dialog.getFooter().add(btnAbbruch2, btnBestaetigen);
+        dialog.getFooter().add(btnBestaetigen, btnAbbruch2);
     }
 
     private void personEntperrenDialog(Person person, Dialog dialog){
 
-        dialog.add(new Paragraph("Wollen Sie " + person.getVorname() + " " + person.getNachname() + " entsperren?"));
+        dialog.add(new Paragraph("Möchten Sie " + person.getVorname() + " " + person.getNachname() + " entsperren?"));
 
         Button btnAbbruch3 = new Button("abbrechen");
-        btnAbbruch3.addClassName("buttonAbbruch");
+        btnAbbruch3.addClassName("close-admin");
         btnAbbruch3.addClickListener(e -> {
             dialog.close();
         });
 
-        Button btnBestaetigen = new Button("Person entsperren");
-        btnBestaetigen.addClassName("buttonBestaetigen");
+        Button btnBestaetigen = new Button("Account entsperren");
+        btnBestaetigen.addClassName("confirm");
         btnBestaetigen.addClickListener(e -> {
             profilSperrenController.personEntsperren(person);
             dialog.close();
         });
-        dialog.getFooter().add(btnAbbruch3, btnBestaetigen);
+        dialog.getFooter().add(btnBestaetigen, btnAbbruch3);
     }
 }

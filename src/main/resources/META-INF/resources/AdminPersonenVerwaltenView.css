@@ -1,19 +1,16 @@
+@import "DialogLayout.css";
+
 body {
     width: 100%;
     background: var(--hintergrund-weiß);
     font-family: Rubik, sans-serif; /* Rubik als Standardschriftart und fallback sans-serif */
 }
 
-.para {
-    padding: 0px 0 0 0;
-    margin: 5px 0 0 0;
-}
-
 .titel{
     color: var(--hintergrund-weiß);
     padding-left: 27px;
     margin-top: 7px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     width: 266px;
     height: 55px;
     padding-bottom: 20px;
@@ -44,8 +41,8 @@ body {
 
 .search-field {
     width: 100%;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding-top: 0;
+    padding-bottom: 0;
     position: relative;
     align-self: center;
 }
@@ -74,14 +71,11 @@ vaadin-vertical-layout {
 
 .personentext {
     color: var(--hintergrund-weiß);
-    padding-left: 19px;
     margin-bottom: 0;
     width: 266px;
     height: 40px;
-    padding-bottom: 0px;
-    padding-right: 0px;
-    padding-top: 0px;
-    margin-top: 0px;
+    padding: 0 0 0 19px;
+    margin-top: 0;
 }
 
 .ergebnisLayout{
@@ -102,7 +96,6 @@ vaadin-vertical-layout {
     flex-direction: column;
     display: flex;
     align-items: center;
-    height: 260px;
     justify-content: center;
     align-self: center;
 }
@@ -111,6 +104,7 @@ vaadin-vertical-layout {
     flex-direction: column;
     display: flex;
     align-items: center;
+    align-self: center;
     height: 110px;
     width: 100%;
     max-width: 630px;
@@ -118,24 +112,17 @@ vaadin-vertical-layout {
 }
 
 .profilBild{
-    width: 100%;
-    height: 230px;
+    align-items: center;
     align-self: center;
 }
 
 .profilBild img{
-    width: 200px;
-    height: 200px;
+    width: 145px;
+    height: 145px;
     border-radius: 155px;
     background-repeat: no-repeat;
     background-position: center;
-
-}
-
-.nameM {
-    color: var(--admin-dark, #289A32);
-    align-self: center;
-    margin: 20px 0 0 0;
+    border: 3px solid var(--admin-dark);
 }
 
 .btnNeuesPasswort{
@@ -185,7 +172,7 @@ vaadin-vertical-layout {
 
     border-radius: 30px;
     border-color: var(--admin-dark);
-    color: var(--admin-dark, #289A32);
+    color: var(--admin-dark);
     background: var(--hintergrund-weiß);
 
     align-self: center;
@@ -195,20 +182,10 @@ vaadin-vertical-layout {
     padding-left: 15px;
 }
 
-.name{
-    margin:0;
-    color: #000;
-    text-align: center;
-    font-family: Rubik, sans-serif;
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px; /* 75% */
-    letter-spacing: -0.165px;
-}
-.location{
-    width: max-content;
-    justify-content: center;
+.nameM {
+    color: var(--admin-dark, #289A32);
+    align-self: center;
+    margin: 20px 0 0 0;
 }
 
 .iconsInUnternehmen{
@@ -216,17 +193,6 @@ vaadin-vertical-layout {
     width: 15px;
     height: 15px;
     color: rgba(28, 46, 69, 0.6);
-}
-.stadt {
-    color:  rgba(50, 50, 50, 1);
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: normal;
-    margin-right: 12px;
-    margin-left: 2px;
-    margin-top: 0;
-    margin-bottom: 0;
 }
 
 
@@ -247,17 +213,16 @@ vaadin-vertical-layout {
     margin-bottom: 20px;
     overflow-x: hidden;
     overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
 }
 .badge{
     border-radius: 25px;
-    background:  var(--hintergrund-sky);
+    color: white;
+    background:  var(--icon-grau);
     padding: 3px 6px;
     margin-right: 4px;
-
-}
-
-.personInfo {
-    display: block !important;
+    margin-bottom: 4px;
 }
 
 .completeZeile{
@@ -280,6 +245,27 @@ vaadin-vertical-layout {
 
 }
 .mehrInfos{
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
+vaadin-text-field::part(input-field){
+    background-color: white;
+}
+
+vaadin-tab::before{
+    background-color: var(--admin-dark);
+}
+
+.untertitel {
+    color: var(--text-almostblack);
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 15px;
+    padding-left: 6px;
+}
+
+.para {
+    padding: 0 0 0 0;
+    margin: 5px 0 0 0;
+}

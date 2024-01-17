@@ -3,6 +3,7 @@ package de.hbrs.easyjob.views.components;
 import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
@@ -35,7 +36,7 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
 
     VerticalLayout jobListLayout = new VerticalLayout();
 
-    private Unternehmen unternehmen;
+    private final Unternehmen unternehmen;
 
     private final UnternehmenService unternehmenService;
     private final ProfilSperrenController profilSperrenController;
@@ -68,9 +69,6 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         setSpacing(false);
 
         //Link zu Unternehmen
-        Paragraph unternehmenProfil = new Paragraph("zum Unternehmensprofil " + person.getUnternehmen());
-        unternehmenProfil.getStyle().set("color","#289a32");
-        unternehmenProfil.addClassName("unternehmenProfil");
         Dialog d1 = new Dialog();
 
         Div infos = new Div();
@@ -83,31 +81,34 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         Button dSchliessen = new Button ("Schließen");
         dSchliessen.addClassName("buttonAbbruch");
         dSchliessen.addClickListener(e -> d1.close());
-
         d1.getFooter().add(dSchliessen);
 
-        unternehmenProfil.addClickListener(e-> d1.open());
-
+        Button unternehmenProfil = new Button("zum Unternehmensprofil", e-> d1.open());
+        unternehmenProfil.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        unternehmenProfil.getStyle().set("color","var(--admin-dark");
+        unternehmenProfil.addClassName("unternehmenProfil");
 
         //Person Info
         VerticalLayout personInfo = new VerticalLayout();
-        personInfo.addClassName("personInfo");
+        personInfo.setSpacing(false);
         personInfo.setAlignItems(Alignment.CENTER);
-        personInfo.setAlignSelf(Alignment.END);
+        personInfo.setAlignSelf(Alignment.CENTER);
 
         //personKontakt
-        H2 kon = new H2("Kontakt:");
-        kon.addClassName("kon");
         Paragraph p = new Paragraph("Email: " + person.getEmail());
         Paragraph pa = new Paragraph("Telefon: " + person.getTelefon());
         p.addClassName("para");
         pa.addClassName("para");
-
-        personInfo.add(unternehmenProfil,kon,p,pa);
+        personInfo.add(unternehmenProfil,p,pa);
+        if(person.getAnschrift() != null){
+            Paragraph paragraph = new Paragraph("Büroanschrift: "+ person.getAnschrift());
+            paragraph.addClassName("para");
+            personInfo.add(paragraph);
+        }
 
         // Job Section
-        H3 jobsTitle = new H3("Eingestellte Jobs:");
-        jobsTitle.addClassName("Untertitel");
+        H3 jobsTitle = new H3("Alle Stellenanzeigen:");
+        jobsTitle.addClassName("untertitel");
 
         //hier
         jobListLayout.setWidthFull();
@@ -199,17 +200,17 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         Span postedTime = new Span("Vor " + daysAgoText);
         postedTime.addClassName("posted-time");
 
-        Button mehrInfos = new Button("Job-Detail-Ansicht");
+        Button mehrInfos = new Button("mehr");
         mehrInfos.addClassName("mehrInfos");
 
             Dialog jobDialog = new Dialog();
             Div infosJ = new Div();
-            infosJ.add(new AdminJobComponent(job ,"AdminLayout.css", profilSperrenController));
+            infosJ.add(new AdminJobComponent(job, profilSperrenController));
 
             jobDialog.add(infosJ);
 
             Button dSchliessenJ = new Button ("Schließen");
-            dSchliessenJ.addClassName("buttonAbbruch");
+            dSchliessenJ.addClassName("close-admin");
             dSchliessenJ.addClickListener(e -> jobDialog.close());
 
             jobDialog.getFooter().add(dSchliessenJ);

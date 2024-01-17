@@ -134,7 +134,7 @@ public class ChatsView extends VerticalLayout {
         String[] split = chat.getTopicId().split("-");
         String topicId = split[0]+"/"+split[1];
         RouterLink Jobtitel = new RouterLink("", ChatView.class, topicId);
-        Jobtitel.addClassName("title");
+        Jobtitel.addClassName("title-chat");
         Jobtitel.add(job.getTitel());
 
         //Username und Zeitstempel

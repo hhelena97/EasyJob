@@ -2,18 +2,14 @@ package de.hbrs.easyjob.views.admin;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
-import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.*;
 import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
@@ -25,7 +21,6 @@ import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
@@ -43,11 +38,9 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
 
     private final UnternehmenspersonRepository unternehmenspersonRepository;
     private final JobRepository jobRepository;
+    private final FaehigkeitRepository faehigkeitRepository;
 
     private final SessionController sessionController;
-
-    //private final ProfilSperrenController profilSperrenController;
-
     private final MeldungController meldungController;
 
     private final StudentService studentService;
@@ -74,15 +67,16 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
 
     //@Autowired
     public MeldungenListeView(SessionController sessionController, MeldungRepository meldungRepository,
-            PersonRepository personRepository, UnternehmenRepository unternehmenRepository, JobRepository jobRepository,
-            UnternehmenspersonRepository unternehmenspersonRepository,
-            MeldungController meldungController, StudentService studentenService, UnternehmenService unternehmenService) {
+                              PersonRepository personRepository, UnternehmenRepository unternehmenRepository, JobRepository jobRepository,
+                              UnternehmenspersonRepository unternehmenspersonRepository,
+                              FaehigkeitRepository faehigkeitRepository, MeldungController meldungController, StudentService studentenService, UnternehmenService unternehmenService) {
         this.meldungRepository = meldungRepository;
         this.personRepository = personRepository;
         this.unternehmenRepository = unternehmenRepository;
         this.jobRepository = jobRepository;
         this.unternehmenspersonRepository = unternehmenspersonRepository;
         this.sessionController = sessionController;
+        this.faehigkeitRepository = faehigkeitRepository;
         this.meldungController = meldungController;
         //this.profilSperrenController = new ProfilSperrenController(personRepository, unternehmenRepository, jobRepository, unternehmenspersonRepository);
         this.studentService = studentenService;
@@ -205,7 +199,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
 
             if (p instanceof Student) {
                 Student student = (Student) p;
-                personLayout.add(new AdminStudentProfileComponent(student, style, studentService));
+                personLayout.add(new AdminStudentProfileComponent(student, style, studentService, faehigkeitRepository));
             } else if (p instanceof Unternehmensperson) {
                 Unternehmensperson uperson = (Unternehmensperson) p;
                 personLayout.add(new AdminUnternehmenspersonProfileComponent(personRepository, unternehmenRepository,
@@ -292,7 +286,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         d1.setHeaderTitle("Meldung bearbeiten");
 
         Div infos = new Div();
-        infos.add(new AdminJobComponent(meldung.getJob(),style,
+        infos.add(new AdminJobComponent(meldung.getJob(),
                 new ProfilSperrenController(personRepository, unternehmenRepository, jobRepository, unternehmenspersonRepository)));
 
         d1.add(infos);

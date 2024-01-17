@@ -135,7 +135,7 @@ public class ChatsView extends VerticalLayout {
         studienDetails.addClassName("message-details");
 
         RouterLink Jobtitel = new RouterLink("", ChatViewUnternehmensperson.class, chat.getTopicId());
-        Jobtitel.addClassName("title");
+        Jobtitel.addClassName("title-chat");
         Jobtitel.getStyle().set("width", "auto");
         Jobtitel.add(job.getTitel());
 
