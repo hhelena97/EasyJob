@@ -164,7 +164,7 @@ vaadin-button.ausloggen {
 }
 
 .line {
-    width: auto;
+    width: 100%;
     margin: auto;
     flex-grow: 1;
     height: 1px;
