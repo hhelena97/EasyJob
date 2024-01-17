@@ -1,6 +1,7 @@
 package de.hbrs.easyjob.views.student;
 
 import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
@@ -9,7 +10,6 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
@@ -20,6 +20,7 @@ import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.components.StudentLayout;
+import de.hbrs.easyjob.views.components.ZurueckButtonRundLayout;
 import de.hbrs.easyjob.views.unternehmen.UnternehmenProfilUn;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -85,18 +86,24 @@ public class UnternehmensPersonProfilView extends VerticalLayout implements HasU
 
 
         // -------------------------------------------------------------------------------------------------------------
+        //Zurück Button
+        ZurueckButtonRundLayout zurueck = new ZurueckButtonRundLayout("Student");
+        zurueck.addClickListener(e -> UI.getCurrent().getPage().getHistory().back());
+
         // Code für Melde-Funktion:
         HorizontalLayout frame = new HorizontalLayout();
         frame.setPadding(false);
         frame.setMargin(false);
-        frame.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        frame.setWidthFull();
+        frame.setAlignItems(Alignment.CENTER);
+        frame.setJustifyContentMode(JustifyContentMode.BETWEEN);
         VerticalLayout dotsLayout = new VerticalLayout();
+        dotsLayout.setWidth("fit-content");
 
         // Drei-Punkte-Icon für das Dropdown-Menü
         Icon dots = new Icon(VaadinIcon.ELLIPSIS_DOTS_V);
         dots.getStyle().set("cursor", "pointer");
         dots.setSize("1em");
-        frame.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
 
         // Dropdown-Menü erstellen
         ContextMenu contextMenu = new ContextMenu();
@@ -111,7 +118,7 @@ public class UnternehmensPersonProfilView extends VerticalLayout implements HasU
         item.getElement().getStyle().set("color", "red");
 
         dotsLayout.add(dots);
-        frame.add(dotsLayout);
+        frame.add(zurueck, dotsLayout);
         add(frame);
         // -------------------------------------------------------------------------------------------------------------
 

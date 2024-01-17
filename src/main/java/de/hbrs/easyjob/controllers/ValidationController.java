@@ -107,17 +107,14 @@ public interface ValidationController {
 
     /**
      * Prüft, ob Name gültig ist.
-     * Name muss mindestens 1 Zeichen und maximal 32 Zeichen lang sein
+     * Name muss mindestens 2 Zeichen und maximal 32 Zeichen lang sein
      * Name darf nur Buchstaben und Bindestriche enthalten
      *
      * @param name Vorname, der geprüft werden soll
      * @return true, wenn Vorname gültig ist & false, wenn nicht
      */
     static boolean isValidName(String name) {
-        String nameRegex = "^(?=.{2,32}$)"
-                            + "^[A-Za-zäöüÄÖÜßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ]"
-                            + "+([ -][A-Za-zäöüÄÖÜßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ]+)"
-                            + "*( [A-Za-zäöüÄÖÜßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ]+\\.)?$";
+        String nameRegex = "^[\\p{L} .'-]{2,32}$";
 
         Pattern pattern = Pattern.compile(nameRegex);
         Matcher matcher = pattern.matcher(name);
@@ -181,8 +178,7 @@ public interface ValidationController {
      */
     static boolean isValidTelefonnummer(String telefonnummer) {
         // Erkennung von korrekten deutschen Telefonnummern mit oder ohne Ländervorwahl und mit oder ohne Leerzeichen oder Bindestriche
-        String telefonnummerRegex = "^(\\+49(?!0)\\s?|0)(\\d{2,}([\\s-]?\\d{2,}([\\s-]?\\d{5,})?)?)$";
-
+        String telefonnummerRegex = "^(\\+49(?!0)\\s?|0)(\\d{2,4}([\\s-]?\\d{2,15}))$";
 
         // Erzeuge ein Pattern-Objekt
         Pattern pattern = Pattern.compile(telefonnummerRegex);

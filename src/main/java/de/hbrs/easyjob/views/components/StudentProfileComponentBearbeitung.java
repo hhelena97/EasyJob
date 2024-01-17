@@ -151,6 +151,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
             else if(tabs.getSelectedTab().equals(kenntnisse)) updateKenntnisse();
             else if (tabs.getSelectedTab().equals(ueberMich)){
                 student.setFreitext(freitext.getValue());
+                student.setFoto(profilBild2.getSrc());
                 studentService.saveStudent(student);
                 UI.getCurrent().getPage().setLocation("/student");
             }
@@ -374,6 +375,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         student.setBerufsFelder(berufsfeld.getSelectedItems());
         student.setJobKategorien(berufsbezeichnung.getSelectedItems());
 
+        student.setFoto(profilBild2.getSrc());
         studentService.saveStudent(student);
 
         UI.getCurrent().getPage().setLocation("/student");
@@ -407,6 +409,7 @@ public class StudentProfileComponentBearbeitung extends VerticalLayout {
         meineFaehigkeiten.addAll(meineSprachen);
 
         student.setFaehigkeiten(meineFaehigkeiten);
+        student.setFoto(profilBild2.getSrc());
         studentService.saveStudent(student);
 
         UI.getCurrent().getPage().setLocation("/student");

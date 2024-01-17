@@ -12,6 +12,6 @@ import javax.annotation.security.RolesAllowed;
 @RolesAllowed("ROLE_UNTERNEHMENSPERSON")
 public class EinstellungenUebersichtUnternehmenView extends EinstellungenUebersichtView {
     public EinstellungenUebersichtUnternehmenView(SessionController sessionController) {
-        super(sessionController, "#2D34A0");
+        super(sessionController, "Unternehmen");
     }
 }

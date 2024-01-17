@@ -7,24 +7,26 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import javax.transaction.Transactional;
-import java.time.Duration;
 
 import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
 @SpringBootTest
+@TestPropertySource(locations = "classpath:application-test.properties")
 class RegistrierenLoginLogoutAutomatikTest {
     // WebDriver
     private final WebDriver[] drivers = new WebDriver[3];
-
-//    private final WebDriverManager wdmChrome = WebDriverManager.chromedriver().browserInDocker()
-//            .enableVnc().dockerDefaultArgs("--disable-gpu,--no-sandbox");
     private final WebDriverManager wdmFirefox = WebDriverManager.firefoxdriver().browserInDocker().enableVnc();
     private final WebDriverManager wdmSafari = WebDriverManager.safaridriver().browserInDocker().enableVnc();
+
+    @Value("${selenium.password}")
+    private String signUpPassword;
 
     @BeforeAll
     static void setUp() {
@@ -32,14 +34,13 @@ class RegistrierenLoginLogoutAutomatikTest {
     }
 
     @BeforeEach
-    void setUpEach() throws Exception {
+    void setUpEach() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
 
-        drivers[1] = wdmFirefox.create();
-        drivers[0] = new ChromeDriver(options);
-        drivers[2] = wdmSafari.create();
-        Thread.sleep(Duration.ofSeconds(10).toMillis());
+        drivers[2] = wdmFirefox.create();
+        drivers[1] = new ChromeDriver(options);
+        drivers[0] = wdmSafari.create();
     }
 
     @AfterEach
@@ -54,29 +55,39 @@ class RegistrierenLoginLogoutAutomatikTest {
     @Transactional
     void SeleniumTest() {
         int i = 0;
-        String password = "piratesOfTheC4rib34N!#";
         for(WebDriver driver : drivers) {
             String email = "jack" + i++ + ".sparrow@black.pearl"; // damit man die Datenbank nicht verwirrt
             driver.manage().window().maximize();
             automatisierteRegistrierungUndLogin(driver,
                     new WebDriverWait(driver, ofSeconds(30), ofSeconds(1)),
                     email,
-                    password,
+                    signUpPassword,
                     i != 0
             );
             //personRepository.delete(personRepository.findByEmail(email)); <- klappt noch nicht
         }
     }
 
-    void automatisierteRegistrierungUndLogin(WebDriver driver, WebDriverWait wait, String email, String password, boolean docker) {
-        // Den Driver zwingen, 5 Sekunden zu warten
-        WebDriverWait tempWait = new WebDriverWait(driver, ofSeconds(5));
+    /**
+     * eine Wartefunktion für den WebDriver, da er manchmal zu schnell durchklickt
+     * @param wd        Webdriver, der warten soll
+     */
+    private void warteWebDriver(WebDriver wd, int sekunden) {
+        WebDriverWait tempWait = new WebDriverWait(wd, ofSeconds(sekunden));
         try {
-            tempWait.until(titleIs("Login"));
-        }
-        catch (TimeoutException e) {
+            tempWait.until(titleIs("Nicht existierende Seite"));
+        } catch (TimeoutException e) {
             // nichts soll hier passieren
         }
+    }
+
+    private void warteWebDriver(WebDriver wd) {
+        warteWebDriver(wd, 2);
+    }
+
+    void automatisierteRegistrierungUndLogin(WebDriver driver, WebDriverWait wait, String email, String password, boolean docker) {
+
+        warteWebDriver(driver, 10);
 
         String local;
         if (docker) {
@@ -93,7 +104,8 @@ class RegistrierenLoginLogoutAutomatikTest {
         // Registrieren-Seite laden
         driver.findElement(By.id("registrierenbutton_id")).click();
         wait.until(titleIs("Registrieren"));
-        assertEquals(local + ":8080/registrieren", driver.getCurrentUrl());
+        warteWebDriver(driver, 5);
+        assertEquals(local + ":8080/registrieren", driver.getCurrentUrl(), "Da hat die Registrieren Seite nicht geladen bei " + driver);
 
         // "Ich studiere." auswählen
         driver.findElement(By.id("label-vaadin-radio-button-11")).click();
@@ -161,14 +173,7 @@ class RegistrierenLoginLogoutAutomatikTest {
         WebElement studienfachCombobox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#studienfach_combobox_id > input")));
         studienfachCombobox.click();
 
-        // Den Driver zwingen, 2 Sekunden zu warten
-        tempWait = new WebDriverWait(driver, ofSeconds(2));
-        try {
-            tempWait.until(titleIs("Login"));
-        }
-        catch (TimeoutException e) {
-            // nichts soll hier passieren
-        }
+        warteWebDriver(driver);
 
         studienfachCombobox.sendKeys(Keys.UP);
         studienfachCombobox.sendKeys(Keys.UP);
@@ -215,54 +220,23 @@ class RegistrierenLoginLogoutAutomatikTest {
         // ************************************************************************************** Registrieren Schritt 3
         // Warten bis Seite geladen + auf Zurück-Button drücken
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("back"))).click();
-
-        // Den Driver zwingen, 2 Sekunden zu warten
-        tempWait = new WebDriverWait(driver, ofSeconds(2));
-        try {
-            tempWait.until(titleIs("Login"));
-        }
-        catch (TimeoutException e) {
-            // nichts soll hier passieren
-        }
+        warteWebDriver(driver);
 
         // Jetzt wieder auf Seite zuvor, wieder auf next-Button (zum Checken, ob Daten wirklich gespeichert)
         driver.findElement(By.className("next")).click();
-
-        // Den Driver zwingen, 2 Sekunden zu warten
-        tempWait = new WebDriverWait(driver, ofSeconds(2));
-        try {
-            tempWait.until(titleIs("Login"));
-        }
-        catch (TimeoutException e) {
-            // nichts soll hier passieren
-        }
+        warteWebDriver(driver);
 
         // Abschließen der Registrierung
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("next"))).click();
-
-        // Den Driver zwingen, 2 Sekunden zu warten
-        tempWait = new WebDriverWait(driver, ofSeconds(2));
-        try {
-            tempWait.until(titleIs("Login"));
-        }
-        catch (TimeoutException e) {
-            // nichts soll hier passieren
-        }
+        warteWebDriver(driver);
 
         // Zurück auf Login-Seite
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("close-student"))).click();
-
-        // Den Driver zwingen, 2 Sekunden zu warten
-        tempWait = new WebDriverWait(driver, ofSeconds(2));
-        try {
-            tempWait.until(titleIs("Login"));
-        }
-        catch (TimeoutException e) {
-            // nichts soll hier passieren
-        }
+        warteWebDriver(driver);
 
         // *************************************************************************************** Einloggen bei Student
         // Warten, bis Seite geladen
+        warteWebDriver(driver);
         wait.until(titleIs("Login | EasyJob"));
         assertEquals(local + ":8080/login", driver.getCurrentUrl());
 
@@ -278,10 +252,12 @@ class RegistrierenLoginLogoutAutomatikTest {
         WebElement passwordTextInput = driver.findElement(By.cssSelector("#passwordloginfeld_id > input"));
         passwordTextInput.click();
         passwordTextInput.sendKeys(password);
+        warteWebDriver(driver);
 
         // Passwort anzeigen
         WebElement passwortLoginInputAuge = driver.findElement(By.cssSelector("#passwordloginfeld_id > vaadin-password-field-button"));
         passwortLoginInputAuge.click();
+        warteWebDriver(driver);
 
         // Auf Login-Button drücken
         driver.findElement(By.id("loginbutton_id_loginpage")).click();
@@ -300,52 +276,20 @@ class RegistrierenLoginLogoutAutomatikTest {
 
         // Auf Ausloggen-Button drücken
         driver.findElement(By.className("ausloggen")).click();
-
-        // Den Driver zwingen, 2 Sekunden zu warten
-        tempWait = new WebDriverWait(driver, ofSeconds(2));
-        try {
-            tempWait.until(titleIs("Login"));
-        }
-        catch (TimeoutException e) {
-            // nichts soll hier passieren
-        }
+        warteWebDriver(driver);
 
         // Zuerst den Dialog nochmal schließen
         driver.findElement(By.className("close-student")).click();
-
-        // Den Driver zwingen, 2 Sekunden zu warten
-        tempWait = new WebDriverWait(driver, ofSeconds(2));
-        try {
-            tempWait.until(titleIs("Login"));
-        }
-        catch (TimeoutException e) {
-            // nichts soll hier passieren
-        }
+        warteWebDriver(driver);
 
         // Nochmal auf Ausloggen-Button drücken
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("ausloggen")));
         driver.findElement(By.className("ausloggen")).click();
-
-        // Den Driver zwingen, 2 Sekunden zu warten
-        tempWait = new WebDriverWait(driver, ofSeconds(2));
-        try {
-            tempWait.until(titleIs("Login"));
-        }
-        catch (TimeoutException e) {
-            // nichts soll hier passieren
-        }
+        warteWebDriver(driver);
 
         // Wirklich ausloggen
         driver.findElement(By.className("confirm")).click();
-
-        // Den Driver zwingen, 2 Sekunden zu warten
-        tempWait = new WebDriverWait(driver, ofSeconds(2));
-        try {
-            tempWait.until(titleIs("Login"));
-        }
-        catch (TimeoutException e) {
-            // nichts soll hier passieren
-        }
+        warteWebDriver(driver);
 
         // Checken, ob wieder auf Login-Seite
         wait.until(titleIs("Login | EasyJob"));
