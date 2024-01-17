@@ -14,8 +14,7 @@ import com.vaadin.flow.router.*;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.controllers.StellenanzeigeController;
 import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.views.allgemein.AccountIstInaktivView;
-import de.hbrs.easyjob.views.allgemein.GesperrtePersonView;
+import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
 
@@ -44,7 +43,11 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
     }
 
     @Override
-    public void setParameter(BeforeEvent event, Integer parameter) {
+    public void setParameter(BeforeEvent event, @OptionalParameter Integer parameter) {
+        if (parameter == null) {
+            Unternehmensperson unternehmensperson = (Unternehmensperson) sessionController.getPerson();
+            parameter = unternehmensperson.getUnternehmen().getId_Unternehmen();
+        }
         // Container
         VerticalLayout frame = new VerticalLayout();
         frame.setClassName("container");
