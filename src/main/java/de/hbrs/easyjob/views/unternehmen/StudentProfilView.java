@@ -40,7 +40,11 @@ public class StudentProfilView extends VerticalLayout implements HasUrlParameter
             if(student==null){
                 throw new RuntimeException("Etwas schief gelaufen!");
             }
-            add(createStudentDetailLayout(student));
+            if (!student.getAktiv()) {
+                event.rerouteTo(StudentProfilViewInaktiv.class);
+            } else {
+                add(createStudentDetailLayout(student));
+            }
         } else {
             add(new H3("Job-Details konnten nicht geladen werden."));
         }

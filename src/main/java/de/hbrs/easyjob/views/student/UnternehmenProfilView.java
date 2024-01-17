@@ -168,7 +168,6 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         Icon bellIcon =  bel.create();
         bellIcon.addClassName("bellIcon");
 
-        // -------------------------------------------------------------------------------------------------------------
         // Code für Melde-Funktion:
         HorizontalLayout frame = new HorizontalLayout();
         VerticalLayout dotsLayout = new VerticalLayout();
@@ -182,17 +181,15 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         ContextMenu contextMenu = new ContextMenu();
         contextMenu.setTarget(dots);
         contextMenu.setOpenOnClick(true);
-        MenuItem item = contextMenu.addItem("Melden", e -> {
+        MenuItem melden = contextMenu.addItem("Melden", e -> {
             Meldung meldung = new Meldung();
             meldungController.saveMeldung(meldung, unternehmen);
             Notification.show("Gemeldet", 3000, Notification.Position.TOP_STRETCH);
         });
-
-        item.getElement().getStyle().set("color", "red");
+        melden.getElement().getStyle().set("color", "red");
 
         dotsLayout.add(dots);
         frame.add(dotsLayout);
-        // -------------------------------------------------------------------------------------------------------------
 
 
         unternehmenInfo.add(unternehmenIcon,unternehmenInfoRecht,bellIcon,frame);

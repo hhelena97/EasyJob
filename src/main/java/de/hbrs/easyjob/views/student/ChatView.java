@@ -17,8 +17,10 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
+import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.entities.Meldung;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.services.DatabaseMessagePersister;
 import de.hbrs.easyjob.services.JobService;
@@ -36,12 +38,14 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
 
     private final SessionController sessionController;
     private final JobService jobService;
+    private final MeldungController meldungController;
 
     @Autowired
-    public ChatView(DatabaseMessagePersister databaseMessagePersister, SessionController sessionController, JobService jobService) {
+    public ChatView(DatabaseMessagePersister databaseMessagePersister, SessionController sessionController, JobService jobService, MeldungController meldungController) {
         this.databaseMessagePersister = databaseMessagePersister;
         this.sessionController = sessionController;
         this.jobService = jobService;
+        this.meldungController = meldungController;
         setSizeFull();
     }
 
@@ -188,15 +192,14 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         dots.setSize("1em");
         dotsLayout.addClassName("dotsLayout");
 
-
         // Dropdown-Menü erstellen
         ContextMenu contextMenu = new ContextMenu();
         contextMenu.setTarget(dots);
         contextMenu.setOpenOnClick(true);
         MenuItem melden = contextMenu.addItem("Melden", e -> {
-
-            // Logik, die ausgeführt wird, wenn auf "Melden" geklickt wird
-            Notification.show("Gemeldet", 3000, Notification.Position.MIDDLE);
+            Meldung meldung = new Meldung();
+            meldungController.saveMeldung(meldung, job.getPerson());
+            Notification.show("Gemeldet", 3000, Notification.Position.TOP_STRETCH);
         });
         melden.getElement().getStyle().set("color", "red");
         dotsLayout.add(dots);

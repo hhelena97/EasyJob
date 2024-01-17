@@ -6,6 +6,7 @@ import com.vaadin.collaborationengine.UserInfo;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
+import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
@@ -16,8 +17,10 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
+import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.entities.Meldung;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.services.DatabaseMessagePersister;
@@ -36,13 +39,16 @@ public class ChatViewUnternehmensperson extends VerticalLayout implements HasUrl
 
     private final StudentService studentService;
     private final SessionController sessionController;
+
+    private final MeldungController meldungController;
     private final JobService jobService;
     private Student student;
     @Autowired
-    public ChatViewUnternehmensperson(DatabaseMessagePersister databaseMessagePersister, StudentService studentService, SessionController sessionController, JobService jobService) {
+    public ChatViewUnternehmensperson(DatabaseMessagePersister databaseMessagePersister, StudentService studentService, SessionController sessionController, MeldungController meldungController, JobService jobService) {
         this.databaseMessagePersister = databaseMessagePersister;
         this.studentService = studentService;
         this.sessionController = sessionController;
+        this.meldungController = meldungController;
         this.jobService = jobService;
         setSizeFull();
     }
@@ -153,22 +159,23 @@ public class ChatViewUnternehmensperson extends VerticalLayout implements HasUrl
         });
         zurueck.add(chevronLeft);
 
+        // Drei-Punkte-Icon für das Dropdown-Menü
         VerticalLayout dotsLayout = new VerticalLayout();
         dotsLayout.addClassName("dotsLayout");
-        // Drei-Punkte-Icon für das Dropdown-Menü
         Icon dots = new Icon(VaadinIcon.ELLIPSIS_DOTS_V);
         dots.getStyle().set("cursor", "pointer");
         dots.setSize("1em");
-
 
         // Dropdown-Menü erstellen
         ContextMenu contextMenu = new ContextMenu();
         contextMenu.setTarget(dots);
         contextMenu.setOpenOnClick(true);
-        contextMenu.addItem("Melden", e -> {
-            // Logik, die ausgeführt wird, wenn auf "Melden" geklickt wird
-            Notification.show("Gemeldet", 3000, Notification.Position.MIDDLE);
+        MenuItem melden = contextMenu.addItem("Melden", e -> {
+            Meldung meldung = new Meldung();
+            meldungController.saveMeldung(meldung, student);
+            Notification.show("Gemeldet", 3000, Notification.Position.TOP_STRETCH);
         });
+        melden.getElement().getStyle().set("color", "red");
         dotsLayout.add(dots);
         frame.add(zurueck,foto, chatDetails, dotsLayout);
         frame.addClassName("frame");

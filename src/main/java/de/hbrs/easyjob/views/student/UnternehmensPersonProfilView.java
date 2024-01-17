@@ -84,8 +84,6 @@ public class UnternehmensPersonProfilView extends VerticalLayout implements HasU
         platzhalterBild.addClassName("picture-round");
         rahmen.add(bildDiv);
 
-
-        // -------------------------------------------------------------------------------------------------------------
         //Zurück Button
         ZurueckButtonRundLayout zurueck = new ZurueckButtonRundLayout("Student");
         zurueck.addClickListener(e -> UI.getCurrent().getPage().getHistory().back());
@@ -109,18 +107,16 @@ public class UnternehmensPersonProfilView extends VerticalLayout implements HasU
         ContextMenu contextMenu = new ContextMenu();
         contextMenu.setTarget(dots);
         contextMenu.setOpenOnClick(true);
-        MenuItem item = contextMenu.addItem("Melden", e -> {
+        MenuItem melden = contextMenu.addItem("Melden", e -> {
             Meldung meldung = new Meldung();
             meldungController.saveMeldung(meldung, person);
             Notification.show("Gemeldet", 3000, Notification.Position.TOP_STRETCH);
         });
-
-        item.getElement().getStyle().set("color", "red");
+        melden.getElement().getStyle().set("color", "red");
 
         dotsLayout.add(dots);
         frame.add(zurueck, dotsLayout);
         add(frame);
-        // -------------------------------------------------------------------------------------------------------------
 
         // Name
         H1 name = new H1();
@@ -135,8 +131,7 @@ public class UnternehmensPersonProfilView extends VerticalLayout implements HasU
         IconFactory i = FontAwesome.Solid.BRIEFCASE;
         Icon briefcase =  i.create();
         briefcase.addClassName("iconsInJobIcons");
-        //TODO: Link fixen
-        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfilUn.class);
+        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfilView.class);
         linkUnternehmen.add(person.getUnternehmen().getName());
         unternehmenProfil.add(briefcase, linkUnternehmen);
 
