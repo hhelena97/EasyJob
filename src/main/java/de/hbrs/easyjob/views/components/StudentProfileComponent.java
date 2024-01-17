@@ -205,7 +205,7 @@ public class StudentProfileComponent extends VerticalLayout {
         allgemeinDiv.add(completeZeile("Studienfach:", (student.getStudienfach().getFach()+"("+(student.getStudienfach().getAbschluss()
                         .equals("Bachelor") ? "B.Sc." : "M.Sc.") +")")),
                         completeZeile("Stellen, die mich interessieren:", studentService.getAllJobKategorien(student.getId_Person()).stream()
-                                .map(JobKategorie::getKategorie).collect(Collectors.joining(",")) ),
+                                .map(JobKategorie::getKategorie).collect(Collectors.joining(", ")) ),
                         completeZeile("Bevorzugt in der Nähe von:", studentService.getAllOrte(student.getId_Person()).stream()
                                 .map(ort -> ort.getOrt() + " (" + ort.getPLZ()+ ")")
                                 .collect(Collectors.joining(", "))),

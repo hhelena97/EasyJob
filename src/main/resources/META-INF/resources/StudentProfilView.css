@@ -60,27 +60,12 @@ body {
     line-height: 18px; /* 75% */
     letter-spacing: -0.165px;
 }
-.location{
-    width: max-content;
-    justify-content: center;
-}
 
 .iconsInUnternehmen{
     margin:0;
     width: 15px;
     height: 15px;
     color: rgba(28, 46, 69, 0.6);
-}
-.stadt {
-    color:  rgba(50, 50, 50, 1);
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: normal;
-    margin-right: 12px;
-    margin-left: 2px;
-    margin-top: 0;
-    margin-bottom: 0;
 }
 
 
