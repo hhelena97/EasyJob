@@ -188,7 +188,7 @@ public class JobsUebersichtView extends VerticalLayout implements BeforeEnterObs
             companyAndLocation.add(ii,titleIconsUnternehmen,ll,titleIconsLocation);
         }
         // Jobbeschreibung mit "...", wenn sie zu lang ist
-        Paragraph jobDescription = new Paragraph(limitText(job.getFreitext(), 230));
+        Paragraph jobDescription = new Paragraph(limitText(job.getFreitext(), 130));
         jobDescription.addClassName("job-description");
 
         // Veröffentlichungsdatum des Jobs
@@ -196,9 +196,9 @@ public class JobsUebersichtView extends VerticalLayout implements BeforeEnterObs
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
         long daysBetween = ChronoUnit.DAYS.between(jobDate, LocalDate.now());
-        String daysAgoText = daysBetween == 0 ? "Heute" : daysBetween + (daysBetween == 1 ? " Tag" : " Tagen");
+        String daysAgoText = daysBetween == 0 ? "Heute" : "Vor " + daysBetween + (daysBetween == 1 ? " Tag" : " Tagen");
 
-        Span postedTime = new Span("Vor " + daysAgoText);
+        Span postedTime = new Span(daysAgoText);
         postedTime.addClassName("posted-time");
 
 
@@ -212,5 +212,6 @@ public class JobsUebersichtView extends VerticalLayout implements BeforeEnterObs
     private String limitText(String text, int maxLength) {
         return text.length() > maxLength ? text.substring(0, maxLength - 3) + "..." : text;
     }
+
 }
 

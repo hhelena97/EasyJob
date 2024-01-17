@@ -21,7 +21,6 @@ import de.hbrs.easyjob.services.PersonService;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.components.StudentLayout;
 import de.hbrs.easyjob.views.components.ZurueckButtonRundLayout;
-import de.hbrs.easyjob.views.unternehmen.UnternehmenProfilUn;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.security.RolesAllowed;

@@ -1,0 +1,11 @@
+@import "ProfilView.css";
+@import "UnternehmenProfil.css";
+
+.jobBeschreibung, .iconsInUnternehmen, .iconsInJobIcons,
+.stellenanzeige-titel, .stellenanzeige-tag > vaadin-icon{
+    color: var(--studierende-dark);
+}
+
+
+
+

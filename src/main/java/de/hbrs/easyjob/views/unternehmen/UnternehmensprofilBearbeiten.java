@@ -35,7 +35,7 @@ import java.io.InputStream;
 @Route(value = "unternehmen/unternehmensprofilbearbeiten" , layout = UnternehmenLayout.class)
 public class UnternehmensprofilBearbeiten extends VerticalLayout {
 
-    private Unternehmensperson person ;
+    private final Unternehmensperson person ;
     Unternehmen unternehmen;
 
     private final transient SessionController sessionController;
@@ -56,7 +56,7 @@ public class UnternehmensprofilBearbeiten extends VerticalLayout {
         UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilView.css");
         UI.getCurrent().getPage().addStyleSheet("Registrieren.css");
         UI.getCurrent().getPage().addStyleSheet("UnternehmenspersonProfilView.css");
-        UI.getCurrent().getPage().addStyleSheet("unternehmenProfil_Un.css");
+        UI.getCurrent().getPage().addStyleSheet("UnternehmenProfil.css");
 
 
 

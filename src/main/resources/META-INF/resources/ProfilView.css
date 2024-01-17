@@ -35,7 +35,6 @@ body {
     border: 1px solid var(--icon-grau);
     border-radius: 15px;
     gap: 0;
-    height: 165px;
     padding: 19px 16px;
     width: 100%;
 }

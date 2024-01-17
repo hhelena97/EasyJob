@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
-
+@import "Variables.css";
+@import "ProfilView.css";
 
 html{
     box-sizing: border-box;
@@ -12,48 +13,49 @@ body {
     margin: 0;
 
 }
+/*Banner oben*/
 .bildUnternehmen{
     margin: 0;
     width: 100%;
-    height: 30%;
     flex-shrink: 0;
-    background: linear-gradient(180deg, #FE9389 0%, #FE9389 0.01%, #9D2D6D 100%);
-
 }
-
-/*  Unternehmen Info
-
- */
-
-.unternehmenInfo{
-
+.bildUnternehmen img{
+    height: auto;
+    max-height: 180px;
+    width: 100%;
 }
-
-.unternehmenIcon{
+.dots{
+    width: fit-content;
+    margin-right: 20px;
+}
+/*Logo*/
+.unternehmenLogo{
     width: 74px;
     height: 74px;
     flex-shrink: 0;
     margin: 14px;
     border-radius: 5px;
-
+    border: 1px solid var(--icon-grau);
     max-width: 74px;
     max-height: 74px;
-
-
 }
-.unternehmenIcon img{
+.unternehmenLogo img{
     width: 74px;
     height: 74px;
 }
-.unternehmenInfoRecht{
-    height: 75px;
+/*---Unternehmensinformationen--------------*/
+.unternehmenInfoAndMenu{
+    width: 100%;
+    justify-content: space-between;
+}
+.unternehmenInfoLayout{
     width: auto;
     margin: 14px;
-
+    gap: var(--lumo-space-s);
 }
-.grosseTitleUnternehmen{
-    color: #000;
-    /* Header/Header 1 */
+/*Name des Unternehmens*/
+.grosseTitleUnternehmen {
+    color: var(--text-almostblack);
     font-family: Rubik, serif;
     font-size: 150%;
     font-style: normal;
@@ -64,29 +66,37 @@ body {
     margin-bottom: 0;
 
 }
+/*Verifiziert*/
 .verIcon{
     width: 16px;
     height: 16px;
-    margin-left: 10px;
-    margin-right: 5px;
-    color: rgba(28, 46, 69, 0.6);
+    color: var(--text-grau);
 }
 .verifiziert{
-    color: rgba(26, 41, 61, 0.83);
-    text-align: center;
+    color: var(--text-grau);
+    background-color: var(--icon-hellgrau);
     font-family: Rubik, sans-serif;
-    font-size: 10px;
+    font-size: 13px;
     font-style: normal;
     font-weight: 500;
     line-height: 17px; /* 170% */
-    margin-top: 10px;
-    margin-bottom: 10px;
+    border-radius: 25px;
+    padding: 3px 5px 3px 5px;
 }
+/*Ort und Anzahl Jobs*/
+.locationPlusAnzahl{
+    width: max-content;
+    align-items: center;
+}
+.iconsProf{
+    color: var(--unternehmen-dark);
+}
+/*---------------------------------*/
 .iconsInUnternehmen{
     margin:0;
     width: 15px;
     height: 15px;
-    color: rgba(28, 46, 69, 0.6);
+    color: var(--unternehmen-dark);
 }
 .neuStellen{
     color: #2D34A0;
@@ -99,24 +109,44 @@ body {
     text-decoration-line: underline;
     margin-top: 0;
 }
-
-.bellIcon {
-    width: 24px;
-    height: 24px;
-    flex-shrink: 0;
-    color: rgba(45, 52, 160, 1);
-    margin-right: auto;
-    margin-left: auto;
+.stadt {
+    color:  rgba(50, 50, 50, 1);
+    font-family: Rubik, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    margin-right: 12px;
+    margin-left: 2px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
-/*  Unternehmen Info Ende
-
- */
-
-
-
-/*  Job Section
-
- */
+.anzahlAngebote{
+    color: #6F6F6F;
+    font-family: Rubik, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 150%; /* 21px */
+    margin-top: 0;
+    margin-bottom: 0;
+}
+/*Unternehmen Beschreibung*/
+.unternehmenBeschreibung{
+    padding: 0 20px 0 20px;
+}
+/*Kurzprofil Stellenanzeige*/
+.title{
+    color: #6F6F6F;
+    font-family: Rubik, sans-serif;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px; /* 150% */
+    margin-top: 4px;
+    margin-left: 16px;
+    margin-bottom: 0;
+}
 .job{
     width: 88%;
     height: auto;
@@ -174,63 +204,5 @@ body {
     font-weight: 300;
     line-height: 150%; /* 16.5px */
     margin-bottom: 0;
-
-}
-/*  Job Section Ende
-
- */
-/*  Bewertung Section Ende
-
- */
-.bewertung{
-    border: 1px solid #BFBEBE;
-    margin-top: 0;
-    margin-left: 14px;
-    margin-bottom: 12px;
-    width: 290px;
-    height: 140px;
-    flex-shrink: 0;
-    background-color: #FFF;
-    border-radius: 10px;
-    padding: 12px;
-}
-.bewertungBeschreibung{
-    color:  rgba(45, 52, 160, 1);
-    font-family: Rubik, sans-serif;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    margin: 0;
-}
-.bewertungText{
-    color: rgba(111, 111, 111, 1);
-    font-family: Rubik, sans-serif;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 150%; /* 18px */
-    margin-top: 8px;
-    margin-bottom: 0;
-}
-
-
-
-
-.title{
-    color: #6F6F6F;
-    font-family: Rubik, sans-serif;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px; /* 150% */
-    margin-top: 4px;
-    margin-left: 16px;
-    margin-bottom: 0;
-
-
-}
-
-.scroller{
 
 }

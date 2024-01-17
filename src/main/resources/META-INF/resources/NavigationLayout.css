@@ -16,6 +16,7 @@ body {
 }
 vaadin-app-layout{
     --vaadin-app-layout-navbar-offset-top: 0;
+    --vaadin-app-layout-navbar-offset-bottom: 44px;
 }
 vaadin-app-layout::part(navbar) {
     /* Zentriert die Tabs in der Navbar */
@@ -25,9 +26,5 @@ vaadin-app-layout::part(navbar) {
     /* Leiste unten */
     top: auto;
     bottom: 0;
-}
-
-.navbar-tabs {
-    max-width: 600px;
 }
 
