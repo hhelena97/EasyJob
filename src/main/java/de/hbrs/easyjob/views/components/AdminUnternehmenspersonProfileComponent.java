@@ -15,12 +15,12 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.controllers.ProfilSperrenController;
 import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.admin.PersonenVerwaltenView;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -36,8 +36,6 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
 
     VerticalLayout jobListLayout = new VerticalLayout();
 
-    private final Unternehmen unternehmen;
-
     private final UnternehmenService unternehmenService;
     private final ProfilSperrenController profilSperrenController;
 
@@ -47,7 +45,6 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         this.personRepository = personRepository;
         this.unternehmenRepository = unternehmenRepository;
         this.person = person;
-        this.unternehmen = person.getUnternehmen();
         this.style = styleClass;
         this.unternehmenService = unternehmenservice;
         this.profilSperrenController = profilSperrenController;
@@ -79,7 +76,7 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         d1.add(infos);
 
         Button dSchliessen = new Button ("Schließen");
-        dSchliessen.addClassName("buttonAbbruch");
+        dSchliessen.addClassName("close-admin");
         dSchliessen.addClickListener(e -> d1.close());
         d1.getFooter().add(dSchliessen);
 
@@ -133,6 +130,16 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         // Jobtitel mit Begrenzung der Länge und RouterLink für die Details
         H1 jobTitle = new H1(job.getTitel());
         jobTitle.addClassName("job-title");
+
+        HorizontalLayout sperrung = new HorizontalLayout();
+        sperrung.setPadding(true);
+
+        if (job.getGesperrt()){
+            Paragraph p = new Paragraph("Der Job ist gesperrt.");
+            p.addClassName("alarm");
+            sperrung.add(p);
+        }
+
 
         // Jobdetails wie Unternehmen und Ort und Homeoffice
         HorizontalLayout companyAndLocation = new HorizontalLayout();
@@ -218,7 +225,7 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         mehrInfos.addClickListener(e -> jobDialog.open());
 
 
-        jobCardLayout.add(jobTitle, companyAndLocation, jobDescription, postedTime, mehrInfos);
+        jobCardLayout.add(jobTitle, sperrung, companyAndLocation, jobDescription, postedTime, mehrInfos);
 
 
         jobListLayout.add(jobCardLayout);

@@ -120,7 +120,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
         for (Admin admin: allAdmins) {
 
-            if(admin.getAktiv() && !admin.equals(this.admin) ) {
+            if(admin.getAktiv() && !admin.getGesperrt() && !admin.equals(this.admin) ) {
                 HorizontalLayout einAdmin = new HorizontalLayout();
 
                 //Zeige die E-Mail-Adresse:
@@ -144,9 +144,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
                 Button btnAbbruch2 = new Button("Abbrechen");
                 btnAbbruch2.addClassName("close-admin");
-                btnAbbruch2.addClickListener(e -> {
-                    dialogAdminDeaktivieren.close();
-                });
+                btnAbbruch2.addClickListener(e -> dialogAdminDeaktivieren.close());
 
                 Button btnBestaetigen2 = new Button("Zugangsrechte entfernen");
                 btnBestaetigen2.addClassName("confirm");
@@ -155,7 +153,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
                     dialogAdminDeaktivieren.close();
                     UI.getCurrent().getPage().setLocation("/admin");
                 });
-                dialogAdminDeaktivieren.getFooter().add(btnAbbruch2, btnBestaetigen2);
+                dialogAdminDeaktivieren.getFooter().add(btnBestaetigen2, btnAbbruch2);
 
                 minus.addClickListener(e -> dialogAdminDeaktivieren.open());
 
