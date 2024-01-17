@@ -1,18 +1,18 @@
 package de.hbrs.easyjob.controllers;
 
 import de.hbrs.easyjob.entities.Person;
+import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.repositories.UnternehmenspersonRepository;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
@@ -23,19 +23,18 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-public class ProfilDeaktivierenControllerTest {
+class ProfilDeaktivierenControllerTest {
     // Repositories
     private static final PersonRepository personRepository = Mockito.mock(PersonRepository.class);
     private static final UnternehmenRepository unternehmenRepository = Mockito.mock(UnternehmenRepository.class);
     private static final UnternehmenspersonRepository unternehmenspersonRepository = Mockito.mock(UnternehmenspersonRepository.class);
-    private static final JobRepository jobRepository = Mockito.mock(JobRepository.class);
 
     // Controllers
-    @Autowired
+    @InjectMocks
     private ProfilDeaktivierenController profilDeaktivierenController;
 
     // Entities
-    private static final Person person = new Person();                  // Person Erika Mustermann (nicht in Unternehmen)
+    private static final Student person = new Student();                  // Person Erika Mustermann (nicht in Unternehmen)
     private static final Unternehmen unternehmen = new Unternehmen();               // Unternehmen
     private static final Unternehmensperson manager = new Unternehmensperson();     // Manager
     private static final Unternehmensperson personU = new Unternehmensperson();     // Unternehmensperson Max Mustermann
@@ -43,8 +42,8 @@ public class ProfilDeaktivierenControllerTest {
     private static final Unternehmensperson manager2 = new Unternehmensperson();     // Manager
     private static final Unternehmensperson personU2 = new Unternehmensperson();     // Unternehmensperson Maxx Mustermannn
 
-    @BeforeAll
-    static void setUp()
+    @BeforeEach
+    void setUp()
     {
         person.setVorname("Erika");
         person.setNachname("Mustermann");
@@ -57,7 +56,9 @@ public class ProfilDeaktivierenControllerTest {
 
         unternehmen.setId_Unternehmen(1);
         unternehmen.setName("TestUnternehmen");
+        unternehmen.setBeschreibung("TestBeschreibung");
         unternehmen.setAktiv(true);
+        unternehmen.setUnternehmensperson(manager);
 
         manager.setVorname("Heinz");
         manager.setNachname("Schmitz");
@@ -77,7 +78,7 @@ public class ProfilDeaktivierenControllerTest {
         personU.setId_Person(7);
         personU.setAktiv(true);
 
-        Mockito.when(unternehmenRepository.findById(1)).thenReturn(Optional.of(unternehmen));
+        Mockito.when(unternehmenRepository.findById(unternehmen.getId_Unternehmen())).thenReturn(Optional.of(unternehmen));
 
         // -------------------------------------------------------------------------------------------------------------
 
@@ -102,12 +103,12 @@ public class ProfilDeaktivierenControllerTest {
         personU2.setId_Person(77);
         personU2.setAktiv(true);
 
-        Mockito.when(unternehmenRepository.findById(2)).thenReturn(Optional.of(unternehmen2));
+        Mockito.when(unternehmenRepository.findById(unternehmen2.getId_Unternehmen())).thenReturn(Optional.of(unternehmen2));
 
         Mockito.when(unternehmenRepository.save(Mockito.any(Unternehmen.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        Mockito.when(personRepository.findAllByUnternehmenId(1)).thenReturn(List.of(manager, personU));
-        Mockito.when(personRepository.findAllByUnternehmenId(2)).thenReturn(List.of(manager2, personU2));
+        Mockito.when(personRepository.findAllByUnternehmenId(unternehmen.getId_Unternehmen())).thenReturn(List.of(manager, personU));
+        Mockito.when(personRepository.findAllByUnternehmenId(unternehmen2.getId_Unternehmen())).thenReturn(List.of(manager2, personU2));
 
         Mockito.when(personRepository.save(Mockito.any(Person.class))).thenAnswer(i -> i.getArguments()[0]);
     }
@@ -126,7 +127,7 @@ public class ProfilDeaktivierenControllerTest {
     @DisplayName("Deaktivierung Unternehmen durch Manager erfolgreich")
     void deactivateManagerUnternehmenSuccessfulUnternehmenInactive()
     {
-        // Profil deaktivieren erfolgreich -> Alle Unternehmenspersonen des Unternehmens werden deaktiviert
+        // Profile deaktivieren erfolgreich → Alle Unternehmenspersonen des Unternehmens werden deaktiviert
         assertTrue(profilDeaktivierenController.profilDeaktivierenUnternehmen(manager));
         assertFalse(unternehmen.isAktiv()); // Unternehmen inaktiv
         assertFalse(manager.getAktiv());    // Manager inaktiv
@@ -137,7 +138,7 @@ public class ProfilDeaktivierenControllerTest {
     @DisplayName("Deaktivierung Unternehmensperson erfolgreich")
     void deactivatePersonUnternehmenSuccessfulPersonInactive()
     {
-        // Profil deaktivieren erfolgreich -> Nur das Profil der deaktivierenden Unternehmensperson wird deaktiviert
+        // Profile deaktivieren erfolgreich → Nur das Profil der deaktivierenden Unternehmensperson wird deaktiviert
         assertTrue(profilDeaktivierenController.profilDeaktivierenPerson(personU2));
         assertTrue(unternehmen2.isAktiv());  // Unternehmen aktiv
         assertTrue(manager2.getAktiv());     // Manager aktiv
