@@ -3,10 +3,12 @@ package de.hbrs.easyjob.controllers.registrieren;
 import de.hbrs.easyjob.controllers.ValidationController;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.repositories.*;
+import org.springframework.stereotype.Controller;
 
 /**
  * Controller für die Registrierung von Studenten.
  */
+@Controller
 public class StudentRegistrierenController extends PersonRegistrierenController implements ValidationController {
     // Repositories
     private final BerufsFeldRepository berufsFeldRepository;
