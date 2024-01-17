@@ -10,23 +10,16 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.RouterLink;
-import de.hbrs.easyjob.controllers.JobProfilController;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.controllers.ProfilSperrenController;
 import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.admin.PersonenVerwaltenView;
-import de.hbrs.easyjob.views.student.UnternehmenProfilView;
-import de.hbrs.easyjob.views.unternehmen.JobDetailsView;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -43,8 +36,6 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
 
     VerticalLayout jobListLayout = new VerticalLayout();
 
-    private final Unternehmen unternehmen;
-
     private final UnternehmenService unternehmenService;
     private final ProfilSperrenController profilSperrenController;
 
@@ -54,7 +45,6 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         this.personRepository = personRepository;
         this.unternehmenRepository = unternehmenRepository;
         this.person = person;
-        this.unternehmen = person.getUnternehmen();
         this.style = styleClass;
         this.unternehmenService = unternehmenservice;
         this.profilSperrenController = profilSperrenController;
@@ -86,7 +76,7 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         d1.add(infos);
 
         Button dSchliessen = new Button ("Schließen");
-        dSchliessen.addClassName("buttonAbbruch");
+        dSchliessen.addClassName("close-admin");
         dSchliessen.addClickListener(e -> d1.close());
         d1.getFooter().add(dSchliessen);
 
@@ -142,8 +132,9 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         jobTitle.addClassName("job-title");
 
         HorizontalLayout sperrung = new HorizontalLayout();
+        sperrung.setPadding(true);
 
-        if (job.getGesperrt()|| job.getGesperrt() == null){
+        if (job.getGesperrt()){
             Paragraph p = new Paragraph("Der Job ist gesperrt.");
             p.addClassName("alarm");
             sperrung.add(p);

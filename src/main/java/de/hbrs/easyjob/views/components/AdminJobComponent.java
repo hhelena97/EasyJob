@@ -10,8 +10,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.hbrs.easyjob.controllers.ProfilSperrenController;
 import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.entities.Student;
-import de.hbrs.easyjob.entities.Unternehmensperson;
 
 @StyleSheet("DialogLayout.css")
 public class AdminJobComponent extends VerticalLayout {
@@ -74,7 +72,7 @@ public class AdminJobComponent extends VerticalLayout {
         }
 
         Button btnSperren = new Button(sperrbutton);
-        btnSperren.addClassName("confirm");
+        btnSperren.addClassName("btnSperren");
         btnSperren.addClickListener(e -> d.open());
 
         add(company, title, tagsContainer, descriptionText, btnSperren);
@@ -99,10 +97,10 @@ public class AdminJobComponent extends VerticalLayout {
     }
 
     private void jobEntsperrenDialog(Job job, Dialog d){
-        d.add(new Paragraph("Wollen Sie diesen Job wirklich entsperren?"));
+        d.add(new Paragraph("Möchten Sie diesen Job wirklich entsperren?"));
 
         Button btnBestaetigen = new Button("Job entsperren");
-        btnBestaetigen.addClassName("buttonBestaetigen");
+        btnBestaetigen.addClassName("confirm");
         btnBestaetigen.addClickListener(e -> {
             if (profilSperrenController.jobEntsperren(job)){
                 d.close();
@@ -111,10 +109,8 @@ public class AdminJobComponent extends VerticalLayout {
             }
         });
         Button btnAbbruch2 = new Button("Abbrechen");
-        btnAbbruch2.addClassName("buttonAbbruch");
-        btnAbbruch2.addClickListener(e -> {
-            d.close();
-        });
-        d.getFooter().add(btnAbbruch2, btnBestaetigen);
+        btnAbbruch2.addClassName("close-admin");
+        btnAbbruch2.addClickListener(e -> d.close());
+        d.getFooter().add(btnBestaetigen, btnAbbruch2);
     }
 }
