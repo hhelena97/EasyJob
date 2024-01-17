@@ -11,14 +11,11 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.controllers.StellenanzeigeController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.Date;
@@ -43,8 +40,6 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
             event.rerouteTo(LoginView.class);
         }
     }
-
-
 
     @Override
     public void setParameter(BeforeEvent event, Integer parameter) {

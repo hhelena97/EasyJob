@@ -9,11 +9,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import de.hbrs.easyjob.entities.*;
-import de.hbrs.easyjob.repositories.FaehigkeitRepository;
 import de.hbrs.easyjob.services.FaehigkeitService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
-
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,20 +24,19 @@ public class AdminStudentProfileComponent extends VerticalLayout {
     private Tab kenntnisse;
     private Tab ueberMich;
     private VerticalLayout content;
-    private final String style;
 
     private final FaehigkeitService faehigkeitService;
     private final StudentService studentService;
 
 
-    public AdminStudentProfileComponent(Student student,
-                                        String styleClass,
-                                        StudentService studentService,
-                                        FaehigkeitRepository faehigkeitRepository) {
+    public AdminStudentProfileComponent(
+            Student student,
+            StudentService studentService,
+            FaehigkeitService faehigkeitService
+    ) {
         this.student = student;
         this.studentService = studentService;
-        faehigkeitService = new FaehigkeitService(faehigkeitRepository);
-        style = styleClass;
+        this.faehigkeitService = faehigkeitService;
         initializeComponent();
     }
 
@@ -49,8 +46,6 @@ public class AdminStudentProfileComponent extends VerticalLayout {
             UI.getCurrent().navigate(LoginView.class);
             return;
         }
-
-        UI.getCurrent().getPage().addStyleSheet(style);
 
         addClassName("all");
         setSizeFull();

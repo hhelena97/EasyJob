@@ -22,6 +22,7 @@ import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.*;
+import de.hbrs.easyjob.services.FaehigkeitService;
 import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.services.StudentService;
 import de.hbrs.easyjob.services.UnternehmenService;
@@ -39,44 +40,39 @@ import javax.annotation.security.RolesAllowed;
 @RolesAllowed("ROLE_ADMIN")
 
 public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnterObserver {
+    // Repositories
+    private final transient PersonRepository personRepository;
 
-    private final PersonRepository personRepository;
-    private final UnternehmenRepository unternehmenRepository;
+    // Services
+    private final transient FaehigkeitService faehigkeitService;
+    private final transient StudentService studentService;
+    private final transient UnternehmenService unternehmenService;
 
-    private final JobRepository jobRepository;
+    // Controllers
+    private final transient ProfilSperrenController profilSperrenController;
+    private final transient SessionController sessionController;
 
-    private final SessionController sessionController;
-
-    private final ProfilSperrenController profilSperrenController;
-
-    private final UnternehmenspersonRepository unternehmenspersonRepository;
-    private final FaehigkeitRepository faehigkeitRepository;
-
+    // Components
     private VerticalLayout personLayout;
-
     TextField searchField;
     String email;
 
 
-    private final StudentService studentService;
-
-    private final UnternehmenService unternehmenService;
-
-
-
-    public PersonenVerwaltenView(SessionController sessionController, JobRepository jobRepository,
-                                 UnternehmenRepository unternehmenRepository, PersonRepository personRepository,
-                                 StudentService studentService, UnternehmenService unternehmenService,
-                                 UnternehmenspersonRepository unternehmenspersonRepository, FaehigkeitRepository faehigkeitRepository) {
-        this.sessionController = sessionController;
+    public PersonenVerwaltenView(
+            PersonRepository personRepository,
+            FaehigkeitService faehigkeitService,
+            StudentService studentService,
+            UnternehmenService unternehmenService,
+            ProfilSperrenController profilSperrenController,
+            SessionController sessionController
+    ) {
         this.personRepository = personRepository;
-        this.unternehmenRepository = unternehmenRepository;
-        this.unternehmenspersonRepository = unternehmenspersonRepository;
-        this.jobRepository = jobRepository;
-        this.faehigkeitRepository = faehigkeitRepository;
-        this.profilSperrenController = new ProfilSperrenController(personRepository, unternehmenRepository, jobRepository, unternehmenspersonRepository);
+        this.faehigkeitService = faehigkeitService;
         this.studentService = studentService;
         this.unternehmenService = unternehmenService;
+        this.profilSperrenController = profilSperrenController;
+        this.sessionController = sessionController;
+
         initializeView();
     }
 
@@ -88,7 +84,7 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
     }
 
 
-    private void initializeView(){
+    private void initializeView() {
 
         Div btnAusloggen = new AdminAusloggen(sessionController);
         HorizontalLayout ausloggen = new HorizontalLayout(btnAusloggen);
@@ -96,7 +92,7 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
 
 
         // Titel der Seite
-        H3 titel = new H3 ("Accounts verwalten");
+        H3 titel = new H3("Accounts verwalten");
         titel.addClassName("personentext");
 
         // Suchfeld mit Enter-Aktivierung und Options-Icon
@@ -112,11 +108,11 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
         HorizontalLayout searchLayout = new HorizontalLayout(searchField);
         searchLayout.addClassName("search-layout");
 
-        //alles in einen grünen Block
-        Div gruenerBlock = new Div(ausloggen,titel, searchLayout);
+        // alles in einen grünen Block
+        Div gruenerBlock = new Div(ausloggen, titel, searchLayout);
         gruenerBlock.addClassName("gruene-box");
 
-        //Ergebnis
+        // Ergebnis
         personLayout = new VerticalLayout();
         personLayout.setClassName("ergebnis-layout");
 
@@ -131,14 +127,13 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
         personLayout.removeAll();
 
 
-
         email = (String) VaadinSession.getCurrent().getAttribute("email");
         if (email != null) {
             Person person = personRepository.findByEmail(email);
 
             if (person != null) {
 
-                //Wenn Admin zu Admin Verwalten verlinken
+                // Wenn Admin zu Admin Verwalten verlinken
                 if (person instanceof Admin) {
 
                     Label admininfo = new Label("Der gesuchte Account gehört zur Administration.");
@@ -150,38 +145,37 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
                     info.setAlignSelf(Alignment.CENTER);
                     personLayout.add(info);
 
-                // Wenn nicht, Person mit Buttons anzeigen
+                    // Wenn nicht, Person mit Buttons anzeigen
                 } else {
                     VerticalLayout infos = new VerticalLayout();
                     infos.setAlignItems(Alignment.CENTER);
                     infos.addClassName("infos");
                     String foto = person.getFoto() != null ? person.getFoto() : "images/blank-profile-picture.png";
 
-                    //Profil Bild
+                    // Profil Bild
                     VerticalLayout profilBild = new VerticalLayout(new Image(foto, "EasyJob"));
                     profilBild.addClassName("profilBild");
 
-                    //Name
+                    // Name
                     H2 name = new H2(person.getVorname() + " " + person.getNachname());
                     name.addClassName("nameM");
 
                     infos.add(profilBild, name);
 
-                    //Buttons
+                    // Buttons
                     Div buttons = new Div();
                     buttons.addClassName("buttons");
 
-                    IconFactory[] iconFactory = new IconFactory[]{FontAwesome.Solid.USER_EDIT,
-                            FontAwesome.Solid.LOCK, FontAwesome.Solid.LOCK_OPEN};
+                    IconFactory[] iconFactory = new IconFactory[]{FontAwesome.Solid.USER_EDIT, FontAwesome.Solid.LOCK, FontAwesome.Solid.LOCK_OPEN};
 
-                    //Passwort ändern
+                    // Passwort ändern
                     PasswortNeuDialog passwortNeuDialog = new PasswortNeuDialog(person, new PasswortService(personRepository));
                     Button btnneuesPasswort = new Button("Passwort ändern", iconFactory[0].create());
                     btnneuesPasswort.addClassName("btnNeuesPasswort");
-                    btnneuesPasswort.addClickListener(e-> passwortNeuDialog.open());
+                    btnneuesPasswort.addClickListener(e -> passwortNeuDialog.open());
 
-                    //Person sperren
-                    //Dialog zum Nachfragen
+                    // Person sperren
+                    // Dialog zum Nachfragen
                     Dialog d = new Dialog();
 
                     Icon lock;
@@ -205,15 +199,14 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
                     personLayout.add(infos, buttons);
 
                     if (person instanceof Student student) {
-                        personLayout.add(new AdminStudentProfileComponent(student, "AdminPersonenVerwaltenView.css", studentService, faehigkeitRepository));
+                        personLayout.add(new AdminStudentProfileComponent(student, studentService, faehigkeitService));
                     } else if (person instanceof Unternehmensperson uperson) {
                         System.out.println("Unternehmensperson");
                         personLayout.add(new AdminUnternehmenspersonProfileComponent(
-                                personRepository, unternehmenRepository, uperson,
-                                "AdminPersonenVerwaltenView.css", unternehmenService, profilSperrenController));
+                                uperson, unternehmenService, profilSperrenController));
                     }
                 }
-            }else {
+            } else {
                 Paragraph p = new Paragraph("Account nicht gefunden");
                 p.addClassName("nicht-gefunden");
                 personLayout.add(p);
@@ -221,7 +214,7 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
         }
     }
 
-    private void personSperrenDialog(Person person, Dialog dialog){
+    private void personSperrenDialog(Person person, Dialog dialog) {
 
         dialog.add(new Paragraph("Möchten Sie " + person.getVorname() + " " + person.getNachname() + " sperren?"));
 
@@ -234,7 +227,7 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
         Button btnBestaetigen = new Button("Account sperren");
         btnBestaetigen.addClassName("confirm");
         btnBestaetigen.addClickListener(e -> {
-            if (profilSperrenController.personSperren(person)){
+            if (profilSperrenController.personSperren(person)) {
                 dialog.close();
             } else {
                 Notification.show("Der Account konnte nicht gesperrt werden");
@@ -243,15 +236,13 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
         dialog.getFooter().add(btnBestaetigen, btnAbbruch2);
     }
 
-    private void personEntperrenDialog(Person person, Dialog dialog){
+    private void personEntperrenDialog(Person person, Dialog dialog) {
 
         dialog.add(new Paragraph("Möchten Sie " + person.getVorname() + " " + person.getNachname() + " entsperren?"));
 
         Button btnAbbruch3 = new Button("abbrechen");
         btnAbbruch3.addClassName("close-admin");
-        btnAbbruch3.addClickListener(e -> {
-            dialog.close();
-        });
+        btnAbbruch3.addClickListener(e -> dialog.close());
 
         Button btnBestaetigen = new Button("Account entsperren");
         btnBestaetigen.addClassName("confirm");
