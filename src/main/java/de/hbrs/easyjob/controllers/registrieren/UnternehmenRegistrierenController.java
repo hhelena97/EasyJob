@@ -32,10 +32,7 @@ public class UnternehmenRegistrierenController implements ValidationController {
      * @return true, wenn Unternehmen angelegt wurde & false, wenn nicht
      */
     public boolean createUnternehmen(Unternehmen unternehmen) {
-        boolean ret = ValidationController.isValidCompanyName(unternehmen.getName()) &&
-                ValidationController.isValidBranche(unternehmen.getBranchen(), brancheRepository) &&
-                ValidationController.isValidOrt(unternehmen.getStandorte(), ortRepository) &&
-                ValidationController.isValidUnternehmensbeschreibung(unternehmen.getBeschreibung());
+        boolean ret = ValidationController.isValidUnternehmen(unternehmen, ortRepository, brancheRepository);
         if (ret) {
             //Profil aktivieren
             unternehmen.setAktiv(true);
