@@ -3,31 +3,38 @@ package de.hbrs.easyjob.controllers;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.repositories.UnternehmenspersonRepository;
-
-import org.junit.jupiter.api.*;
-
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SpringBootTest
 public class ProfilDeaktivierenControllerTest {
     // Repositories
     private static final PersonRepository personRepository = Mockito.mock(PersonRepository.class);
     private static final UnternehmenRepository unternehmenRepository = Mockito.mock(UnternehmenRepository.class);
     private static final UnternehmenspersonRepository unternehmenspersonRepository = Mockito.mock(UnternehmenspersonRepository.class);
+    private static final JobRepository jobRepository = Mockito.mock(JobRepository.class);
 
     // Controllers
-    @InjectMocks
-    private final ProfilDeaktivierenController profilDeaktivierenController = new ProfilDeaktivierenController(personRepository, unternehmenRepository);
+    @Autowired
+    private ProfilDeaktivierenController profilDeaktivierenController;
 
-    // Entites
+    // Entities
     private static final Person person = new Person();                  // Person Erika Mustermann (nicht in Unternehmen)
     private static final Unternehmen unternehmen = new Unternehmen();               // Unternehmen
     private static final Unternehmensperson manager = new Unternehmensperson();     // Manager
@@ -77,6 +84,7 @@ public class ProfilDeaktivierenControllerTest {
         unternehmen2.setId_Unternehmen(2);
         unternehmen2.setName("TestUnternehmenn");
         unternehmen2.setAktiv(true);
+        unternehmen2.setUnternehmensperson(manager2);
 
         manager2.setVorname("Heinzz");
         manager2.setNachname("Schmitzz");
@@ -106,6 +114,7 @@ public class ProfilDeaktivierenControllerTest {
 
     @Test
     @DisplayName("Deaktivierung Person erfolgreich")
+    @Transactional
     void deactivatePersonSuccessfulPersonInactive()
     {
         // Profil deaktivieren erfolgreich
@@ -134,15 +143,6 @@ public class ProfilDeaktivierenControllerTest {
         assertTrue(manager2.getAktiv());     // Manager aktiv
         assertFalse(personU2.getAktiv());    // Unternehmensperson inaktiv
     }
-
-    /*  Noch ausstehend:
-
-            - ist das Profil wirklich deaktiviert?
-                - kann man z.B. nicht mehr nach Stellenanzeigen suchen oder chatten?
-            - Front-End testen, sobald es da ist
-                - kommt man beim Login mit deaktiviertem Profil auf die richtige Seite?
-
-     */
 
     @AfterAll
     static void tearDown()
