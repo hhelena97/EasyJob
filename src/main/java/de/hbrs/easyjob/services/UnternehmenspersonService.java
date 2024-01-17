@@ -39,4 +39,3 @@ public class UnternehmenspersonService {
     }
 
 }
-//TODO: JavaDocs schreiben
