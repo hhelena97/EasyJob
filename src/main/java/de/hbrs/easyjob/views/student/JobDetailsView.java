@@ -9,6 +9,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Job;
@@ -32,11 +33,12 @@ public class JobDetailsView extends AbstractJobDetails {
 
         // Contact info
         Div contactContainer = new Div(
-                new H5("Ansprechperson:"),
-                new Anchor("mailto:" + job.getPerson().getEmail(),
-                        job.getPerson().getVorname() + " " + job.getPerson().getNachname()));
+                new H5("Ansprechperson:"));
+        RouterLink name = new RouterLink("", UnternehmensPersonProfilView.class, job.getPerson().getId_Person());
+        name.add(job.getPerson().getVorname() + " " + job.getPerson().getNachname());
         contactContainer.addClassName("job-details-contact");
         descriptionContainer.add(contactContainer);
+        contactContainer.add(name);
 
         // Action buttons
         VerticalLayout actionButtons = new VerticalLayout();
