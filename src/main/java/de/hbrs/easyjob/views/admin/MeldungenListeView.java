@@ -8,7 +8,6 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.router.*;
 import de.hbrs.easyjob.controllers.MeldungController;
@@ -45,11 +44,6 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
 
     private final StudentService studentService;
     private final UnternehmenService unternehmenService;
-
-    private Tab personen;
-    private Tab unternehmen;
-    private Tab jobs;
-    private Tab chats;
 
     //die CSS für die einzelnen Komponenten
     String style = "AdminPersonenVerwaltenView.css";

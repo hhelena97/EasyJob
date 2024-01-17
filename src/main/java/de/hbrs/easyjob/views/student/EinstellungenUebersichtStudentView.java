@@ -12,6 +12,6 @@ import javax.annotation.security.RolesAllowed;
 @RolesAllowed("ROLE_STUDENT")
 public class EinstellungenUebersichtStudentView extends EinstellungenUebersichtView {
     public EinstellungenUebersichtStudentView(SessionController sessionController) {
-        super(sessionController, "#A3336F");
+        super(sessionController, "Student");
     }
 }
