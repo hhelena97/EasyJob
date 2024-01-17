@@ -7,7 +7,7 @@ import static de.hbrs.easyjob.controllers.ValidationController.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ValidationControllerTest {
+class ValidationControllerTest {
 
     @Test
     @DisplayName("Teste verschiedene (falsche und richtige) Email-Adressen, um die isValidEmail-Methode zu prüfen")

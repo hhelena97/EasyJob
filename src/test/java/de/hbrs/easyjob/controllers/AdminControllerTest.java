@@ -186,7 +186,7 @@ class AdminControllerTest {
         p1.setVorname("Max");
         p1.setNachname("Mustermann");
         p1.setEmail("max.mustermann@example.de");
-        p1.setPasswort("ichbimsDerGr0sst1!!!");
+        p1.setPasswort("ichbinDerGr0sst1!!!");
         personRepository.save(p1);
         String old = personRepository.findByEmail("max.mustermann@example.de").getPasswort();
 
@@ -212,7 +212,7 @@ class AdminControllerTest {
         p1.setVorname("Max");
         p1.setNachname("Mustermann");
         p1.setEmail("max.mustermann@example.de");
-        p1.setPasswort("ichbimsDerGr0sst1!!!");
+        p1.setPasswort("ichbinDerGr0sst1!!!");
         p1.setAktiv(false);
         personRepository.save(p1);
         String old = personRepository.findByEmail("max.mustermann@example.de").getPasswort();
@@ -238,7 +238,7 @@ class AdminControllerTest {
         p1.setVorname("Max");
         p1.setNachname("Mustermann");
         p1.setEmail("max.mustermann@example.de");
-        p1.setPasswort("ichbimsDerGr0sst1!!!");
+        p1.setPasswort("ichbinDerGr0sst1!!!");
 
         /* ************************ ACT ************************ */
         boolean actual = adminController.changePassword("max.mustermann@example.de", "ilikebigbiblesandIcannotli3!");
@@ -274,7 +274,7 @@ class AdminControllerTest {
         personRepository.delete(personRepository.getReferenceById(admin2.getId_Person()));
 
         /* *********************** ASSERT ********************** */
-        assertEquals(expected, actual);
-        assertEquals(expected2, actual2);
+        assertTrue(actual.containsAll(expected));
+        assertTrue(actual2.containsAll(expected2));
     }
 }

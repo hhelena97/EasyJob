@@ -49,6 +49,7 @@ public class PasswortAendernDialog extends Dialog {
         Button cancelButton = new Button("Abbrechen");
         cancelButton.addClickListener((e) -> close());
         if(user.equals("Student")) cancelButton.addClassName("close-student");
+        else if (user.equals("Admin")) cancelButton.addClassName("close-admin");
         else cancelButton.addClassName("close-unternehmen");
 
         getFooter().add(btnPasswortAendern, cancelButton);

@@ -3,6 +3,8 @@ package de.hbrs.easyjob.views.components;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.server.StreamResource;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -19,6 +21,7 @@ import java.util.Iterator;
  */
 
 public class FileUpload {
+    private static final Logger logger = LoggerFactory.getLogger(FileUpload.class);
 
     /**
      * imageUpload konvertiert eine hochgeladene Bilddatei zu einer Vaadin Image Komponente
@@ -49,7 +52,8 @@ public class FileUpload {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();}
+            logger.error("Fehler beim Speichern des Bildes", e);
+        }
         return image;
     }
 
@@ -76,7 +80,7 @@ public class FileUpload {
             //Weiter zu Image Processor für crop
             image = ImageProcessor.cropToSquare(bufferedImage, fileName, targetSize, png);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Fehler beim Speichern des Bildes", e);
         }
         return image;
     }

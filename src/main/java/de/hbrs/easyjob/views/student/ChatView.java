@@ -155,7 +155,7 @@ public class ChatView extends VerticalLayout implements HasUrlParameter<String> 
         chatDetails.addClassName("student-details");
         RouterLink name = new RouterLink("", UnternehmensPersonProfilView.class, person.getId_Person());
         name.add(person.getVorname() + " " + person.getNachname());
-        name.addClassName("name");
+        name.addClassName("name-chat");
 
         //TODO: Firma verlinken
         Label company = new Label(job.getUnternehmen().getName());

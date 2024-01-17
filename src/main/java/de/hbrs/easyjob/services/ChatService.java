@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * ChatService bietet verschiedene Methoden für den Umgang mit Chats, Nachrichten und Studenten.
+ * Es enthält Methoden zum Erstellen und Abrufen von Chats, zum Abrufen von Nachrichten und Chats eines Studenten,
+ * zum Speichern und Aktualisieren von Nachrichten.
+ */
 @Service
 public class ChatService {
 
@@ -29,6 +34,12 @@ public class ChatService {
         this.sessionController = sessionController;
     }
 
+    /**
+     * Erstellt oder holt einen Chat basierend auf einer bestimmten Themen-ID.
+     *
+     * @param topicId Die ID des Themas.
+     * @return Der neu erstellte oder vorhandene Chat.
+     */
     public Chat createOrGetChat(String topicId) {
         // Logik zur Extraktion von jobId und studentId aus topicId
         String[] parts = topicId.split("-");
@@ -37,21 +48,20 @@ public class ChatService {
             Integer jobId = Integer.parseInt(parts[1]);
             Integer personId = Integer.parseInt(parts[2]);
             return createOrGetChatForJob(jobId, personId, topicId);
-        } else if (topic.equals("Student")) {
-            Integer personId = Integer.parseInt(parts[1]);
-            Integer studentId = Integer.parseInt(parts[2]);
-            return createOrGetChatForStudent(personId, studentId, topicId);
         } else {
             return null;
         }
-
-
     }
 
-    private Chat createOrGetChatForStudent(Integer personId, Integer studentId, String topicId) {
-        return null;
-    }
 
+    /**
+     * Erstellt oder holt einen Chat basierend auf einer bestimmten Job-ID und Studenten-ID.
+     *
+     * @param jobId     Die ID des Jobs.
+     * @param studentId Die ID des Studenten.
+     * @param topicId   Die ID des Themas.
+     * @return Der neu erstellte oder vorhandene Chat.
+     */
 
     public Chat createOrGetChatForJob(Integer jobId, Integer studentId, String topicId) {
         Student student = studentService.getStudentByID(studentId);
@@ -82,24 +92,50 @@ public class ChatService {
         }
     }
 
+    /**
+     * Holt die Nachrichten für einen bestimmten Chat.
+     *
+     * @param chat Der Chat, für den die Nachrichten abgerufen werden sollen.
+     * @return Eine Liste von Nachrichten für den angegebenen Chat.
+     */
     public List<Nachricht> getNachrichten(Chat chat) {
         return nachrichtRepository.findByChat(chat);
     }
 
-    public Student getPersonById(Integer id) {
-        return studentService.getStudentByID(id);
-    }
-
+    /**
+     * Holt die Chats eines bestimmten Studenten.
+     *
+     * @param person Der Student, für den die Chats abgerufen werden sollen.
+     * @return Eine Liste von Chats für den angegebenen Studenten.
+     */
     public List<Chat> getChatsByStudent(Person person) {
         return chatRepository.findAllByStudentId(person.getId_Person());
     }
+
+    /**
+     * Holt die Chats einer bestimmten Unternehmensperson.
+     *
+     * @param person Die Unternehmensperson, für die die Chats abgerufen werden sollen.
+     * @return Eine Liste von Chats für die angegebene Unternehmensperson.
+     */
     public List<Chat> getChatsByUnternehmensperson(Person person) {
         return chatRepository.findAllByUnternehmenspersonId(person.getId_Person());
     }
+
+    /**
+     * Speichert eine bestimmte Nachricht.
+     *
+     * @param nachricht Die zu speichernde Nachricht.
+     */
     public void saveNachricht(Nachricht nachricht) {
         nachrichtRepository.save(nachricht);
     }
 
+    /**
+     * Aktualisiert eine bestimmte Nachricht.
+     *
+     * @param nachricht Die zu aktualisierende Nachricht.
+     */
     public void updateNachricht(Nachricht nachricht) {
         nachrichtRepository.save(nachricht);
     }

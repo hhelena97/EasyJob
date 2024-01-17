@@ -11,15 +11,13 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.VaadinSession;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.controllers.StellenanzeigeController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.views.allgemein.AccountIstInaktivView;
 import de.hbrs.easyjob.views.allgemein.GesperrtePersonView;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.Date;
@@ -36,22 +34,13 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
     private final transient StellenanzeigeController stellenanzeigeController;
     private static final String STELLENANZEIGE_TAG = "stellenanzeige-tag";
 
+    private final transient SessionController sessionController;
+
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if(!sessionController.isLoggedIn()|| !sessionController.hasRole("ROLE_UNTERNEHMENSPERSON")){
             event.rerouteTo(LoginView.class);
         }
-    }
-
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_UNTERNEHMENSPERSON"));
     }
 
     @Override
@@ -83,8 +72,9 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
         frame.add(jobsFrame);
         add(frame);
     }
-    public ProfilView(StellenanzeigeController stellenanzeigeController) {
+    public ProfilView(StellenanzeigeController stellenanzeigeController, SessionController sessionController) {
         this.stellenanzeigeController = stellenanzeigeController;
+        this.sessionController = sessionController;
     }
 
     private Component createStellenanzeigenVorschau(Job job) {

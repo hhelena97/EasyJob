@@ -6,20 +6,15 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
+import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.repositories.JobRepository;
-import de.hbrs.easyjob.repositories.PersonRepository;
-import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.DeaktivierenConfirmDialog;
-import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.views.components.PasswortAendernDialog;
 import de.hbrs.easyjob.views.components.ZurueckButtonRundLayout;
-import org.springframework.beans.factory.annotation.Autowired;
-
 
 import javax.annotation.security.RolesAllowed;
 
@@ -30,17 +25,8 @@ import javax.annotation.security.RolesAllowed;
 @RolesAllowed("ROLE_UNTERNEHMENSPERSON")
 public class EinstellungenAccountUnternehmenView extends VerticalLayout implements BeforeLeaveObserver, BeforeEnterObserver {
 
-    @Autowired
-    private PersonRepository personRepository;
-
-    private final SessionController sessionController;
-
-    @Autowired
-    private UnternehmenRepository unternehmenRepository;
-    @Autowired
-    private JobRepository jobRepository;
-
-    private final ProfilDeaktivierenController profilDeaktivieren;
+    private final transient SessionController sessionController;
+    private final transient ProfilDeaktivierenController profilDeaktivierenController;
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
@@ -49,14 +35,14 @@ public class EinstellungenAccountUnternehmenView extends VerticalLayout implemen
         }
     }
 
-    public EinstellungenAccountUnternehmenView(SessionController sessionController,
-                                               PersonRepository personRepository,
-                                               PasswortService passwortService) {
-
+    public EinstellungenAccountUnternehmenView(
+            ProfilDeaktivierenController profilDeaktivierenController,
+            SessionController sessionController,
+            PasswortService passwortService
+    ) {
+        this.profilDeaktivierenController = profilDeaktivierenController;
         this.sessionController = sessionController;
-        this.personRepository = personRepository;
-        Unternehmensperson person = (Unternehmensperson)  sessionController.getPerson();
-        profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository, jobRepository);
+        Unternehmensperson person = (Unternehmensperson) sessionController.getPerson();
 
         VerticalLayout frame = new VerticalLayout();
 
@@ -67,13 +53,13 @@ public class EinstellungenAccountUnternehmenView extends VerticalLayout implemen
         Label ueber = new Label("Accounteinstellungen");
         ueber.addClassName("accounteinstellungen");
 
-        //Passwort ändern
-        PasswortAendernDialog passwort = new PasswortAendernDialog(person,"Unternehmen", passwortService);
-        Button passwortaendern = new Button("Passwort ändern",e -> passwort.open());
+        // Passwort ändern
+        PasswortAendernDialog passwort = new PasswortAendernDialog(person, "Unternehmen", passwortService);
+        Button passwortaendern = new Button("Passwort ändern", e -> passwort.open());
         passwortaendern.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         passwortaendern.addClassName("menu-button");
 
-        //Deaktivieren
+        // Deaktivieren
         DeaktivierenConfirmDialog deaktivierenDialog = new DeaktivierenConfirmDialog("Unternehmen",
                 "Ihr Profil wird unsichtbar und Sie können keine ChatsView mehr erhalten. " +
                         "Das Unternehmensprofil bleibt sichtbar, solange mindestens ein verbundenes Profil aktiv ist." +
@@ -94,7 +80,7 @@ public class EinstellungenAccountUnternehmenView extends VerticalLayout implemen
     public void beforeLeave(BeforeLeaveEvent event) {
         // Deaktiviere Unternehmen-Account
         Person person = sessionController.getPerson();
-        if (profilDeaktivieren.profilDeaktivierenPerson(person)) {
+        if (profilDeaktivierenController.profilDeaktivierenPerson(person)) {
             System.out.printf("Profil '%s' deaktiviert.\n", person.getEmail());
         }
     }

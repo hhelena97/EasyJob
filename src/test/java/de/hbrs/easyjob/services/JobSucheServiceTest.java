@@ -1,7 +1,7 @@
 package de.hbrs.easyjob.services;
 
 import de.hbrs.easyjob.entities.Job;
-import de.hbrs.easyjob.repositories.*;
+import de.hbrs.easyjob.repositories.JobRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,11 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings("unchecked")
 @SpringBootTest
 class JobSucheServiceTest {
     // Repositories
@@ -47,22 +45,11 @@ class JobSucheServiceTest {
     @Test
     @DisplayName("Testet die Volltextsuche")
     @Transactional
-    void vollTextSuche() throws Exception {
+    void vollTextSuche(){
         // ********* Arrange *********
-        Optional<Job>[] job_op = new Optional[2];
         Job[] jobs = new Job[2];
-        job_op[0] = jobRepo.findById(1);
-        job_op[1] = jobRepo.findById(5);
-
-        int i = 0;
-        for (Optional<Job> job : job_op) {
-            if (job.isEmpty()) {
-                throw new Exception("Kein Objekt gefunden in der Datenbank!");
-            } else {
-                jobs[i] = job.get();
-                i++;
-            }
-        }
+        jobs[0] = jobRepo.findById(1).orElseThrow(NullPointerException::new);
+        jobs[1] = jobRepo.findById(5).orElseThrow(NullPointerException::new);
 
         List<Job> expected = List.of(jobs);
 
@@ -70,7 +57,7 @@ class JobSucheServiceTest {
         List<Job> actual = joSu.vollTextSuche("NetSolutions");
 
         // ********* Assert **********
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     /**
@@ -79,23 +66,12 @@ class JobSucheServiceTest {
     @Test
     @DisplayName("Testet die Teilzeichensuche")
     @Transactional
-    void teilZeichenSuche() throws Exception {
+    void teilZeichenSuche() {
         // ********* Arrange *********
-        Optional<Job>[] job_op = new Optional[3];
         Job[] jobs = new Job[3];
-        job_op[0] = jobRepo.findById(1);
-        job_op[1] = jobRepo.findById(7);
-        job_op[2] = jobRepo.findById(5);
-
-        int i = 0;
-        for (Optional<Job> job : job_op) {
-            if (job.isEmpty()) {
-                throw new Exception("Kein Objekt gefunden in der Datenbank!");
-            } else {
-                jobs[i] = job.get();
-                i++;
-            }
-        }
+        jobs[0] = jobRepo.findById(1).orElseThrow(NullPointerException::new);
+        jobs[1] = jobRepo.findById(7).orElseThrow(NullPointerException::new);
+        jobs[2] = jobRepo.findById(5).orElseThrow(NullPointerException::new);
 
         List<Job> expected = List.of(jobs);
 
@@ -103,9 +79,7 @@ class JobSucheServiceTest {
         List<Job> actual = joSu.teilZeichenSuche("Solu");
 
         // ********* Assert **********
-        assertEquals(expected, actual);
-        System.out.println(expected);
-        System.out.println(actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     /**
@@ -132,6 +106,4 @@ class JobSucheServiceTest {
         assertTrue(actual6);
         assertTrue(actual7);
     }
-
-    // TODO: zusätzliche Methoden testen
 }

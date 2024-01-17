@@ -8,13 +8,16 @@ import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.security.CustomSecurityContextRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@TestPropertySource(locations = "classpath:application-test.properties")
 class SessionControllerTest {
     // Repositories
     @Autowired
@@ -28,10 +31,18 @@ class SessionControllerTest {
     // Entities
     @Autowired
     private AuthenticationManager authenticationManager;
-    private final String existing_person_email = "nina.becker@uni-bonn.de";
-    private final String existing_person_password = "NinaMINT2023";
-    private final String deactivated_person_email = "helena-heyen@email.de";
-    private final String deactivated_person_password = "Test123!";
+
+    @Value("${existing-person.email}")
+    private String existing_person_email;
+
+    @Value("${existing-person.password}")
+    private String existing_person_password;
+
+    @Value("${deactivated-person.email}")
+    private String deactivated_person_email;
+
+    @Value("${deactivated-person.password}")
+    private String deactivated_person_password;
 
     private static Routes routes;
 

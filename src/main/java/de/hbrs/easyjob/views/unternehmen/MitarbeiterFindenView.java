@@ -16,6 +16,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinSession;
+import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.JobKategorie;
 import de.hbrs.easyjob.entities.Ort;
@@ -41,29 +42,21 @@ public class MitarbeiterFindenView extends VerticalLayout implements BeforeEnter
     private final StudentService studentService;
 
     private VerticalLayout studentenListLayout;
+    private final transient SessionController sessionController;
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        SecurityContext context = VaadinSession.getCurrent().getAttribute(SecurityContext.class);
-        if(context != null) {
-            Authentication auth = context.getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || !hasRole(auth)) {
-                event.rerouteTo(LoginView.class);
-            }
-        } else {
+        if(!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_UNTERNEHMENSPERSON")){
             event.rerouteTo(LoginView.class);
         }
     }
 
-    private boolean hasRole(Authentication auth) {
-        return auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_UNTERNEHMENSPERSON"));
-    }
 
     @Autowired
-    public MitarbeiterFindenView (StudentService studentService, StudentSucheService studentSucheService){
+    public MitarbeiterFindenView (StudentService studentService, StudentSucheService studentSucheService, SessionController sessionController){
         this.studentSucheService = studentSucheService;
         this.studentService = studentService;
+        this.sessionController = sessionController;
         initializeView();
     }
 
@@ -103,14 +96,22 @@ public class MitarbeiterFindenView extends VerticalLayout implements BeforeEnter
             List<Integer> studentIds = (List<Integer>) sessionAttribute;
             if (!studentIds.isEmpty()) {
                 List<Student> studenten = studentService.getStudentenByIds(studentIds);
-                studenten.forEach(this::addStudentComponentToLayout);
+                studenten.forEach(student -> {
+                    if (!student.getGesperrt() && student.getAktiv()) {
+                        addStudentComponentToLayout(student);
+                    }
+                });
 
                 // Entfernen der IDs aus der Sitzung, um zukünftige Konflikte zu vermeiden
                 VaadinSession.getCurrent().setAttribute("filteredStudentIds", null);
             }
         }else {
             List<Student> studenten = studentService.getAllStudent();
-            studenten.forEach(this::addStudentComponentToLayout);
+            studenten.forEach(student -> {
+                if (!student.getGesperrt() && student.getAktiv()) {
+                    addStudentComponentToLayout(student);
+                }
+            });
             VaadinSession.getCurrent().setAttribute("searchedStudents", studenten);
         }
 

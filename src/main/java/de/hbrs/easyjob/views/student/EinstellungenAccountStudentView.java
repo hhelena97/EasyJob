@@ -10,9 +10,6 @@ import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
-import de.hbrs.easyjob.repositories.JobRepository;
-import de.hbrs.easyjob.repositories.PersonRepository;
-import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.PasswortService;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.DeaktivierenConfirmDialog;
@@ -39,14 +36,10 @@ public class EinstellungenAccountStudentView extends VerticalLayout implements B
         }
     }
 
-    public EinstellungenAccountStudentView(SessionController sessionController,
-                                           PersonRepository personRepository,
-                                           UnternehmenRepository unternehmenRepository,
-                                           JobRepository jobRepository,
-                                           PasswortService passwortService) {
+    public EinstellungenAccountStudentView(ProfilDeaktivierenController profilDeaktivierenController, SessionController sessionController, PasswortService passwortService) {
         this.sessionController = sessionController;
         Student student = (Student) sessionController.getPerson();
-        this.profilDeaktivieren = new ProfilDeaktivierenController(personRepository, unternehmenRepository, jobRepository);
+        this.profilDeaktivieren = profilDeaktivierenController;
 
         VerticalLayout frame = new VerticalLayout();
 
@@ -60,15 +53,13 @@ public class EinstellungenAccountStudentView extends VerticalLayout implements B
         ueber.addClassName("accounteinstellungen");
 
         //Passwort ändern
-        PasswortAendernDialog passwort = new PasswortAendernDialog(student,"Student", passwortService);
-        Button passwortaendern = new Button("Passwort ändern",e -> passwort.open());
+        PasswortAendernDialog passwort = new PasswortAendernDialog(student, "Student", passwortService);
+        Button passwortaendern = new Button("Passwort ändern", e -> passwort.open());
         passwortaendern.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         passwortaendern.addClassName("menu-button");
 
         //Account deaktivieren
-        DeaktivierenConfirmDialog deaktivierenDialog = new DeaktivierenConfirmDialog("Student",
-                "Dein Profil wird unsichtbar und du kannst keine Nachrichten mehr erhalten. " +
-                        "Du kannst deinen Account jederzeit reaktivieren.") ;
+        DeaktivierenConfirmDialog deaktivierenDialog = new DeaktivierenConfirmDialog("Student", "Dein Profil wird unsichtbar und du kannst keine Nachrichten mehr erhalten. " + "Du kannst deinen Account jederzeit reaktivieren.");
         Button deaktivieren = new Button("Account deaktivieren", e -> deaktivierenDialog.openDialogOverlay());
         deaktivieren.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         deaktivieren.addClassName("deaktivieren");
