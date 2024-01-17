@@ -10,6 +10,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.hbrs.easyjob.controllers.ProfilSperrenController;
 import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.entities.Student;
+import de.hbrs.easyjob.entities.Unternehmensperson;
 
 @StyleSheet("DialogLayout.css")
 public class AdminJobComponent extends VerticalLayout {
@@ -56,21 +58,35 @@ public class AdminJobComponent extends VerticalLayout {
         tags[2].add(FontAwesome.Solid.GRADUATION_CAP.create(), new Span(job.getJobKategorie().getKategorie()));
 
         // Beschreibung
-        //Scroller description = new Scroller();
         Paragraph descriptionText = new Paragraph(job.getFreitext());
         descriptionText.addClassName("job-details-description");
-        //description.add(descriptionText);
 
         // Sperrbutton
-        Button btnSperren = new Button("Job sperren");
-
         Dialog d = new Dialog();
+
+        String sperrbutton;
+        if (job.getGesperrt()) {
+            sperrbutton = "Job entsperren";
+            jobEntsperrenDialog(job, d);
+        } else {
+            sperrbutton = "Job sperren";
+            jobSperrenDialog(job, d);
+        }
+
+        Button btnSperren = new Button(sperrbutton);
+        btnSperren.addClassName("confirm");
+        btnSperren.addClickListener(e -> d.open());
+
+        add(company, title, tagsContainer, descriptionText, btnSperren);
+    }
+
+    private void jobSperrenDialog(Job job, Dialog d) {
         d.add(new Paragraph("Möchten Sie diesen Job wirklich sperren?"));
 
         Button btnBestaetigen = new Button("Job sperren");
         btnBestaetigen.addClassName("confirm");
         btnBestaetigen.addClickListener(e -> {
-            if (profilSperrenController.jobSperren(job)){
+            if (profilSperrenController.jobSperren(job)) {
                 d.close();
             } else {
                 Notification.show("Der Job konnte nicht gesperrt werden");
@@ -80,10 +96,25 @@ public class AdminJobComponent extends VerticalLayout {
         btnAbbruch2.addClassName("close-admin");
         btnAbbruch2.addClickListener(e -> d.close());
         d.getFooter().add(btnBestaetigen, btnAbbruch2);
+    }
 
-        btnSperren.addClassName("btnSperren");
-        btnSperren.addClickListener(e -> d.open());
+    private void jobEntsperrenDialog(Job job, Dialog d){
+        d.add(new Paragraph("Wollen Sie diesen Job wirklich entsperren?"));
 
-        add(company, title, tagsContainer, descriptionText, btnSperren);
+        Button btnBestaetigen = new Button("Job entsperren");
+        btnBestaetigen.addClassName("buttonBestaetigen");
+        btnBestaetigen.addClickListener(e -> {
+            if (profilSperrenController.jobEntsperren(job)){
+                d.close();
+            } else {
+                Notification.show("Der Job konnte nicht entsperrt werden");
+            }
+        });
+        Button btnAbbruch2 = new Button("Abbrechen");
+        btnAbbruch2.addClassName("buttonAbbruch");
+        btnAbbruch2.addClickListener(e -> {
+            d.close();
+        });
+        d.getFooter().add(btnAbbruch2, btnBestaetigen);
     }
 }

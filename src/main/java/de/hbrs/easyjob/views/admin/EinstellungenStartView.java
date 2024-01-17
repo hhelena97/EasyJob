@@ -120,7 +120,7 @@ public class EinstellungenStartView extends VerticalLayout implements BeforeEnte
 
         for (Admin admin: allAdmins) {
 
-            if(admin.getAktiv() && !admin.equals(this.admin) ) {
+            if(admin.getAktiv() && !admin.getGesperrt() && !admin.equals(this.admin) ) {
                 HorizontalLayout einAdmin = new HorizontalLayout();
 
                 //Zeige die E-Mail-Adresse:

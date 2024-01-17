@@ -10,8 +10,12 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.IconFactory;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.RouterLink;
+import de.hbrs.easyjob.controllers.JobProfilController;
 import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
 import de.hbrs.easyjob.controllers.ProfilSperrenController;
 import de.hbrs.easyjob.entities.Job;
@@ -21,6 +25,9 @@ import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.admin.PersonenVerwaltenView;
+import de.hbrs.easyjob.views.student.UnternehmenProfilView;
+import de.hbrs.easyjob.views.unternehmen.JobDetailsView;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -134,6 +141,15 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         H1 jobTitle = new H1(job.getTitel());
         jobTitle.addClassName("job-title");
 
+        HorizontalLayout sperrung = new HorizontalLayout();
+
+        if (job.getGesperrt()|| job.getGesperrt() == null){
+            Paragraph p = new Paragraph("Der Job ist gesperrt.");
+            p.addClassName("alarm");
+            sperrung.add(p);
+        }
+
+
         // Jobdetails wie Unternehmen und Ort und Homeoffice
         HorizontalLayout companyAndLocation = new HorizontalLayout();
         companyAndLocation.setSpacing(false);
@@ -218,7 +234,7 @@ public class AdminUnternehmenspersonProfileComponent extends VerticalLayout {
         mehrInfos.addClickListener(e -> jobDialog.open());
 
 
-        jobCardLayout.add(jobTitle, companyAndLocation, jobDescription, postedTime, mehrInfos);
+        jobCardLayout.add(jobTitle, sperrung, companyAndLocation, jobDescription, postedTime, mehrInfos);
 
 
         jobListLayout.add(jobCardLayout);
