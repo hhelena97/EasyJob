@@ -2,6 +2,7 @@ package de.hbrs.easyjob.views.admin;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
@@ -49,8 +50,6 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
     String style = "AdminPersonenVerwaltenView.css";
     Paragraph keineMeldung = new Paragraph("Keine Meldungen");
 
-    private VerticalLayout content = new VerticalLayout();
-
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
@@ -72,7 +71,6 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         this.sessionController = sessionController;
         this.faehigkeitRepository = faehigkeitRepository;
         this.meldungController = meldungController;
-        //this.profilSperrenController = new ProfilSperrenController(personRepository, unternehmenRepository, jobRepository, unternehmenspersonRepository);
         this.studentService = studentenService;
         this.unternehmenService = unternehmenService;
 
@@ -94,8 +92,8 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
 
         tabs.addClassName("tableiste");
 
-        Div titelbox = new Div(ausloggen, titeltext);
-        titelbox.addClassName("titelbox");
+        VerticalLayout titelbox = new VerticalLayout(ausloggen, titeltext);
+        titelbox.addClassName("gruene-box");
 
         add(titelbox, tabs);
     }
@@ -130,7 +128,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         Div inhalt = new Div();
 
         List<Meldung> mp = meldungController.getAllGemeldeteJobs();
-        if (mp == null || mp.isEmpty()){
+        if (mp.isEmpty()){
             inhalt.add(keineMeldung);
         } else {
             for (Meldung m : mp) {
@@ -159,6 +157,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
 
         String name = p.getVorname() + " " + p.getNachname();
 
+        //Meldung overlay
         Dialog d1 = new Dialog();
         d1.setHeaderTitle("Meldung bearbeiten");
 
@@ -191,11 +190,9 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
 
             VerticalLayout personLayout = new VerticalLayout();
 
-            if (p instanceof Student) {
-                Student student = (Student) p;
+            if (p instanceof Student student) {
                 personLayout.add(new AdminStudentProfileComponent(student, style, studentService, faehigkeitRepository));
-            } else if (p instanceof Unternehmensperson) {
-                Unternehmensperson uperson = (Unternehmensperson) p;
+            } else if (p instanceof Unternehmensperson uperson) {
                 personLayout.add(new AdminUnternehmenspersonProfileComponent(personRepository, unternehmenRepository,
                         uperson, style, unternehmenService,
                         new ProfilSperrenController(personRepository, unternehmenRepository, jobRepository, unternehmenspersonRepository)));
@@ -212,7 +209,6 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
             }
 
         Button meldungBearbeitet = new Button("Meldung bearbeitet");
-        //meldungBearbeitet.addClassName("MeldungBearbeitet");
         meldungBearbeitet.addClickListener(e -> {
             meldung.setBearbeitet(true);
             meldungRepository.save(meldung);
@@ -221,14 +217,13 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         });
 
         Button meldungSchliessen = new Button ("Abbrechen");
-        //meldungSchliessen.addClassName("MeldungSchliessen");
         meldungSchliessen.addClickListener(e -> d1.close());
 
         d1.add(infos,buttons,personLayout);
         d1.getFooter().add(meldungSchliessen, meldungBearbeitet);
 
         Button btnPerson = new Button(name);
-        btnPerson.addClassName("PersonAufListeButton");
+        btnPerson.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         btnPerson.addClickListener(e -> d1.open());
 
         return new Div(btnPerson);
@@ -266,8 +261,8 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         d1.getFooter().add(meldungSchliessen, meldungBearbeitet);
 
         Button btnUnternehmen = new Button(uname);
-            btnUnternehmen.addClassName("UnternehmenAufListeButton");
-            btnUnternehmen.addClickListener(e -> d1.open());
+        btnUnternehmen.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        btnUnternehmen.addClickListener(e -> d1.open());
 
         return new Div(btnUnternehmen);
     }
@@ -311,13 +306,11 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
 
     private void personSperrenDialog(Person person, Dialog dialog){
 
-        dialog.add(new Paragraph("Wollen Sie " + person.getVorname() + " " + person.getNachname() + " sperren?"));
+        dialog.add(new Paragraph("Möchten Sie " + person.getVorname() + " " + person.getNachname() + " sperren?"));
 
         Button btnAbbruch2 = new Button("abbrechen");
         btnAbbruch2.addClassName("buttonAbbruch");
-        btnAbbruch2.addClickListener(e -> {
-            dialog.close();
-        });
+        btnAbbruch2.addClickListener(e -> dialog.close());
 
         Button btnBestaetigen = new Button("Person sperren");
         btnBestaetigen.addClassName("buttonBestaetigen");

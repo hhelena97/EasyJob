@@ -41,7 +41,6 @@ vaadin-vertical-layout {
     background-color: var(--admin-dark);
     height: 150px;
     width: 100%;
-    /*max-width: 600px;*/
     align-self: center;
 }
 
