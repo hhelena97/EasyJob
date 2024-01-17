@@ -40,10 +40,6 @@ public class ProfilDeaktivierenController {
      */
     public boolean profilDeaktivierenPerson(Person person) {
 
-        //Todo: prüfen, ob die Person eine Unternehmensperson ist und wenn ja, prüfen ob sie
-        // Manager des Unternehmens ist. Wenn ja, weitere Person suchen,
-        // die dadurch Manager wird, ansonsten Unternehmen mit deaktivieren.
-
         if (person == null) {
             return false;
         }
@@ -54,12 +50,12 @@ public class ProfilDeaktivierenController {
                 j.setAktiv(false); //deaktivieren
                 jobRepository.save(j);
             }
+
             person.setAktiv(false);
-            return personRepository.save(person).getAktiv();
         } else {
             person.setAktiv(false);
-            return !personRepository.save(person).getAktiv();
         }
+        return !personRepository.save(person).getAktiv();
     }
 
     /**
@@ -71,29 +67,28 @@ public class ProfilDeaktivierenController {
     public boolean profilDeaktivierenUnternehmen(Unternehmensperson manager) {
         if(manager != null) {
             Unternehmen unternehmen = manager.getUnternehmen();
-            if (manager instanceof Unternehmensperson) {
-                if (unternehmen.getUnternehmensperson().equals(manager)) {
-                    // Unternehmensprofil deaktivieren
-                    unternehmen.setAktiv(false);
+            if (unternehmen.getUnternehmensperson() != null && unternehmen.getUnternehmensperson().equals(manager)) {
+                // Unternehmensprofil deaktivieren
+                unternehmen.setAktiv(false);
+                manager.setAktiv(false);
 
-                    if (unternehmenRepository.save(unternehmen).isAktiv()) {
-                        // Gebe false zurück, falls Unternehmen noch aktiv ist
-                        return false;
-                    }
-
-                    // alle Unternehmenspersonen rausfiltern und über andere Methode deaktivieren
-                    boolean success = true;
-                    List<Person> mitarbeiter = personRepository.findAllByUnternehmenId(unternehmen.getId_Unternehmen());
-                    for (Person p: mitarbeiter) {
-                        if (!profilDeaktivierenPerson(p)) {
-                            // Setze success auf false, falls eine Deaktivierung fehlschlägt
-                            success = false;
-                        }
-                    }
-                    return success;
-                } else {
+                if (unternehmenRepository.save(unternehmen).isAktiv()) {
+                    // Gebe false zurück, falls Unternehmen noch aktiv ist
                     return false;
                 }
+
+                // alle Unternehmenspersonen rausfiltern und über andere Methode deaktivieren
+                boolean success = true;
+                List<Person> mitarbeiter = personRepository.findAllByUnternehmenId(unternehmen.getId_Unternehmen());
+                for (Person p: mitarbeiter) {
+                    System.out.println(p.getVorname());
+                    if (!profilDeaktivierenPerson(p)) {
+                        // Setze success auf false, falls eine Deaktivierung fehlschlägt
+                        success = false;
+                    }
+                }
+
+                return success;
             } else {
                 return false;
             }
