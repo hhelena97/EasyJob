@@ -3,8 +3,11 @@ package de.hbrs.easyjob.views.allgemein;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -15,6 +18,9 @@ import com.vaadin.flow.server.VaadinServletResponse;
 import com.vaadin.flow.server.VaadinSession;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.repositories.PersonRepository;
+import de.hbrs.easyjob.controllers.ProfilDeaktivierenController;
+import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import de.hbrs.easyjob.repositories.JobRepository;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
@@ -26,10 +32,17 @@ import javax.servlet.http.HttpServletResponse;
 public class AccountIstInaktivView extends VerticalLayout {
 
     private final transient SessionController sessionController;
-    private PersonRepository personRepository;
 
-    public AccountIstInaktivView(SessionController sessionController) {
+    private PersonRepository personRepository;
+    private UnternehmenRepository unternehmenRepository;
+    private JobRepository jobRepository;
+
+    public AccountIstInaktivView(SessionController sessionController, PersonRepository personRepository,
+                                 JobRepository jobRepository, UnternehmenRepository unternehmenRepository) {
         this.sessionController = sessionController;
+        this.personRepository = personRepository;
+        this.unternehmenRepository = unternehmenRepository;
+        this.jobRepository = jobRepository;
         UI.getCurrent().getPage().addStyleSheet("AccountIstInaktiv.css");
 
         H2 inaktiv = new H2("Ihr Account ist inaktiv.");
@@ -37,14 +50,59 @@ public class AccountIstInaktivView extends VerticalLayout {
 
         H1 reaktivieren = new H1("Account reaktivieren");
         reaktivieren.addClassName("reaktivieren");
+        Dialog d = new Dialog();
+        d.setHeaderTitle("Account wirklich reaktivieren?");
+        Div info = new Div(new Paragraph("Dein Profil wird für andere sichtbar" +
+                " und du kannst wieder Nachrichten erhalten."));
+        d.add(info);
+
+        Button btnReaktivieren = new Button("Account reaktivieren");
+        btnReaktivieren.addClassName("confirm");
+
+        btnReaktivieren.addClickListener(e -> {
+            ProfilDeaktivierenController entsperrenController = new ProfilDeaktivierenController(personRepository, unternehmenRepository, jobRepository);
+            entsperrenController.profilReaktivierenPerson(sessionController.getPerson());
+            d.close();
+            UI.getCurrent().getPage().setLocation("/login");
+        });
+
+        Button cancelButton = new Button("Abbrechen");
+        cancelButton.addClickListener((e) -> d.close());
+
+        d.getFooter().add(btnReaktivieren, cancelButton);
+
+        reaktivieren.addClickListener(e -> d.open());
+
+
 
         H1 oder = new H1("oder");
         oder.addClassName("oder");
 
+        Dialog dialog = new Dialog();
+
+        dialog.setHeaderTitle("Wirklich ausloggen?");
+
+        Button auslogButton = new Button("Ausloggen.");
+        auslogButton.addClassName("confirm");
+        auslogButton.addClickListener(e -> {
+            if (sessionController.logout()) {
+                UI.getCurrent().getPage().setLocation("/login");
+            }
+        });
+
+        Button abbrechen = new Button("Abbrechen", (e) -> dialog.close());
+
+        dialog.getFooter().add(abbrechen, auslogButton);
+
         Button ausloggen = new Button("Ausloggen", new Icon(VaadinIcon.SIGN_OUT));
         ausloggen.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        ausloggen.addClassName("ausloggen");
 
+        ausloggen.addClickListener(e -> dialog.open());
+
+
+
+
+/*
         ausloggen.addClickListener(e -> {
 
             HttpServletRequest request = VaadinServletRequest.getCurrent().getHttpServletRequest();
@@ -67,6 +125,8 @@ public class AccountIstInaktivView extends VerticalLayout {
             }
         );
 
+
+ */
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.add(inaktiv, reaktivieren, oder, ausloggen);
         verticalLayout.setAlignItems(Alignment.CENTER);

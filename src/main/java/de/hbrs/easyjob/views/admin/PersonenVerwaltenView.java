@@ -126,7 +126,6 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
     private void loadPerson() {
         personLayout.removeAll();
 
-
         email = (String) VaadinSession.getCurrent().getAttribute("email");
         if (email != null) {
             Person person = personRepository.findByEmail(email);
@@ -140,10 +139,26 @@ public class PersonenVerwaltenView extends VerticalLayout implements BeforeEnter
                     Label adminlink = new Label("← Hier verwalten");
                     RouterLink linkAdmin = new RouterLink(EinstellungenStartView.class);
                     linkAdmin.add(adminlink);
+
+                    Dialog d = new Dialog();
+                    String sperrbutton;
+
+                    if (person.getGesperrt()) {
+                        sperrbutton = "Profil entsperren";
+                        personEntperrenDialog(person, d);
+                    } else {
+                        sperrbutton = "Profil sperren";
+                        personSperrenDialog(person, d);
+                    }
+
+                    Button btnSperren = new Button(sperrbutton);
+                    btnSperren.addClassName("btnSperren");
+                    btnSperren.addClickListener(e -> d.open());
+
                     VerticalLayout info = new VerticalLayout(admininfo, linkAdmin);
                     info.setAlignItems(Alignment.CENTER);
                     info.setAlignSelf(Alignment.CENTER);
-                    personLayout.add(info);
+                    personLayout.add(info, btnSperren);
 
                     // Wenn nicht, Person mit Buttons anzeigen
                 } else {

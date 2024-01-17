@@ -12,6 +12,8 @@ import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.services.FaehigkeitService;
 import de.hbrs.easyjob.services.StudentService;
+import de.hbrs.easyjob.views.allgemein.AccountIstInaktivView;
+import de.hbrs.easyjob.views.allgemein.GesperrtePersonView;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.StudentLayout;
 import de.hbrs.easyjob.views.components.StudentProfileComponent;
@@ -64,6 +66,12 @@ public class StudentProfilView extends VerticalLayout implements BeforeEnterObse
     public void beforeEnter(BeforeEnterEvent event) {
         if(!sessionController.isLoggedIn()|| !sessionController.hasRole("ROLE_STUDENT")){
             event.rerouteTo(LoginView.class);
+        }
+        if(! sessionController.getPerson().getAktiv()){
+            event.rerouteTo(AccountIstInaktivView.class);
+        }
+        if(sessionController.getPerson().getGesperrt()){
+            event.rerouteTo(GesperrtePersonView.class);
         }
     }
 

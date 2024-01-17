@@ -15,6 +15,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import de.hbrs.easyjob.controllers.ProfilSperrenController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.repositories.JobRepository;
+import de.hbrs.easyjob.repositories.PersonRepository;
+import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.services.UnternehmenService;
 import de.hbrs.easyjob.views.admin.PersonenVerwaltenView;
 
