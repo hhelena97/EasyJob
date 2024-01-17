@@ -145,6 +145,20 @@ class ProfilDeaktivierenControllerTest {
         assertFalse(personU2.getAktiv());    // Unternehmensperson inaktiv
     }
 
+    @Test
+    @DisplayName("profilReaktivierenPerson Test erfolgreich")
+    void profilReaktivierenPersonTest()
+    {
+        // erstmal Profil deaktivieren
+        assertTrue(profilDeaktivierenController.profilDeaktivierenPerson(person));
+        assertFalse(person.getAktiv());     // Person inaktiv
+
+        // Profil reaktivieren
+        assertTrue(profilDeaktivierenController.profilReaktivierenPerson(person));
+        assertTrue(person.getAktiv());     // Person inaktiv
+
+    }
+
     @AfterAll
     static void tearDown()
     {
