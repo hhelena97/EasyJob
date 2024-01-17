@@ -16,6 +16,7 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,11 +38,14 @@ public class UnternehmenService {
         return unternehmenRepository.findByName(name);
     }
     public Unternehmen saveUnternehmen(Unternehmen unternehmen) {
+        if(unternehmen.getName() == null || unternehmen.getName().isEmpty()){
+            return null;
+        }
         return unternehmenRepository.save(unternehmen);
     }
     //TODO: checken, ob Unternehmen valide (null-Unternehmen speichern sinnlos (siehe Test hierzu)
     public Unternehmen findByID(Integer id){
-        return unternehmenRepository.findById(id).get();
+        return unternehmenRepository.findById(id).orElse(null);
     }
     //TODO: Fehler abfangen, wenn man kein Unternehmen findet (wie z.B. bei findByName, wo dann nur null ausgegeben
     // wird, wenn nichts gefunden wurde)
