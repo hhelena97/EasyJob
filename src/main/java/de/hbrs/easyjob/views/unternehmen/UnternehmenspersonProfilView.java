@@ -10,10 +10,15 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.views.allgemein.AccountIstInaktivView;
+import de.hbrs.easyjob.views.allgemein.GesperrtePersonView;
+import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
 
 import javax.annotation.security.RolesAllowed;
@@ -24,15 +29,30 @@ import javax.annotation.security.RolesAllowed;
 @StyleSheet("UnternehmenspersonProfilView.css")
 @StyleSheet("DialogLayout.css")
 
-public class UnternehmenspersonProfilView extends VerticalLayout {
+public class UnternehmenspersonProfilView extends VerticalLayout implements BeforeEnterObserver {
 
     private final transient Unternehmensperson person;
     private final transient VerticalLayout personKontakt = new VerticalLayout();
 
+    private final transient SessionController sessionController;
 
     public UnternehmenspersonProfilView(SessionController sessionController) {
+        this.sessionController = sessionController;
         person = (Unternehmensperson) sessionController.getPerson();
         initializeView();
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        if(!sessionController.isLoggedIn()|| !sessionController.hasRole("ROLE_UNTERNEHMENSPERSON")){
+            event.rerouteTo(LoginView.class);
+        }
+        if(! sessionController.getPerson().getAktiv()){
+            event.rerouteTo(AccountIstInaktivView.class);
+        }
+        if(sessionController.getPerson().getGesperrt()){
+            event.rerouteTo(GesperrtePersonView.class);
+        }
     }
 
     private void initializeView(){

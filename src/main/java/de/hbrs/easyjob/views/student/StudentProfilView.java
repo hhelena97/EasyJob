@@ -5,12 +5,15 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.services.FaehigkeitService;
 import de.hbrs.easyjob.services.StudentService;
+import de.hbrs.easyjob.views.allgemein.AccountIstInaktivView;
+import de.hbrs.easyjob.views.allgemein.GesperrtePersonView;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.StudentLayout;
 import de.hbrs.easyjob.views.components.StudentProfileComponent;
@@ -22,6 +25,7 @@ import javax.annotation.security.RolesAllowed;
 @RolesAllowed("ROLE_STUDENT")
 @StyleSheet("DialogLayout.css")
 @StyleSheet("StudentProfilView.css")
+@PageTitle("Profil")
 public class StudentProfilView extends VerticalLayout implements BeforeEnterObserver  {
 
 
@@ -62,6 +66,12 @@ public class StudentProfilView extends VerticalLayout implements BeforeEnterObse
     public void beforeEnter(BeforeEnterEvent event) {
         if(!sessionController.isLoggedIn()|| !sessionController.hasRole("ROLE_STUDENT")){
             event.rerouteTo(LoginView.class);
+        }
+        if(! sessionController.getPerson().getAktiv()){
+            event.rerouteTo(AccountIstInaktivView.class);
+        }
+        if(sessionController.getPerson().getGesperrt()){
+            event.rerouteTo(GesperrtePersonView.class);
         }
     }
 

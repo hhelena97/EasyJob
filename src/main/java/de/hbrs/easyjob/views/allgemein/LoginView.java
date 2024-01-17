@@ -136,11 +136,11 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
             if (!sessionController.login(username, password)) {
                 Notification.show("Authentifizierung fehlgeschlagen.");
-            }else if(sessionController.getPerson().getGesperrt() && !sessionController.getPerson().getAktiv()){
+            } else if (Boolean.TRUE.equals(sessionController.getPerson().getGesperrt() || !sessionController.getPerson().getAktiv())) {
+                System.out.println(sessionController.getPerson().getEmail());
                 sessionController.logout();
                 Notification.show("Profil ist inaktiv oder wurde gesperrt. Bitte melde dich an einen Admin.");
-            }
-            else if(sessionController.hasRole("ROLE_ADMIN")) {
+            } else if (sessionController.hasRole("ROLE_ADMIN")) {
                 UI.getCurrent().navigate("admin");
             } else if (sessionController.hasRole("ROLE_STUDENT")) {
                 UI.getCurrent().navigate("student");

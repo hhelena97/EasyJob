@@ -36,6 +36,7 @@ public class AdminController {
      */
     public boolean createAdmin(Admin admin) {
         admin.setAktiv(true);
+        admin.setGesperrt(false);
         // Prüfe Email und Passwort
         boolean ok = ValidationController.isValidEmail(admin.getEmail()) &&
                 ValidationController.isValidPassword(admin.getPasswort());

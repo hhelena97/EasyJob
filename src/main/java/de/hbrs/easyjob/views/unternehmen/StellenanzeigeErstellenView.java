@@ -8,40 +8,38 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 import de.hbrs.easyjob.controllers.OrtController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.controllers.StellenanzeigeController;
-import de.hbrs.easyjob.entities.JobKategorie;
-import de.hbrs.easyjob.entities.Ort;
-import de.hbrs.easyjob.entities.Studienfach;
-import de.hbrs.easyjob.entities.Unternehmensperson;
+import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.repositories.JobKategorieRepository;
+import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.StudienfachRepository;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.PrefixUtil;
 import de.hbrs.easyjob.views.components.StyledDialog;
 
 import javax.annotation.security.RolesAllowed;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
-// TODO: Weiterleitung von Unternehmensprofil fixen (siehe Testklasse)
-@Route("unternehmen/stellenanzeige/erstellen")
+@Route("unternehmen/job/create")
+@RouteAlias("unternehmen/job/:jobId/edit")
 @PageTitle("Stellenanzeige erstellen")
 @StyleSheet("Variables.css")
 @StyleSheet("StellenanzeigeErstellen.css")
 @RolesAllowed({"ROLE_UNTERNEHMENSPERSON"})
 public class StellenanzeigeErstellenView extends VerticalLayout implements BeforeEnterObserver {
 
+    // Components
     private final DatePicker eintrittsdatum;
     private final ComboBox<JobKategorie> berufsbezeichnung;
     private final ComboBox<Ort> standort;
@@ -49,9 +47,21 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
     private final TextField titel;
     private final TextArea stellenbeschreibung;
     private final Checkbox homeOffice;
-    private final transient StellenanzeigeController stellenanzeigeController;
-    private final transient SessionController sessionController;
+
+    // Entities
+    private transient Job job;
+    private int jobId;
     private final transient Unternehmensperson unternehmensperson;
+
+    // Repositories
+    private final transient JobRepository jobRepository;
+
+    // Controllers
+    private final transient SessionController sessionController;
+    private final transient StellenanzeigeController stellenanzeigeController;
+
+    // Constants
+    private static final String NEXT_PAGE = "unternehmen";
 
     /**
      * Prüft, ob der Nutzer eingeloggt ist und die Rolle ROLE_UNTERNEHMENSPERSON hat.
@@ -63,6 +73,13 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
     public void beforeEnter(BeforeEnterEvent event) {
         if (!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_UNTERNEHMENSPERSON")) {
             event.rerouteTo(LoginView.class);
+        } else {
+            try {
+                jobId = Integer.parseInt(event.getRouteParameters().get("jobId").orElse("0"));
+            } catch (NumberFormatException e) {
+                jobId = -1;
+            }
+            loadJobData();
         }
     }
 
@@ -77,11 +94,13 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
      */
     public StellenanzeigeErstellenView(
             JobKategorieRepository jobKategorieRepository,
+            JobRepository jobRepository,
             StudienfachRepository studienfachRepository,
             OrtController ortController,
             SessionController sessionController,
             StellenanzeigeController stellenanzeigeController
     ) {
+        this.jobRepository = jobRepository;
         this.sessionController = sessionController;
         this.stellenanzeigeController = stellenanzeigeController;
 
@@ -115,14 +134,16 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
         Button zurueckButton = new Button("zurück", FontAwesome.Solid.CHEVRON_LEFT.create());
         zurueckButton.setClassName("zurueck-button");
 
-        // TODO: Einträge speichern
-        zurueckButton.addClickListener(e -> zurueckHandler());
+        zurueckButton.addClickListener(e -> saveEntity(false));
 
         frame.add(zurueckButton);
 
         // Eintrittsdatum
         eintrittsdatum = new DatePicker("Eintrittsdatum");
         eintrittsdatum.setPlaceholder("Datum auswählen");
+        eintrittsdatum.setMin(LocalDate.now(ZoneId.systemDefault()));
+        eintrittsdatum.setMax(LocalDate.now(ZoneId.systemDefault()).plusYears(1));
+        eintrittsdatum.setHelperText("Eintrittsdatum darf maximal ein Jahr in der Zukunft liegen");
         frame.add(eintrittsdatum);
 
         // Berufsbezeichnung
@@ -186,7 +207,7 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
 
         Button fertigButton = new Button("Fertig", FontAwesome.Solid.CHECK.create());
         fertigButton.setClassName("fertig-button");
-        fertigButton.addClickListener(e -> fertigHandler());
+        fertigButton.addClickListener(e -> saveEntity(true));
 
         actionButtons.add(abbrechenButton, fertigButton);
         frame.add(actionButtons);
@@ -195,32 +216,71 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
     }
 
     /**
-     * Handler für den Fertig-Button.
-     * Speichert die Stellenanzeige und ruft die Profilseite des Unternehmens auf.
+     * Erstellt oder aktualisiert eine Stellenanzeige mit den Daten aus den Feldern.
+     *
+     * @param aktiv true, wenn die Stellenanzeige aktiv sein soll
      */
-    private void fertigHandler() {
-        // Convert LocalDate to Date
-        Date eintrittsdatumDate = Date.from(eintrittsdatum.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+    private void saveEntity(boolean aktiv) {
+        job.setEintritt(Date.from(eintrittsdatum.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        job.setJobKategorie(berufsbezeichnung.getValue());
+        job.setOrt(standort.getValue());
+        job.setStudienfacher(studienfach.getValue());
+        job.setTitel(titel.getValue());
+        job.setFreitext(stellenbeschreibung.getValue());
+        job.setHomeOffice(homeOffice.getValue());
+        job.setAktiv(aktiv);
 
-        stellenanzeigeController.stellenanzeigeErstellen(
-                titel.getValue(),
-                stellenbeschreibung.getValue(),
-                eintrittsdatumDate,
-                unternehmensperson.getUnternehmen(),
-                unternehmensperson,
-                standort.getValue(),
-                berufsbezeichnung.getValue(),
-                studienfach.getValue(),
-                homeOffice.getValue()
-        );
-        UI.getCurrent().navigate("unternehmen/unternehmensprofil");
+        Job newJob;
+        if (jobId == 0) {
+            newJob = stellenanzeigeController.stellenanzeigeErstellen(job, unternehmensperson);
+        } else {
+            newJob = stellenanzeigeController.stellenanzeigeAktualisieren(job, unternehmensperson);
+        }
+
+        if (newJob == null) {
+            Notification.show("Bitte füllen Sie alle Felder aus.");
+        } else {
+            if (aktiv) {
+                UI.getCurrent().navigate(NEXT_PAGE + "/job/" + newJob.getId_Job());
+            } else {
+                UI.getCurrent().navigate(NEXT_PAGE);
+            }
+        }
     }
 
     /**
-     * Handler für den Zurück-Button.
-     * Speichert die Stellenanzeige nicht und ruft die Profilseite des Unternehmens auf.
+     * Lädt die Daten des Jobs in die Felder, wenn ein bestehender Job bearbeitet wird.
+     * Erstellt einen neuen Job, wenn keine Jobid übergeben wurde.
+     * Leitet auf die Profilseite des Unternehmens weiter, wenn die Jobid ungültig ist.
      */
-    private void zurueckHandler() {
-        UI.getCurrent().navigate("unternehmen/unternehmensprofil");
+    private void loadJobData() {
+        if (jobId == 0) {
+            // Neuer Job wird erstellt
+            job = new Job();
+            job.setUnternehmen(unternehmensperson.getUnternehmen());
+            job.setPerson(unternehmensperson);
+        } else if (jobId == -1) {
+            // Jobid ist ungültig
+            UI.getCurrent().navigate(NEXT_PAGE);
+        } else {
+            // Bestehender Job wird bearbeitet
+            jobRepository.findById(jobId).ifPresentOrElse(
+                    presentJob -> this.job = presentJob,
+                    () -> UI.getCurrent().navigate(NEXT_PAGE)
+            );
+            if (stellenanzeigeController.canEdit(job, unternehmensperson)) {
+                // Vorhandene Daten werden in die Felder eingetragen
+                eintrittsdatum.setValue(job.getEintritt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+                berufsbezeichnung.setValue(job.getJobKategorie());
+                standort.setValue(job.getOrt());
+                studienfach.setValue(job.getStudienfacher());
+                titel.setValue(job.getTitel());
+                stellenbeschreibung.setValue(job.getFreitext());
+                homeOffice.setValue(job.isHomeOffice());
+            } else {
+                // Job darf nicht bearbeitet werden
+                UI.getCurrent().navigate(NEXT_PAGE);
+            }
+        }
     }
 }

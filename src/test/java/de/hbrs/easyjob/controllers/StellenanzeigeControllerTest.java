@@ -1,236 +1,331 @@
 package de.hbrs.easyjob.controllers;
 
 import de.hbrs.easyjob.entities.*;
-import de.hbrs.easyjob.repositories.*;
+import de.hbrs.easyjob.repositories.JobKategorieRepository;
+import de.hbrs.easyjob.repositories.JobRepository;
+import de.hbrs.easyjob.repositories.OrtRepository;
+import de.hbrs.easyjob.repositories.StudienfachRepository;
 import de.hbrs.easyjob.services.JobService;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+import de.hbrs.easyjob.services.PersonService;
+import de.hbrs.easyjob.services.UnternehmenService;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 @SpringBootTest
 class StellenanzeigeControllerTest {
-    // Repositories
-    private final static JobRepository jobRepository = mock(JobRepository.class);
-    private final static StudienfachRepository studienfachRepository = mock(StudienfachRepository.class);
-    private final static JobKategorieRepository jobKategorieRepository = mock(JobKategorieRepository.class);
-    private final static PersonRepository personRepository = mock(PersonRepository.class);
-    private final static UnternehmenRepository unternehmenRepository = mock(UnternehmenRepository.class);
-    private final static OrtRepository ortRepository = mock(OrtRepository.class);
+    // Controller
+    @Autowired
+    private StellenanzeigeController stellenanzeigeController;
 
     // Services
-    @InjectMocks
-    private final static JobService jobService = mock(JobService.class);
+    @Autowired
+    private JobService jobService;
+    @Autowired
+    private PersonService personService;
+    @Autowired
+    private UnternehmenService unternehmenService;
 
-    // Controllers
-    private static final StellenanzeigeController stellenanzeigeControl = new StellenanzeigeController(jobService);
+    // Repositories
+    @Autowired
+    private JobRepository jobRepository;
+    @Autowired
+    private JobKategorieRepository jobKategorieRepository;
+    @Autowired
+    private OrtRepository ortRepository;
+    @Autowired
+    private StudienfachRepository studienfachRepository;
 
     // Entities
-    private static JobKategorie jobKategorie;
-    private static Ort ort;
-    private static String titel;
-    private static String freitext;
-    private static Studienfach studienfach;
-    private static Unternehmensperson unternehmensperson;
-    private static Unternehmen unternehmen;
+    private Job job1, job2;
+    private Unternehmen unternehmen1, unternehmen2;
+    private Unternehmensperson unternehmensperson1, unternehmensperson2;
+    private Ort ort1, ort2;
+    private JobKategorie jobKategorie1, jobKategorie2;
+    private Studienfach studienfach1, studienfach2;
 
-    @BeforeAll
-    static void setUp() {
-        // Setup entities
-        jobKategorie = new JobKategorie();
-        jobKategorie.setKategorie("Werkstudent");
+    private String titel1, titel2;
+    private String freitext1, freitext2;
+    private Date eintritt1, eintritt2;
+    private List<Integer> toDelete = new ArrayList<>();
 
-        ort = new Ort();
-        ort.setOrt("Bonn");
-        ort.setPLZ("53111");
 
-        titel = "Werkstudent (m/w/d) Softwareentwicklung";
-        freitext = "Wir suchen einen Werkstudenten (m/w/d) im Bereich Softwareentwicklung.";
+    @BeforeEach
+    void setUp() {
+        // Job 1
+        job1 = new Job();
 
-        studienfach = new Studienfach();
-        studienfach.setFach("Informatik");
-        studienfach.setAbschluss("Bachelor");
+        titel1 = "Werkstudent (m/w/d) Java-Entwicklung";
+        freitext1 = "Wir suchen einen Werkstudenten (m/w/d) im Bereich Java-Entwicklung.";
+        eintritt1 = Date.from(new Date().toInstant().plus(java.time.Duration.ofDays(30)));
+        unternehmen1 = unternehmenService.findByID(2);
+        unternehmensperson1 = unternehmen1.getUnternehmensperson();
+        ort1 = ortRepository.findById(1).orElseThrow(NullPointerException::new);
+        jobKategorie1 = jobKategorieRepository.findById(1).orElseThrow(NullPointerException::new);
+        studienfach1 = studienfachRepository.findById(1).orElseThrow(NullPointerException::new);
 
-        unternehmensperson = new Unternehmensperson();
-        unternehmensperson.setVorname("Max");
-        unternehmensperson.setNachname("Mustermann");
-        unternehmensperson.setEmail("max.mustermann@easyqube.de");
+        job1.setTitel(titel1);
+        job1.setFreitext(freitext1);
+        job1.setEintritt(eintritt1);
+        job1.setUnternehmen(unternehmen1);
+        job1.setPerson(unternehmensperson1);
+        job1.setOrt(ort1);
+        job1.setJobKategorie(jobKategorie1);
+        job1.setStudienfacher(Set.of(studienfach1));
+        job1.setAktiv(true);
 
-        unternehmen = new Unternehmen();
-        unternehmen.setName("EasyQube GmbH");
-        unternehmen.setUnternehmensperson(unternehmensperson);
 
-        Job job = new Job();
+        // Job 2
+        job2 = new Job();
 
-        job.setTitel(titel);
-        job.setFreitext(freitext);
-        job.setErstellt_am(new Date());
-        job.setEintritt(Date.from(new Date().toInstant().plus(java.time.Duration.ofDays(30))));
-        job.setUnternehmen(unternehmen);
-        job.setPerson(unternehmensperson);
-        job.setOrt(ort);
-        job.setJobKategorie(jobKategorie);
-        job.setStudienfacher(Set.of(studienfach));
+        titel2 = "Werkstudent (m/w/d) Python-Entwicklung";
+        freitext2 = "Wir suchen einen Werkstudenten (m/w/d) im Bereich Python-Entwicklung.";
+        eintritt2 = Date.from(new Date().toInstant().plus(java.time.Duration.ofDays(60)));
+        unternehmen2 = unternehmenService.findByID(3);
+        unternehmensperson2 = unternehmen2.getUnternehmensperson();
+        ort2 = ortRepository.findById(2).orElseThrow(NullPointerException::new);
+        jobKategorie2 = jobKategorieRepository.findById(2).orElseThrow(NullPointerException::new);
+        studienfach2 = studienfachRepository.findById(2).orElseThrow(NullPointerException::new);
 
-        // Arrange mocks
-        when(ortRepository.findByPLZAndOrt(anyString(), anyString())).thenReturn(ort);
-        when(unternehmenRepository.findByName(anyString())).thenReturn(unternehmen);
-        when(personRepository.findByEmail(anyString())).thenReturn(unternehmensperson);
-        when(jobKategorieRepository.findByKategorie(anyString())).thenReturn(jobKategorie);
-        when(studienfachRepository.findByFachAndAbschluss(anyString(), anyString())).thenReturn(studienfach);
-        when(jobRepository.save(job)).thenReturn(job);
-        when(jobService.saveJob(any(Job.class))).thenReturn(job);
-
-        Job job2 = new Job();
-        job2.setUnternehmen(unternehmen);
-        job2.setTitel("Werkstudent (m/w/d) Java-Entwicklung");
-        job2.setFreitext("Wir suchen einen Werkstudenten (m/w/d) im Bereich Java-Entwicklung.");
-        job2.setErstellt_am(new Date());
-        job2.setEintritt(Date.from(new Date().toInstant().plus(java.time.Duration.ofDays(60))));
-        job2.setOrt(ort);
-        job2.setJobKategorie(jobKategorie);
-        job2.setPerson(unternehmensperson);
-        job2.setStudienfacher(Set.of(studienfach));
-        when(jobRepository.findAllByUnternehmenId(any(Integer.class))).thenReturn(List.of(job, job2));
-        when(jobService.findAllByUnternehmenId(any(Integer.class))).thenReturn(List.of(job, job2));
+        job2.setUnternehmen(unternehmen2);
+        job2.setTitel(titel2);
+        job2.setFreitext(freitext2);
+        job2.setEintritt(eintritt2);
+        job2.setOrt(ort2);
+        job2.setJobKategorie(jobKategorie2);
+        job2.setPerson(unternehmensperson2);
+        job2.setStudienfacher(Set.of(studienfach2));
+        job2.setAktiv(true);
     }
 
     @Test
     @DisplayName("Gültige Stellenanzeige erstellen")
     void stelleAnzeigeErstellen() {
-        // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, unternehmensperson, ort, jobKategorie, Set.of(studienfach), true);
+        // Act
+        Job actual = stellenanzeigeController.stellenanzeigeErstellen(job1, unternehmensperson1);
 
-        // Verify
-        assertNotNull(result);
-        assertEquals(titel, result.getTitel());
-        assertEquals(freitext, result.getFreitext());
-        assertEquals(ort.getOrt(), result.getOrt().getOrt());
-        assertEquals(ort.getPLZ(), result.getOrt().getPLZ());
-        assertEquals(unternehmen.getName(), result.getUnternehmen().getName());
-        assertEquals(unternehmensperson.getEmail(), result.getPerson().getEmail());
-        assertEquals(jobKategorie.getKategorie(), result.getJobKategorie().getKategorie());
-        assertEquals(studienfach.getFach(), result.getStudienfacher().iterator().next().getFach());
-        assertEquals(studienfach.getAbschluss(), result.getStudienfacher().iterator().next().getAbschluss());
+        // Assert
+        Assertions.assertEquals(job1.getAktiv(), actual.getAktiv());
+        Assertions.assertEquals(job1.getEintritt(), actual.getEintritt());
+        Assertions.assertEquals(job1.getFreitext(), actual.getFreitext());
+        Assertions.assertEquals(job1.getJobKategorie(), actual.getJobKategorie());
+        Assertions.assertEquals(job1.getOrt(), actual.getOrt());
+        Assertions.assertEquals(job1.getPerson(), actual.getPerson());
+        Assertions.assertEquals(job1.getStudienfacher(), actual.getStudienfacher());
+        Assertions.assertEquals(job1.getTitel(), actual.getTitel());
+        Assertions.assertEquals(job1.getUnternehmen(), actual.getUnternehmen());
+
+        // Prepare for tearDown
+        toDelete.add(actual.getId_Job());
     }
 
     @Test
     @DisplayName("Stellenanzeige mit titel == null erstellen")
     void stellenAnzeigeMitUngueltigemTitel() {
-        // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(null, freitext, new java.util.Date(), unternehmen, unternehmensperson, ort, jobKategorie, Set.of(studienfach), false);
+        // Arrange
+        job1.setTitel(null);
 
-        // Verify
-        assertNull(result);
+        // Act
+        Job actual = stellenanzeigeController.stellenanzeigeErstellen(job1, unternehmensperson1);
+
+        // Assert
+        Assertions.assertNull(actual);
     }
 
     @Test
     @DisplayName("Stellenanzeige mit freitext == null erstellen")
     void stellenAnzeigeMitUngueltigemFreitext() {
-        // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, null, new java.util.Date(), unternehmen, unternehmensperson, ort, jobKategorie, Set.of(studienfach), true);
+        // Arrange
+        job1.setFreitext(null);
 
-        // Verify
-        assertNull(result);
+        // Act
+        Job actual = stellenanzeigeController.stellenanzeigeErstellen(job1, unternehmensperson1);
+
+        // Assert
+        Assertions.assertNull(actual);
     }
 
     @Test
     @DisplayName("Stellenanzeige mit eintrittsdatum == null erstellen")
     void stellenAnzeigeMitUngueltigemEintrittsdatum() {
-        // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, null, unternehmen, unternehmensperson, ort, jobKategorie, Set.of(studienfach), false);
+        // Arrange
+        job1.setEintritt(null);
 
-        // Verify
-        assertNull(result);
+        // Act
+        Job actual = stellenanzeigeController.stellenanzeigeErstellen(job1, unternehmensperson1);
+
+        // Assert
+        Assertions.assertNull(actual);
     }
 
     @Test
     @DisplayName("Stellenanzeige mit unternehmen == null erstellen")
     void stellenAnzeigeMitUngueltigemUnternehmen() {
-        // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), null, unternehmensperson, ort, jobKategorie, Set.of(studienfach), true);
+        // Arrange
+        job1.setUnternehmen(null);
 
-        // Verify
-        assertNull(result);
+        // Act
+        Job actual = stellenanzeigeController.stellenanzeigeErstellen(job1, unternehmensperson1);
+
+        // Assert
+        Assertions.assertNull(actual);
     }
 
     @Test
     @DisplayName("Stellenanzeige mit unternehmensperson == null erstellen")
     void stellenAnzeigeMitUngueltigerUnternehmensperson() {
-        // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, null, ort, jobKategorie, Set.of(studienfach), false);
+        // Arrange
+        job1.setPerson(unternehmensperson2);
 
-        // Verify
-        assertNull(result);
+        // Act
+        Job actual = stellenanzeigeController.stellenanzeigeErstellen(job1, unternehmensperson2);
+
+        // Assert
+        Assertions.assertNull(actual);
     }
 
     @Test
     @DisplayName("Stellenanzeige mit ort == null erstellen")
     void stellenAnzeigeMitUngueltigemOrt() {
-        // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, unternehmensperson, null, jobKategorie, Set.of(studienfach), true);
+        // Arrange
+        job1.setOrt(null);
 
-        // Verify
-        assertNull(result);
+        // Act
+        Job actual = stellenanzeigeController.stellenanzeigeErstellen(job1, unternehmensperson1);
+
+        // Assert
+        Assertions.assertNull(actual);
     }
 
     @Test
     @DisplayName("Stellenanzeige mit jobKategorie == null erstellen")
     void stellenAnzeigeMitUngueltigerJobKategorie() {
-        // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, unternehmensperson, ort, null, Set.of(studienfach), false);
+        // Arrange
+        job1.setJobKategorie(null);
 
-        // Verify
-        assertNull(result);
+        // Act
+        Job actual = stellenanzeigeController.stellenanzeigeErstellen(job1, unternehmensperson1);
+
+        // Assert
+        Assertions.assertNull(actual);
     }
 
     @Test
     @DisplayName("Stellenanzeige mit studienfaecher == null erstellen")
     void stellenAnzeigeMitUngueltigenStudienfaechern() {
-        // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(titel, freitext, new java.util.Date(), unternehmen, unternehmensperson, ort, jobKategorie, null, true);
+        // Arrange
+        job1.setStudienfacher(null);
 
-        // Verify
-        assertNull(result);
+        // Act
+        Job actual = stellenanzeigeController.stellenanzeigeErstellen(job1, unternehmensperson1);
+
+        // Assert
+        Assertions.assertNull(actual);
     }
 
     @Test
     @DisplayName("Stellenanzeige mit allen Parametern == null erstellen")
     void stellenAnzeigeMitAllenUngueltigenParametern() {
-        // Exercise
-        Job result = stellenanzeigeControl.stellenanzeigeErstellen(null, null, null, null, null, null, null, null, false);
+        // Arrange
+        job1.setTitel(null);
+        job1.setFreitext(null);
+        job1.setEintritt(null);
+        job1.setUnternehmen(null);
+        job1.setPerson(null);
+        job1.setOrt(null);
+        job1.setJobKategorie(null);
+        job1.setStudienfacher(null);
 
-        // Verify
-        assertNull(result);
+        // Act
+        Job actual = stellenanzeigeController.stellenanzeigeErstellen(job1, unternehmensperson1);
+
+        // Assert
+        Assertions.assertNull(actual);
     }
 
     @Test
-    @DisplayName("Gebe alle Stellenanzeigen von EasyQube GmbH zurück")
-    void stellenanzeigenEinesUnternehmens() {
-        // Exercise
-        List<Job> jobs = stellenanzeigeControl.stellenanzeigenEinesUnternehmens(1);
+    @DisplayName("Gültige Stellenanzeige aktualisieren")
+    void stelleAnzeigeAktualisieren() {
+        // Arrange
+        String newTitle = "Werkstudent (m/w/d) C++-Entwicklung";
+        Job newJob = stellenanzeigeController.stellenanzeigeErstellen(job1, unternehmensperson1);
 
-        // Verify
-        assertNotNull(jobs);
-        assertEquals(2, jobs.size());
-        assertEquals("Werkstudent (m/w/d) Softwareentwicklung", jobs.get(0).getTitel());
-        assertEquals("Werkstudent (m/w/d) Java-Entwicklung", jobs.get(1).getTitel());
-        assertEquals("EasyQube GmbH", jobs.get(0).getUnternehmen().getName());
-        assertEquals("EasyQube GmbH", jobs.get(1).getUnternehmen().getName());
-        assertEquals("Max", jobs.get(0).getPerson().getVorname());
-        assertEquals("Max", jobs.get(1).getPerson().getVorname());
-        assertEquals("Mustermann", jobs.get(0).getPerson().getNachname());
-        assertEquals("Mustermann", jobs.get(1).getPerson().getNachname());
+        job2.setId_Job(newJob.getId_Job());
+        job2.setTitel(newTitle);
+        job2.setUnternehmen(unternehmen1);
+        job2.setPerson(unternehmensperson1);
+
+        // Assert
+        Assertions.assertEquals(titel1, newJob.getTitel());
+
+        // Act
+        Job editedJob = stellenanzeigeController.stellenanzeigeAktualisieren(job2, unternehmensperson1);
+
+        // Assert
+        Assertions.assertEquals(newTitle, editedJob.getTitel());
+
+        // Prepare for tearDown
+        toDelete.add(newJob.getId_Job());
+    }
+
+    @Test
+    @DisplayName("Stellenanzeige mit falscher unternehmensperson aktualisieren")
+    void stelleAnzeigeMitFalscherUnternehmenspersonAktualisieren() {
+        // Arrange
+        Job newJob = stellenanzeigeController.stellenanzeigeErstellen(job1, unternehmensperson1);
+
+        // Assert
+        Assertions.assertEquals(titel1, newJob.getTitel());
+
+        // Act
+        Job editedJob = stellenanzeigeController.stellenanzeigeAktualisieren(newJob, unternehmensperson2);
+
+        // Assert
+        Assertions.assertNull(editedJob);
+        Assertions.assertEquals(titel1, newJob.getTitel());
+
+        // Prepare for tearDown
+        toDelete.add(newJob.getId_Job());
+    }
+
+    @Test
+    @DisplayName("Gebe alle Stellenanzeigen von Unternehmen 1 zurück")
+    void stellenanzeigenEinesUnternehmens() {
+        // Arrange
+        Job newJob1 = stellenanzeigeController.stellenanzeigeErstellen(job1, unternehmensperson1);
+        job2.setTitel("Werkstudent (m/w/d) C++-Entwicklung");
+        job2.setUnternehmen(unternehmen1);
+        job2.setPerson(unternehmensperson1);
+        Job newJob2 = stellenanzeigeController.stellenanzeigeErstellen(job2, unternehmensperson1);
+
+        // Act
+        List<Job> actual = stellenanzeigeController.stellenanzeigenEinesUnternehmens(unternehmen1.getId_Unternehmen());
+
+        // Assert
+        Assertions.assertTrue(actual.stream().anyMatch(job -> newJob1.getId_Job().equals(job.getId_Job())));
+        Assertions.assertTrue(actual.stream().anyMatch(job -> newJob2.getId_Job().equals(job.getId_Job())));
+
+        // Prepare for tearDown
+        toDelete.add(newJob1.getId_Job());
+        toDelete.add(newJob2.getId_Job());
+    }
+
+    @AfterEach
+    void tearDown() {
+        try {
+            for (Integer id : toDelete) {
+                jobRepository.deleteJobSuchtStudienfach(id);
+                jobRepository.deleteById(id);
+            }
+            toDelete.clear();
+        } catch (Exception e) {
+            System.out.println("Error while tearing down: " + e.getMessage());
+            System.out.println("You might need to remove the entries manually.");
+        }
     }
 }

@@ -9,6 +9,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Job;
 import de.hbrs.easyjob.repositories.JobRepository;
@@ -18,8 +19,11 @@ import de.hbrs.easyjob.views.components.StudentLayout;
 @Route(value = "student/job", layout = StudentLayout.class)
 @StyleSheet("JobDetailsStudent.css")
 public class JobDetailsView extends AbstractJobDetails {
-    public JobDetailsView(SessionController sessionController, JobRepository jobRepository) {
-        super(sessionController, jobRepository);
+
+
+
+    public JobDetailsView(SessionController sessionController, JobRepository jobRepository, MeldungController meldungController) {
+        super(sessionController, jobRepository, meldungController);
     }
 
     @Override
