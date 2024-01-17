@@ -19,7 +19,6 @@ import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UnternehmenService {
@@ -80,7 +79,7 @@ public class UnternehmenService {
         Root<Unternehmen> unternehmen = cq.from(Unternehmen.class);
         cq.select(unternehmen.get("branchen")).distinct(true);
         List<Branche> branches = entityManager.createQuery(cq).getResultList();
-        return branches.stream().distinct().collect(Collectors.toList());
+        return branches.stream().distinct().toList();
     }
 
     public List<Job> getAllJobs(Integer unternehmenId) {
@@ -97,6 +96,4 @@ public class UnternehmenService {
     public List<Job> getAllJobsByUnternehmenspersonId(Integer id){
         return jobRepository.findAllJobs(id);
     }
-    // Macht die Methode hier nicht das gleiche wie getFirstStandort?
 }
-//TODO: Java-Docs schreiben (z.B. wozu ist getFirstStandort?) & wieso gibt es saveUnternehmen und savenewUnternehmen?
