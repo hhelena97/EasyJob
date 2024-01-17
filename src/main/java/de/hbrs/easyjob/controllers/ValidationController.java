@@ -129,7 +129,9 @@ public interface ValidationController {
      */
     static boolean isValidCompanyName(String companyName) {
         String nameRegex = "^\\S.{0,62}\\S$";
-
+        if (companyName == null) {
+            return false;
+        }
         Pattern pattern = Pattern.compile(nameRegex);
         Matcher matcher = pattern.matcher(companyName);
         return matcher.matches();
