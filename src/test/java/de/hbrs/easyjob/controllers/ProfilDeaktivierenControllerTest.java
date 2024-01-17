@@ -4,7 +4,6 @@ import de.hbrs.easyjob.entities.Person;
 import de.hbrs.easyjob.entities.Student;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.PersonRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
 import de.hbrs.easyjob.repositories.UnternehmenspersonRepository;
@@ -12,8 +11,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
@@ -29,10 +28,9 @@ class ProfilDeaktivierenControllerTest {
     private static final PersonRepository personRepository = Mockito.mock(PersonRepository.class);
     private static final UnternehmenRepository unternehmenRepository = Mockito.mock(UnternehmenRepository.class);
     private static final UnternehmenspersonRepository unternehmenspersonRepository = Mockito.mock(UnternehmenspersonRepository.class);
-    private static final JobRepository jobRepository = Mockito.mock(JobRepository.class);
 
     // Controllers
-    @Autowired
+    @InjectMocks
     private ProfilDeaktivierenController profilDeaktivierenController;
 
     // Entities
@@ -58,6 +56,7 @@ class ProfilDeaktivierenControllerTest {
 
         unternehmen.setId_Unternehmen(1);
         unternehmen.setName("TestUnternehmen");
+        unternehmen.setBeschreibung("TestBeschreibung");
         unternehmen.setAktiv(true);
         unternehmen.setUnternehmensperson(manager);
 
@@ -79,7 +78,7 @@ class ProfilDeaktivierenControllerTest {
         personU.setId_Person(7);
         personU.setAktiv(true);
 
-        Mockito.when(unternehmenRepository.findById(1)).thenReturn(Optional.of(unternehmen));
+        Mockito.when(unternehmenRepository.findById(unternehmen.getId_Unternehmen())).thenReturn(Optional.of(unternehmen));
 
         // -------------------------------------------------------------------------------------------------------------
 
@@ -104,7 +103,7 @@ class ProfilDeaktivierenControllerTest {
         personU2.setId_Person(77);
         personU2.setAktiv(true);
 
-        Mockito.when(unternehmenRepository.findById(2)).thenReturn(Optional.of(unternehmen2));
+        Mockito.when(unternehmenRepository.findById(unternehmen2.getId_Unternehmen())).thenReturn(Optional.of(unternehmen2));
 
         Mockito.when(unternehmenRepository.save(Mockito.any(Unternehmen.class))).thenAnswer(i -> i.getArguments()[0]);
 

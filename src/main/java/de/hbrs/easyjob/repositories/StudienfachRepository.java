@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Component
-public interface StudienfachRepository extends JpaRepository<Studienfach, Long> {
+public interface StudienfachRepository extends JpaRepository<Studienfach, Integer> {
     Studienfach findByFachAndAbschluss(String fach, String abschluss);
 
     Set<Studienfach> findAllByAbschluss(String abschluss);
