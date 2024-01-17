@@ -34,7 +34,7 @@ public class UnternehmenspersonProfilView extends VerticalLayout implements Befo
     private final transient Unternehmensperson person;
     private final transient VerticalLayout personKontakt = new VerticalLayout();
 
-    private final SessionController sessionController;
+    private final transient SessionController sessionController;
 
     public UnternehmenspersonProfilView(SessionController sessionController) {
         this.sessionController = sessionController;
@@ -44,7 +44,7 @@ public class UnternehmenspersonProfilView extends VerticalLayout implements Befo
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        if(!sessionController.isLoggedIn()|| !sessionController.hasRole("ROLE_STUDENT")){
+        if(!sessionController.isLoggedIn()|| !sessionController.hasRole("ROLE_UNTERNEHMENSPERSON")){
             event.rerouteTo(LoginView.class);
         }
         if(! sessionController.getPerson().getAktiv()){
