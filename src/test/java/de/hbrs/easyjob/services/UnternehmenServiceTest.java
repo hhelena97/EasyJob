@@ -4,10 +4,7 @@ import de.hbrs.easyjob.controllers.registrieren.UnternehmenspersonRegistrierenCo
 import de.hbrs.easyjob.entities.Ort;
 import de.hbrs.easyjob.entities.Unternehmen;
 import de.hbrs.easyjob.entities.Unternehmensperson;
-import de.hbrs.easyjob.repositories.JobRepository;
-import de.hbrs.easyjob.repositories.OrtRepository;
-import de.hbrs.easyjob.repositories.PersonRepository;
-import de.hbrs.easyjob.repositories.UnternehmenRepository;
+import de.hbrs.easyjob.repositories.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +25,8 @@ class UnternehmenServiceTest {
     private PersonRepository personRepository;
     @Autowired
     private UnternehmenRepository unternehmenRepository;
+    @Autowired
+    private BrancheRepository brancheRepository;
 
     // Service
     @Autowired
@@ -171,16 +170,18 @@ class UnternehmenServiceTest {
         unternehmensperson.setVorname("Stern");
 
         /* ******************************* ACT / ASSERT ******************************* */
-        assertThrows(Exception.class, () -> unternehmenService.savenewUnternehmen(expected, unternehmensperson));
+        assertNull(unternehmenService.savenewUnternehmen(expected, unternehmensperson));
     }
 
     @Test
-    @DisplayName("Testet, ob Unternehmen mit  existierender Unternehmensperson gespeichert werden kann")
+    @DisplayName("Testet, ob Unternehmen mit existierender Unternehmensperson gespeichert werden kann")
     void savenewUnternehmenExistingUnternehmenspersonTest() {
         /* ***************************** ARRANGE ***************************** */
         Unternehmen expected = new Unternehmen();
         expected.setName("Katzenkörbchen GmbH");
         expected.setStandorte(Set.of(ortRepository.findByPLZAndOrt("53115","Bonn")));
+        expected.setBranchen(Set.of(brancheRepository.findById(3).orElseThrow(NullPointerException::new)));
+        expected.setBeschreibung("Ganz tolle Beschreibung hier einfügen.");
 
         Unternehmensperson unternehmensperson = new Unternehmensperson();
         unternehmensperson.setEmail("lara.croft@adventure.org");

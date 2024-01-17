@@ -1,6 +1,8 @@
 package de.hbrs.easyjob.services;
 
+import de.hbrs.easyjob.controllers.ValidationController;
 import de.hbrs.easyjob.entities.*;
+import de.hbrs.easyjob.repositories.BrancheRepository;
 import de.hbrs.easyjob.repositories.JobRepository;
 import de.hbrs.easyjob.repositories.OrtRepository;
 import de.hbrs.easyjob.repositories.UnternehmenRepository;
@@ -16,7 +18,6 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,12 +28,14 @@ public class UnternehmenService {
     @PersistenceContext
     private EntityManager entityManager;
     private final JobRepository jobRepository;
+    private final BrancheRepository brancheRepository;
 
     @Autowired
-    public UnternehmenService(UnternehmenRepository unternehmenRepository, OrtRepository ortRepository, JobRepository jobRepository) {
+    public UnternehmenService(UnternehmenRepository unternehmenRepository, OrtRepository ortRepository, JobRepository jobRepository, BrancheRepository brancheRepository) {
         this.unternehmenRepository = unternehmenRepository;
         this.ortRepository = ortRepository;
         this.jobRepository = jobRepository;
+        this.brancheRepository = brancheRepository;
     }
     public Unternehmen findByName(String name) {
         return unternehmenRepository.findByName(name);
@@ -43,12 +46,10 @@ public class UnternehmenService {
         }
         return unternehmenRepository.save(unternehmen);
     }
-    //TODO: checken, ob Unternehmen valide (null-Unternehmen speichern sinnlos (siehe Test hierzu)
     public Unternehmen findByID(Integer id){
         return unternehmenRepository.findById(id).orElse(null);
     }
-    //TODO: Fehler abfangen, wenn man kein Unternehmen findet (wie z.B. bei findByName, wo dann nur null ausgegeben
-    // wird, wenn nichts gefunden wurde)
+
     public int anzahlJobs(Unternehmen unternehmen){
         return jobRepository.countByUnternehmenId_Unternehmen(unternehmen.getId_Unternehmen());
     }
@@ -59,15 +60,19 @@ public class UnternehmenService {
     }
     @Transactional
     public Unternehmen savenewUnternehmen(Unternehmen unternehmen, Unternehmensperson unternehmensperson) {
-        Set<Ort> aktualisierteStandorte = new HashSet<>();
-        for (Ort ort : unternehmen.getStandorte()) {
-            Ort gefundenerOrt = ortRepository.findByPLZAndOrt(ort.getPLZ(),ort.getOrt());
-            aktualisierteStandorte.add(gefundenerOrt);
+        if (ValidationController.isValidUnternehmen(unternehmen, ortRepository, brancheRepository)) {
+            Set<Ort> aktualisierteStandorte = new HashSet<>();
+            for (Ort ort : unternehmen.getStandorte()) {
+                Ort gefundenerOrt = ortRepository.findByPLZAndOrt(ort.getPLZ(), ort.getOrt());
+                aktualisierteStandorte.add(gefundenerOrt);
+            }
+            unternehmen.setStandorte(aktualisierteStandorte);
+            unternehmen.setUnternehmensperson(unternehmensperson);
+            unternehmen.setAktiv(true);
+            return unternehmenRepository.save(unternehmen);
+        } else {
+            return null;
         }
-        unternehmen.setStandorte(aktualisierteStandorte);
-        unternehmen.setUnternehmensperson(unternehmensperson);
-        unternehmen.setAktiv(true);
-        return unternehmenRepository.save(unternehmen);
     }
     public List<Branche> getAllBranchen() {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();

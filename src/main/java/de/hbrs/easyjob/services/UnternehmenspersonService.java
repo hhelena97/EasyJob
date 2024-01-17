@@ -22,6 +22,11 @@ public class UnternehmenspersonService {
 
     @Transactional
     public boolean saveUnternehmensperson(Unternehmensperson unternehmensperson) {
+        // falls der Person gar kein Unternehmen zu geordnet wurde
+        if (unternehmensperson.getUnternehmen() == null) {
+            return false;
+        }
+
         Unternehmen bestehendesUnternehmen = unternehmenService.findByName(unternehmensperson.getUnternehmen().getName());
         //Account aktivieren
         unternehmensperson.setAktiv(true);
@@ -33,6 +38,9 @@ public class UnternehmenspersonService {
         } else {
             // Unternehmen existiert nicht, neues Unternehmen erstellen
             Unternehmen neuesUnternehmen = unternehmenService.savenewUnternehmen(unternehmensperson.getUnternehmen(), unternehmensperson);
+            if (neuesUnternehmen == null) {
+                return false;
+            }
             unternehmensperson.setUnternehmen(neuesUnternehmen);
             return unternehmenspersonRegistrierenController.createUnternehmenspersonWithoutCompany(unternehmensperson, true);
         }
