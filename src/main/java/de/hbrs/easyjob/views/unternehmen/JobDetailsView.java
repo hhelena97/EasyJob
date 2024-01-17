@@ -22,10 +22,11 @@ public class JobDetailsView extends AbstractJobDetails {
     public void displayJob(Job job) {
         super.displayJob(job);
         // Editieren
-        // TODO: Check if user is part of company
-        Button edit = new Button(FontAwesome.Solid.PENCIL.create());
-        edit.addClassName("job-details-edit-button");
-        edit.addClickListener(event -> UI.getCurrent().navigate("unternehmen/job/" + job.getId_Job() + "/edit"));
-        buttons.add(edit);
+        if (sessionController.getPerson().getId_Person().equals(job.getPerson().getId_Person())) {
+            Button edit = new Button(FontAwesome.Solid.PENCIL.create());
+            edit.addClassName("job-details-edit-button");
+            edit.addClickListener(event -> UI.getCurrent().navigate("unternehmen/job/" + job.getId_Job() + "/edit"));
+            buttons.add(edit);
+        }
     }
 }

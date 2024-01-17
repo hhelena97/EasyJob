@@ -13,13 +13,18 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.Job;
+import de.hbrs.easyjob.entities.Unternehmensperson;
 import de.hbrs.easyjob.repositories.JobRepository;
 
 @StyleSheet("JobDetails.css")
 public abstract class AbstractJobDetails extends VerticalLayout implements BeforeEnterObserver, HasUrlParameter<Integer> {
-    private final transient SessionController sessionController;
-    private final transient JobRepository jobRepository;
+    // Repositories
+    protected final transient JobRepository jobRepository;
 
+    // Controllers
+    protected final transient SessionController sessionController;
+
+    // Components
     public final VerticalLayout frame = new VerticalLayout();
     public final HorizontalLayout buttons = new HorizontalLayout();
     public final Div descriptionContainer = new Div();
@@ -33,10 +38,18 @@ public abstract class AbstractJobDetails extends VerticalLayout implements Befor
 
     @Override
     public void setParameter(BeforeEvent event, Integer parameter) {
-        jobRepository.findById(parameter).ifPresentOrElse(
-                this::displayJob,
-                () -> frame.add("Job konnte nicht gefunden werden!")
-        );
+        jobRepository.findById(parameter).ifPresentOrElse(job -> {
+            if (Boolean.TRUE.equals(job.getAktiv())) {
+                displayJob(job);
+            } else if (sessionController.hasRole("ROLE_UNTERNEHMENSPERSON") &&
+                    ((Unternehmensperson) sessionController.getPerson())
+                            .getUnternehmen().getId_Unternehmen().equals(job.getUnternehmen().getId_Unternehmen())
+            ) {
+                displayJob(job);
+            } else {
+                add("Job nicht gefunden");
+            }
+        }, () -> add("Job nicht gefunden"));
     }
 
     public void displayJob(Job job) {
@@ -83,7 +96,6 @@ public abstract class AbstractJobDetails extends VerticalLayout implements Befor
         tags[2].add(FontAwesome.Solid.GRADUATION_CAP.create(), new Span(job.getJobKategorie().getKategorie()));
 
         // Beschreibung
-        // TODO: Parse description into proper HTML
         Scroller description = new Scroller();
         Paragraph descriptionText = new Paragraph(job.getFreitext());
 
@@ -95,9 +107,12 @@ public abstract class AbstractJobDetails extends VerticalLayout implements Befor
         frame.add(image, buttons, company, title, tagsContainer, description);
     }
 
-    protected AbstractJobDetails(SessionController sessionController, JobRepository jobRepository) {
-        this.sessionController = sessionController;
+    protected AbstractJobDetails(
+            SessionController sessionController,
+            JobRepository jobRepository
+    ) {
         this.jobRepository = jobRepository;
+        this.sessionController = sessionController;
 
         frame.setClassName("container");
         add(frame);
