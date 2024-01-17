@@ -14,9 +14,6 @@ import java.util.List;
 @Controller
 public class ProfilDeaktivierenController {
 
-    //TODO: immer wenn Profil aufgerufen wird muss geprüft werden, ob die Spalte Aktiv false oder true ist:
-    // nur aufrufen, wenn true ist.
-
     private final JobRepository jobRepository;
     private final PersonRepository personRepository;
     private final UnternehmenRepository unternehmenRepository;
@@ -25,6 +22,7 @@ public class ProfilDeaktivierenController {
      * Konstruktor
      * @param pR Repository Person
      * @param uR Repository Unternehmen
+     * @param jR Repository Job
      */
     public ProfilDeaktivierenController(PersonRepository pR, UnternehmenRepository uR, JobRepository jR) {
         this.jobRepository = jR;
@@ -65,36 +63,28 @@ public class ProfilDeaktivierenController {
      * @return true, wenn alles fertig ist und geklappt hat
      */
     public boolean profilDeaktivierenUnternehmen(Unternehmensperson manager) {
-        if(manager != null) {
+        if(manager != null) { // Übergebene Unternehmensperson ist nicht null
             Unternehmen unternehmen = manager.getUnternehmen();
-            if (unternehmen.getUnternehmensperson() != null && unternehmen.getUnternehmensperson().equals(manager)) {
-                // Unternehmensprofil deaktivieren
-                unternehmen.setAktiv(false);
-                manager.setAktiv(false);
-
-                if (unternehmenRepository.save(unternehmen).isAktiv()) {
-                    // Gebe false zurück, falls Unternehmen noch aktiv ist
+            if (unternehmen != null) { // Unternehmen von Unternehmensperson ist nicht null
+                if (!manager.equals(unternehmen.getUnternehmensperson())) {
                     return false;
                 }
-
-                // alle Unternehmenspersonen rausfiltern und über andere Methode deaktivieren
-                boolean success = true;
-                List<Person> mitarbeiter = personRepository.findAllByUnternehmenId(unternehmen.getId_Unternehmen());
-                for (Person p: mitarbeiter) {
-                    System.out.println(p.getVorname());
-                    if (!profilDeaktivierenPerson(p)) {
-                        // Setze success auf false, falls eine Deaktivierung fehlschlägt
-                        success = false;
-                    }
+                // Es ist wirklich der Manager des Unternehmens
+                List<Person> unternehmenspersonen = personRepository.findAllByUnternehmenId(unternehmen.getId_Unternehmen());
+                boolean mitarbeiterAktiv = true;
+                for (Person p : unternehmenspersonen) { // Mitarbeiter deaktivieren
+                    profilDeaktivierenPerson(p);
+                    personRepository.save(p);
+                    mitarbeiterAktiv = mitarbeiterAktiv && !p.getAktiv();
                 }
-
-                return success;
-            } else {
-                return false;
+                unternehmen.setAktiv(false); // Unternehmen deaktivieren
+                manager.setAktiv(false); // Manager deaktivieren
+                unternehmenRepository.save(unternehmen);
+                personRepository.save(manager);
+                return !unternehmen.isAktiv() && !manager.getAktiv() && mitarbeiterAktiv;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
