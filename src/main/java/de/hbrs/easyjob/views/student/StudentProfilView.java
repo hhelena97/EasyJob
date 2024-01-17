@@ -5,6 +5,7 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.controllers.SessionController;
@@ -22,6 +23,7 @@ import javax.annotation.security.RolesAllowed;
 @RolesAllowed("ROLE_STUDENT")
 @StyleSheet("DialogLayout.css")
 @StyleSheet("StudentProfilView.css")
+@PageTitle("Profil")
 public class StudentProfilView extends VerticalLayout implements BeforeEnterObserver  {
 
 
