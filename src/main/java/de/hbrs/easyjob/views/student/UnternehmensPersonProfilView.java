@@ -131,8 +131,7 @@ public class UnternehmensPersonProfilView extends VerticalLayout implements HasU
         IconFactory i = FontAwesome.Solid.BRIEFCASE;
         Icon briefcase =  i.create();
         briefcase.addClassName("iconsInJobIcons");
-        //TODO: Link fixen
-        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfilUn.class);
+        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfilView.class);
         linkUnternehmen.add(person.getUnternehmen().getName());
         unternehmenProfil.add(briefcase, linkUnternehmen);
 
