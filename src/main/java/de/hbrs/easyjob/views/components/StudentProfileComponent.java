@@ -109,9 +109,10 @@ public class StudentProfileComponent extends VerticalLayout {
             frame.setWidthFull();
             frame.setAlignItems(Alignment.CENTER);
             frame.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+            // Drei-Punkte-Icon für das Dropdown-Menü
             VerticalLayout dotsLayout = new VerticalLayout();
             dotsLayout.setWidth("fit-content");
-            // Drei-Punkte-Icon für das Dropdown-Menü
             Icon dots = new Icon(VaadinIcon.ELLIPSIS_DOTS_V);
             dots.getStyle().set("cursor", "pointer");
             dots.setSize("1em");
@@ -120,13 +121,12 @@ public class StudentProfileComponent extends VerticalLayout {
             ContextMenu contextMenu = new ContextMenu();
             contextMenu.setTarget(dots);
             contextMenu.setOpenOnClick(true);
-            MenuItem item = contextMenu.addItem("Melden", e -> {
+            MenuItem melden = contextMenu.addItem("Melden", e -> {
                 Meldung meldung = new Meldung();
                 meldungController.saveMeldung(meldung, student);
                 Notification.show("Gemeldet", 3000, Notification.Position.TOP_STRETCH);
             });
-
-            item.getElement().getStyle().set("color", "red");
+            melden.getElement().getStyle().set("color", "red");
 
             dotsLayout.add(dots);
             frame.add(zurueck, dotsLayout);
