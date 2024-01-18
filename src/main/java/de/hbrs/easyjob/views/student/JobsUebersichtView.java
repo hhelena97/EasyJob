@@ -167,7 +167,7 @@ public class JobsUebersichtView extends VerticalLayout implements BeforeEnterObs
         Icon ii =  i.create();
         ii.addClassName("iconsInJobIcons");
 
-        RouterLink titleIconsUnternehmen = new RouterLink("", UnternehmenProfilView.class, job.getUnternehmen().getId_Unternehmen());
+        RouterLink titleIconsUnternehmen = new RouterLink("", UnternehmensProfil.class, job.getUnternehmen().getId_Unternehmen());
         titleIconsUnternehmen.addClassName("titleIcons");
         titleIconsUnternehmen.add(job.getUnternehmen().getName());
 

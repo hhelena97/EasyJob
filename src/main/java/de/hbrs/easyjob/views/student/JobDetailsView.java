@@ -4,7 +4,6 @@ import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -34,7 +33,7 @@ public class JobDetailsView extends AbstractJobDetails {
         // Contact info
         Div contactContainer = new Div(
                 new H5("Ansprechperson:"));
-        RouterLink name = new RouterLink("", UnternehmensPersonProfilView.class, job.getPerson().getId_Person());
+        RouterLink name = new RouterLink(UnternehmensPersonProfilView.class, job.getPerson().getId_Person());
         name.add(job.getPerson().getVorname() + " " + job.getPerson().getNachname());
         contactContainer.addClassName("job-details-contact");
         descriptionContainer.add(contactContainer);
