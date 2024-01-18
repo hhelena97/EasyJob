@@ -39,7 +39,7 @@ public class EasyjobApplication extends SpringBootServletInitializer implements 
 				licenseEvent -> {
 					// See <<ce.production.license-events>>
 				});
-		configuration.setDataDir("/src/main/java/de/hbrs/easyjob/collaborationEngine/ce-license.json");
+		configuration.setDataDir("/src/main/java/de/hbrs/easyjob/collaborationEngine/");
 		return configuration;
 	}
 

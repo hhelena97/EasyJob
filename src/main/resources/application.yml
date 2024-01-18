@@ -28,3 +28,5 @@ server:
   port: 8080
 vaadin:
   whitelisted-packages: com/flowingcode
+  pnpm-enabled: true
+  production-mode: true
