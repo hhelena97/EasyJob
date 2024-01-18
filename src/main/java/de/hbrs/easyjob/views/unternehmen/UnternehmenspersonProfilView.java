@@ -20,7 +20,6 @@ import de.hbrs.easyjob.views.allgemein.AccountIstInaktivView;
 import de.hbrs.easyjob.views.allgemein.GesperrtePersonView;
 import de.hbrs.easyjob.views.allgemein.LoginView;
 import de.hbrs.easyjob.views.components.UnternehmenLayout;
-import de.hbrs.easyjob.views.student.UnternehmenProfilView;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -119,7 +118,7 @@ public class UnternehmenspersonProfilView extends VerticalLayout implements Befo
         H2 unternehmenProfil = new H2("zum Unternehmensprofil");
         unternehmenProfil.addClassName("unternehmenProfil");
         unternehmenProfil.getStyle().set("color", "#323232");
-        RouterLink linkUnternehmen = new RouterLink(UnternehmenProfilView.class);
+        RouterLink linkUnternehmen = new RouterLink(UnternehmensProfil.class);
         linkUnternehmen.add(unternehmenProfil);
 
 

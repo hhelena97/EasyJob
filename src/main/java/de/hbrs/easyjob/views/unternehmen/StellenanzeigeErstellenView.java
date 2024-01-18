@@ -221,14 +221,14 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
      * @param aktiv true, wenn die Stellenanzeige aktiv sein soll
      */
     private void saveEntity(boolean aktiv) {
-        job.setEintritt(Date.from(eintrittsdatum.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        job.setJobKategorie(berufsbezeichnung.getValue());
-        job.setOrt(standort.getValue());
-        job.setStudienfacher(studienfach.getValue());
-        job.setTitel(titel.getValue());
-        job.setFreitext(stellenbeschreibung.getValue());
-        job.setHomeOffice(homeOffice.getValue());
-        job.setAktiv(aktiv);
+        if(!eintrittsdatum.isEmpty()) job.setEintritt(Date.from(eintrittsdatum.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        if(!berufsbezeichnung.isEmpty()) job.setJobKategorie(berufsbezeichnung.getValue());
+        if(!standort.isEmpty()) job.setOrt(standort.getValue());
+        if(!studienfach.isEmpty()) job.setStudienfacher(studienfach.getValue());
+        if(!titel.isEmpty()) job.setTitel(titel.getValue());
+        if(!stellenbeschreibung.isEmpty())job.setFreitext(stellenbeschreibung.getValue());
+        if(!homeOffice.isEmpty())job.setHomeOffice(homeOffice.getValue());
+        if(!studienfach.isEmpty())job.setAktiv(aktiv);
 
         Job newJob;
         if (jobId == 0) {

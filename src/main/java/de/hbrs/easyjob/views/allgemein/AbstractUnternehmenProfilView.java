@@ -1,4 +1,4 @@
-package de.hbrs.easyjob.views.student;
+package de.hbrs.easyjob.views.allgemein;
 
 import com.flowingcode.vaadin.addons.fontawesome.FontAwesome;
 import com.vaadin.flow.component.Component;
@@ -18,23 +18,15 @@ import de.hbrs.easyjob.controllers.MeldungController;
 import de.hbrs.easyjob.controllers.SessionController;
 import de.hbrs.easyjob.entities.*;
 import de.hbrs.easyjob.services.UnternehmenService;
-import de.hbrs.easyjob.views.allgemein.LoginView;
-import de.hbrs.easyjob.views.components.StudentLayout;
 import de.hbrs.easyjob.views.components.ZurueckButtonText;
-import de.hbrs.easyjob.views.unternehmen.StellenanzeigeErstellenView;
-import de.hbrs.easyjob.views.unternehmen.UnternehmensprofilBearbeiten;
+import de.hbrs.easyjob.views.unternehmen.JobDetailsView;
 
-
-import javax.annotation.security.RolesAllowed;
 import java.util.Date;
 import java.util.List;
 
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.START;
 
-@Route(value = "student/UnternehmenProfile", layout = StudentLayout.class)
-@PageTitle("Unternehmen Profile")
-@RolesAllowed({"ROLE_STUDENT", "ROLE_UNTERNEHMENSPERSON"})
-public class UnternehmenProfilView extends VerticalLayout implements HasUrlParameter<Integer>, BeforeEnterObserver {
+public abstract class AbstractUnternehmenProfilView extends VerticalLayout implements HasUrlParameter<Integer>, BeforeEnterObserver {
 
     Unternehmen unternehmen;
     HorizontalLayout jobs = new HorizontalLayout();
@@ -64,7 +56,7 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         add(createUnternehmenLayout(unternehmen));
     }
 
-    public UnternehmenProfilView(UnternehmenService unternehmenService, SessionController sessionController, MeldungController meldungController) {
+    public AbstractUnternehmenProfilView(UnternehmenService unternehmenService, SessionController sessionController, MeldungController meldungController) {
         this.unternehmenService = unternehmenService;
         this.sessionController = sessionController;
         this.meldungController = meldungController;
@@ -143,9 +135,9 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
             Icon pen = new Icon(VaadinIcon.PENCIL);
             pen.addClassName("iconsProf");
             VerticalLayout penLayout = new VerticalLayout(pen);
-            RouterLink bearbeiten = new RouterLink(UnternehmensprofilBearbeiten.class);
-            bearbeiten.add(penLayout);
-            menu.add(bearbeiten);
+            penLayout.setWidth("fit-content");
+            penLayout.addClickListener(e -> UI.getCurrent().navigate("unternehmen/unternehmensprofilbearbeiten"));
+            menu.add(penLayout);
         }
         // -------------------------------------------------------------------------------------------------------------
 
@@ -216,9 +208,8 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
         } else {
             H1 neu = new H1("Stellenangebote hinzufügen");
             neu.addClassName("neuStellen");
-            RouterLink hinzufuegen = new RouterLink(StellenanzeigeErstellenView.class);
-            hinzufuegen.add(neu);
-            locationPlusAnzahl.add(hinzufuegen);
+            neu.addClickListener(e-> UI.getCurrent().navigate("unternehmen/job/create"));
+            locationPlusAnzahl.add(neu);
         }
         // -------------------------------------------------------------------------------------------------------------
 
@@ -246,8 +237,18 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
 
         List<Job> jobsUn = unternehmenService.getAllJobs(unternehmen.getId_Unternehmen());
         jobsUn.forEach(job -> {
-            RouterLink jobLink = new RouterLink(JobDetailsView.class, job.getId_Job());
+            //RouterLink jobLink = new RouterLink(AbstractJobDetails.class, job.getId_Job());
             if (!job.getGesperrt() && job.getAktiv()) {
+
+                RouterLink jobLink;
+                if(istUnternehmensperson){
+                    //Klasse aus package unternehmen
+                    jobLink = new RouterLink(JobDetailsView.class, job.getId_Job());
+                }
+                else {
+                    //Klasse aus package student
+                    jobLink = new RouterLink(de.hbrs.easyjob.views.student.JobDetailsView.class, job.getId_Job());
+                }
                 jobLink.add(createStellenanzeigenVorschau(job));
                 jobs.add(jobLink);
             }
@@ -264,7 +265,7 @@ public class UnternehmenProfilView extends VerticalLayout implements HasUrlParam
     }
 
 
-    private Component createStellenanzeigenVorschau(Job job) {
+    private VerticalLayout createStellenanzeigenVorschau(Job job) {
         String STELLENANZEIGE_TAG = "stellenanzeige-tag";
         VerticalLayout stellenanzeigeFrame = new VerticalLayout();
         stellenanzeigeFrame.addClassName("stellenanzeige");
