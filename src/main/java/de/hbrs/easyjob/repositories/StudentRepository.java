@@ -3,13 +3,30 @@ package de.hbrs.easyjob.repositories;
 import de.hbrs.easyjob.entities.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Component
 public interface StudentRepository extends JpaRepository<Student, Integer> ,JpaSpecificationExecutor<Student>{
+    @Query(value = "DELETE FROM public.student_branche WHERE student_branche.id_student = ?1", nativeQuery = true)
+    @Modifying
+    @Transactional
+    void deleteStudentBranche(int studentId);
+
+    @Query(value = "DELETE FROM public.student_ort WHERE student_ort.id_student = ?1", nativeQuery = true)
+    @Modifying
+    @Transactional
+    void deleteStudentOrt(int studentId);
+
+    @Query(value = "DELETE FROM public.student_job_kategorie WHERE student_job_kategorie.id_student = ?1", nativeQuery = true)
+    @Modifying
+    @Transactional
+    void deleteStudentJobKategorie(int studentId);
+
     @Query(value = "SELECT p.* FROM easy_job.person p " +
             "JOIN easy_job.studienfach ON p.fk_studienfach = studienfach.id_studienfach " +
             "WHERE to_tsvector('german', " +

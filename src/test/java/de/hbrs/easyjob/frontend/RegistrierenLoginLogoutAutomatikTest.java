@@ -1,5 +1,7 @@
 package de.hbrs.easyjob.frontend;
 
+import de.hbrs.easyjob.repositories.PersonRepository;
+import de.hbrs.easyjob.repositories.StudentRepository;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
@@ -7,6 +9,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -20,6 +23,12 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
 class RegistrierenLoginLogoutAutomatikTest {
+    // Repositories
+    @Autowired
+    private PersonRepository personRepository;
+    @Autowired
+    private StudentRepository studentRepository;
+
     // WebDriver
     private final WebDriver[] drivers = new WebDriver[3];
     private final WebDriverManager wdmFirefox = WebDriverManager.firefoxdriver().browserInDocker().enableVnc();
@@ -39,8 +48,8 @@ class RegistrierenLoginLogoutAutomatikTest {
         options.addArguments("--remote-allow-origins=*");
 
         drivers[2] = wdmFirefox.create();
-        drivers[1] = new ChromeDriver(options);
-        drivers[0] = wdmSafari.create();
+        drivers[0] = new ChromeDriver(options);
+        drivers[1] = wdmSafari.create();
     }
 
     @AfterEach
@@ -64,7 +73,10 @@ class RegistrierenLoginLogoutAutomatikTest {
                     signUpPassword,
                     i != 0
             );
-            //personRepository.delete(personRepository.findByEmail(email)); <- klappt noch nicht
+            studentRepository.deleteStudentOrt(personRepository.findByEmail(email).getId_Person());
+            studentRepository.deleteStudentJobKategorie(personRepository.findByEmail(email).getId_Person());
+            studentRepository.deleteStudentBranche(personRepository.findByEmail(email).getId_Person());
+            personRepository.delete(personRepository.findByEmail(email));
         }
     }
 
