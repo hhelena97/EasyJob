@@ -12,9 +12,10 @@ body {
     font-family: Rubik, sans-serif;
 }
 
-.iconsProf{
+.iconsBearbeiten{
     width: 24px;
     height: 24px;
+    color: var(--studierende-dark);
 }
 
 /* Profilbild */

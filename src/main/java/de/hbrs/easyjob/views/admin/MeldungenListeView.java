@@ -188,6 +188,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         buttons.add(btnSperren);
 
         VerticalLayout personLayout = new VerticalLayout();
+        personLayout.setAlignItems(Alignment.CENTER);
 
         if (p instanceof Student student) {
             personLayout.add(new AdminStudentProfileComponent(
@@ -214,6 +215,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         }
 
         Button meldungBearbeitet = new Button("Meldung bearbeitet");
+        meldungBearbeitet.addClassName("confirm");
         meldungBearbeitet.addClickListener(e -> {
             meldung.setBearbeitet(true);
             meldungRepository.save(meldung);
@@ -222,10 +224,11 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         });
 
         Button meldungSchliessen = new Button("Abbrechen");
+        meldungSchliessen.addClassName("close-admin");
         meldungSchliessen.addClickListener(e -> d1.close());
 
         d1.add(infos, buttons, personLayout);
-        d1.getFooter().add(meldungSchliessen, meldungBearbeitet);
+        d1.getFooter().add(meldungBearbeitet, meldungSchliessen);
 
         Button btnPerson = new Button(name);
         btnPerson.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -253,6 +256,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         d1.add(infos);
 
         Button meldungBearbeitet = new Button("Meldung bearbeitet");
+        meldungBearbeitet.addClassName("close");
         meldungBearbeitet.addClassName("MeldungBearbeitet");
         meldungBearbeitet.addClickListener(e -> {
             meldung.setBearbeitet(true);
@@ -262,11 +266,11 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         });
 
         Button meldungSchliessen = new Button("Meldung schließen");
-        meldungSchliessen.addClassName("MeldungSchliessen");
+        meldungSchliessen.addClassName("close-admin");
         meldungSchliessen.addClickListener(e -> d1.close());
 
 
-        d1.getFooter().add(meldungSchliessen, meldungBearbeitet);
+        d1.getFooter().add(meldungBearbeitet, meldungSchliessen);
 
         Button btnUnternehmen = new Button(uname);
         btnUnternehmen.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -288,7 +292,7 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         d1.add(infos);
 
         Button meldungBearbeitet = new Button("Meldung bearbeitet");
-        //meldungBearbeitet.addClassName("MeldungBearbeitet");
+        meldungBearbeitet.addClassName("confirm");
         meldungBearbeitet.addClickListener(e -> {
             meldung.setBearbeitet(true);
             meldungRepository.save(meldung);
@@ -297,14 +301,14 @@ public class MeldungenListeView extends VerticalLayout implements BeforeEnterObs
         });
 
         Button meldungSchliessen = new Button("abbrechen");
-        //meldungSchliessen.addClassName("MeldungSchliessen");
+        meldungSchliessen.addClassName("close-admin");
         meldungSchliessen.addClickListener(e -> d1.close());
 
 
-        d1.getFooter().add(meldungSchliessen, meldungBearbeitet);
+        d1.getFooter().add(meldungBearbeitet, meldungSchliessen);
 
         Button btnJob = new Button(jname);
-        btnJob.addClassName("JobAufListeButton");
+        btnJob.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         btnJob.addClickListener(e -> d1.open());
 
         return new Div(btnJob);

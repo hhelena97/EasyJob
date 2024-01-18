@@ -100,7 +100,7 @@ public class UnternehmensprofilBearbeiten extends VerticalLayout {
         HorizontalLayout logoBearbeiten = new HorizontalLayout();
 
         Div rahmen = new Div();
-        //rahmen.addClassName("logo-frame");
+        rahmen.addClassName("logo-frame");
         Image platzhalterLogo;
         if(unternehmen.getLogo() !=null){
             platzhalterLogo = new Image(unternehmen.getLogo(), "Logo");
