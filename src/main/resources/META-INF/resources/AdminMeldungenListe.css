@@ -27,6 +27,10 @@ body {
     align-self: center;
 }
 
+vaadin-tab::before{
+    background-color: var(--admin-dark);
+}
+
 .meldungTab {
     color: var(--hintergrund-weiß);
     text-align: center;

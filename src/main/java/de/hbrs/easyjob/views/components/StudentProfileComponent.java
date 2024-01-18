@@ -86,12 +86,12 @@ public class StudentProfileComponent extends VerticalLayout {
 
             //Einstellungen Icon
             Icon cog = new Icon(VaadinIcon.COG);
-            cog.addClassName("iconsProf");
+            cog.addClassName("iconsBearbeiten");
             RouterLink link = new RouterLink(EinstellungenUebersichtStudentView.class);
             link.add(cog);
 
             Icon pen =new Icon(VaadinIcon.PENCIL);
-            pen.addClassName("iconsProf");
+            pen.addClassName("iconsBearbeiten");
             RouterLink linkPen = new RouterLink(StudentProfilBearbeitungView.class);
             linkPen.add(pen);
 
