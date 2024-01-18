@@ -25,8 +25,9 @@ public class ApplicationNoSecurity {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // oder spezifische URL-Muster
-                        .allowedOrigins("http://sepp-test.inf.h-brs.de:8080")
+                registry.addMapping("/**")
+                        .allowedOrigins("http://sepp-test.inf.h-brs.de:8080/easyjob-1.0-SNAPSHOT")
+                        .allowedOrigins("https://sso.vaadin.com/login?service=https://vaadin.com/login/cas")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
                         .allowCredentials(true);
