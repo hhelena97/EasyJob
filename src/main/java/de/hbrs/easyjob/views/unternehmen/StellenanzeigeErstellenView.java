@@ -124,11 +124,33 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
         VerticalLayout frame = new VerticalLayout();
         frame.setClassName("container");
 
+        /*
         // Bild hinzufügen Box
-        Button bildHinzufuegenButton = new Button("Bild hinzufügen", FontAwesome.Solid.PLUS_CIRCLE.create());
-        bildHinzufuegenButton.setClassName("bild-hinzufuegen-button");
-        frame.add(bildHinzufuegenButton);
+        Div imageContainer = new Div();
+        imageContainer.addClassName("bild-upload-container");
 
+        Button bildHinzufuegenButton = new Button("Bild hinzufügen", FontAwesome.Solid.PLUS_CIRCLE.create());
+        bildHinzufuegenButton.setClassName("bild-upload-button");
+
+
+
+        MemoryBuffer imageBuffer = new MemoryBuffer();
+        Upload bildUpload = new Upload(imageBuffer);
+        bildUpload.addClassName("bild-upload");
+        bildUpload.setAcceptedFileTypes("image/jpeg", "image/png", "image/webp");
+        bildUpload.setUploadButton(bildHinzufuegenButton);
+        bildUpload.setDropAllowed(false);
+        bildUpload.addSucceededListener(e -> {
+            InputStream imageStream = imageBuffer.getInputStream();
+            Image image = FileUpload.imageUpload(imageStream, "job.jpg");
+            job.setBild(image.getSrc());
+            imageContainer.getStyle().set("background-image", "url(" + image.getSrc() + ")");
+        });
+
+        imageContainer.add(bildUpload, bildHinzufuegenButton);
+
+        frame.add(imageContainer);
+        */
 
         // Zurück Button
         Button zurueckButton = new Button("zurück", FontAwesome.Solid.CHEVRON_LEFT.create());

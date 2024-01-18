@@ -65,9 +65,11 @@ public abstract class AbstractJobDetails extends VerticalLayout implements Befor
     }
 
     public void displayJob(Job job) {
+        /*
         Image image = new Image("https://picsum.photos/500/500", "Vorschaubild");
         //image = new Image(job.getBild(), "Vorschaubild");
         image.addClassName("job-details-image");
+        */
 
         // Buttons Container
         buttons.addClassName("job-details-buttons");
@@ -144,7 +146,7 @@ public abstract class AbstractJobDetails extends VerticalLayout implements Befor
         descriptionContainer.add(descriptionText);
         description.setContent(descriptionContainer);
 
-        frame.add(image, buttons, company, title, tagsContainer, description);
+        frame.add(buttons, company, title, tagsContainer, description);
     }
 
     protected AbstractJobDetails(
