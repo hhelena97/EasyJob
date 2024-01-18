@@ -1,6 +1,7 @@
 package de.hbrs.easyjob;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import de.hbrs.easyjob.security.CustomVaadinServiceInitListener;
@@ -17,6 +18,7 @@ import com.vaadin.collaborationengine.CollaborationEngineConfiguration;
  */
 
 @SpringBootApplication
+@Push
 @PWA(
 		name = "EasyJob - Easy gesucht, easy gefunden",
 		shortName = "EasyJob"
