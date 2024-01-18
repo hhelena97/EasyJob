@@ -291,3 +291,16 @@ vaadin-text-area > textarea {
     font-style: normal;
     font-weight: 400;
 }
+
+vaadin-date-picker::part(input-field){
+    background-color: var(--icon-hellgrau);
+    border-radius: var(--corner-radius);
+}
+
+vaadin-date-picker::part(label){
+    color: var(--text-almostblack);
+    font-family: Rubik, sans-serif;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 300;
+}

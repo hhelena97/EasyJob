@@ -116,8 +116,8 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
         StyledDialog abbrechenDialog = new StyledDialog(
                 "Wollen Sie wirklich abbrechen?",
                 "Ihre Änderungen werden nicht gespeichert und die Stellenanzeige wird nicht erstellt.",
-                abbrechenClose,
-                abbrechenConfirm
+                abbrechenConfirm,
+                abbrechenClose
         );
 
         // Container
@@ -270,7 +270,7 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
             );
             if (stellenanzeigeController.canEdit(job, unternehmensperson)) {
                 // Vorhandene Daten werden in die Felder eingetragen
-                eintrittsdatum.setValue(job.getEintritt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+                if(job.getEintritt()!= null) eintrittsdatum.setValue(job.getEintritt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
                 berufsbezeichnung.setValue(job.getJobKategorie());
                 standort.setValue(job.getOrt());
                 studienfach.setValue(job.getStudienfacher());
