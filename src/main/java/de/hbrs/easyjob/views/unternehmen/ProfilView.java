@@ -37,7 +37,7 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        if(!sessionController.isLoggedIn()|| !sessionController.hasRole("ROLE_UNTERNEHMENSPERSON")){
+        if (!sessionController.isLoggedIn() || !sessionController.hasRole("ROLE_UNTERNEHMENSPERSON")) {
             event.rerouteTo(LoginView.class);
         }
     }
@@ -65,9 +65,16 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
         stellenanzeigenScroller.addClassName("stellenanzeigen-scroller");
 
         List<Job> jobs = stellenanzeigeController.stellenanzeigenEinesUnternehmens(parameter);
+        // add jobs to view if they are active or if they are inactive and the user is part of the company
         for (Job job : jobs) {
-            stellenanzeigen.add(createStellenanzeigenVorschau(job));
+            if (Boolean.TRUE.equals(job.getAktiv()) || sessionController.hasRole("ROLE_UNTERNEHMENSPERSON") &&
+                    ((Unternehmensperson) sessionController.getPerson())
+                            .getUnternehmen().getId_Unternehmen().equals(job.getUnternehmen().getId_Unternehmen())
+            ) {
+                stellenanzeigen.add(createStellenanzeigenVorschau(job));
+            }
         }
+
         stellenanzeigenScroller.setContent(stellenanzeigen);
 
         jobsFrame.add(stellenanzeigenScroller);
@@ -75,6 +82,7 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
         frame.add(jobsFrame);
         add(frame);
     }
+
     public ProfilView(StellenanzeigeController stellenanzeigeController, SessionController sessionController) {
         this.stellenanzeigeController = stellenanzeigeController;
         this.sessionController = sessionController;
@@ -83,6 +91,9 @@ public class ProfilView extends VerticalLayout implements HasUrlParameter<Intege
     private Component createStellenanzeigenVorschau(Job job) {
         VerticalLayout stellenanzeigeFrame = new VerticalLayout();
         stellenanzeigeFrame.addClassName("stellenanzeige");
+        if (Boolean.FALSE.equals(job.getAktiv())) {
+            stellenanzeigeFrame.addClassName("inaktiv");
+        }
 
         H1 titel = new H1(job.getTitel());
         titel.addClassName("stellenanzeige-titel");

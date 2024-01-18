@@ -39,6 +39,10 @@ body {
     width: 100%;
 }
 
+.inaktiv > *{
+    color: var(--text-grau) !important;
+}
+
 /* Job-Titel */
 .stellenanzeige-titel {
     font-size: 18px;
