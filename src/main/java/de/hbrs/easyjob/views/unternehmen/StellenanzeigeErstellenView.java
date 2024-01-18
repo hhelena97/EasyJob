@@ -163,6 +163,7 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
         // Eintrittsdatum
         eintrittsdatum = new DatePicker("Eintrittsdatum");
         eintrittsdatum.setPlaceholder("Datum auswählen");
+        eintrittsdatum.setId("DatumAuswaehlenId");
         eintrittsdatum.setMin(LocalDate.now(ZoneId.systemDefault()));
         eintrittsdatum.setMax(LocalDate.now(ZoneId.systemDefault()).plusYears(1));
         eintrittsdatum.setHelperText("Eintrittsdatum darf maximal ein Jahr in der Zukunft liegen");
@@ -171,6 +172,7 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
         // Berufsbezeichnung
         berufsbezeichnung = new ComboBox<>();
         berufsbezeichnung.setLabel("Berufsbezeichnung");
+        berufsbezeichnung.setId("BerufsbezeichnungWaehlenID");
         berufsbezeichnung.setItems(jobKategorieRepository.findAll());
         berufsbezeichnung.setItemLabelGenerator(JobKategorie::getKategorie);
         berufsbezeichnung.setPlaceholder("Berufsbezeichnung(en) auswählen");
@@ -189,6 +191,7 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
         // Standort
         standort = new ComboBox<>("Standort");
         standort.setClassName("standort");
+        standort.setId("standortAuswaehlenId");
         standort.setItems(ortController.getOrtItemFilter(), ortController.getAlleOrte());
         standort.setItemLabelGenerator(ortController.getOrtItemLabelGenerator());
         standort.setPlaceholder("Standort auswählen");
@@ -200,10 +203,12 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
         // Titel
         titel = new TextField("Titel");
         titel.setPlaceholder("Titel eingeben");
+        titel.setId("titleID");
         frame.add(titel);
 
         // Stellenbeschreibung
         stellenbeschreibung = new TextArea("Stellenbeschreibung");
+        stellenbeschreibung.setId("stellenbeschreibungEinfuegenId");
         stellenbeschreibung.setPlaceholder("Tragen Sie hier die Stellenbeschreibung ein");
         stellenbeschreibung.setMaxLength(2500);
         stellenbeschreibung.setValueChangeMode(ValueChangeMode.EAGER);
@@ -217,6 +222,7 @@ public class StellenanzeigeErstellenView extends VerticalLayout implements Befor
 
         // Home-Office
         homeOffice = new Checkbox("Home-Office möglich");
+        homeOffice.setId("HomeofficeJaNeinId");
         frame.add(homeOffice);
 
         // Buttons
